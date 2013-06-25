@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- JBoss, Home of Professional Open Source Copyright 2012, Red Hat, Inc. 
+    and/or its affiliates, and individual contributors by the @authors tag. See 
+    the copyright.txt in the distribution for a full listing of individual contributors. 
+    Licensed under the Apache License, Version 2.0 (the "License"); you may not 
+    use this file except in compliance with the License. You may obtain a copy 
+    of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
+    by applicable law or agreed to in writing, software distributed under the 
+    License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
+    OF ANY KIND, either express or implied. See the License for the specific 
+    language governing permissions and limitations under the License. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!-- Parent -->
+    <parent>
+        <groupId>org.arquillian.container</groupId>
+        <artifactId>arquillian-droidium-container-build</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../arquillian-droidium-container-build/pom.xml</relativePath>
+    </parent>
+
+    <!-- Model Version -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Artifact Configuration -->
+    <artifactId>arquillian-droidium-container-impl</artifactId>
+    <name>Arquillian Droidium Container</name>
+    <description>Arquillian Droidium Container</description>
+
+    <!-- Properties -->
+    <properties>
+        <!-- known to work with Android 2.3 -->
+        <version.android>2.3</version.android>
+        <version.jboss.as>7.1.1.Final</version.jboss.as>
+    </properties>
+
+    <!-- Dependencies -->
+    <dependencies>
+        <!-- Arquillian Droidium Container Dependencies -->
+        <dependency>
+            <groupId>org.arquillian.container</groupId>
+            <artifactId>arquillian-droidium-container-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.arquillian.container</groupId>
+            <artifactId>arquillian-droidium-container-spi</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.arquillian.extension</groupId>
+            <artifactId>arquillian-droidium-multiple-containers</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Arquillian dependencies -->
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-container-spi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.core</groupId>
+            <artifactId>arquillian-core-spi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.test</groupId>
+            <artifactId>arquillian-test-spi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.config</groupId>
+            <artifactId>arquillian-config-api</artifactId>
+        </dependency>
+
+        <!-- Android Dependencies -->
+        <dependency>
+            <groupId>com.android.ddmlib</groupId>
+            <artifactId>ddmlib</artifactId>
+        </dependency>
+
+        <!-- test dependencies -->
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-standalone</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.config</groupId>
+            <artifactId>arquillian-config-impl-base</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.test</groupId>
+            <artifactId>arquillian-test-impl-base</artifactId>
+            <scope>test</scope>
+            <classifier>tests</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.core</groupId>
+            <artifactId>arquillian-core-impl-base</artifactId>
+            <scope>test</scope>
+            <classifier>tests</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.core</groupId>
+            <artifactId>arquillian-core-impl-base</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-container-impl-base</artifactId>
+            <scope>test</scope>
+            <classifier>tests</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-container-impl-base</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-arquillian-container-managed</artifactId>
+            <version>${version.jboss.as}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <!-- By default, tests are skipped, use "testing profiles to
+                trigger tests. -->
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <skipTests>true</skipTests>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- Testing profile #1
+            excludes tests which need tester manual interaction-->
+        <profile>
+            <id>test</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <skipTests>false</skipTests>
+                            <includes>
+                                <include>**/SDCardTestSuiteBase.class</include>
+                                <include>**/*TestCase.class</include>
+                            </includes>
+                            <excludes>
+                                <exclude>**/AndroidDeviceSelectorEmulatorRunningTestCase.class</exclude>
+                                <exclude>**/AndroidDeviceSelectorRealDeviceTestCase.class</exclude>
+                                <exclude>**/AndroidEmulatorStartupAVDcreatedTestCase.class</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- Testing profile #2 -->
+        <!-- Be sure that: 
+            1) you started Android Virtual Device (emulator) with:
+                a) AVD name test01
+                b) its console port is 5554
+            2)
+                a) your port 5556 is free, it will be used when the testing 
+                   of startup of container takes place
+                b) you have AVD of name test01 at your system
+            3) you have real Android mobile phone connected to PC via USB
+               you have to set its serial number, see following points.
+            
+            Regarding of 1)
+                AVD name can be supressed by setting -Demulator.running.avd.name=your_value
+                Console port can be supressed by setting -Demulator.running.console.port=your_value
+            Regarding of 2)
+                AVD name can be suppressed by -Demulator.to.run.avd.name=your_value
+                Console port can be supressed by setting -Demulator.to.run.console.port=your_value
+            Regarding of 3)
+                You HAVE TO set ID of physical device as -Ddevice.serial.id=ID
+                You get that number from adb devices -l
+            -->
+        <profile>
+            <id>manual-test</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <skipTests>false</skipTests>
+                            <includes>
+                                <include>**/AndroidDeviceSelectorRealDeviceTestCase.class</include>
+                                <include>**/AndroidEmulatorStartupAVDcreatedTestCase.class</include>
+                                <include>**/AndroidDeviceSelectorEmulatorRunningTestCase.class</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

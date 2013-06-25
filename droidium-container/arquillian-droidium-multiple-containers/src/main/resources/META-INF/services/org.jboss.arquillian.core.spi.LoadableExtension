@@ -1,0 +1,2 @@
+!org.jboss.arquillian.container.impl.ContainerExtension
+org.arquillian.droidium.multiplecontainers.MultipleContainersExtension

@@ -1,4 +1,5 @@
 # Eclipse
+*.class
 .project
 .classpath
 .settings/
@@ -8,6 +9,11 @@
 *.ipr
 *.iws
 .idea
+
+# Packages
+*.jar
+*.war
+*.ear
 
 # Maven
 target/
