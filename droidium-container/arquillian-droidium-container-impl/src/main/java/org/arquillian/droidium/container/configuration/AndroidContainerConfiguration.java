@@ -72,6 +72,19 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
 
     private int droneGuestPort = 8080;
 
+    private String logLevel = LogLevel.DEFAULT;
+
+    private String logType = LogType.DEFAULT;
+
+    private String logFilePath = "target/logcat.log";
+
+    private String logPackageWhitelist;
+
+    private String logPackageBlacklist;
+
+    // useful when more containers are being used, also affects log filename!
+    private boolean logSerialId;
+
     // Android 2.3.3 is the default
     private String apiLevel = "10";
 
@@ -247,6 +260,59 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
         this.droneGuestPort = droneGuestPort;
     }
 
+    public String getLogLevel() {
+        return logLevel;
+    }
+
+    public void setLogLevel(String logLevel) {
+        this.logLevel = logLevel;
+    }
+
+    public String getLogtype() {
+        return logType;
+    }
+
+    public void setLogType(String logType) {
+        this.logType = logType;
+    }
+
+    public String getLogFilePath() {
+        return logFilePath;
+    }
+
+    public void setLogFilePath(String logFilePath) {
+        this.logFilePath = logFilePath;
+    }
+
+    public String getLogPackageWhitelist() {
+        return logPackageWhitelist;
+    }
+
+    public void setLogPackageWhitelist(String logPackageWhitelist) {
+        this.logPackageWhitelist = logPackageWhitelist;
+    }
+
+    public String getLogPackageBlacklist() {
+        return logPackageBlacklist;
+    }
+
+    public void setLogPackageBlacklist(String logPackageBlacklist) {
+        this.logPackageBlacklist = logPackageBlacklist;
+    }
+
+    public boolean isLogFilteringEnabled() {
+        return (logPackageWhitelist != null && !logPackageWhitelist.equals("") ||
+               (logPackageBlacklist != null && !logPackageBlacklist.equals("")));
+    }
+
+    public boolean isLogSerialId() {
+        return logSerialId;
+    }
+
+    public void setLogSerialId(boolean logSerialId) {
+        this.logSerialId = logSerialId;
+    }
+
     @Override
     public void validate() throws AndroidContainerConfigurationException {
         Validate.isReadableDirectory(home,
@@ -317,6 +383,13 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
             Validate.isPortValid(droneGuestPort);
         }
 
+        // TODO validate log configuration
+
+        if(logPackageWhitelist != null && !logPackageWhitelist.equals("") && logPackageBlacklist == null) {
+            logPackageBlacklist = "*";
+            logger.warning("\"logPackageBlacklist\" isn't defined, but \"logPackageWhitelist\" is. Assuming \"*\" as a value for \"logPackageBlacklist\"!"); // TODO give better info
+        }
+
         if (emulatorBootupTimeoutInSeconds <= 0) {
             throw new AndroidContainerConfigurationException(
                 "Emulator bootup timeout has to be bigger then 0.");
@@ -347,6 +420,11 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
         sb.append("home\t\t\t:").append(this.home).append("\n");
         sb.append("consolePort\t\t:").append(this.consolePort).append("\n");
         sb.append("adbPort\t\t\t:").append(this.adbPort).append("\n");
+        sb.append("logLevel\t\t:").append(this.logLevel).append("\n");
+        sb.append("logType\t\t\t:").append(this.logType).append("\n");
+        sb.append("logFilePath\t\t\t:").append(this.logFilePath).append("\n");
+        sb.append("logPackageWhitelist\t:").append(this.logPackageWhitelist).append("\n");
+        sb.append("logPackageBlacklist\t:").append(this.logPackageBlacklist).append("\n");
         return sb.toString();
     }
 
