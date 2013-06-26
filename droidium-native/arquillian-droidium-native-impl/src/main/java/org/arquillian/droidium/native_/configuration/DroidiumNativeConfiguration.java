@@ -28,7 +28,7 @@ public class DroidiumNativeConfiguration {
 
     private static String fileSeparator = System.getProperty("file.separator");
 
-    private File androidServerApk = new File("selendroid-server.apk");
+    private File serverApk = new File("selendroid-server.apk");
 
     private File serverLogFile = new File("target" + DroidiumNativeConfiguration.fileSeparator + "arquillian-android-server.log");
 
@@ -52,12 +52,12 @@ public class DroidiumNativeConfiguration {
         this.serverLogFile = serverLogFile;
     }
 
-    public File getAndroidServerApk() {
-        return androidServerApk;
+    public File getServerApk() {
+        return serverApk;
     }
 
-    public void setAndroidServerApk(File androidServerApk) {
-        this.androidServerApk = androidServerApk;
+    public void setServerApk(File serverApk) {
+        this.serverApk = serverApk;
     }
 
     public File getKeystore() {

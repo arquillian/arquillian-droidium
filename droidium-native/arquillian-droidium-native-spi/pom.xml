@@ -25,8 +25,8 @@
 
     <!-- Artifact Configuration -->
     <artifactId>arquillian-droidium-native-spi</artifactId>
-    <name>Arquillian Android Drone Native SPI</name>
-    <description>Arquillian Android Drone Native SPI</description>
+    <name>Arquillian Droidium Native SPI</name>
+    <description>Arquillian Droidium Native SPI</description>
 
     <!-- Properties -->
     <properties>

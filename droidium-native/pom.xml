@@ -27,8 +27,8 @@
     <artifactId>arquillian-droidium-native</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Arquillian Android Drone Native Parent</name>
-    <description>Arquillian Android Native Drone Parent</description>
+    <name>Arquillian Droidium Native Parent</name>
+    <description>Arquillian Droidium Native Parent</description>
 
     <developers>
         <developer>

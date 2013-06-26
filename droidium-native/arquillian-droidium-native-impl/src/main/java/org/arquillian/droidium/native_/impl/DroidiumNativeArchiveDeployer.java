@@ -117,9 +117,9 @@ public class DroidiumNativeArchiveDeployer implements AndroidArchiveDeployer {
             new File(tmpDir, AndroidApplicationHelper.getRandomAPKFileName()),
             deploymentArchive);
 
-        copyFileToDirectory(droidiumNativeConfiguration.getAndroidServerApk(), tmpDir);
+        copyFileToDirectory(droidiumNativeConfiguration.getServerApk(), tmpDir);
 
-        File selendroidWorkingCopy = new File(tmpDir, droidiumNativeConfiguration.getAndroidServerApk().getName());
+        File selendroidWorkingCopy = new File(tmpDir, droidiumNativeConfiguration.getServerApk().getName());
 
         selendroidRebuilder.setApplicationBasePackage(applicationHelper.getApplicationBasePackage(applicationUnderTest));
 
