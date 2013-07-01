@@ -377,7 +377,8 @@ property is used and `adbPort` property is not, `adb` automatically selects as `
 <configuration>
     <property name="consolePort">5558</property>
 </configuration>
-    
+----
+
 ==== adbPort
 ===== default: console port + 1
 
