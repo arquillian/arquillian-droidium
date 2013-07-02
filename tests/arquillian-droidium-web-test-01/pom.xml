@@ -48,9 +48,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- JBoss dependency versions -->
-
         <version.jboss.maven.plugin>7.3.Final</version.jboss.maven.plugin>
-
         <version.jboss.spec.javaee.6.0>3.0.2.Final</version.jboss.spec.javaee.6.0>
         <!-- Alternatively, comment out the above line, and un-comment the 
             line below to use version 3.0.2.Final-redhat-2 which is a release certified 
@@ -61,7 +59,6 @@
         <!-- other plugin versions -->
         <version.compiler.plugin>2.3.1</version.compiler.plugin>
         <version.war.plugin>2.1.1</version.war.plugin>
-        <version.arquillian_core>1.0.4.Final</version.arquillian_core>
         <version.org.jboss.arquillian.drone>1.2.0.Alpha2</version.org.jboss.arquillian.drone>
         <version.org.jboss.arquillian.graphene>2.0.0.Alpha4</version.org.jboss.arquillian.graphene>
          
@@ -86,14 +83,6 @@
                 <version>${version.jboss.spec.javaee.6.0}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <!-- Arquillian BOM -->
-            <dependency>
-                <groupId>org.jboss.arquillian</groupId>
-                <artifactId>arquillian-bom</artifactId>
-                <version>${version.arquillian_core}</version>
-                <scope>import</scope>
-                <type>pom</type>
             </dependency>
             <!-- Arquillian Drone BOM -->
             <dependency>
@@ -154,7 +143,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.8.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -236,7 +224,7 @@
                 <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
-                <!-- Where is your $JBOSS_HOME? -->
+                <!-- Where is your JBoss AS 7.1.1 installation? -->
                 <jboss.home>${home.jboss}</jboss.home>
                 <!-- Name of AVD (emulator) to use when starting Android device -->
                 <android.avd.name>${name.avd}</android.avd.name>
@@ -251,7 +239,7 @@
                 <dependency>
                     <groupId>org.jboss.as</groupId>
                     <artifactId>jboss-as-arquillian-container-managed</artifactId>
-                    <version>7.1.1.Final</version>
+                    <version>${version.jbossas}</version>
                     <scope>test</scope>
                 </dependency>
 
@@ -261,14 +249,14 @@
                     <artifactId>arquillian-droidium-container-depchain</artifactId>
                     <type>pom</type>
                     <scope>test</scope>
-                    <version>0.0.1-SNAPSHOT</version>
+                    <version>${version.droidium}</version>
                 </dependency>
 
                 <!-- Arquillian Droidium for web testing -->
                 <dependency>
                     <groupId>org.arquillian.extension</groupId>
                     <artifactId>arquillian-droidium-web</artifactId>
-                    <version>0.0.1-SNAPSHOT</version>
+                    <version>${version.droidium}</version>
                 </dependency>
             </dependencies>
         </profile>

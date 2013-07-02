@@ -27,12 +27,6 @@
     <artifactId>arquillian-droidium-native-api</artifactId>
     <name>Arquillian Droidium Native API</name>
     <description>Arquillian Droidium Native API</description>
-    
-    <!-- Properties -->
-    <properties>
-        <version.shrinkwrap.api>1.1.2</version.shrinkwrap.api>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
     <!-- Developers -->
     <developers>
@@ -41,18 +35,6 @@
             <email>smikloso@redhat.com</email>
         </developer>
     </developers>
-
-    <!-- Dependency Management -->
-    <dependencyManagement>
-        <dependencies>
-            <!-- ShrinkWrap -->
-            <dependency>
-                <groupId>org.jboss.shrinkwrap</groupId>
-                <artifactId>shrinkwrap-api</artifactId>
-                <version>${version.shrinkwrap.api}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <!-- Dependencies -->
     <dependencies>
