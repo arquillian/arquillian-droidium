@@ -1,0 +1,34 @@
+= Tests for Arquillian Droidium
+
+This project shows various use cases of Arquillian Droidium container 
+possibly cooperating with native and web extensions.
+
+It contains these modules as standalone projects:
+
+== arquillian-droidium-multiple-containers-test-01
+
+The project which tests scenario when multiple container adapters are on the classpath,
+which is not normally possible. It starts Android emulator of given AVD 
+(or it is connected to it when such emulator is already running) and 
+it starts / connects to JBoss AS 7.1.1 as well. This project does not 
+use any additional plugins at all.
+
+You have to have Android AVD of name `android-4.1.2` or any other emulator. To use another AVD,
+its name has to be set in only profile in `pom.xml` of that project.
+
+== arquillian-droidium-native-test-01
+
+Tests test application from http://dominikdary.github.io/selendroid/[Selendroid] project. 
+Internally, it repackages selendroid server according to application under test dynamically, 
+then it installs it with test application. The instrumentation of application under test is 
+executed (instrumentation is done by repackaged selendroid server) and testing is performed.
+
+This project uses `arquillian-droidium-native` extension which does just mentioned. It uses 
+https://docs.jboss.org/author/display/ARQ/Drone[Arquillian Drone Web Driver].
+
+== arquillian-droidium-web-test-01
+
+Tests helloworld-like application which is deployed into JBoss AS and tests 
+are performed in connection with WebDriver and Arquillian Graphene. Tests are 
+executed against Android device - browser on Android device is started and 
+functional tests are executed there.

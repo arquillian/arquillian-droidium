@@ -27,8 +27,8 @@
     <artifactId>arquillian-droidium-native</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Arquillian Android Drone Native Parent</name>
-    <description>Arquillian Android Native Drone Parent</description>
+    <name>Arquillian Droidium Native Parent</name>
+    <description>Arquillian Droidium Native Parent</description>
 
     <developers>
         <developer>
@@ -36,12 +36,6 @@
             <email>smikloso@redhat.com</email>
         </developer>
     </developers>
-
-    <scm>
-        <connection>scm:git:git://git@github.com:smiklosovic/arquillian-container-android-drone-native.git</connection>
-        <developerConnection>scm:git:ssh://github.com/smiklosovic/arquillian-container-android-drone-native.git</developerConnection>
-        <url>git://github.com/smiklosovic/arquillian-container-android-drone-native.git</url>
-    </scm>
 
     <!-- Properties -->
     <properties>

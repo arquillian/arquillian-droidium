@@ -1,0 +1,59 @@
+= Arquillian Droidium Web
+
+Arquillian Droidium Web plugin for Arquillian Droidium container provides necessary infrastructure 
+for container implementation needed for functional testing of web application on Android device.
+
+In a nutshell, the plugin installs https://code.google.com/p/selenium/downloads/detail?name=android-server-2.32.0.apk[Android server APK] 
+of the version you specify in configuration in `arquillian.xml` from Selenium project dynamically upon every test execution lifecycle and does 
+port forwarding from localhost to Android device. Once done, when a tester injects WebDriver 
+instance into his tests, he uses normal WebDriver API to test web application he deployed 
+as `@Deployment` into ordinary (JBoss) AS container.
+
+== Configuration
+
+From Maven point of view, you have to put this artifact together with Android container artifact on classpath 
+while testing:
+
+----
+<dependency>
+    <groupId>org.arquillian.extension</groupId>
+    <artifactId>arquillian-droidium-web</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <scope>test</scope>
+</dependency>
+----
+
+You have to register extension in `arquillian.xml` by putting this snippet into it:
+
+----
+<!-- Configuration of Droidium extension for web testing -->
+<extension qualifier="droidium-web">
+    <!-- Path of Android server APK -->
+    <property name="serverApk">android-server-2.32.0.apk</property>
+</extension>
+----
+
+You have to download Android server APK from Selenium project manually and put it 
+on classpath. It will be recognized by this extension then. Note the qualifier for 
+this extension - `droidium-web`.
+
+== Configuration properties
+
+==== androidServerApk
+===== default: android-server.apk
+
+Sets path to Android server APK from Selenium project which is dynamically installed on target device for 
+translating WebDriver calls to Android browser and back.
+
+----
+<property name="serverApk">/path/to/your/android/server/apk</property>
+----
+
+==== logFile
+===== default: target/android.log
+
+Sets path to log file where communication with Android device during testing is saved.
+
+----
+<property name="logFile">/path/to/file/you/have/access/to</property>
+----
