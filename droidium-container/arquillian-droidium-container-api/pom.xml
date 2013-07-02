@@ -50,7 +50,6 @@
 
     <!-- Properties -->
     <properties>
-        <version.arquillian.core>1.0.4.Final</version.arquillian.core>
         <version.com.android>r16</version.com.android>
         <version.shrinkwrap.api>1.1.2</version.shrinkwrap.api>
     </properties>

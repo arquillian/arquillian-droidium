@@ -13,15 +13,15 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
+    <!-- Model Version -->
+    <modelVersion>4.0.0</modelVersion>
+
     <!-- Parent -->
     <parent>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-parent</artifactId>
         <version>10</version>
     </parent>
-
-    <!-- Model Version -->
-    <modelVersion>4.0.0</modelVersion>
 
     <!-- Artifact Configuration -->
     <groupId>org.arquillian.droidium.tests</groupId>
@@ -47,10 +47,30 @@
     <!-- Properties -->
     <properties>
         <!-- Versioning -->
-        <version.arquillian_core>1.0.4.Final</version.arquillian_core>
-        <version.junit>4.8.2</version.junit>
+        <version.arquillian.core>1.1.0.Final</version.arquillian.core>
         <version.jbossas>7.1.1.Final</version.jbossas>
+        <version.droidium>0.0.1-SNAPSHOT</version.droidium>
     </properties>
+
+    <!-- Dependency Management -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>${version.arquillian.core}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-build</artifactId>
+                <version>${version.arquillian.core}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <!-- Modules -->
     <modules>

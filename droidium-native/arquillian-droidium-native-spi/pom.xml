@@ -31,9 +31,6 @@
     <!-- Properties -->
     <properties>
         <version.droidium.container>0.0.1-SNAPSHOT</version.droidium.container>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.6</maven.compiler.source>
-        <maven.compiler.target>1.6</maven.compiler.target>
     </properties>
 
     <!-- Developers -->
