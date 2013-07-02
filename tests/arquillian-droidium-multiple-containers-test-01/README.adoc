@@ -1,4 +1,4 @@
-= Arquillian Droidium multiple containers test
+== Arquillian Droidium multiple containers test
 
 Tests basic scenario when you have Android device and JBoss AS container adapters on classpath.
 
@@ -6,5 +6,5 @@ You have to specify these configuration parameters once you test, the tests will
 
 `mvn clean test -Dname.avd=name-of-avd -Dhome.jboss=home-of-jboss`
 
-* name.avd - name of AVD you want to use while testing
-* home.jboss - installation directory of your JBoss AS 7.1.1.
+* `name.avd` - name of AVD you want to use while testing
+* `home.jboss` - installation directory of your JBoss AS 7.1.1.
