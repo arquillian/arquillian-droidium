@@ -27,35 +27,35 @@ import java.io.File;
  */
 public class DroidiumWebConfiguration {
 
-    private File androidServerApk = new File("android-server.apk");
+    private File serverApk = new File("android-server.apk");
 
-    private File webdriverLogFile = new File("target" + System.getProperty("file.separator") + "android-webdriver-monkey.log");
+    private File logFile = new File("target" + System.getProperty("file.separator") + "android.log");
 
     /**
-     * @return the androidServerApk
+     * @return the serverApk
      */
-    public File getAndroidServerApk() {
-        return androidServerApk;
+    public File getServerApk() {
+        return serverApk;
     }
 
     /**
-     * @param androidServerApk the androidServerApk to set
+     * @param serverApk the serverApk to set
      */
-    public void setAndroidServerApk(File androidServerApk) {
-        this.androidServerApk = androidServerApk;
+    public void setServerApk(File serverApk) {
+        this.serverApk = serverApk;
     }
 
     /**
-     * @return the webdriverLogFile
+     * @return the logFile
      */
-    public File getWebdriverLogFile() {
-        return webdriverLogFile;
+    public File getLogFile() {
+        return logFile;
     }
 
     /**
-     * @param webdriverLogFile the webdriverLogFile to set
+     * @param logFile the logFile to set
      */
-    public void setWebdriverLogFile(File webdriverLogFile) {
-        this.webdriverLogFile = webdriverLogFile;
+    public void setLogFile(File logFile) {
+        this.logFile = logFile;
     }
 }

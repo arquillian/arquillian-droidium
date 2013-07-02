@@ -30,7 +30,7 @@ public class DroidiumNativeConfiguration {
 
     private File serverApk = new File("selendroid-server.apk");
 
-    private File serverLogFile = new File("target" + DroidiumNativeConfiguration.fileSeparator + "arquillian-android-server.log");
+    private File logFile = new File("target" + DroidiumNativeConfiguration.fileSeparator + "android.log");
 
     private File keystore = DroidiumNativeConfiguration.getDefaultKeyStore();
 
@@ -44,12 +44,12 @@ public class DroidiumNativeConfiguration {
 
     private File tmpDir = DroidiumNativeConfiguration.getTemporaryDirectory();
 
-    public File getServerLogFile() {
-        return serverLogFile;
+    public File getLogFile() {
+        return logFile;
     }
 
-    public void setServerLogFile(File serverLogFile) {
-        this.serverLogFile = serverLogFile;
+    public void setLogFile(File logFile) {
+        this.logFile = logFile;
     }
 
     public File getServerApk() {

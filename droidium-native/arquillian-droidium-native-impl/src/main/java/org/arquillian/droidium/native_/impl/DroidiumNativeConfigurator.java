@@ -94,10 +94,10 @@ public class DroidiumNativeConfigurator {
         Validate.isReadable(configuration.getServerApk(), "You must provide a valid path to Android Server APK"
             + configuration.getServerApk());
 
-        File serverLogFile = configuration.getServerLogFile();
+        File serverLogFile = configuration.getLogFile();
 
         Validate.notNull(serverLogFile, "You must provide a valid path to Arquillian Android Server Monkey log file: "
-            + configuration.getServerLogFile());
+            + configuration.getLogFile());
 
         try {
             serverLogFile.createNewFile();

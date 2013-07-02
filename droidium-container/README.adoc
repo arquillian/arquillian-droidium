@@ -22,7 +22,7 @@ as well.
 
 Observers are registered in `DroidiumContainerExtension` in `arquillian-droidium-container-impl` module.
 
-While inspecting the code, it is handy to have https://raw.github.com/smiklosovic/arquillian-thesis/master/resources/container-shutdown-droidium.png[container startup] and 
+While inspecting the code, it is handy to have https://raw.github.com/smiklosovic/arquillian-thesis/master/resources/container-startup-droidium.png[container startup] and 
 https://raw.github.com/smiklosovic/arquillian-thesis/master/resources/container-shutdown-droidium.png[container shutdown] charts in mind.
 
 == Setup

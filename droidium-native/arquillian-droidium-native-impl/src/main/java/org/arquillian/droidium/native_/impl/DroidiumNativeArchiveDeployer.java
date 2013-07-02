@@ -104,7 +104,7 @@ public class DroidiumNativeArchiveDeployer implements AndroidArchiveDeployer {
         DroidiumNativeConfiguration droidiumNativeConfiguration = this.droidiumNativeConfiguration.get();
         AndroidDevice androidDevice = this.androidDevice.get();
         AndroidApplicationHelper applicationHelper = new AndroidApplicationHelper(processExecutor, androidSDK);
-        SelendroidHelper selendroidHelper = new SelendroidHelper(androidDevice, droidiumNativeConfiguration.getServerLogFile());
+        SelendroidHelper selendroidHelper = new SelendroidHelper(androidDevice, droidiumNativeConfiguration.getLogFile());
 
         // creates temporary directory where every modified application and resources are put
         tmpDir = createWorkingDir(droidiumNativeConfiguration.getTmpDir());
@@ -219,7 +219,7 @@ public class DroidiumNativeArchiveDeployer implements AndroidArchiveDeployer {
         DroidiumNativeConfiguration droidiumNativeConfiguration = this.droidiumNativeConfiguration.get();
 
         AndroidApplicationHelper applicationHelper = new AndroidApplicationHelper(processExecutor, androidSDK);
-        SelendroidHelper selendroidHelper = new SelendroidHelper(androidDevice, droidiumNativeConfiguration.getServerLogFile());
+        SelendroidHelper selendroidHelper = new SelendroidHelper(androidDevice, droidiumNativeConfiguration.getLogFile());
 
         String selendroidBasePackage = applicationHelper.getApplicationBasePackage(modifiedSelendroid);
         String applicationBasePackage = applicationHelper.getApplicationBasePackage(applicationUnderTest);
