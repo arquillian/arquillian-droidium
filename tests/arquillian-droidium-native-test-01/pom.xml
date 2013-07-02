@@ -118,9 +118,9 @@
                 <dependency>
                     <groupId>org.arquillian.container</groupId>
                     <artifactId>arquillian-droidium-container-depchain</artifactId>
+                    <version>${version.droidium}</version>
                     <type>pom</type>
                     <scope>test</scope>
-                    <version>${version.droidium}</version>
                 </dependency>
 
                 <!-- Arquillian Droidium Native extension in order to be able 
@@ -128,8 +128,8 @@
                 <dependency>
                     <groupId>org.arquillian.extension</groupId>
                     <artifactId>arquillian-droidium-native-depchain</artifactId>
-                    <type>pom</type>
                     <version>${version.droidium}</version>
+                    <type>pom</type>
                     <scope>test</scope>
                 </dependency>
             </dependencies>

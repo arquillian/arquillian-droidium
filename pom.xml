@@ -61,7 +61,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Arquillian Core -->
-        <version.arquillian.core>1.1.0.Final</version.arquillian.core>
+        <version.arquillian.core>1.0.4.Final</version.arquillian.core>
 
         <!-- Other versions -->
         <version.apiviz>1.3.2.GA</version.apiviz>
