@@ -139,7 +139,7 @@
 
     <profiles>
         <profile>
-            <!-- By default, tests are skipped, use "testing profiles to
+            <!-- By default, tests are skipped, use "testing" profiles to
                 trigger tests. -->
             <id>default</id>
             <activation>
@@ -196,7 +196,7 @@
                 b) you have AVD of name test01 at your system
             3) you have real Android mobile phone connected to PC via USB
                you have to set its serial number, see following points.
-            
+
             Regarding of 1)
                 AVD name can be supressed by setting -Demulator.running.avd.name=your_value
                 Console port can be supressed by setting -Demulator.running.console.port=your_value

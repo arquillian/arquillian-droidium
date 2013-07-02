@@ -35,14 +35,6 @@
     <!-- Dependency Management -->
     <dependencyManagement>
         <dependencies>
-            <!-- Arquillian BOM -->
-            <dependency>
-                <groupId>org.jboss.arquillian</groupId>
-                <artifactId>arquillian-bom</artifactId>
-                <version>${version.arquillian_core}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
             <!-- Arquillian Drone BOM -->
             <dependency>
                 <groupId>org.jboss.arquillian.extension</groupId>
@@ -72,7 +64,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.8.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -129,7 +120,7 @@
                     <artifactId>arquillian-droidium-container-depchain</artifactId>
                     <type>pom</type>
                     <scope>test</scope>
-                    <version>0.0.1-SNAPSHOT</version>
+                    <version>${version.droidium}</version>
                 </dependency>
 
                 <!-- Arquillian Droidium Native extension in order to be able 
@@ -138,7 +129,7 @@
                     <groupId>org.arquillian.extension</groupId>
                     <artifactId>arquillian-droidium-native-depchain</artifactId>
                     <type>pom</type>
-                    <version>0.0.1-SNAPSHOT</version>
+                    <version>${version.droidium}</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
