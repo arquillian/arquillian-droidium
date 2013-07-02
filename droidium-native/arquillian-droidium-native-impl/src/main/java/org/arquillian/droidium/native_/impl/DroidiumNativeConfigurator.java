@@ -61,7 +61,7 @@ public class DroidiumNativeConfigurator {
 
     private static final Logger logger = Logger.getLogger(DroidiumNativeConfigurator.class.getName());
 
-    private static final String ANDROID_DRONE_EXTENSION_NAME = "android-drone-native";
+    private static final String ANDROID_DRONE_EXTENSION_NAME = "droidium-native";
 
     @Inject
     @SuiteScoped
@@ -86,18 +86,18 @@ public class DroidiumNativeConfigurator {
             if (ANDROID_DRONE_EXTENSION_NAME.equals(extensionDef.getExtensionName())) {
                 Map<String, String> properties = extensionDef.getExtensionProperties();
                 if (properties.containsKey("androidServerApk")) {
-                    configuration.setAndroidServerApk(new File(properties.get("androidServerApk")));
+                    configuration.setServerApk(new File(properties.get("androidServerApk")));
                 }
             }
         }
 
-        Validate.isReadable(configuration.getAndroidServerApk(), "You must provide a valid path to Android Server APK"
-            + configuration.getAndroidServerApk());
+        Validate.isReadable(configuration.getServerApk(), "You must provide a valid path to Android Server APK"
+            + configuration.getServerApk());
 
-        File serverLogFile = configuration.getServerLogFile();
+        File serverLogFile = configuration.getLogFile();
 
         Validate.notNull(serverLogFile, "You must provide a valid path to Arquillian Android Server Monkey log file: "
-            + configuration.getServerLogFile());
+            + configuration.getLogFile());
 
         try {
             serverLogFile.createNewFile();

@@ -71,11 +71,11 @@ public class AndroidWebDriverInstaller {
 
         AndroidDevice androidDevice = event.getDevice();
 
-        installServerAPK(androidDevice, droneConfiguration.get().getAndroidServerApk());
+        installServerAPK(androidDevice, droneConfiguration.get().getServerApk());
         log.info("Installation of Android Server APK for WebDriver support was performed.");
 
         log.info("Starting Android Server for web testing");
-        WebDriverMonkey monkey = new WebDriverMonkey(droneConfiguration.get().getWebdriverLogFile());
+        WebDriverMonkey monkey = new WebDriverMonkey(droneConfiguration.get().getLogFile());
         androidDevice.executeShellCommand(START_WEBDRIVER_HUB_CMD, monkey);
 
         log.info("Waiting until Android server is present.");

@@ -76,26 +76,26 @@ public class DroidiumWebConfigurator {
         for (ExtensionDef extensionDef : descriptor.getExtensions()) {
             if (ANDROID_DRONE_EXTENSION_NAME.equals(extensionDef.getExtensionName())) {
                 Map<String, String> properties = extensionDef.getExtensionProperties();
-                if (properties.containsKey("androidServerApk")) {
-                    configuration.setAndroidServerApk(new File(properties.get("androidServerApk")));
+                if (properties.containsKey("serverApk")) {
+                    configuration.setServerApk(new File(properties.get("serverApk")));
                 }
             }
         }
 
-        Validate.isReadable(configuration.getAndroidServerApk(), "You must provide a valid path to Android Server APK: "
-                + configuration.getAndroidServerApk());
+        Validate.isReadable(configuration.getServerApk(), "You must provide a valid path to Android Server APK: "
+                + configuration.getServerApk());
 
-        File webdriverLog = configuration.getWebdriverLogFile();
+        File logFile = configuration.getLogFile();
 
-        Validate.notNull(webdriverLog, "You must provide a valid path to Android Webdriver Monkey log file: "
-                + configuration.getWebdriverLogFile());
+        Validate.notNull(logFile, "You must provide a valid path to Android log file: "
+                + configuration.getLogFile());
 
         // create the log file if not present
         try {
-            webdriverLog.createNewFile();
+            logFile.createNewFile();
         } catch (IOException e) {
-            throw new IllegalStateException("Unable to create Android Webdriver Monkey log file at "
-                    + webdriverLog.getAbsolutePath(), e);
+            throw new IllegalStateException("Unable to create Android log file at "
+                    + logFile.getAbsolutePath(), e);
         }
 
         droidiumWebConfiguration.set(configuration);

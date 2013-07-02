@@ -104,7 +104,7 @@ public class DroidiumNativeArchiveDeployer implements AndroidArchiveDeployer {
         DroidiumNativeConfiguration droidiumNativeConfiguration = this.droidiumNativeConfiguration.get();
         AndroidDevice androidDevice = this.androidDevice.get();
         AndroidApplicationHelper applicationHelper = new AndroidApplicationHelper(processExecutor, androidSDK);
-        SelendroidHelper selendroidHelper = new SelendroidHelper(androidDevice, droidiumNativeConfiguration.getServerLogFile());
+        SelendroidHelper selendroidHelper = new SelendroidHelper(androidDevice, droidiumNativeConfiguration.getLogFile());
 
         // creates temporary directory where every modified application and resources are put
         tmpDir = createWorkingDir(droidiumNativeConfiguration.getTmpDir());
@@ -117,9 +117,9 @@ public class DroidiumNativeArchiveDeployer implements AndroidArchiveDeployer {
             new File(tmpDir, AndroidApplicationHelper.getRandomAPKFileName()),
             deploymentArchive);
 
-        copyFileToDirectory(droidiumNativeConfiguration.getAndroidServerApk(), tmpDir);
+        copyFileToDirectory(droidiumNativeConfiguration.getServerApk(), tmpDir);
 
-        File selendroidWorkingCopy = new File(tmpDir, droidiumNativeConfiguration.getAndroidServerApk().getName());
+        File selendroidWorkingCopy = new File(tmpDir, droidiumNativeConfiguration.getServerApk().getName());
 
         selendroidRebuilder.setApplicationBasePackage(applicationHelper.getApplicationBasePackage(applicationUnderTest));
 
@@ -219,7 +219,7 @@ public class DroidiumNativeArchiveDeployer implements AndroidArchiveDeployer {
         DroidiumNativeConfiguration droidiumNativeConfiguration = this.droidiumNativeConfiguration.get();
 
         AndroidApplicationHelper applicationHelper = new AndroidApplicationHelper(processExecutor, androidSDK);
-        SelendroidHelper selendroidHelper = new SelendroidHelper(androidDevice, droidiumNativeConfiguration.getServerLogFile());
+        SelendroidHelper selendroidHelper = new SelendroidHelper(androidDevice, droidiumNativeConfiguration.getLogFile());
 
         String selendroidBasePackage = applicationHelper.getApplicationBasePackage(modifiedSelendroid);
         String applicationBasePackage = applicationHelper.getApplicationBasePackage(applicationUnderTest);

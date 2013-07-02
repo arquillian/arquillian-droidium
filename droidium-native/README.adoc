@@ -1,0 +1,123 @@
+= Arquillian Droidium Native
+
+Arquillian Droidium Native plugin for Arquillian Droidium container provides necessary infrastructure 
+for container implementation needed for testing of native application on Android device via 
+http://dominikdary.github.io/selendroid/[Selendroid] project. 
+
+In a nutshell, it looks into your application you want to test (APK file) and it modifies 
+Selendroid server accordingly (to be more detailed, its AndroidManifest.xml). After these changes,
+it is resigned once again since the content of APK has changed and it installs modified Selendroid 
+server and application under test (_aut_) into Android device. _Aut_ is instrumented by Selendroid 
+server.
+
+You can use good-old WebDriver from Selenium to carry out the tests since Selendroid implements 
+WebDriver API - the biggest advantage under the sun.
+
+== Configuration
+
+From Maven point of view, you have to put this artifact together with Android container artifact on classpath 
+while testing:
+
+----
+<dependency>
+    <groupId>org.arquillian.extension</groupId>
+    <artifactId>arquillian-droidium-native-depchain</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <scope>test</scope>
+    <type>pom</type>
+</dependency>
+----
+
+You have to register extension in `arquillian.xml` by putting this snippet into it:
+
+----
+<!-- Support for Arquillian Droidium Native extension 
+    for testing native Android applications via Selendroid -->
+<extension qualifier="droidium-native">
+    <!-- path you your selendroid-server.apk -->
+    <property name="serverApk">selendroid-server.apk</property>
+</extension>
+----
+
+You have to download Selendroid server APK from Selendroid project manually and put it 
+on classpath. It will be recognized by this extension then. Note the qualifier for 
+this extension - `droidium-native`.
+
+== Configuration properties
+
+==== serverApk
+===== default: selendroid-server.apk
+
+Sets path to Selendroid server APK from Selendroid project which is dynamically installed on target device for 
+translating WebDriver calls to Android browser and back. Selendroid server is repacked according to application 
+under test (_aut_) to reflect its base package for instrumentation needs.
+
+----
+<property name="serverApk">/path/to/your/selendroid/server/apk</property>
+----
+
+==== logFile
+===== default: target/android.log
+
+Sets path to log file where communication with Android device during testing is saved.
+
+----
+<property name="logFile">/path/to/file/you/have/access/to</property>
+----
+
+==== keystore
+===== default: $HOME/.android/debug.keystore
+
+Sets keystore to use for resigning packages after they are modified dynamically. Not resigning them 
+would result into impossibility to install them to Android device since certificates would be different.
+
+----
+<property name="keystore">/path/to/your/key/store</property>
+----
+
+==== storepass
+===== default: "android"
+
+----
+<property name="storepass">storepass</property>
+----
+
+==== keypass
+===== default: "android"
+
+----
+<property name="keypass">keypass</property>
+----
+
+==== alias
+===== default: androiddebugkey
+
+----
+<property name="alias">somealias</property>
+----
+
+==== tmpDir
+===== default: java.io.tmpdir
+
+Specifies where to do all repackaging operaions with Selendroid server and _aut_. All reconstruction, 
+resigning and storing of APKs is done there. From the implementation point of view, all packages and 
+directories are random UUID identifiers.
+
+This directory is deleted by default where tests are finished. It can be changed via `removeTmpDir` 
+property.
+
+----
+<property name="tmpDir">/path/to/tmp/dir</property>
+----
+
+==== removeTmpDir
+===== default: true
+
+Specifies if all temporary resources as repackaged Selendroid server should be removed by default.
+Set it to false when you want to inspect what packages are going to be installed for debug purposes, 
+however it is desired to remove this directory by default since it can occupy significant amount of 
+space. For every test run, other working directory is created every time.
+
+----
+<property name="removeTmpDir">true|false</property>
+----

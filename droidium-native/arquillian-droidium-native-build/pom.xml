@@ -27,6 +27,7 @@
     <artifactId>arquillian-droidium-native-build</artifactId>
     <packaging>pom</packaging>
     <name>Arquillian Droidium Native Build</name>
+    <description>Arquillian Droidium Native Build</description>
 
     <!-- Developers -->
     <developers>
