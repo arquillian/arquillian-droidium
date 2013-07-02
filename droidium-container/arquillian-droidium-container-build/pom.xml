@@ -47,7 +47,7 @@
 
     <!-- Properties -->
     <properties>
-        <version.arquillian.core>1.1.0.Final</version.arquillian.core>
+        <version.arquillian.core>1.0.4.Final</version.arquillian.core>
         <version.com.android>r16</version.com.android>
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
