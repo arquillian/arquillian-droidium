@@ -42,13 +42,6 @@
         </developer>
     </developers>
 
-    <!-- SCM -->
-    <scm>
-        <connection>scm:git:git://git@github.com:arquillian/arquillian-droidium.git</connection>
-        <developerConnection>scm:git:ssh://github.com/arquillian/arquillian-droidium.git</developerConnection>
-        <url>git://github.com/arquillian/arquillian-droidium.git</url>
-    </scm>
-
     <!-- Properties -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

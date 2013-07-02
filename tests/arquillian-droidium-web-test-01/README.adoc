@@ -1,0 +1,18 @@
+= Arquillian Droidium web test
+
+== Build web application
+
+Simply execute `mvn clean package`. Tests are skipped.
+
+When application is built, execute test profile like this:
+
+`mvn test -Pandroid-test -Das.bind.ip=x.y.z.w -Dname.avd=android-4.1.2 -Dhome.jboss=$JBOSS_HOME`
+
+All arguments have to be specified.
+
+* `as.bind.ip` - is external IP address of your localhost where you 
+want your JBoss AS instance to hook. This has to be external IP since localhost address will not be 
+accessible for Android device - it will be localhost of Android device itself and not of your host 
+where web app is running.
+* `name.avd` - name of AVD you want to execute tests on.
+* `home.jboss` - directory where your JBoss AS 7.1.1 is extracted
