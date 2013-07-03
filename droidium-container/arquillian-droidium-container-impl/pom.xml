@@ -152,15 +152,19 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
-                            <skipTests>true</skipTests>
+                            <skipTests>false</skipTests>
+                            <includes>
+                                <include>org/arquillian/droidium/container/configuration/**</include>
+                                <include>**/multiplecontainers/*TestCase.class</include>
+                            </includes>
                         </configuration>
                     </plugin>
                 </plugins>
             </build>
         </profile>
-        <!-- Testing profile #1 excludes tests which need tester's manual interaction. -->
         <profile>
-            <id>test</id>
+            <!-- Profile which needs to have Android SDK installed on testing machine. -->
+            <id>android-automatic</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
@@ -172,20 +176,13 @@
                         <configuration>
                             <skipTests>false</skipTests>
                             <includes>
-                                <include>**/SDCardTestSuiteBase.class</include>
-                                <include>**/*TestCase.class</include>
+                                <include>org/arquillian/droidium/container/automatic/**</include>
                             </includes>
-                            <excludes>
-                                <exclude>**/AndroidDeviceSelectorEmulatorRunningTestCase.class</exclude>
-                                <exclude>**/AndroidDeviceSelectorRealDeviceTestCase.class</exclude>
-                                <exclude>**/AndroidEmulatorStartupAVDcreatedTestCase.class</exclude>
-                            </excludes>
                         </configuration>
                     </plugin>
                 </plugins>
             </build>
         </profile>
-        <!-- Testing profile #2 -->
         <profile>
         <!-- Be sure that: 
             1) you started Android Virtual Device (emulator) with:
@@ -208,7 +205,7 @@
                 You HAVE TO set ID of physical device as -Ddevice.serial.id=ID
                 You get that number from \adb devices -l' command.
             -->
-            <id>manual-test</id>
+            <id>android-manual</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
@@ -220,9 +217,7 @@
                         <configuration>
                             <skipTests>false</skipTests>
                             <includes>
-                                <include>**/AndroidDeviceSelectorRealDeviceTestCase.class</include>
-                                <include>**/AndroidEmulatorStartupAVDcreatedTestCase.class</include>
-                                <include>**/AndroidDeviceSelectorEmulatorRunningTestCase.class</include>
+                                <include>org/arquillian/droidium/container/manual/**</include>
                             </includes>
                         </configuration>
                     </plugin>

@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.arquillian.droidium.container.impl;
+package org.arquillian.droidium.container.automatic;
 
 import static org.junit.Assert.assertTrue;
 
