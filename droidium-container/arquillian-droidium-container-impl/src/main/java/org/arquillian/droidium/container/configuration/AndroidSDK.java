@@ -53,7 +53,7 @@ import java.util.logging.Logger;
  */
 public class AndroidSDK {
 
-    private AndroidManagedContainerConfiguration configuration;
+    private AndroidContainerConfiguration configuration;
 
     private static final Logger logger = Logger.getLogger(AndroidSDK.class.getName());
 
@@ -181,7 +181,7 @@ public class AndroidSDK {
      * @param configuration
      * @throws AndroidContainerConfigurationException
      */
-    public AndroidSDK(AndroidManagedContainerConfiguration configuration) throws AndroidContainerConfigurationException {
+    public AndroidSDK(AndroidContainerConfiguration configuration) throws AndroidContainerConfigurationException {
 
         Validate.notNull(configuration, "AndroidSdk configuration must be provided");
         Validate.isReadableDirectory(configuration.getHome(), "Unable to read Android SDK from directory "
@@ -214,11 +214,11 @@ public class AndroidSDK {
         this.configuration = configuration;
     }
 
-    public AndroidManagedContainerConfiguration getConfiguration() {
+    public AndroidContainerConfiguration getConfiguration() {
         return configuration;
     }
 
-    public void setConfiguration(AndroidManagedContainerConfiguration configuration) {
+    public void setConfiguration(AndroidContainerConfiguration configuration) {
         this.configuration = configuration;
     }
 

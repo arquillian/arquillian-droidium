@@ -18,7 +18,7 @@
     <!-- Parent -->
     <parent>
         <groupId>org.arquillian.extension</groupId>
-        <artifactId>arquillian-droidium-native</artifactId>
+        <artifactId>arquillian-droidium-native-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
@@ -42,19 +42,16 @@
             <groupId>org.arquillian.extension</groupId>
             <artifactId>arquillian-droidium-native-api</artifactId>
             <version>${project.parent.version}</version>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.arquillian.extension</groupId>
             <artifactId>arquillian-droidium-native-spi</artifactId>
             <version>${project.parent.version}</version>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.arquillian.extension</groupId>
             <artifactId>arquillian-droidium-native-impl</artifactId>
             <version>${project.parent.version}</version>
-            <scope>runtime</scope>
         </dependency>
     </dependencies>
 

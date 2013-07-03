@@ -18,9 +18,10 @@
 
     <!-- Parent -->
     <parent>
-        <groupId>org.jboss</groupId>
-        <artifactId>jboss-parent</artifactId>
-        <version>10</version>
+        <groupId>org.arquillian.droidium</groupId>
+        <artifactId>arquillian-droidium-parent</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <!-- Artifact Configuration -->

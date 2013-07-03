@@ -25,15 +25,7 @@
 
     <artifactId>arquillian-droidium-container-build-config</artifactId>
     <name>Arquillian Droidium Container Build Configuration</name>
-    <description>Arquillian Droidium Container Build Configuration</description>
-
-    <!-- Licenses -->
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>     
+    <description>Arquillian Droidium Container Build Configuration</description> 
     
     <!-- Build -->
     <build>

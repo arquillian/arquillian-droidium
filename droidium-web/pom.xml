@@ -49,6 +49,7 @@
         <version.mockito>1.9.5</version.mockito>
     </properties>
 
+    <!-- Build -->
     <build>
         <plugins>
             <!-- Checkstyle -->

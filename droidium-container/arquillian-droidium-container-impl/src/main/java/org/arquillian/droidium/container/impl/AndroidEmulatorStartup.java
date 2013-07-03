@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 import org.arquillian.droidium.container.api.AndroidBridge;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
-import org.arquillian.droidium.container.configuration.AndroidManagedContainerConfiguration;
+import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Command;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
@@ -85,7 +85,7 @@ public class AndroidEmulatorStartup {
     private Instance<ProcessExecutor> executor;
 
     @Inject
-    private Instance<AndroidManagedContainerConfiguration> configuration;
+    private Instance<AndroidContainerConfiguration> configuration;
 
     @Inject
     private Instance<AndroidSDK> androidSDK;
@@ -98,7 +98,7 @@ public class AndroidEmulatorStartup {
             throw new IllegalStateException("Android debug bridge must be connected in order to spawn the emulator");
         }
 
-        AndroidManagedContainerConfiguration configuration = this.configuration.get();
+        AndroidContainerConfiguration configuration = this.configuration.get();
         AndroidDevice emulator = null;
 
         CountDownWatch countdown = new CountDownWatch(configuration.getEmulatorBootupTimeoutInSeconds(), TimeUnit.SECONDS);
@@ -137,7 +137,7 @@ public class AndroidEmulatorStartup {
     private Process startEmulator(ProcessExecutor executor) throws AndroidExecutionException {
 
         AndroidSDK sdk = this.androidSDK.get();
-        AndroidManagedContainerConfiguration configuration = this.configuration.get();
+        AndroidContainerConfiguration configuration = this.configuration.get();
 
         logger.log(Level.INFO, configuration.toString());
 

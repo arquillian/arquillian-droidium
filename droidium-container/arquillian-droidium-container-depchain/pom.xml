@@ -28,14 +28,6 @@
     <packaging>pom</packaging>
     <name>Arquillian Droidium Container Dependency Chain</name>
     <description>Arquillian Droidium Container Dependency Chain</description>
-
-    <!-- Licenses -->
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>     
     
     <!-- Developers -->
     <developers>

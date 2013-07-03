@@ -29,7 +29,7 @@ import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidDeviceSelector;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.api.IdentifierGenerator;
-import org.arquillian.droidium.container.configuration.AndroidManagedContainerConfiguration;
+import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Validate;
 import org.arquillian.droidium.container.spi.event.AndroidBridgeInitialized;
@@ -94,7 +94,7 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
     private Instance<AndroidBridge> androidBridge;
 
     @Inject
-    private Instance<AndroidManagedContainerConfiguration> configuration;
+    private Instance<AndroidContainerConfiguration> configuration;
 
     @Inject
     private Instance<AndroidSDK> androidSDK;

@@ -30,7 +30,7 @@ import java.util.List;
 
 import org.arquillian.droidium.container.AbstractAndroidTestTestBase;
 import org.arquillian.droidium.container.api.IdentifierGenerator;
-import org.arquillian.droidium.container.configuration.AndroidManagedContainerConfiguration;
+import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.impl.AndroidSDCardManagerImpl;
 import org.arquillian.droidium.container.impl.ProcessExecutor;
@@ -60,7 +60,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class AndroidSDCardManagerTestCase extends AbstractAndroidTestTestBase {
 
-    private AndroidManagedContainerConfiguration configuration;
+    private AndroidContainerConfiguration configuration;
 
     private AndroidSDK androidSDK;
 
@@ -113,12 +113,12 @@ public class AndroidSDCardManagerTestCase extends AbstractAndroidTestTestBase {
 
     @Test
     public void testGenerateTrueSDCardNull() {
-        configuration = new AndroidManagedContainerConfiguration();
+        configuration = new AndroidContainerConfiguration();
         setupSDCardConfiguration(configuration, null, SD_SIZE, SD_CARD_LABEL, true);
 
         androidSDK = new AndroidSDK(configuration);
 
-        bind(ApplicationScoped.class, AndroidManagedContainerConfiguration.class, configuration);
+        bind(ApplicationScoped.class, AndroidContainerConfiguration.class, configuration);
         bind(ApplicationScoped.class, AndroidSDK.class, androidSDK);
 
         fire(new AndroidSDCardCreate());
@@ -131,12 +131,12 @@ public class AndroidSDCardManagerTestCase extends AbstractAndroidTestTestBase {
 
     @Test
     public void testGenerateTrueSDCardNotNull() {
-        configuration = new AndroidManagedContainerConfiguration();
+        configuration = new AndroidContainerConfiguration();
         setupSDCardConfiguration(configuration, SD_PATH, SD_SIZE, SD_CARD_LABEL, true);
 
         androidSDK = new AndroidSDK(configuration);
 
-        bind(ApplicationScoped.class, AndroidManagedContainerConfiguration.class, configuration);
+        bind(ApplicationScoped.class, AndroidContainerConfiguration.class, configuration);
         bind(ApplicationScoped.class, AndroidSDK.class, androidSDK);
 
         fire(new AndroidSDCardCreate());
@@ -152,12 +152,12 @@ public class AndroidSDCardManagerTestCase extends AbstractAndroidTestTestBase {
 
         assertTrue("file of SD_PATH already exists!", new File(SD_PATH).createNewFile());
 
-        configuration = new AndroidManagedContainerConfiguration();
+        configuration = new AndroidContainerConfiguration();
         setupSDCardConfiguration(configuration, SD_PATH, SD_SIZE, SD_CARD_LABEL, true);
 
         androidSDK = new AndroidSDK(configuration);
 
-        bind(ApplicationScoped.class, AndroidManagedContainerConfiguration.class, configuration);
+        bind(ApplicationScoped.class, AndroidContainerConfiguration.class, configuration);
         bind(ApplicationScoped.class, AndroidSDK.class, androidSDK);
 
         fire(new AndroidSDCardCreate());
@@ -172,12 +172,12 @@ public class AndroidSDCardManagerTestCase extends AbstractAndroidTestTestBase {
 
     @Test
     public void testGenerateTrueSDCardNotNullSDCardDoesNotExists() {
-        configuration = new AndroidManagedContainerConfiguration();
+        configuration = new AndroidContainerConfiguration();
         setupSDCardConfiguration(configuration, SD_PATH, SD_SIZE, SD_CARD_LABEL, true);
 
         androidSDK = new AndroidSDK(configuration);
 
-        bind(ApplicationScoped.class, AndroidManagedContainerConfiguration.class, configuration);
+        bind(ApplicationScoped.class, AndroidContainerConfiguration.class, configuration);
         bind(ApplicationScoped.class, AndroidSDK.class, androidSDK);
 
         fire(new AndroidSDCardCreate());
@@ -190,12 +190,12 @@ public class AndroidSDCardManagerTestCase extends AbstractAndroidTestTestBase {
 
     @Test
     public void testGenerateFalseSDCardNull() {
-        configuration = new AndroidManagedContainerConfiguration();
+        configuration = new AndroidContainerConfiguration();
         setupSDCardConfiguration(configuration, null, SD_SIZE, SD_CARD_LABEL, false);
 
         androidSDK = new AndroidSDK(configuration);
 
-        bind(ApplicationScoped.class, AndroidManagedContainerConfiguration.class, configuration);
+        bind(ApplicationScoped.class, AndroidContainerConfiguration.class, configuration);
         bind(ApplicationScoped.class, AndroidSDK.class, androidSDK);
 
         fire(new AndroidSDCardCreate());
@@ -209,12 +209,12 @@ public class AndroidSDCardManagerTestCase extends AbstractAndroidTestTestBase {
 
         assertTrue("file of SD_PATH already exists!", new File(SD_PATH).createNewFile());
 
-        configuration = new AndroidManagedContainerConfiguration();
+        configuration = new AndroidContainerConfiguration();
         setupSDCardConfiguration(configuration, SD_PATH, SD_SIZE, SD_CARD_LABEL, false);
 
         androidSDK = new AndroidSDK(configuration);
 
-        bind(ApplicationScoped.class, AndroidManagedContainerConfiguration.class, configuration);
+        bind(ApplicationScoped.class, AndroidContainerConfiguration.class, configuration);
         bind(ApplicationScoped.class, AndroidSDK.class, androidSDK);
 
         fire(new AndroidSDCardCreate());
@@ -228,12 +228,12 @@ public class AndroidSDCardManagerTestCase extends AbstractAndroidTestTestBase {
 
         assertTrue("file of SD_PATH already exists!", !new File(SD_PATH).exists());
 
-        configuration = new AndroidManagedContainerConfiguration();
+        configuration = new AndroidContainerConfiguration();
         setupSDCardConfiguration(configuration, SD_PATH, SD_SIZE, SD_CARD_LABEL, false);
 
         androidSDK = new AndroidSDK(configuration);
 
-        bind(ApplicationScoped.class, AndroidManagedContainerConfiguration.class, configuration);
+        bind(ApplicationScoped.class, AndroidContainerConfiguration.class, configuration);
         bind(ApplicationScoped.class, AndroidSDK.class, androidSDK);
 
         fire(new AndroidSDCardCreate());
@@ -246,10 +246,10 @@ public class AndroidSDCardManagerTestCase extends AbstractAndroidTestTestBase {
     public void testDeleteSDCard() throws IOException {
         assertTrue("file of SD_PATH already exists!", new File(SD_PATH).createNewFile());
 
-        configuration = new AndroidManagedContainerConfiguration();
+        configuration = new AndroidContainerConfiguration();
         setupSDCardConfiguration(configuration, SD_PATH, SD_SIZE, SD_CARD_LABEL, true);
 
-        bind(ApplicationScoped.class, AndroidManagedContainerConfiguration.class, configuration);
+        bind(ApplicationScoped.class, AndroidContainerConfiguration.class, configuration);
 
         fire(new AndroidSDCardDelete());
 
@@ -259,7 +259,7 @@ public class AndroidSDCardManagerTestCase extends AbstractAndroidTestTestBase {
         assertTrue("File supposed to be deleted was not!", !new File(SD_PATH).exists());
     }
 
-    private AndroidManagedContainerConfiguration setupSDCardConfiguration(AndroidManagedContainerConfiguration config,
+    private AndroidContainerConfiguration setupSDCardConfiguration(AndroidContainerConfiguration config,
         String sdFileName, String sdSize, String sdLabel, boolean generated) {
         config.setSdCard(sdFileName);
         config.setSdCardLabel(sdLabel);

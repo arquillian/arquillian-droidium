@@ -12,6 +12,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
+    <!-- Model Version -->
+    <modelVersion>4.0.0</modelVersion>    
+
     <!-- Parent -->
     <parent>
         <groupId>org.arquillian.container</groupId>
@@ -19,9 +22,6 @@
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../arquillian-droidium-container-build/pom.xml</relativePath>
     </parent>
-
-    <!-- Model Version -->
-    <modelVersion>4.0.0</modelVersion>
 
     <!-- Artifact Configuration -->
     <artifactId>arquillian-droidium-container-impl</artifactId>
@@ -79,7 +79,7 @@
             <artifactId>ddmlib</artifactId>
         </dependency>
 
-        <!-- test dependencies -->
+        <!-- Test dependencies -->
         <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
             <artifactId>arquillian-junit-standalone</artifactId>
@@ -125,6 +125,7 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Other dependencies -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
@@ -137,10 +138,10 @@
         </dependency>
     </dependencies>
 
+    <!-- Profiles -->
     <profiles>
         <profile>
-            <!-- By default, tests are skipped, use "testing" profiles to
-                trigger tests. -->
+            <!-- By default, tests are skipped, use "testing" profiles to trigger tests. -->
             <id>default</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -157,8 +158,7 @@
                 </plugins>
             </build>
         </profile>
-        <!-- Testing profile #1
-            excludes tests which need tester manual interaction-->
+        <!-- Testing profile #1 excludes tests which need tester's manual interaction. -->
         <profile>
             <id>test</id>
             <activation>
@@ -186,6 +186,7 @@
             </build>
         </profile>
         <!-- Testing profile #2 -->
+        <profile>
         <!-- Be sure that: 
             1) you started Android Virtual Device (emulator) with:
                 a) AVD name test01
@@ -205,9 +206,8 @@
                 Console port can be supressed by setting -Demulator.to.run.console.port=your_value
             Regarding of 3)
                 You HAVE TO set ID of physical device as -Ddevice.serial.id=ID
-                You get that number from adb devices -l
+                You get that number from \adb devices -l' command.
             -->
-        <profile>
             <id>manual-test</id>
             <activation>
                 <activeByDefault>false</activeByDefault>

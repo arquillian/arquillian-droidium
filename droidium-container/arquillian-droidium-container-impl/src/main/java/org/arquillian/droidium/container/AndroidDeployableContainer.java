@@ -21,7 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.arquillian.droidium.container.api.IdentifierGenerator;
-import org.arquillian.droidium.container.configuration.AndroidManagedContainerConfiguration;
+import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.impl.ProcessExecutor;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStart;
@@ -52,13 +52,13 @@ import org.jboss.shrinkwrap.descriptor.api.Descriptor;
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  */
-public class AndroidDeployableContainer implements DeployableContainer<AndroidManagedContainerConfiguration> {
+public class AndroidDeployableContainer implements DeployableContainer<AndroidContainerConfiguration> {
 
     private static final Logger logger = Logger.getLogger(AndroidDeployableContainer.class.getSimpleName());
 
     @Inject
     @ContainerScoped
-    private InstanceProducer<AndroidManagedContainerConfiguration> configuration;
+    private InstanceProducer<AndroidContainerConfiguration> configuration;
 
     @Inject
     @ContainerScoped
@@ -91,8 +91,8 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidMa
     private Event<AndroidProtocolDescriptionEvent> androidProtocolDescriptionEvent;
 
     @Override
-    public Class<AndroidManagedContainerConfiguration> getConfigurationClass() {
-        return AndroidManagedContainerConfiguration.class;
+    public Class<AndroidContainerConfiguration> getConfigurationClass() {
+        return AndroidContainerConfiguration.class;
     }
 
     @Override
@@ -104,7 +104,7 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidMa
     }
 
     @Override
-    public void setup(AndroidManagedContainerConfiguration configuration) {
+    public void setup(AndroidContainerConfiguration configuration) {
         this.configuration.set(configuration);
         this.androidSDK.set(new AndroidSDK(this.configuration.get()));
         this.idGenerator.set(new AndroidIdentifierGenerator());

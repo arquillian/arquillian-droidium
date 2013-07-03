@@ -25,7 +25,7 @@
 
     <!-- Artifact Configuration -->
     <groupId>org.arquillian.extension</groupId>
-    <artifactId>arquillian-droidium-native</artifactId>
+    <artifactId>arquillian-droidium-native-parent</artifactId>
     <packaging>pom</packaging>
     <name>Arquillian Droidium Native Parent</name>
     <description>Arquillian Droidium Native Parent</description>

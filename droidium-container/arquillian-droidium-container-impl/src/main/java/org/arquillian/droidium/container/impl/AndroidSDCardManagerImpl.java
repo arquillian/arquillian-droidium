@@ -27,7 +27,7 @@ import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.api.AndroidSDCardManager;
 import org.arquillian.droidium.container.api.IdentifierGenerator;
 import org.arquillian.droidium.container.api.SDCard;
-import org.arquillian.droidium.container.configuration.AndroidManagedContainerConfiguration;
+import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Command;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardCreate;
@@ -63,7 +63,7 @@ public class AndroidSDCardManagerImpl implements AndroidSDCardManager {
     private static final Logger logger = Logger.getLogger(AndroidSDCardManagerImpl.class.getName());
 
     @Inject
-    private Instance<AndroidManagedContainerConfiguration> configuration;
+    private Instance<AndroidContainerConfiguration> configuration;
 
     @Inject
     private Instance<AndroidSDK> androidSDK;
@@ -87,7 +87,7 @@ public class AndroidSDCardManagerImpl implements AndroidSDCardManager {
 
     public void createSDCard(@Observes AndroidSDCardCreate event) throws AndroidExecutionException {
 
-        AndroidManagedContainerConfiguration configuration = this.configuration.get();
+        AndroidContainerConfiguration configuration = this.configuration.get();
 
         AndroidSDCard sdCard = new AndroidSDCard();
         sdCard.setFileName(configuration.getSdCard());

@@ -32,7 +32,7 @@ import org.arquillian.droidium.container.api.AndroidBridge;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.api.IdentifierGenerator;
-import org.arquillian.droidium.container.configuration.AndroidManagedContainerConfiguration;
+import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.impl.AndroidBridgeConnector;
 import org.arquillian.droidium.container.impl.AndroidDeviceSelectorImpl;
@@ -73,7 +73,7 @@ public class AndroidEmulatorStartupAVDtoBeCreatedTestCase extends AbstractContai
 
     private String AVD_GENERATED_NAME = "ab1be336-d30f-4d3c-90de-56bdaf198a3e";
 
-    private AndroidManagedContainerConfiguration configuration;
+    private AndroidContainerConfiguration configuration;
 
     private AndroidSDK androidSDK;
 
@@ -93,7 +93,7 @@ public class AndroidEmulatorStartupAVDtoBeCreatedTestCase extends AbstractContai
 
     @Before
     public void setup() {
-        configuration = new AndroidManagedContainerConfiguration();
+        configuration = new AndroidContainerConfiguration();
         configuration.setAbi("armeabi");
         configuration.setEmulatorBootupTimeoutInSeconds(300);
         androidSDK = new AndroidSDK(configuration);
@@ -103,7 +103,7 @@ public class AndroidEmulatorStartupAVDtoBeCreatedTestCase extends AbstractContai
 
         Mockito.when(idGenerator.getIdentifier(IdentifierType.AVD.getClass())).thenReturn(AVD_GENERATED_NAME);
 
-        bind(ContainerScoped.class, AndroidManagedContainerConfiguration.class, configuration);
+        bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration);
         bind(ContainerScoped.class, AndroidSDK.class, androidSDK);
         bind(ContainerScoped.class, IdentifierGenerator.class, idGenerator);
         bind(ContainerScoped.class, ProcessExecutor.class, processorExecutor);

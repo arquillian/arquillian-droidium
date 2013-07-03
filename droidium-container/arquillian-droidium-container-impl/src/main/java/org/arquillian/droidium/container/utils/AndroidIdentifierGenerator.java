@@ -26,16 +26,19 @@ import java.util.UUID;
 
 import org.arquillian.droidium.container.api.IdentifierGenerator;
 import org.arquillian.droidium.container.api.IdentifierGeneratorException;
+import org.arquillian.droidium.container.configuration.Validate;
 
 /**
- * Generates random identifier.
+ * Generates random identifier for AVD, SD Card or label of SD Card.
+ *
+ * Please consult {@link IdentifierType} for possible identifier options.
  *
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
 public class AndroidIdentifierGenerator implements IdentifierGenerator {
 
-    private static String sdCardSuffix = ".img";
+    private String sdCardSuffix = ".img";
 
     @Override
     public String getIdentifier(Class<?> identifierType) {
@@ -57,18 +60,15 @@ public class AndroidIdentifierGenerator implements IdentifierGenerator {
      * Sets suffix of SD card file name.
      *
      * @param suffix suffix of SD card file
-     * @return instance of this {@link AndroidIdentifierGenerator}
+     * @return this
+     * @throws IllegalArgumentException if {@code suffix} is null object or empty string
      */
     public AndroidIdentifierGenerator setSdCardSuffix(String suffix) {
-        if (suffix == null || suffix.trim().equals("")) {
-            return this;
-        }
+        Validate.notNullOrEmpty(suffix, "suffix to set for SD card can not be a null object nor an empty string.");
 
         if (!suffix.startsWith(".")) {
-            suffix = "." + suffix;
+            sdCardSuffix = "." + suffix;
         }
-
-        sdCardSuffix = suffix;
 
         return this;
     }

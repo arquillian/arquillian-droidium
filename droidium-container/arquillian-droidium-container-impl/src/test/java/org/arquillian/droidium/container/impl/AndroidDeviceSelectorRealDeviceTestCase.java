@@ -29,7 +29,7 @@ import java.util.List;
 import org.arquillian.droidium.container.api.AndroidBridge;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
-import org.arquillian.droidium.container.configuration.AndroidManagedContainerConfiguration;
+import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.impl.AndroidBridgeConnector;
 import org.arquillian.droidium.container.impl.AndroidDeviceSelectorImpl;
@@ -54,7 +54,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class AndroidDeviceSelectorRealDeviceTestCase extends AbstractContainerTestBase {
 
-    private AndroidManagedContainerConfiguration configuration;
+    private AndroidContainerConfiguration configuration;
 
     private String PHYSICAL_DEVICE_SERIAL_ID = System.getProperty("device.serial.id");
     
@@ -68,14 +68,14 @@ public class AndroidDeviceSelectorRealDeviceTestCase extends AbstractContainerTe
 
     @Before
     public void setup() {
-        configuration = new AndroidManagedContainerConfiguration();
+        configuration = new AndroidContainerConfiguration();
         configuration.setForceNewBridge(true);
         configuration.setSerialId(PHYSICAL_DEVICE_SERIAL_ID);
         androidSDK = new AndroidSDK(configuration);
 
         getManager().getContext(ContainerContext.class).activate("doesnotmatter");
 
-        bind(ContainerScoped.class, AndroidManagedContainerConfiguration.class, configuration);
+        bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration);
         bind(ContainerScoped.class, AndroidSDK.class, androidSDK);
     }
 

@@ -28,7 +28,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
 import org.arquillian.droidium.container.api.AndroidExecutionException;
-import org.arquillian.droidium.container.configuration.AndroidManagedContainerConfiguration;
+import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Command;
 import org.arquillian.droidium.container.configuration.Validate;
@@ -68,7 +68,7 @@ public class AndroidVirtualDeviceManager {
     private static final Logger logger = Logger.getLogger(AndroidVirtualDeviceManager.class.getName());
 
     @Inject
-    private Instance<AndroidManagedContainerConfiguration> configuration;
+    private Instance<AndroidContainerConfiguration> configuration;
 
     @Inject
     private Instance<AndroidSDK> androidSDK;
@@ -90,7 +90,7 @@ public class AndroidVirtualDeviceManager {
 
     public void deleteAndroidVirtualDevice(@Observes AndroidVirtualDeviceDelete event) {
 
-        AndroidManagedContainerConfiguration configuration = this.configuration.get();
+        AndroidContainerConfiguration configuration = this.configuration.get();
 
         try {
             ProcessExecutor executor = this.executor.get();
@@ -115,7 +115,7 @@ public class AndroidVirtualDeviceManager {
 
         androidSDCardCreate.fire(new AndroidSDCardCreate());
 
-        AndroidManagedContainerConfiguration configuration = this.configuration.get();
+        AndroidContainerConfiguration configuration = this.configuration.get();
         AndroidSDK sdk = this.androidSDK.get();
         Validate.notNullOrEmpty(configuration.getSdSize(), "Memory SD card size must be defined");
 

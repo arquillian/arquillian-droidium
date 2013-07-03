@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
-import org.arquillian.droidium.container.configuration.AndroidManagedContainerConfiguration;
+import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStop;
 import org.arquillian.droidium.container.spi.event.AndroidEmulatorShuttedDown;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceDelete;
@@ -78,7 +78,7 @@ public class AndroidEmulatorShutdown {
     private static final Logger logger = Logger.getLogger(AndroidEmulatorShutdown.class.getName());
 
     @Inject
-    private Instance<AndroidManagedContainerConfiguration> configuration;
+    private Instance<AndroidContainerConfiguration> configuration;
 
     @Inject
     private Instance<AndroidDevice> androidDevice;
@@ -99,7 +99,7 @@ public class AndroidEmulatorShutdown {
 
         AndroidEmulator emulator = androidEmulator.get();
         AndroidDevice device = androidDevice.get();
-        AndroidManagedContainerConfiguration configuration = this.configuration.get();
+        AndroidContainerConfiguration configuration = this.configuration.get();
 
         if (emulator != null && device.isEmulator()) {
             final ProcessExecutor executor = this.executor.get();

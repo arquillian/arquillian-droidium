@@ -1,18 +1,18 @@
-= Arquillian Droidium extensions
+== Arquillian Droidium extensions
 
 This is the home of the following extensions for Arquillian testing platform:
 
-== Android Droidium container
+=== Android Droidium container
 
 Implementation of Arquillian container abstraction for Android devices.
 
-== Android Droidium Web
+=== Android Droidium Web
 
 Extension for supporting web testing for Droidium container. You need this 
 when you want to functionaly test your application on mobile devices.
 Web extension relies on Selenium project from where it takes Android server APK.
 
-== Android Droidium Native
+=== Android Droidium Native
 
 Extension for supporting testing of native applications for Droidium container. You 
 need this extension when you want to functionally test your native Android application.
@@ -22,14 +22,14 @@ from where it takes Selendroid server APK.
 Every extension has its own README and configuration documentation. You are 
 welcome to check them in their respective directories.
 
-== Proof-of-concept tests
+=== Proof-of-concept tests
 
 Test projects which are reflecting the very basic setup to bootstrap your 
-testing experience are in `tests` directory.
+testing experience are placed in `tests` directory.
 
-== Contact
+=== Contact
 
-This set of extensions are being developed as a part of Google Summer of code 2013.
+This set of extensions is being developed as a part of Google Summer of code 2013.
 
 You are welcome to check development blog of 
 

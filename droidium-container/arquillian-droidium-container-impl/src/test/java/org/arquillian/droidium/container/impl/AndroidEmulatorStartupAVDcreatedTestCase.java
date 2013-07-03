@@ -29,7 +29,7 @@ import java.util.List;
 import org.arquillian.droidium.container.api.AndroidBridge;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
-import org.arquillian.droidium.container.configuration.AndroidManagedContainerConfiguration;
+import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.impl.AndroidBridgeConnector;
 import org.arquillian.droidium.container.impl.AndroidDeviceSelectorImpl;
@@ -69,7 +69,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class AndroidEmulatorStartupAVDcreatedTestCase extends AbstractContainerTestBase {
 
-    private AndroidManagedContainerConfiguration configuration;
+    private AndroidContainerConfiguration configuration;
 
     private AndroidSDK androidSDK;
 
@@ -89,7 +89,7 @@ public class AndroidEmulatorStartupAVDcreatedTestCase extends AbstractContainerT
 
     @Before
     public void setup() {
-        configuration = new AndroidManagedContainerConfiguration();
+        configuration = new AndroidContainerConfiguration();
         configuration.setAvdName(EMULATOR_AVD_NAME);
         configuration.setConsolePort(EMULATOR_CONSOLE_PORT);
         androidSDK = new AndroidSDK(configuration);
@@ -97,7 +97,7 @@ public class AndroidEmulatorStartupAVDcreatedTestCase extends AbstractContainerT
 
         getManager().getContext(ContainerContext.class).activate("doesnotmatter");
 
-        bind(ContainerScoped.class, AndroidManagedContainerConfiguration.class, configuration);
+        bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration);
         bind(ContainerScoped.class, AndroidSDK.class, androidSDK);
         bind(ContainerScoped.class, ProcessExecutor.class, processExecutor);
     }

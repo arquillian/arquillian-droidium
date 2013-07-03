@@ -11,6 +11,8 @@
     language governing permissions and limitations under the License. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!-- Model Version -->
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Parent -->
@@ -21,16 +23,11 @@
         <relativePath>../arquillian-droidium-container-build/pom.xml</relativePath>
     </parent>
 
+    <!-- Artifact configuration -->
     <groupId>org.arquillian.extension</groupId>
     <artifactId>arquillian-droidium-multiple-containers</artifactId>
     <name>Arquillian Droidium Multiple Containers Extension</name>
     <description>Arquillian Droidium Multiple Containers Extension</description>
-    <packaging>jar</packaging>
-
-    <!-- Properties -->
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
     <!-- Dependency Management -->
     <dependencyManagement>

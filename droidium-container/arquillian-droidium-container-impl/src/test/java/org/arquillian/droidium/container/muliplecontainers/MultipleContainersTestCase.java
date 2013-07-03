@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.arquillian.droidium.container.AndroidDeployableContainer;
-import org.arquillian.droidium.container.configuration.AndroidManagedContainerConfiguration;
+import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.multiplecontainers.MultipleLocalContainersRegistry;
 import org.jboss.arquillian.config.descriptor.api.ArquillianDescriptor;
 import org.jboss.arquillian.container.spi.Container;
@@ -66,7 +66,7 @@ public class MultipleContainersTestCase extends AbstractContainerTestBase {
     @Mock
     private ServiceLoader serviceLoader;
 
-    private DeployableContainer<AndroidManagedContainerConfiguration> deployableContainer = new AndroidDeployableContainer();
+    private DeployableContainer<AndroidContainerConfiguration> deployableContainer = new AndroidDeployableContainer();
 
     private CommonDeployableContainer<ManagedContainerConfiguration> deployableJBossContainer = new ManagedDeployableContainer();
 

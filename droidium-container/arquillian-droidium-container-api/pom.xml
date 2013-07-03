@@ -12,6 +12,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
+    <!-- Model Version -->
+    <modelVersion>4.0.0</modelVersion>    
+
 	<!-- Parent -->
     <parent>
         <groupId>org.arquillian.container</groupId>
@@ -20,34 +23,23 @@
         <relativePath>../arquillian-droidium-container-build/pom.xml</relativePath>
     </parent>
 
-	<!-- Model Version -->
-    <modelVersion>4.0.0</modelVersion>
-
 	<!-- Artifact Configuration -->
     <artifactId>arquillian-droidium-container-api</artifactId>
     <name>Arquillian Droidium Container API</name>
-    <description>Arquillian Droidium Container API</description>
+    <description>Arquillian Droidium Container API</description> 
 
-    <!-- Licenses -->
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>    
-    
     <!-- Developers -->
     <developers>
-        <developer>
-            <name>Karel Piwko</name>
-            <email>kpiwko@redhat.com</email>
-        </developer>
         <developer>
             <name>Stefan Miklosovic</name>
             <email>smikloso@redhat.com</email>
         </developer>
+        <developer>
+            <name>Karel Piwko</name>
+            <email>kpiwko@redhat.com</email>
+        </developer>
     </developers>
-
+    
     <!-- Properties -->
     <properties>
         <version.com.android>r16</version.com.android>

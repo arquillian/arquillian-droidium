@@ -24,14 +24,6 @@
     <description>Arquillian Droidium Container Bill of Materials</description>
     <url>http://www.jboss.org/arquillian</url>
 
-    <!-- Licenses -->
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>
-
     <!-- SCM -->
     <scm>
         <connection>scm:git:git://git@github.com:arquillian/arquillian-droidium.git</connection>

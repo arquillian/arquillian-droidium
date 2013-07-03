@@ -1,10 +1,10 @@
-= Arquillian Droidium Web
+== Arquillian Droidium Web
 
 Arquillian Droidium Web plugin for Arquillian Droidium container provides necessary infrastructure 
 for container implementation needed for functional testing of web application on Android device.
 
 In a nutshell, the plugin installs https://code.google.com/p/selenium/downloads/detail?name=android-server-2.32.0.apk[Android server APK] 
-of the version you specify in configuration in `arquillian.xml` from Selenium project dynamically upon every test execution lifecycle and does 
+of the version you specify (configurable in `arquillian.xml`) from Selenium project dynamically upon every test execution lifecycle and does 
 port forwarding from localhost to Android device. Once done, when a tester injects WebDriver 
 instance into his tests, he uses normal WebDriver API to test web application he deployed 
 as `@Deployment` into ordinary (JBoss) AS container.
@@ -39,7 +39,7 @@ this extension - `droidium-web`.
 
 == Configuration properties
 
-==== androidServerApk
+==== serverApk
 ===== default: android-server.apk
 
 Sets path to Android server APK from Selenium project which is dynamically installed on target device for 

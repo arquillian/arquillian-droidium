@@ -28,9 +28,9 @@ import org.jboss.arquillian.container.spi.client.container.ContainerConfiguratio
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  */
-public class AndroidManagedContainerConfiguration implements ContainerConfiguration {
+public class AndroidContainerConfiguration implements ContainerConfiguration {
 
-    private static final Logger logger = Logger.getLogger(AndroidManagedContainerConfiguration.class.getName());
+    private static final Logger logger = Logger.getLogger(AndroidContainerConfiguration.class.getName());
 
     private boolean skip;
 
