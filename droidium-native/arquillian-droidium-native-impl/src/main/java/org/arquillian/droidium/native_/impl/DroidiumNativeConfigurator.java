@@ -85,8 +85,8 @@ public class DroidiumNativeConfigurator {
         for (ExtensionDef extensionDef : descriptor.getExtensions()) {
             if (ANDROID_DRONE_EXTENSION_NAME.equals(extensionDef.getExtensionName())) {
                 Map<String, String> properties = extensionDef.getExtensionProperties();
-                if (properties.containsKey("androidServerApk")) {
-                    configuration.setServerApk(new File(properties.get("androidServerApk")));
+                if (properties.containsKey("serverApk")) {
+                    configuration.setServerApk(new File(properties.get("serverApk")));
                 }
             }
         }
