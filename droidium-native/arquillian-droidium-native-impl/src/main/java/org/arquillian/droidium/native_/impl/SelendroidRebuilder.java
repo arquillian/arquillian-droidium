@@ -16,9 +16,12 @@
  */
 package org.arquillian.droidium.native_.impl;
 
+import java.io.Closeable;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -31,6 +34,7 @@ import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.impl.ProcessExecutor;
 import org.arquillian.droidium.native_.configuration.DroidiumNativeConfiguration;
 import org.arquillian.droidium.native_.configuration.Validate;
+import org.arquillian.droidium.native_.exception.SelendroidRebuilderException;
 import org.arquillian.droidium.native_.utils.Command;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -54,6 +58,16 @@ public class SelendroidRebuilder {
     private AndroidApplicationHelper androidApplicationHelper;
 
     private String applicationBasePackage;
+
+    /**
+     * String in AndroidManifest.xml for Selendroid server to be replaced with target package of application under test
+     */
+    private static final String selendroidPackageString = "io.selendroid.testapp";
+
+    /**
+     * Needs to be deleted from AndroidManifest.xml since such resource is not present and aapt dump fails because of this
+     */
+    private static final String ICON = "android:icon=\"@drawable/selenium_icon\"";
 
     /**
      *
@@ -84,42 +98,56 @@ public class SelendroidRebuilder {
      *
      * Changes AndroidManifest.xml to reflect application under test and repackages it.
      *
-     * @param selendroidWorkingCopy Selendroid working copy for making modifications
+     * @param selendroidWorkingCopy Selendroid working copy for AndroidManifest.xml substitution
      *
-     * @return modified Selendroid application which waits to be resigned
+     * @return modified Selendroid application to be resigned
      */
     @SuppressWarnings("resource")
     public File rebuild(File selendroidWorkingCopy) {
 
+        File toBeReplacedAndroidManifest = new File(workingDir, "AndroidManifestToBeReplaced.xml");
+        File finalAndroidManifest = new File(workingDir, "AndroidManifest.xml");
+        File dummyAPK = new File(workingDir, "dummy.apk");
+
+        // copying of AndroidManifest.xml from resources of the native plugin to working directory
+        FileOutputStream toBeReplacedAndroidManifestStream;
         try {
-
-            File toBeReplacedAndroidManifest = new File(workingDir, "AndroidManifestToBeReplaced.xml");
-            File finalAndroidManifest = new File(workingDir, "AndroidManifest.xml");
-            File dummyAPK = new File(workingDir, "dummy.apk");
-
-            // ugly hack for copying AndroidManifest.xml from resources to tmpDir
-            new FileOutputStream(toBeReplacedAndroidManifest.getAbsoluteFile())
-                .write(IOUtils.toByteArray(this.getClass().getClassLoader().getResourceAsStream("AndroidManifest.xml")));
-
-            filterManifestFile(toBeReplacedAndroidManifest, finalAndroidManifest);
-
-            // create dummy package in order to get compiled AndroidManifest.xml
-
-            createDummyAPK(dummyAPK, finalAndroidManifest);
-
-            // extract AndroidManifest.xml from that dummy.apk package and add it to selendroid working copy
-            Archive<?> dummyArchive = ShrinkWrap.createFromZipFile(JavaArchive.class, dummyAPK);
-            Archive<?> finalArchive = ShrinkWrap.createFromZipFile(JavaArchive.class, selendroidWorkingCopy);
-
-            finalArchive.delete("AndroidManifest.xml");
-            finalArchive.add(dummyArchive.get("AndroidManifest.xml").getAsset(), "AndroidManifest.xml");
-
-            File targetFile = new File(workingDir, AndroidApplicationHelper.getRandomAPKFileName());
-
-            return androidApplicationHelper.exportArchiveToFile(targetFile, finalArchive);
-        } catch (Exception ex) {
-            return null;
+            toBeReplacedAndroidManifestStream = new FileOutputStream(toBeReplacedAndroidManifest.getAbsoluteFile());
+        } catch (FileNotFoundException ex) {
+            throw new SelendroidRebuilderException();
         }
+
+        InputStream AndroidManifestStream = this.getClass().getClassLoader().getResourceAsStream("AndroidManifest.xml");
+
+        if (AndroidManifestStream == null) {
+            throw new SelendroidRebuilderException("class loader of " + this.getClass().getName() +
+                " could not find AndroidManifest.xml");
+        }
+
+        try {
+            toBeReplacedAndroidManifestStream.write(IOUtils.toByteArray(AndroidManifestStream));
+        } catch (IOException ex) {
+            throw new SelendroidRebuilderException("unable to write to " + toBeReplacedAndroidManifest.getAbsolutePath());
+        }
+
+        closeStream(toBeReplacedAndroidManifestStream);
+        closeStream(AndroidManifestStream);
+
+        filterManifestFile(toBeReplacedAndroidManifest, finalAndroidManifest);
+
+        // create dummy package in order to get compiled AndroidManifest.xml
+        createDummyAPK(dummyAPK, finalAndroidManifest);
+
+        // extract AndroidManifest.xml from that dummy.apk package and add it to Selendroid server working copy
+        Archive<?> dummyArchive = ShrinkWrap.createFromZipFile(JavaArchive.class, dummyAPK);
+        Archive<?> finalArchive = ShrinkWrap.createFromZipFile(JavaArchive.class, selendroidWorkingCopy);
+
+        finalArchive.delete("AndroidManifest.xml");
+        finalArchive.add(dummyArchive.get("AndroidManifest.xml").getAsset(), "AndroidManifest.xml");
+
+        File targetFile = new File(workingDir, AndroidApplicationHelper.getRandomAPKFileName());
+
+        return androidApplicationHelper.exportArchiveToFile(targetFile, finalArchive);
     }
 
     /**
@@ -152,14 +180,14 @@ public class SelendroidRebuilder {
         try {
             processExecutor.execute(createDummyPackage.getAsList().toArray(new String[0]));
         } catch (InterruptedException e) {
-            logger.severe("Command was interrupted: " + createDummyPackage.toString());
+            throw new SelendroidRebuilderException("Command was interrupted: " + createDummyPackage.toString());
         } catch (ExecutionException e) {
-            logger.severe("Command failed to execute: " + createDummyPackage.toString());
+            throw new SelendroidRebuilderException("Command failed to execute: " + createDummyPackage.toString());
         }
     }
 
     /**
-     * Replaces AndroidManifest.xml file which contains default testapp base package to use the propper one
+     * Replaces AndroidManifest.xml file which contains default test application base package to use the proper one
      *
      * @param toBeReplaced
      * @param finalManifest
@@ -167,12 +195,13 @@ public class SelendroidRebuilder {
     @SuppressWarnings("unchecked")
     private void filterManifestFile(File toBeReplaced, File finalManifest) {
         try {
-            List<String> oldManifest = FileUtils.readLines(toBeReplaced);
-            List<String> finalManifestList = Replacer.replace(oldManifest,
-                "org\\.openqa\\.selendroid\\.testapp", applicationBasePackage);
-            FileUtils.writeLines(finalManifest, finalManifestList);
+            List<String> manifest = FileUtils.readLines(toBeReplaced);
+            List<String> packageReplacement = Replacer.replace(manifest, selendroidPackageString, applicationBasePackage);
+            List<String> iconReplacement = Replacer.replace(packageReplacement, ICON, "");
+            FileUtils.writeLines(finalManifest, iconReplacement);
         } catch (IOException e) {
-            logger.severe(e.getMessage());
+            throw new SelendroidRebuilderException("unable to filter Android manifest file for string substitutions "
+                + "of target package and icon.");
         }
     }
 
@@ -183,17 +212,47 @@ public class SelendroidRebuilder {
      *
      */
     private static class Replacer {
-        public static List<String> replace(List<String> fileLines, String toReplace, String replacement) {
-            if (fileLines == null || fileLines.size() == 0) {
+
+        /**
+         * @param lines lines to filter for the replacement
+         * @param toReplace string to replace
+         * @param replacement string to replace {@code toReplace} with
+         * @return filtered {@code fileLines} after replacement
+         * @throws IllegalArgumentException if {@code toReplace} is null or empty, or if {@code replacement} is null, or if list
+         *         to be filtered is null
+         */
+        public static List<String> replace(List<String> lines, String toReplace, String replacement) {
+            Validate.notNullOrEmpty(toReplace, "String to replace can not be null object nor empty string!");
+            Validate.notNull(replacement, "String as a replacement can not be null object.");
+
+            Validate.notNull(lines, "List to be filtered for replacement of '"
+                + toReplace + "' for '" + replacement + "' can't be null object!");
+
+            if (lines.size() == 0) {
                 return null;
             }
 
-            List<String> afterReplace = new ArrayList<String>();
-            for (String line : fileLines) {
-                afterReplace.add(line.replaceAll(toReplace, replacement));
+            List<String> afterFilter = new ArrayList<String>();
+            for (String line : lines) {
+                afterFilter.add(line.replaceAll(toReplace, replacement));
             }
 
-            return afterReplace;
+            return afterFilter;
+        }
+    }
+
+    /**
+     * Closes a stream
+     *
+     * @param stream stream to be closed
+     */
+    private void closeStream(Closeable stream) {
+        try {
+            if (stream != null) {
+                stream.close();
+            }
+        } catch (IOException ignore) {
+
         }
     }
 }

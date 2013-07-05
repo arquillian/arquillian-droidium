@@ -16,6 +16,7 @@
  */
 package org.arquillian.droidium.native_.impl;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -34,6 +35,7 @@ import org.arquillian.droidium.container.impl.ProcessExecutor;
 import org.arquillian.droidium.native_.utils.APKIdentifierGenerator;
 import org.arquillian.droidium.native_.utils.Command;
 import org.arquillian.droidium.native_.utils.IdentifierType;
+import org.jboss.arquillian.container.spi.client.deployment.Validate;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 
@@ -68,7 +70,7 @@ public class AndroidApplicationHelper {
      */
     public String getApplicationMainActivity(File apk) {
         try {
-            List<String> results = processExecutor.execute(getAAPTCommand(apk).getAsList().toArray(new String[0]));
+            List<String> results = processExecutor.execute(getAAPTBadgingCommand(apk).getAsList().toArray(new String[0]));
             return parseProperty(results, "launchable-activity");
         } catch (InterruptedException e) {
             logger.severe("Process to get name of main application activity was interrupted.");
@@ -95,7 +97,7 @@ public class AndroidApplicationHelper {
      */
     public String getApplicationBasePackage(File apk) {
         try {
-            List<String> results = processExecutor.execute(getAAPTCommand(apk).getAsList().toArray(new String[0]));
+            List<String> results = processExecutor.execute(getAAPTBadgingCommand(apk).getAsList().toArray(new String[0]));
             return parseProperty(results, "package");
         } catch (InterruptedException e) {
             logger.severe("Process to get name of base application package was interrupted.");
@@ -133,18 +135,20 @@ public class AndroidApplicationHelper {
             }
         }
 
-        OutputStream out;
-        InputStream in;
+        final OutputStream out;
+        final InputStream in;
 
         try {
             out = new FileOutputStream(target);
             in = archive.as(ZipExporter.class).exportAsInputStream();
             write(in, out);
+            closeStream(in);
+            closeStream(out);
             return target;
-        } catch (FileNotFoundException e) {
-            logger.severe(e.getMessage());
-        } catch (IOException e) {
-            logger.severe(e.getMessage());
+        } catch (final FileNotFoundException ex) {
+            logger.severe(ex.getMessage());
+        } catch (final IOException ex) {
+            logger.severe(ex.getMessage());
         }
         return null;
     }
@@ -160,7 +164,7 @@ public class AndroidApplicationHelper {
      * @param apk
      * @return command which dumps badging from {@code apk}
      */
-    private Command getAAPTCommand(File apk) {
+    private Command getAAPTBadgingCommand(File apk) {
         Command command = new Command();
         command.add(androidSDK.getAaptPath())
             .add("dump")
@@ -198,13 +202,16 @@ public class AndroidApplicationHelper {
     }
 
     /**
-     * Writes {@code input} to {@code output}, closes both streams afterwards.
+     * Writes {@code input} to {@code output}
      *
      * @param input
      * @param output
      * @throws IOException
      */
     private void write(InputStream input, OutputStream output) throws IOException {
+        Validate.notNull(input, "InputStream to read from can not be null object!");
+        Validate.notNull(output, "OutputStream to write to can not be null object!");
+
         int read = 0;
         byte[] bytes = new byte[1024];
 
@@ -213,8 +220,22 @@ public class AndroidApplicationHelper {
         }
 
         output.flush();
-        input.close();
-        output.close();
     }
 
+    /**
+     * Closes a stream.
+     *
+     * @param stream stream to close
+     */
+    private void closeStream(Closeable stream) {
+        if (stream == null) {
+            return;
+        }
+        try {
+            stream.close();
+        } catch (final IOException ignore) {
+            // ignore
+        }
+        stream = null;
+    }
 }

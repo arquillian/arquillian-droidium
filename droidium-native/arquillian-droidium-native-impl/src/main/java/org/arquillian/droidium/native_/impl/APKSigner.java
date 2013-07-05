@@ -103,7 +103,7 @@ public class APKSigner implements Signer {
     }
 
     @Override
-    public void reSign(File toResign, File resigned) {
+    public void resign(File toResign, File resigned) {
         Archive<?> apk = ShrinkWrap.createFromZipFile(JavaArchive.class, toResign);
         apk.delete("META-INF");
         applicationHelper.exportArchiveToFile(toResign, apk);
@@ -131,8 +131,7 @@ public class APKSigner implements Signer {
 
     private String getDefaultKeyStorePath() {
         String separator = System.getProperty("file.separator");
-        return System.getProperty("user.home") + separator + ".android" + separator
-            + "debug.keystore";
+        return System.getProperty("user.home") + separator + ".android" + separator + "debug.keystore";
     }
 
     /**

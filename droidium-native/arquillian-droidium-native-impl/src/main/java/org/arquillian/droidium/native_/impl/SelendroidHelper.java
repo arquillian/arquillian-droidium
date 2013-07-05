@@ -38,7 +38,7 @@ import org.arquillian.droidium.native_.configuration.Validate;
 import org.arquillian.droidium.native_.utils.Command;
 
 /**
- * Provides various helper methods for Selendroid server.
+ * Starts and stops instrumentation of application under test, installs and uninstalls Selendroid server.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
@@ -68,10 +68,56 @@ public class SelendroidHelper {
     }
 
     /**
-     * Waits for Selendroid start. After installation and execution of instrumentation command, we repeatedly send http request
-     * to status page to get response code of 200 - server is up and running and we can proceed safely.
+     * Starts instrumentation of application under test.
+     *
+     * @param startApplicationInstrumentationCommand
+     * @param applicationBasePackage
      */
-    public void waitForServerHTTPStart() {
+    public void startInstrumentation(Command startApplicationInstrumentationCommand, String applicationBasePackage) {
+        try {
+            ServerMonkey monkey = new ServerMonkey(serverLogFile, applicationBasePackage);
+            androidDevice.executeShellCommand(startApplicationInstrumentationCommand.getAsString(), monkey);
+            waitUntilSelendroidServerInstallation(androidDevice, monkey);
+            waitUntilSelendroidServerCommunication();
+        } catch (IOException ex) {
+            throw new AndroidExecutionException(ex.getMessage());
+        }
+    }
+
+    /**
+     * Stops instrumentation of application under test.
+     *
+     * @param stopApplicationInstrumentationCommand
+     */
+    public void stopInstrumentation(Command stopApplicationInstrumentationCommand) {
+        androidDevice.executeShellCommand(stopApplicationInstrumentationCommand.getAsString());
+    }
+
+    /**
+     * Uninstalls application under test from Android device.
+     *
+     * @param applicationUninstallCommand
+     */
+    public void uninstallApplicationUnderTest(Command applicationUninstallCommand) {
+        androidDevice.executeShellCommand(applicationUninstallCommand.getAsString());
+    }
+
+    /**
+     * Uninstalls modified Selendroid server from Android device.
+     *
+     * @param uninstallSelendroidCommand
+     */
+    public void uninstallSelendroidServer(Command uninstallSelendroidCommand) {
+        androidDevice.executeShellCommand(uninstallSelendroidCommand.getAsString());
+    }
+
+    /**
+     * Waits for the start of Selendroid server.
+     *
+     * After installation and execution of instrumentation command, we repeatedly send HTTP request to status page to get
+     * response code of 200 - server is up and running and we can proceed safely to testing process.
+     */
+    private void waitUntilSelendroidServerCommunication() {
         HttpClient httpClient = new DefaultHttpClient();
 
         httpClient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, SOCKET_TIME_OUT_SECONDS * 1000);
@@ -105,53 +151,37 @@ public class SelendroidHelper {
     }
 
     /**
-     * Stop instrumentation.
+     * Waits until Selendroid server is started by looking at the output of "top" command on Android device.
      *
-     * @param stopApplicationInstrumentationCommand
+     * @param device
+     * @param monkey
      */
-    public void stopInstrumentation(Command stopApplicationInstrumentationCommand) {
-        androidDevice.executeShellCommand(stopApplicationInstrumentationCommand.getAsString());
-    }
+    private void waitUntilSelendroidServerInstallation(AndroidDevice device, ServerMonkey monkey) throws IOException {
 
-    /**
-     * Uninstalls application under test
-     *
-     * @param applicationUninstallCommand
-     */
-    public void uninstallApplicationUnderTest(Command applicationUninstallCommand) {
-        androidDevice.executeShellCommand(applicationUninstallCommand.getAsString());
-    }
+        logger.info("Starting Selendroid instrumentation on Android device.");
 
-    /**
-     * Uninstalls modified Selendroid server
-     *
-     * @param uninstallSelendroidCommand
-     */
-    public void uninstallSelendroid(Command uninstallSelendroidCommand) {
-        androidDevice.executeShellCommand(uninstallSelendroidCommand.getAsString());
-    }
-
-    /**
-     * Starts instrumentation of underlying application under test.
-     *
-     * @param startApplicationInstrumentationCommand
-     * @param applicationBasePackage
-     */
-    public void startInstrumentation(Command startApplicationInstrumentationCommand, String applicationBasePackage) {
-        try {
-            ServerMonkey monkey = new ServerMonkey(serverLogFile, applicationBasePackage);
-            androidDevice.executeShellCommand(startApplicationInstrumentationCommand.getAsString(), monkey);
-            waitUntilServerIsStarted(androidDevice, monkey);
-        } catch (IOException ex) {
-            throw new AndroidExecutionException(ex.getMessage());
+        for (int i = 0; i < 5; i++) {
+            device.executeShellCommand(TOP_CMD, monkey);
+            if (monkey.isActive()) {
+                return;
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+        throw new AndroidExecutionException("Unable to start Selendroid instrumentation on Android device.");
     }
 
     /**
+     * Checks if output lines from command on Android device contains package name of application.
+     *
      * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
      *
      */
     private static class ServerMonkey implements AndroidDeviceOutputReciever {
+
         private static final Logger logger = Logger.getLogger(ServerMonkey.class.getName());
 
         private final Writer output;
@@ -194,31 +224,6 @@ public class SelendroidHelper {
     }
 
     /**
-     * Waits until Selendroid is started by looking at the output of Android "top" command.
-     *
-     * @param device
-     * @param monkey
-     * @throws IOException
-     */
-    private void waitUntilServerIsStarted(AndroidDevice device, ServerMonkey monkey) throws IOException {
-
-        logger.info("Starting Selendroid instrumentation on Android device.");
-        for (int i = 0; i < 5; i++) {
-            device.executeShellCommand(TOP_CMD, monkey);
-            if (monkey.isActive()) {
-                return;
-            }
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        throw new AndroidExecutionException("Unable to start Selendroid instrumentation on Android device.");
-    }
-
-    /**
-     *
      * @return Selendroid URL where status code is got from.
      */
     private URI getSelendroidStatusURI() {

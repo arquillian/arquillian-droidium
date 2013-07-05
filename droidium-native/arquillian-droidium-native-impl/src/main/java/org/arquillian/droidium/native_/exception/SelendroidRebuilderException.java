@@ -14,31 +14,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.native_.api;
-
-import java.io.File;
+package org.arquillian.droidium.native_.exception;
 
 /**
- * Describes contract for signing files (packages).
- *
- * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
+ * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
-public interface Signer {
+public class SelendroidRebuilderException extends RuntimeException {
+
+    private static final long serialVersionUID = -8251730607652665504L;
 
     /**
-     * Signs file, usually APK package.
      *
-     * @param toSign
-     * @param signed
      */
-    void sign(File toSign, File signed);
+    public SelendroidRebuilderException() {
+        super();
+    }
 
     /**
-     * Resigns file, usually APK package.
-     *
-     * @param toResign
-     * @param resigned
+     * @param message
+     * @param cause
      */
-    void resign(File toResign, File resigned);
+    public SelendroidRebuilderException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    /**
+     * @param message
+     */
+    public SelendroidRebuilderException(String message) {
+        super(message);
+    }
+
+    /**
+     * @param cause
+     */
+    public SelendroidRebuilderException(Throwable cause) {
+        super(cause);
+    }
+
 }
