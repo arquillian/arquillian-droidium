@@ -21,12 +21,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.impl.ProcessExecutor;
 import org.arquillian.droidium.native_.api.Signer;
 import org.arquillian.droidium.native_.configuration.DroidiumNativeConfiguration;
 import org.arquillian.droidium.native_.configuration.Validate;
+import org.arquillian.droidium.native_.exception.APKSignerException;
 import org.arquillian.droidium.native_.utils.Command;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -52,8 +52,11 @@ public class APKSigner implements Signer {
 
     /**
      *
+     * @param processExecutor
      * @param androidSDK
-     * @throws IllegalArgumentException when {@code androidSDK} is null
+     * @param droneConfiguration
+     * @param applicationHelper
+     * @throws IllegalArgumentException when some of arguments is null
      */
     public APKSigner(ProcessExecutor processExecutor, AndroidSDK androidSDK, DroidiumNativeConfiguration droneConfiguration,
         AndroidApplicationHelper applicationHelper)
@@ -93,12 +96,10 @@ public class APKSigner implements Signer {
 
         try {
             processExecutor.execute(jarSignerCommand.getAsList().toArray(new String[0]));
-        } catch (InterruptedException e) {
-            logger.log(Level.INFO, "Signing process was interrupted.");
-            throw new RuntimeException(e.getMessage());
-        } catch (ExecutionException e) {
-            logger.log(Level.INFO, "Unable to sign package, signing process failed.");
-            throw new RuntimeException(e.getMessage());
+        } catch (InterruptedException ex) {
+            throw new APKSignerException("Signing process was interrupted.", ex);
+        } catch (ExecutionException ex) {
+            throw new APKSignerException("Unable to sign package, signing process failed.", ex);
         }
     }
 
@@ -123,7 +124,7 @@ public class APKSigner implements Signer {
         if (!keyStoreCreator.keyStoreExists(droneConfiguration.getKeystore())) {
             File defaultKeyStore = new File(getDefaultKeyStorePath());
             if (!keyStoreCreator.keyStoreExists(defaultKeyStore)) {
-                throw new AndroidExecutionException("Default keystore does not exist! No key store to use!");
+                throw new APKSignerException("Default keystore does not exist! No key store to use!");
             }
             droneConfiguration.setKeystore(defaultKeyStore);
         }
@@ -140,7 +141,7 @@ public class APKSigner implements Signer {
      * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>o
      *
      */
-    private class KeyStoreCreator {
+    private final class KeyStoreCreator {
 
         /**
          * Checks if {@code keystore} exist.
@@ -195,7 +196,7 @@ public class APKSigner implements Signer {
             try {
                 processExecutor.execute(createKeyStoreCommand.getAsList().toArray(new String[0]));
             } catch (InterruptedException e) {
-                logger.severe("Execution of keystore was interrupted.");
+                logger.severe("Creation of keystore was interrupted.");
             } catch (ExecutionException e) {
                 logger.severe("Unable to create keystore, execution exception occured.");
             }

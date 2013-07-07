@@ -235,7 +235,8 @@ public class AndroidApplicationHelper {
             stream.close();
         } catch (final IOException ignore) {
             // ignore
+        } finally {
+            stream = null;
         }
-        stream = null;
     }
 }

@@ -10,41 +10,33 @@
     OF ANY KIND, either express or implied. See the License for the specific 
     language governing permissions and limitations under the License. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <!-- Model Version -->
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Parent -->
     <parent>
-        <groupId>org.arquillian.droidium</groupId>
-        <artifactId>arquillian-droidium-parent</artifactId>
+        <groupId>org.arquillian.extension</groupId>
+        <artifactId>arquillian-droidium-web-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <!-- Artifact Configuration -->
-    <groupId>org.arquillian.extension</groupId>
-    <artifactId>arquillian-droidium-web-parent</artifactId>
-    <packaging>pom</packaging>
-    <name>Arquillian Droidium Web Parent</name>
-    <description>Arquillian Droidium Web Parent</description>
+    <artifactId>arquillian-droidium-web-build-config</artifactId>
+    <name>Arquillian Droidium Web Build Config</name>
+    <description>Arquillian Droidium Web Build Config</description>
 
-    <!-- Developers -->
-    <developers>
-        <developer>
-            <name>Stefan Miklosovic</name>
-            <email>smikloso@redhat.com</email>
-        </developer>
-    </developers>
-
-    <!-- Modules -->
-    <modules>
-        <module>arquillian-droidium-web-build-config</module>
-        <module>arquillian-droidium-web-build</module>
-        <module>arquillian-droidium-web-spi</module>
-        <module>arquillian-droidium-web-impl</module>
-        <module>arquillian-droidium-web-depchain</module>
-    </modules>
+    <!-- Build -->
+    <build>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav-jackrabbit</artifactId>
+                <version>1.0</version>
+            </extension>
+        </extensions>
+    </build>
 
 </project>

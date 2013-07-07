@@ -14,16 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.native_.event;
+package org.arquillian.droidium.web.spi;
 
 import org.arquillian.droidium.container.spi.event.DroidiumExtensionConfigured;
 
 /**
- * Event representing that an Android Drone extension was configured.
+ * Event representing that Droidium for web was configured.
  *
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
-public class DroidiumNativeConfigured extends DroidiumExtensionConfigured {
+public class DroidiumWebConfigured extends DroidiumExtensionConfigured {
 
 }

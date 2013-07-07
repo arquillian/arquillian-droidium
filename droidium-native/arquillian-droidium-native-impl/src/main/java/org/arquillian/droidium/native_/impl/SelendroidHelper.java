@@ -59,7 +59,13 @@ public class SelendroidHelper {
 
     private static final int NUM_CONNECTION_RETIRES = 5;
 
-    public SelendroidHelper(AndroidDevice androidDevice, File serverLogFile) {
+    /**
+     *
+     * @param androidDevice
+     * @param serverLogFile
+     * @throws IllegalArgumentException is either of arguments is null object
+     */
+    public SelendroidHelper(AndroidDevice androidDevice, File serverLogFile) throws IllegalArgumentException {
         Validate.notNull(androidDevice, "Android Device for SelendroidHelper can't be null object!");
         Validate.notNull(serverLogFile, "Server log file for SelendroidHelper can't be null object!");
 
@@ -224,7 +230,7 @@ public class SelendroidHelper {
     }
 
     /**
-     * @return Selendroid URL where status code is got from.
+     * @return Selendroid server URL where status code is got from.
      */
     private URI getSelendroidStatusURI() {
         try {

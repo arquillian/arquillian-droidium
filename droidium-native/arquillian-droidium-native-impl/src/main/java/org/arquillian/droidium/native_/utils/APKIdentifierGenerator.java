@@ -29,7 +29,7 @@ import org.arquillian.droidium.container.api.IdentifierGeneratorException;
  */
 public class APKIdentifierGenerator implements IdentifierGenerator {
 
-    private static String apkSuffix = ".apk";
+    private static final String apkSuffix = ".apk";
 
     @Override
     public String getIdentifier(Class<?> identifierType) throws IdentifierGeneratorException {

@@ -14,16 +14,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.native_.utils;
+package org.arquillian.droidium.native_.exception;
 
 /**
- *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
-public enum IdentifierType {
-    APK {
-    },
-    FILE {
+public class APKSignerException extends RuntimeException {
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 5135480339532884887L;
+
+    /**
+     *
+     */
+    public APKSignerException() {
     }
+
+    /**
+     * @param message
+     */
+    public APKSignerException(String message) {
+        super(message);
+    }
+
+    /**
+     * @param cause
+     */
+    public APKSignerException(Throwable cause) {
+        super(cause);
+    }
+
+    /**
+     * @param message
+     * @param cause
+     */
+    public APKSignerException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }

@@ -14,16 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.native_.event;
-
-import org.arquillian.droidium.container.spi.event.DroidiumExtensionConfigured;
+package org.arquillian.droidium.web.spi;
 
 /**
- * Event representing that an Android Drone extension was configured.
+ * Event representing and Android Web Driver Hub on device is running and ports are redirected.
  *
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
-public class DroidiumNativeConfigured extends DroidiumExtensionConfigured {
+public class AndroidServerInstalled {
 
 }

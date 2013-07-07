@@ -29,7 +29,7 @@
         <!-- Configuration of JBoss AS container adapter. -->
         <container qualifier="jbossas">
             <configuration>
-                <property name="jbossHome">${jboss.home}</property>
+                <property name="jbossHome">${basedir}/target/jboss-as-7.1.1.Final</property>
                 <property name="adapterImplClass">org.jboss.as.arquillian.container.managed.ManagedDeployableContainer</property>
             </configuration>
         </container>

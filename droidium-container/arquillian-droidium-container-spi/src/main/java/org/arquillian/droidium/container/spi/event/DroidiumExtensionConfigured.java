@@ -1,7 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2012, Red Hat Middleware LLC, and individual contributors
- * by the @authors tag. See the copyright.txt in the distribution for a
+ * Copyright 2012 Red Hat Inc. and/or its affiliates and other contributors
+ * as indicated by the @authors tag. All rights reserved.
+ * See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,16 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.native_.event;
-
-import org.arquillian.droidium.container.spi.event.DroidiumExtensionConfigured;
+package org.arquillian.droidium.container.spi.event;
 
 /**
- * Event representing that an Android Drone extension was configured.
+ * Fired subclass of this class signals that underlying extension
+ * from where that subclass is fired is fully configured from arquillian.xml.
  *
- * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
- *
+ * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  */
-public class DroidiumNativeConfigured extends DroidiumExtensionConfigured {
+public class DroidiumExtensionConfigured {
 
 }

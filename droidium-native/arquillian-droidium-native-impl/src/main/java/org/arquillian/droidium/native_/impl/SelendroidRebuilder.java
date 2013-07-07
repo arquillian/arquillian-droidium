@@ -247,12 +247,15 @@ public class SelendroidRebuilder {
      * @param stream stream to be closed
      */
     private void closeStream(Closeable stream) {
+        if (stream == null) {
+            return;
+        }
         try {
-            if (stream != null) {
-                stream.close();
-            }
+            stream.close();
         } catch (IOException ignore) {
-
+            // ignore
+        } finally {
+            stream = null;
         }
     }
 }

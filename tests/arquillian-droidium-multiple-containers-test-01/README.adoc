@@ -4,7 +4,10 @@ Tests basic scenario when you have Android device and JBoss AS container adapter
 
 You have to specify these configuration parameters once you test, the tests will fail otherwise.
 
-`mvn clean test -Dname.avd=name-of-avd -Dhome.jboss=home-of-jboss`
+`mvn clean test -Dname.avd=name-of-avd`
 
 * `name.avd` - name of AVD you want to use while testing
-* `home.jboss` - installation directory of your JBoss AS 7.1.1.
+
+JBoss AS container is automatically downloaded for you into `target` so you do not have to 
+manage your JBoss instance on your own. Please be sure there is not any JBoss AS container already 
+running before execution of tests.

@@ -28,7 +28,7 @@ import java.util.StringTokenizer;
  */
 public class Command {
 
-    List<String> command;
+    private List<String> command;
 
     public Command() {
         command = new ArrayList<String>();

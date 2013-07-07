@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- JBoss, Home of Professional Open Source Copyright 2012, Red Hat, Inc. 
+<!-- JBoss, Home of Professional Open Source Copyright 2013, Red Hat, Inc. 
     and/or its affiliates, and individual contributors by the @authors tag. See 
     the copyright.txt in the distribution for a full listing of individual contributors. 
     Licensed under the Apache License, Version 2.0 (the "License"); you may not 
@@ -17,18 +17,16 @@
 
     <!-- Parent -->
     <parent>
-        <groupId>org.arquillian.droidium</groupId>
-        <artifactId>arquillian-droidium-parent</artifactId>
+        <groupId>org.arquillian.extension</groupId>
+        <artifactId>arquillian-droidium-web-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <!-- Artifact Configuration -->
-    <groupId>org.arquillian.extension</groupId>
-    <artifactId>arquillian-droidium-web-parent</artifactId>
-    <packaging>pom</packaging>
-    <name>Arquillian Droidium Web Parent</name>
-    <description>Arquillian Droidium Web Parent</description>
+    <artifactId>arquillian-droidium-web-depchain</artifactId>
+    <name>Arquillian Droidium Web Depchain</name>
+    <description>Arquillian Droidium Web Depchain</description>
 
     <!-- Developers -->
     <developers>
@@ -38,13 +36,18 @@
         </developer>
     </developers>
 
-    <!-- Modules -->
-    <modules>
-        <module>arquillian-droidium-web-build-config</module>
-        <module>arquillian-droidium-web-build</module>
-        <module>arquillian-droidium-web-spi</module>
-        <module>arquillian-droidium-web-impl</module>
-        <module>arquillian-droidium-web-depchain</module>
-    </modules>
+    <!-- Dependencies -->
+    <dependencies>
+        <dependency>
+            <groupId>org.arquillian.extension</groupId>
+            <artifactId>arquillian-droidium-web-spi</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.arquillian.extension</groupId>
+            <artifactId>arquillian-droidium-web-impl</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>

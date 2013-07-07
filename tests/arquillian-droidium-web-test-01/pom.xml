@@ -183,6 +183,35 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.eclipse.m2e</groupId>
+                <artifactId>lifecycle-mapping</artifactId>
+                <configuration>
+                    <lifecycleMappingMetadata>
+                        <pluginExecutions>
+                            <pluginExecution>
+                                <pluginExecutionFilter>
+                                    <groupId>
+                                        org.apache.maven.plugins
+                                    </groupId>
+                                    <artifactId>
+                                        maven-dependency-plugin
+                                    </artifactId>
+                                    <versionRange>
+                                        [2.1,)
+                                    </versionRange>
+                                    <goals>
+                                        <goal>unpack</goal>
+                                    </goals>
+                                </pluginExecutionFilter>
+                                <action>
+                                    <ignore></ignore>
+                                </action>
+                            </pluginExecution>
+                        </pluginExecutions>
+                    </lifecycleMappingMetadata>
+                </configuration>
+            </plugin>
         </plugins>
         <!-- for filtering properties from this pom.xml into arquillian.xml -->
         <testResources>
@@ -224,8 +253,6 @@
                 <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
-                <!-- Where is your JBoss AS 7.1.1 installation? -->
-                <jboss.home>${home.jboss}</jboss.home>
                 <!-- Name of AVD (emulator) to use when starting Android device -->
                 <android.avd.name>${name.avd}</android.avd.name>
                 <!-- Where to hook JBoss AS instance? Has to be external IP of your localhost -->
@@ -235,7 +262,7 @@
             <!-- Dependencies -->
             <dependencies>
                 
-                <!-- Arquillian container adapter for JBoss AS 7.1.1 -->
+                <!-- Arquillian container adapter for JBoss AS -->
                 <dependency>
                     <groupId>org.jboss.as</groupId>
                     <artifactId>jboss-as-arquillian-container-managed</artifactId>
@@ -255,10 +282,49 @@
                 <!-- Arquillian Droidium for web testing -->
                 <dependency>
                     <groupId>org.arquillian.extension</groupId>
-                    <artifactId>arquillian-droidium-web</artifactId>
+                    <artifactId>arquillian-droidium-web-depchain</artifactId>
                     <version>${version.droidium}</version>
                 </dependency>
             </dependencies>
+
+            <!-- Unpack JBoss container into resources folder -->
+            <build>
+                <testResources>
+                    <testResource>
+                        <directory>src/test/resources</directory>
+                    </testResource>
+                    <testResource>
+                        <directory>src/test/resources-jbossas-7</directory>
+                    </testResource>
+                </testResources>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.jboss.as</groupId>
+                                            <artifactId>jboss-as-dist</artifactId>
+                                            <version>${version.jbossas}</version>
+                                            <type>zip</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 

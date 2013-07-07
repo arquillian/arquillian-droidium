@@ -61,7 +61,10 @@ public class DroidiumNativeConfigurator {
 
     private static final Logger logger = Logger.getLogger(DroidiumNativeConfigurator.class.getName());
 
-    private static final String ANDROID_DRONE_EXTENSION_NAME = "droidium-native";
+    /**
+     * Extension qualifier for Arquillian Droidium native in arquillian.xml
+     */
+    private static final String DROIDIUM_NATIVE_EXTENSION_NAME = "droidium-native";
 
     @Inject
     @SuiteScoped
@@ -78,12 +81,12 @@ public class DroidiumNativeConfigurator {
 
     public void configureAndroidDrone(@Observes(precedence = 10) BeforeSuite event, ArquillianDescriptor descriptor) {
 
-        logger.info("Configuring Android Drone Native");
+        logger.info("Configuring " + DROIDIUM_NATIVE_EXTENSION_NAME);
 
         DroidiumNativeConfiguration configuration = new DroidiumNativeConfiguration();
 
         for (ExtensionDef extensionDef : descriptor.getExtensions()) {
-            if (ANDROID_DRONE_EXTENSION_NAME.equals(extensionDef.getExtensionName())) {
+            if (DROIDIUM_NATIVE_EXTENSION_NAME.equals(extensionDef.getExtensionName())) {
                 Map<String, String> properties = extensionDef.getExtensionProperties();
                 if (properties.containsKey("serverApk")) {
                     configuration.setServerApk(new File(properties.get("serverApk")));

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- JBoss, Home of Professional Open Source Copyright 2013, Red Hat, Inc. 
+<!-- JBoss, Home of Professional Open Source Copyright 2012, Red Hat, Inc. 
     and/or its affiliates, and individual contributors by the @authors tag. See 
     the copyright.txt in the distribution for a full listing of individual contributors. 
     Licensed under the Apache License, Version 2.0 (the "License"); you may not 
@@ -18,35 +18,25 @@
     <!-- Parent -->
     <parent>
         <groupId>org.arquillian.extension</groupId>
-        <artifactId>arquillian-droidium-native-build</artifactId>
+        <artifactId>arquillian-droidium-web-build</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../arquillian-droidium-native-build/pom.xml</relativePath>
+        <relativePath>../arquillian-droidium-web-build/pom.xml</relativePath>
     </parent>
 
     <!-- Artifact Configuration -->
-    <artifactId>arquillian-droidium-native-impl</artifactId>
-    <name>Arquillian Droidium Native Implementation</name>
-    <description>Arquillian Droidium Native Implementation</description>
+    <artifactId>arquillian-droidium-web-impl</artifactId>
+    <name>Arquillian Droidium Web Implementation</name>
+    <description>Arquillian Droidium Web Implementation</description>
 
     <!-- Properties -->
     <properties>
         <!-- Droidium container versions -->
         <version.droidium.container>0.0.1-SNAPSHOT</version.droidium.container>
-        <version.droidium.native>0.0.1-SNAPSHOT</version.droidium.native>
+        <version.droidium.web>0.0.1-SNAPSHOT</version.droidium.web>
 
         <!-- Other versions -->
-        <version.httpclient>4.2.5</version.httpclient>
-        <version.commons.io>1.3.2</version.commons.io>
         <version.mockito>1.9.5</version.mockito>
     </properties>
-
-    <!-- Developers -->
-    <developers>
-        <developer>
-            <name>Stefan Miklosovic</name>
-            <email>smikloso@redhat.com</email>
-        </developer>
-    </developers>
 
     <!-- Dependency Management -->
     <dependencyManagement>
@@ -66,11 +56,6 @@
                 <version>${version.arquillian.core}</version>
             </dependency>
             <dependency>
-                <groupId>org.jboss.arquillian.container</groupId>
-                <artifactId>arquillian-container-test-spi</artifactId>
-                <version>${version.arquillian.core}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.jboss.arquillian.core</groupId>
                 <artifactId>arquillian-core-impl-base</artifactId>
                 <scope>test</scope>
@@ -78,62 +63,51 @@
                 <version>${version.arquillian.core}</version>
             </dependency>
             <dependency>
+                <groupId>org.jboss.arquillian.container</groupId>
+                <artifactId>arquillian-container-impl-base</artifactId>
+                <scope>test</scope>
+                <classifier>tests</classifier>
+                <version>${version.arquillian.core}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian.container</groupId>
+                <artifactId>arquillian-container-impl-base</artifactId>
+                <scope>test</scope>
+                <version>${version.arquillian.core}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-all</artifactId>
+                <scope>test</scope>
                 <version>${version.mockito}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>${version.httpclient}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>${version.commons.io}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
 
     <!-- Dependencies -->
     <dependencies>
-        <!-- Arquillian Droidium Native Dependencies -->
-        <dependency>
-            <groupId>org.arquillian.extension</groupId>
-            <artifactId>arquillian-droidium-native-api</artifactId>
-            <version>${version.droidium.native}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.arquillian.extension</groupId>
-            <artifactId>arquillian-droidium-native-spi</artifactId>
-            <version>${version.droidium.native}</version>
-        </dependency>
 
-        <!-- Arquillian Droidium Container Dependencies -->
+        <!-- Arquillian Container Dependencies -->
         <dependency>
             <groupId>org.arquillian.container</groupId>
             <artifactId>arquillian-droidium-container-api</artifactId>
-            <version>${version.droidium.container}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.arquillian.container</groupId>
-            <artifactId>arquillian-droidium-container-impl</artifactId>
-            <version>${version.droidium.container}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.arquillian.container</groupId>
             <artifactId>arquillian-droidium-container-spi</artifactId>
-            <version>${version.droidium.container}</version>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.arquillian.container</groupId>
+            <artifactId>arquillian-droidium-container-impl</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- Arquillian dependencies -->
         <dependency>
             <groupId>org.jboss.arquillian.core</groupId>
             <artifactId>arquillian-core-spi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-container-test-spi</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.test</groupId>
@@ -144,7 +118,14 @@
             <artifactId>arquillian-config-api</artifactId>
         </dependency>
 
-        <!-- test dependencies -->
+        <!-- Arquillian Droidium Web dependencies -->
+        <dependency>
+            <groupId>org.arquillian.extension</groupId>
+            <artifactId>arquillian-droidium-web-spi</artifactId>
+            <version>${version.droidium.web}</version>
+        </dependency>        
+
+        <!-- Test dependencies -->
         <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
             <artifactId>arquillian-junit-standalone</artifactId>
@@ -173,8 +154,14 @@
             <classifier>tests</classifier>
         </dependency>
         <dependency>
-            <groupId>org.jboss.shrinkwrap</groupId>
-            <artifactId>shrinkwrap-impl-base</artifactId>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-container-impl-base</artifactId>
+            <scope>test</scope>
+            <classifier>tests</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-container-impl-base</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -184,16 +171,56 @@
             <artifactId>mockito-all</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
     </dependencies>
+
+    <!-- Profiles -->
+    <profiles>
+        <profile>
+            <!-- Default profile which skips tests -->
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <!-- tests are skipped by default,
+                                use test profile instead (deactivated by default) -->
+                            <skipTests>true</skipTests>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <!-- Testing profile -->
+            <!-- You have following options to override:
+                1) -Demulator.avd.name
+                2) -Demulator.avd.port
+                3) -Dandroid.server.path
+                Default values are "test01", "5554" and "android-server-2.6.0.apk" respectively.
+                Emulator with these properties will be run dynamically upon test execution.
+             -->
+            <id>test</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${version.maven.surefire}</version>
+                        <configuration>
+                            <skipTests>false</skipTests>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

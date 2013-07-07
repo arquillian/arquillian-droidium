@@ -14,16 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.native_.event;
+package org.arquillian.droidium.web;
 
-import org.arquillian.droidium.container.spi.event.DroidiumExtensionConfigured;
+import org.arquillian.droidium.web.impl.AndroidServerInstaller;
+import org.arquillian.droidium.web.impl.AndroidServerUninstaller;
+import org.arquillian.droidium.web.impl.DroidiumWebConfigurator;
+import org.jboss.arquillian.core.spi.LoadableExtension;
 
 /**
- * Event representing that an Android Drone extension was configured.
+ * An extension for Arquillian Droidium web testing support in Arquillian.
  *
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
-public class DroidiumNativeConfigured extends DroidiumExtensionConfigured {
+public class DroidiumWebExtension implements LoadableExtension {
 
+    @Override
+    public void register(ExtensionBuilder builder) {
+        builder.observer(DroidiumWebConfigurator.class);
+        builder.observer(AndroidServerInstaller.class);
+        builder.observer(AndroidServerUninstaller.class);
+    }
 }

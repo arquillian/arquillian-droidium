@@ -50,6 +50,9 @@ public class DroidiumNativeArchiveDeployer implements AndroidArchiveDeployer {
 
     private static final Logger logger = Logger.getLogger(DroidiumNativeArchiveDeployer.class.getName());
 
+    /**
+     * Activity to start after Selendroid server is installed in order to instrument application under test
+     */
     private static final String SELENDROID_SERVER_ACTIVITY = "io.selendroid/.ServerInstrumentation";
 
     @Inject
@@ -73,7 +76,7 @@ public class DroidiumNativeArchiveDeployer implements AndroidArchiveDeployer {
     private File tmpDir;
 
     /**
-     * Observer deploy event and fires deployment method
+     * Observes deploy event and fires deployment method
      *
      * @param event
      * @throws AndroidExecutionException
@@ -83,7 +86,7 @@ public class DroidiumNativeArchiveDeployer implements AndroidArchiveDeployer {
     }
 
     /**
-     * Observe undeploymente event and fires undeployment method
+     * Observes undeployment event and fires undeployment method
      *
      * @param event
      * @throws AndroidExecutionException
@@ -208,9 +211,13 @@ public class DroidiumNativeArchiveDeployer implements AndroidArchiveDeployer {
         logger.info(startApplicationInstrumentationCommand.toString());
 
         // execute instrumentation and waits until server is started and able to communicate with us
-        selendroidHelper.startInstrumentation(
-            startApplicationInstrumentationCommand,
-            applicationHelper.getApplicationBasePackage(applicationUnderTest));
+        try {
+            selendroidHelper.startInstrumentation(
+                startApplicationInstrumentationCommand,
+                applicationHelper.getApplicationBasePackage(applicationUnderTest));
+        } catch (AndroidExecutionException ex) {
+            androidDevice.removePortForwarding(androidDevice.getDroneHostPort(), androidDevice.getDroneHostPort());
+        }
     }
 
     /*
