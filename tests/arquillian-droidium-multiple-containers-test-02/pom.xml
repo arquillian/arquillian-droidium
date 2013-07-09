@@ -12,6 +12,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
+    <!-- Model version -->
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Parent -->
@@ -93,6 +94,7 @@
                 </configuration>
             </plugin>
             <plugin>
+                <!-- Execution of multiple Arquillian classes -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <executions>
@@ -151,12 +153,7 @@
                 <android.avd.name.2>${name.avd.2}</android.avd.name.2>
             </properties>
 
-            <build>
-                <plugins>
-
-                </plugins>
-            </build>
-
+            <!-- Dependencies -->
             <dependencies>
                 <!-- Arquillian Droidium container adapter -->
                 <dependency>
