@@ -27,7 +27,6 @@
     <!-- Artifact Configuration -->
     <groupId>org.arquillian.droidium.tests</groupId>
     <artifactId>arquillian-droidium-tests-parent</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Arquillian Droidium Container Tests Parent</name>
 
@@ -70,6 +69,7 @@
     <!-- Modules -->
     <modules>
         <module>arquillian-droidium-multiple-containers-test-01</module>
+        <module>arquillian-droidium-multiple-containers-test-02</module>
         <module>arquillian-droidium-native-test-01</module>
         <module>arquillian-droidium-web-test-01</module>
     </modules>

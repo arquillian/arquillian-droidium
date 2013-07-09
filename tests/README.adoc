@@ -16,6 +16,13 @@ which is not normally possible. It starts Android emulator of given AVD
 it starts / connects to JBoss AS 7.1.1 as well. This project does not 
 use any additional plugins at all.
 
+=== arquillian-droidium-multiple-containers-test-02
+
+This project tests a scenario when you are using two Android containers - each of different versions 
+and you are executing the same test cases. It is shown as for a completeness and as a proof it is possible.
+You would normally use simple test with one AVD as with -native-test-01 but you woud execute it twice - each 
+time with different AVD specified.
+
 === arquillian-droidium-native-test-01
 
 Tests test application from http://dominikdary.github.io/selendroid/[Selendroid] project. 

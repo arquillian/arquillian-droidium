@@ -11,6 +11,7 @@
     language governing permissions and limitations under the License. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Parent -->
@@ -21,8 +22,8 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>arquillian-droidium-native-test-01</artifactId>
-    <description>Proof-of-concept Arquillian Droidium tests with Selendroid integration.</description>
+    <artifactId>arquillian-droidium-multiple-containers-test-02</artifactId>
+    <description>Shows configuration of multiple Android containers in one test case when testing native application</description>
 
     <!-- Properties -->
     <properties>
@@ -56,6 +57,7 @@
             <type>pom</type>
             <scope>test</scope>
         </dependency>
+        <!-- Arquillian -->
         <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
             <artifactId>arquillian-junit-container</artifactId>
@@ -71,6 +73,7 @@
 
     <!-- Build -->
     <build>
+        <!-- Configuration for filtering variables in arquillian.xml -->
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -82,14 +85,44 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>android1</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <phase>test</phase>
+                        <configuration>
+                            <includes>
+                                <include>**/SelendroidTestAppTestCaseContainer1.class</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>android2</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <phase>test</phase>
+                        <configuration>
+                            <includes>
+                                <include>**/SelendroidTestAppTestCaseContainer2.class</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
-        <!-- for filtering properties from this pom into arquillian.xml -->
         <testResources>
             <testResource>
                 <directory>src/test/resources</directory>
@@ -104,18 +137,28 @@
     <!-- Profiles -->
     <profiles>
         <profile>
+            <!-- Shows configuration of multiple container adapters on classpath -->
             <id>test01</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
 
-            <!-- Name of AVD you want to use in your test -->
             <properties>
-                <android.avd.name>${name.avd}</android.avd.name>
+                <!-- Name of AVD (emulator) to use when starting Android device -->
+                <!-- You would execute tests like
+                    mvn clean test -Dname.avd.1=android-4.1.2 -Dname.avd.2=android-4.2 -->
+                <android.avd.name.1>${name.avd.1}</android.avd.name.1>
+                <android.avd.name.2>${name.avd.2}</android.avd.name.2>
             </properties>
 
+            <build>
+                <plugins>
+
+                </plugins>
+            </build>
+
             <dependencies>
-                <!-- Arquillian Droidium container support -->
+                <!-- Arquillian Droidium container adapter -->
                 <dependency>
                     <groupId>org.arquillian.container</groupId>
                     <artifactId>arquillian-droidium-container-depchain</artifactId>
@@ -123,7 +166,6 @@
                     <type>pom</type>
                     <scope>test</scope>
                 </dependency>
-
                 <!-- Arquillian Droidium Native extension in order to be able 
                     to test native Android applications. -->
                 <dependency>
@@ -136,4 +178,5 @@
             </dependencies>
         </profile>
     </profiles>
-</project> 
+
+</project>
