@@ -1,4 +1,4 @@
-= Arquillian Droidium Native Selendroid Driver extension
+== Arquillian Droidium Native Selendroid Driver extension
 
 Selendroid driver extension brings SelendroidDriver from http://dominikdary.github.io/selendroid/[Selendroid] project into Arquillian Drone.
 After the setup of the extension in `arquillian.xml`, you just inject an instance of `SelendroidDriver` 

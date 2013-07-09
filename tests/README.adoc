@@ -33,6 +33,12 @@ executed (instrumentation is done by repackaged selendroid server) and testing i
 This project uses `arquillian-droidium-native` extension which does just mentioned. It uses 
 https://docs.jboss.org/author/display/ARQ/Drone[Arquillian Drone Web Driver].
 
+=== arquillian-droidium-native-test-02
+
+It is for the first time when there is shown the usage of `SelendroidDriver` from Selendroid 
+project. It uses Selendroid driver extension for Arquillian Drone - bringing Selendroid 
+and Arquillian Drone very closely together.
+
 === arquillian-droidium-web-test-01
 
 Tests helloworld-like application which is deployed into JBoss AS and tests 
