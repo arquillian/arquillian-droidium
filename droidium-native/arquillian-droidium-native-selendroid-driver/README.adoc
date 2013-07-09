@@ -1,0 +1,50 @@
+= Arquillian Droidium Native Selendroid Driver extension
+
+Selendroid driver extension brings SelendroidDriver from http://dominikdary.github.io/selendroid/[Selendroid] project into Arquillian Drone.
+After the setup of the extension in `arquillian.xml`, you just inject an instance of `SelendroidDriver` 
+via `@Drone` from Arquillian Drone into your tests and you can use Selendroid driver to interact with 
+Android device to test an underlying application.
+
+----
+@Test
+public void someTest(@Drone SelendroidDriver driver) {
+    // usage of driver instance
+}
+----
+
+== Configuration
+
+From Maven point of view, you have to put this artifact together with Android container artifact on classpath 
+while testing:
+
+----
+<dependency>
+    <groupId>org.arquillian.extension</groupId>
+    <artifactId>arquillian-droidium-native-depchain</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <scope>test</scope>
+    <type>pom</type>
+</dependency>
+----
+
+You have to register extension in `arquillian.xml` by putting this snippet into it:
+
+----
+<!-- Support for Arquillian Droidium Native extension 
+    for testing native Android applications via Selendroid -->
+<extension qualifier="selendroid">
+    <!-- URL address where Selendroid server is listenting to -->
+    <property name="remoteAddress">http://localhost:8080/wd/hub</property>
+</extension>
+----
+
+== Configuration properties
+
+==== remoteAddress
+===== default: http://localhost:8080/wd/hub
+
+The remote address where Selendroid server APK installed on Android device listens to calls.
+
+----
+<property name="remoteAddress">some_url_address</property>
+----

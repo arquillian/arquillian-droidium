@@ -87,7 +87,7 @@
     <!-- Dependencies -->
     <dependencies>
 
-        <!-- Arquillian Container Dependencies -->
+        <!-- Arquillian Droidium Container Dependencies -->
         <dependency>
             <groupId>org.arquillian.container</groupId>
             <artifactId>arquillian-droidium-container-api</artifactId>

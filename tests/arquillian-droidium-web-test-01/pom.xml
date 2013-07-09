@@ -18,8 +18,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
+    <!-- Model version -->
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- Parent -->
     <parent>
         <groupId>org.arquillian.droidium.tests</groupId>
         <artifactId>arquillian-droidium-tests-parent</artifactId>
@@ -27,6 +29,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <!-- Artifact configuration -->
     <artifactId>arquillian-droidium-web-test-01</artifactId>
     <version>7.1.2-SNAPSHOT</version>
     <packaging>war</packaging>

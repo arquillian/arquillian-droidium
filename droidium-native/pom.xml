@@ -45,6 +45,7 @@
         <module>arquillian-droidium-native-api</module>
         <module>arquillian-droidium-native-spi</module>
         <module>arquillian-droidium-native-impl</module>
+        <module>arquillian-droidium-native-selendroid-driver</module>
         <module>arquillian-droidium-native-depchain</module>
     </modules>
 

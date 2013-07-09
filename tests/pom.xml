@@ -71,6 +71,7 @@
         <module>arquillian-droidium-multiple-containers-test-01</module>
         <module>arquillian-droidium-multiple-containers-test-02</module>
         <module>arquillian-droidium-native-test-01</module>
+        <module>arquillian-droidium-native-test-02</module>
         <module>arquillian-droidium-web-test-01</module>
     </modules>
 

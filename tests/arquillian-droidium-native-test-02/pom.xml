@@ -23,8 +23,8 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>arquillian-droidium-native-test-01</artifactId>
-    <description>Proof-of-concept Arquillian Droidium tests with Selendroid integration.</description>
+    <artifactId>arquillian-droidium-native-test-02</artifactId>
+    <description>Proof-of-concept Arquillian Droidium tests with Selendroid Driver integration.</description>
 
     <!-- Properties -->
     <properties>
