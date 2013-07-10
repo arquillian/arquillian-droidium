@@ -1,12 +1,16 @@
-package org.arquillian.droidium.container.impl;
+package org.arquillian.droidium.container.manual;
 
 import org.arquillian.droidium.container.AbstractAndroidTestTestBase;
 import org.arquillian.droidium.container.api.AndroidBridge;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.IdentifierGenerator;
-import org.arquillian.droidium.container.configuration.AndroidManagedContainerConfiguration;
+import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.LogLevel;
+import org.arquillian.droidium.container.impl.AndroidBridgeConnector;
+import org.arquillian.droidium.container.impl.AndroidDeviceSelectorImpl;
+import org.arquillian.droidium.container.impl.AndroidLogInitializer;
+import org.arquillian.droidium.container.impl.ProcessExecutor;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStart;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
 import org.arquillian.droidium.container.utils.AndroidIdentifierGenerator;
@@ -33,7 +37,7 @@ import static org.junit.Assert.assertNotNull;
 public class AndroidLogInitializerTestCase extends AbstractAndroidTestTestBase {
 
 
-    private AndroidManagedContainerConfiguration configuration;
+    private AndroidContainerConfiguration configuration;
 
     private AndroidSDK androidSDK;
 
@@ -50,7 +54,7 @@ public class AndroidLogInitializerTestCase extends AbstractAndroidTestTestBase {
 
     @Before
     public void setup() {
-        configuration = new AndroidManagedContainerConfiguration();
+        configuration = new AndroidContainerConfiguration();
         configuration.setAvdName(RUNNING_EMULATOR_AVD_NAME);
         configuration.setConsolePort(RUNNING_EMULATOR_CONSOLE_PORT);
         configuration.setLogLevel(LogLevel.VERBOSE);
@@ -58,7 +62,7 @@ public class AndroidLogInitializerTestCase extends AbstractAndroidTestTestBase {
 
         getManager().getContext(ContainerContext.class).activate("doesnotmatter");
 
-        bind(ContainerScoped.class, AndroidManagedContainerConfiguration.class, configuration);
+        bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration);
         bind(ContainerScoped.class, AndroidSDK.class, androidSDK);
         bind(ContainerScoped.class, ProcessExecutor.class, new ProcessExecutor());
         bind(ContainerScoped.class, IdentifierGenerator.class, new AndroidIdentifierGenerator());

@@ -3,7 +3,7 @@ package org.arquillian.droidium.container.impl;
 import com.sun.org.apache.xerces.internal.impl.xpath.regex.Match;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
-import org.arquillian.droidium.container.configuration.AndroidManagedContainerConfiguration;
+import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Command;
 import org.arquillian.droidium.container.spi.event.AndroidBridgeTerminated;
@@ -47,7 +47,7 @@ public class AndroidLogInitializer {
     private InstanceProducer<LogcatHelper> logcatHelper;
 
     @Inject
-    private Instance<AndroidManagedContainerConfiguration> configuration;
+    private Instance<AndroidContainerConfiguration> configuration;
 
     @Inject
     private Instance<ProcessExecutor> executor;
@@ -88,7 +88,7 @@ public class AndroidLogInitializer {
     }
 
     public class LogcatReader implements Callable<Void> {
-        private AndroidManagedContainerConfiguration configuration;
+        private AndroidContainerConfiguration configuration;
         private AndroidSDK androidSDK;
         private AndroidDevice androidDevice;
 
@@ -100,7 +100,7 @@ public class AndroidLogInitializer {
         private List<String> blackList = new ArrayList<String>();
         private Map<Integer, String> processMap = new HashMap<Integer, String>();
 
-        public LogcatReader(AndroidManagedContainerConfiguration configuration, AndroidSDK androidSDK, AndroidDevice androidDevice) {
+        public LogcatReader(AndroidContainerConfiguration configuration, AndroidSDK androidSDK, AndroidDevice androidDevice) {
             this.configuration = configuration;
             this.androidSDK = androidSDK;
             this.androidDevice = androidDevice;
@@ -259,11 +259,11 @@ public class AndroidLogInitializer {
             }
         }
 
-        public AndroidManagedContainerConfiguration getConfiguration() {
+        public AndroidContainerConfiguration getConfiguration() {
             return configuration;
         }
 
-        public void setConfiguration(AndroidManagedContainerConfiguration configuration) {
+        public void setConfiguration(AndroidContainerConfiguration configuration) {
             this.configuration = configuration;
         }
 

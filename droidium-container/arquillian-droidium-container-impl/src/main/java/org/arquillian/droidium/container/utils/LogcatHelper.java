@@ -1,7 +1,7 @@
 package org.arquillian.droidium.container.utils;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
-import org.arquillian.droidium.container.configuration.AndroidManagedContainerConfiguration;
+import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.LogLevel;
 import org.arquillian.droidium.container.configuration.LogType;
 
@@ -19,11 +19,11 @@ import java.util.logging.Logger;
 public class LogcatHelper {
     private static final Logger logger = Logger.getLogger(LogcatHelper.class.getName());
 
-    private AndroidManagedContainerConfiguration configuration;
+    private AndroidContainerConfiguration configuration;
 
     private AndroidDevice androidDevice;
 
-    public LogcatHelper(AndroidManagedContainerConfiguration configuration, AndroidDevice androidDevice) {
+    public LogcatHelper(AndroidContainerConfiguration configuration, AndroidDevice androidDevice) {
         this.configuration = configuration;
         this.androidDevice = androidDevice;
     }
@@ -65,11 +65,11 @@ public class LogcatHelper {
         }
     }
 
-    public AndroidManagedContainerConfiguration getConfiguration() {
+    public AndroidContainerConfiguration getConfiguration() {
         return configuration;
     }
 
-    public void setConfiguration(AndroidManagedContainerConfiguration configuration) {
+    public void setConfiguration(AndroidContainerConfiguration configuration) {
         this.configuration = configuration;
     }
 
