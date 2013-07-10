@@ -114,8 +114,8 @@ public class AndroidLogInitializer {
 
             if(configuration.getLogPackageBlacklist() != null) {
                 String[] blackList = configuration.getLogPackageBlacklist().split(",");
-                for(String packageName : whiteList) {
-                    this.whiteList.add(escapePackageName(packageName));
+                for(String packageName : blackList) {
+                    this.blackList.add(escapePackageName(packageName));
                 }
             }
         }
@@ -188,7 +188,7 @@ public class AndroidLogInitializer {
 
             if(pattern == null) {
                 // This pattern will fetch us process id from logcat line
-                pattern = Pattern.compile("./.+?\\\\(([\\\\s0-9]+?)\\\\):.*");
+                pattern = Pattern.compile("./.+?\\(([\\s0-9]+?)\\):.*");
             }
 
             Matcher matcher = pattern.matcher(line);
@@ -239,7 +239,7 @@ public class AndroidLogInitializer {
                 Process process = processBuilder.start();
 
                 // Ugly pattern, which helps us parse PS table
-                Pattern pattern  = Pattern.compile(".*?\\\\s+([0-9]+)\\\\s+[0-9]+\\\\s+[0-9]+\\\\s+[0-9]+\\\\s+[0-9a-f]+\\\\s+[0-9a-f]+\\\\s.?\\\\s(.*)");
+                Pattern pattern  = Pattern.compile(".*?\\s+([0-9]+)\\s+[0-9]+\\s+[0-9]+\\s+[0-9]+\\s+[0-9a-f]+\\s+[0-9a-f]+\\s.?\\s(.*)");
                 BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                 String line = null;
                 while((line = reader.readLine()) != null) {
