@@ -60,7 +60,7 @@ public class AndroidLogInitializer {
 
     private Future<Void> logcatFuture;
 
-    public void initAndroidLog(@Observes(precedence = 1000) AndroidDeviceReady event) {
+    public void initAndroidLog(@Observes AndroidDeviceReady event) {
         logger.info("Initializing Android LogcatReader");
 
         ProcessExecutor executor = this.executor.get();
