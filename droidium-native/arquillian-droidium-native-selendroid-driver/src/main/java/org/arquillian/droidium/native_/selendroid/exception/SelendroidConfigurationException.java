@@ -17,7 +17,7 @@
 package org.arquillian.droidium.native_.selendroid.exception;
 
 /**
- * Exception thrown when Selendroid driver is badly configured in arquillian.xml
+ * Exception thrown when Selendroid driver is badly configured in arquillian.xml.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *

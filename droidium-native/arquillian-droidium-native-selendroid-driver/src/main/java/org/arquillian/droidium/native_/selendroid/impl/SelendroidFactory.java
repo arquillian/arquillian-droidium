@@ -16,10 +16,10 @@
  */
 package org.arquillian.droidium.native_.selendroid.impl;
 
+import io.selendroid.SelendroidDriver;
+
 import java.lang.annotation.Annotation;
 import java.util.logging.Logger;
-
-import io.selendroid.SelendroidDriver;
 
 import org.jboss.arquillian.config.descriptor.api.ArquillianDescriptor;
 import org.jboss.arquillian.drone.spi.Configurator;
@@ -28,7 +28,7 @@ import org.jboss.arquillian.drone.spi.Instantiator;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 /**
- * Place where SelendroidDriver is configured, created and destroyed.
+ * The place where SelendroidDriver is configured, created and destroyed.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
@@ -47,7 +47,7 @@ public class SelendroidFactory extends AbstractSelendroidFactory implements
 
     @Override
     public void destroyInstance(SelendroidDriver instance) {
-        instance.quit();
+        // intentionally left empty
     }
 
     @Override
@@ -57,7 +57,6 @@ public class SelendroidFactory extends AbstractSelendroidFactory implements
             driver = new SelendroidDriver(configuration.getRemoteAddress(), new DesiredCapabilities());
         } catch (Exception e) {
             logger.info("Unable to create an instance of SelendroidDriver: " + e.getMessage());
-            e.printStackTrace();
         }
         return driver;
     }

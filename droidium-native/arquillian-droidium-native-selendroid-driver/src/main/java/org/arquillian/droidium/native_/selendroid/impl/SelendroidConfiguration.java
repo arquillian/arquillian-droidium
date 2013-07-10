@@ -43,8 +43,6 @@ public class SelendroidConfiguration implements DroneConfiguration<SelendroidCon
     @Override
     public SelendroidConfiguration configure(ArquillianDescriptor descriptor, Class<? extends Annotation> qualifier) {
 
-        logger.info("Configuration of Arquillian Droidium Native Selendroid Driver");
-
         SelendroidConfiguration configuration = ConfigurationMapper.fromArquillianDescriptor(descriptor, this, qualifier);
         try {
             SelendroidConfigurationValidator.validate(configuration);
@@ -70,6 +68,7 @@ public class SelendroidConfiguration implements DroneConfiguration<SelendroidCon
     }
 
     /**
+     * Validator of Selendroid extension configuration from arquillian.xml.
      *
      * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
      *

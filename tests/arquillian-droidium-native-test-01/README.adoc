@@ -8,5 +8,5 @@ for Maven otherwise tests will fail.
 
 This tests uses Selendroid server APK from http://dominikdary.github.io/selendroid/[Selendroid] project.
 
-You have to have jarsigner, keytool and so on in your system. You are usually good with default JDK installation.
+You have to have `jarsigner`, `keytool` and so on in your system. You are usually good with default JDK installation.
 You should have these commands in `$JAVA_HOME`.

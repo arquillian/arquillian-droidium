@@ -16,8 +16,6 @@
  */
 package org.arquillian.droidium.native_.selendroid;
 
-import java.util.logging.Logger;
-
 import org.arquillian.droidium.native_.selendroid.impl.SelendroidFactory;
 import org.jboss.arquillian.core.spi.LoadableExtension;
 import org.jboss.arquillian.drone.spi.Configurator;
@@ -32,13 +30,8 @@ import org.jboss.arquillian.drone.spi.Instantiator;
  */
 public class SelendroidDriverExtension implements LoadableExtension {
 
-    private static final Logger logger = Logger.getLogger(SelendroidDriverExtension.class.getName());
-
     @Override
     public void register(ExtensionBuilder builder) {
-
-        logger.info("Registration of Arquillian Droidium Native Selendroid Driver extension");
-
         builder.service(Configurator.class, SelendroidFactory.class);
         builder.service(Instantiator.class, SelendroidFactory.class);
         builder.service(Destructor.class, SelendroidFactory.class);

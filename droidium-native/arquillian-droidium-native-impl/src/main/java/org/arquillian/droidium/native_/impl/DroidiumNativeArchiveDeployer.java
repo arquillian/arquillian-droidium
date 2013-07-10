@@ -17,12 +17,10 @@
 package org.arquillian.droidium.native_.impl;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.FileUtils;
 import org.arquillian.droidium.container.api.AndroidArchiveDeployer;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
@@ -33,8 +31,7 @@ import org.arquillian.droidium.container.spi.event.AndroidUndeployArchive;
 import org.arquillian.droidium.native_.configuration.DroidiumNativeConfiguration;
 import org.arquillian.droidium.native_.exception.SelendroidRebuilderException;
 import org.arquillian.droidium.native_.utils.Command;
-import org.arquillian.droidium.native_.utils.FileIdentifierGenerator;
-import org.arquillian.droidium.native_.utils.IdentifierType;
+import org.arquillian.droidium.native_.utils.DroidiumNativeFileUtils;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;
@@ -108,10 +105,11 @@ public class DroidiumNativeArchiveDeployer implements AndroidArchiveDeployer {
         DroidiumNativeConfiguration droidiumNativeConfiguration = this.droidiumNativeConfiguration.get();
         AndroidDevice androidDevice = this.androidDevice.get();
         AndroidApplicationHelper applicationHelper = new AndroidApplicationHelper(processExecutor, androidSDK);
-        SelendroidHelper selendroidHelper = new SelendroidHelper(androidDevice, droidiumNativeConfiguration.getLogFile());
 
         // creates temporary directory where every modified application and resources are put
-        tmpDir = createWorkingDir(droidiumNativeConfiguration.getTmpDir());
+        tmpDir = DroidiumNativeFileUtils.createWorkingDir(droidiumNativeConfiguration.getTmpDir());
+
+        SelendroidHelper selendroidHelper = new SelendroidHelper(androidDevice, tmpDir);
 
         SelendroidRebuilder selendroidRebuilder =
             new SelendroidRebuilder(processExecutor, androidSDK, droidiumNativeConfiguration, applicationHelper, tmpDir);
@@ -122,7 +120,7 @@ public class DroidiumNativeArchiveDeployer implements AndroidArchiveDeployer {
             deploymentArchive);
 
         // copy Selendroid server to working directory for further modifications
-        copyFileToDirectory(droidiumNativeConfiguration.getServerApk(), tmpDir);
+        DroidiumNativeFileUtils.copyFileToDirectory(droidiumNativeConfiguration.getServerApk(), tmpDir);
 
         File selendroidWorkingCopy = new File(tmpDir, droidiumNativeConfiguration.getServerApk().getName());
 
@@ -138,14 +136,15 @@ public class DroidiumNativeArchiveDeployer implements AndroidArchiveDeployer {
             throw new AndroidExecutionException("Unable to rebuild Selendroid server APK: " + ex.getMessage());
         }
 
+        // resignes modified Selendroid server
         modifiedSelendroid = new File(tmpDir, AndroidApplicationHelper.getRandomAPKFileName());
         signer.resign(rebuiltSelendroidServerToResign, modifiedSelendroid);
 
-        // signs application under test
+        // resigns application under test
         modifiedApplicationUnderTest = new File(tmpDir, AndroidApplicationHelper.getRandomAPKFileName());
         signer.resign(applicationUnderTest, modifiedApplicationUnderTest);
 
-        // command for installation of modified Selendroid
+        // command for installation of modified Selendroid server
         Command selendroidInstallCommand = new Command();
         selendroidInstallCommand.add(androidSDK.getAdbPath())
             .add("-s")
@@ -165,7 +164,7 @@ public class DroidiumNativeArchiveDeployer implements AndroidArchiveDeployer {
 
         logger.info("Application under test installation command: " + applicationInstallCommand.toString());
 
-        // install Selendroid
+        // install Selendroid server
         try {
             processExecutor.execute(selendroidInstallCommand.getAsList().toArray(new String[0]));
         } catch (InterruptedException ex) {
@@ -174,7 +173,7 @@ public class DroidiumNativeArchiveDeployer implements AndroidArchiveDeployer {
             throw new AndroidExecutionException("Unable to execute Selendroid deployment process.");
         }
 
-        // check that Selendroid is installed
+        // check that Selendroid server is installed
         if (!androidDevice.isPackageInstalled(applicationHelper.getApplicationBasePackage(modifiedSelendroid))) {
             throw new AndroidExecutionException("Modified Selendroid server was not installed on device!");
         }
@@ -234,28 +233,19 @@ public class DroidiumNativeArchiveDeployer implements AndroidArchiveDeployer {
         DroidiumNativeConfiguration droidiumNativeConfiguration = this.droidiumNativeConfiguration.get();
 
         AndroidApplicationHelper applicationHelper = new AndroidApplicationHelper(processExecutor, androidSDK);
-        SelendroidHelper selendroidHelper = new SelendroidHelper(androidDevice, droidiumNativeConfiguration.getLogFile());
+        SelendroidHelper selendroidHelper = new SelendroidHelper(androidDevice, tmpDir);
 
         String selendroidBasePackage = applicationHelper.getApplicationBasePackage(modifiedSelendroid);
         String applicationBasePackage = applicationHelper.getApplicationBasePackage(applicationUnderTest);
 
-        // command for stopping instrumentation
-        Command stopApplicationInstrumentationCommand = new Command();
-        stopApplicationInstrumentationCommand.add("am")
-            .add("force-stop")
-            .add(selendroidBasePackage);
+        // command for stopping application under test
+        Command stopApplicationUnderTestCommand = new Command();
+        stopApplicationUnderTestCommand.add("pm")
+            .add("disable")
+            .add(applicationBasePackage);
 
-        // stop Selendroid instrumentation
-        selendroidHelper.stopInstrumentation(stopApplicationInstrumentationCommand);
-
-        // command for uninstalling Selendroid server
-        Command selendroidUninstallCommand = new Command();
-        selendroidUninstallCommand.add("pm")
-            .add("uninstall")
-            .add(selendroidBasePackage);
-
-        // uninstall Selendroid server
-        selendroidHelper.uninstallSelendroidServer(selendroidUninstallCommand);
+        // stop application under test
+        selendroidHelper.stopApplicationUnderTest(stopApplicationUnderTestCommand);
 
         // command for uninstalling application under test
         Command applicationUninstallCommand = new Command();
@@ -266,56 +256,31 @@ public class DroidiumNativeArchiveDeployer implements AndroidArchiveDeployer {
         // uninstall application under test
         selendroidHelper.uninstallApplicationUnderTest(applicationUninstallCommand);
 
+        // command for stopping Selendroid server
+        Command stopSelendroidServer = new Command();
+        stopSelendroidServer.add("pm")
+            .add("disable")
+            .add(selendroidBasePackage);
+
+        // stop Selendroid server
+        selendroidHelper.stopSelendroidServer(stopSelendroidServer);
+
+        // command for uninstalling Selendroid server
+        Command selendroidUninstallCommand = new Command();
+        selendroidUninstallCommand.add("pm")
+            .add("uninstall")
+            .add(selendroidBasePackage);
+
+        // uninstall Selendroid server
+        selendroidHelper.uninstallSelendroidServer(selendroidUninstallCommand);
+
         // remove port forwarding
         androidDevice.removePortForwarding(androidDevice.getDroneHostPort(), androidDevice.getDroneGuestPort());
 
         // remove working directory if not specified otherwise
         if (droidiumNativeConfiguration.getRemoveTmpDir()) {
-            removeWorkingDir(tmpDir);
+            DroidiumNativeFileUtils.removeWorkingDir(tmpDir);
         }
     }
 
-    private void removeWorkingDir(File dir) {
-        try {
-            FileUtils.deleteDirectory(dir);
-        } catch (IOException ex) {
-            logger.log(Level.INFO, "Unable to delete temporary working dir {0}. Reason: {1}",
-                new Object[] { dir.getAbsolutePath(), ex.getMessage() });
-        }
-    }
-
-    /**
-     * Creates directory with random name in {@code System.getProperty("java.io.tmpdir")}
-     *
-     * @return directory in system temporary directory
-     */
-    private File createWorkingDir(File parent) {
-        FileIdentifierGenerator fig = new FileIdentifierGenerator();
-        File temp;
-
-        try {
-            do {
-                temp = new File(parent, fig.getIdentifier(IdentifierType.FILE.getClass()));
-            } while (!temp.mkdir());
-        } catch (SecurityException ex) {
-            logger.severe("Security manager denies to create the working dir in " + parent.getAbsolutePath());
-            throw new RuntimeException("Unable to create working directory in " + parent.getAbsolutePath());
-        }
-
-        return temp;
-    }
-
-    /**
-     * Copies file to directory
-     *
-     * @param src source file
-     * @param dest destination directory
-     */
-    private void copyFileToDirectory(File src, File dest) {
-        try {
-            FileUtils.copyFileToDirectory(src, dest);
-        } catch (IOException ex) {
-            throw new RuntimeException("Unable to copy " + src.getAbsolutePath() + " to " + dest.getAbsolutePath());
-        }
-    }
 }

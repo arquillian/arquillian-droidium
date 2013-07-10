@@ -10,8 +10,8 @@ This tests uses Selendroid server APK from http://dominikdary.github.io/selendro
 for the first time `SelendroidDriver` from Selendroid project. `SelendroidDriver` is injected into test because of 
 implemented Selendroid driver extension for Arquillian Drone. This extension is placed in `droidium-native` 
 module under `arquillian-droidium-native-selendroid-driver` directory so you are good to use native depchain as you 
-are used to. The information about the configuration of Selendroid driver can be found in the implementation directory 
+are used to. The information about the configuration of Selendroid driver extension can be found in the implementation directory 
 of the extension itself.
 
-You have to have jarsigner, keytool and so on in your system. You are usually good with default JDK installation.
+You have to have `jarsigner`, `keytool` and so on in your system. You are usually good with default JDK installation.
 You should have these commands in `$JAVA_HOME`.

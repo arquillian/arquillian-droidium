@@ -36,6 +36,7 @@ import org.arquillian.droidium.container.api.AndroidDeviceOutputReciever;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.native_.configuration.Validate;
 import org.arquillian.droidium.native_.utils.Command;
+import org.arquillian.droidium.native_.utils.DroidiumNativeFileUtils;
 
 /**
  * Starts and stops instrumentation of application under test, installs and uninstalls Selendroid server.
@@ -47,11 +48,13 @@ public class SelendroidHelper {
 
     private static final Logger logger = Logger.getLogger(SelendroidHelper.class.getName());
 
-    private AndroidDevice androidDevice;
+    private final AndroidDevice androidDevice;
 
-    private File serverLogFile;
+    private final File tmpDir;
 
     private static final String TOP_CMD = "top -n 1";
+
+    private static final String PACKAGES_LIST_CMD = "pm list packages -f";
 
     private static final int SOCKET_TIME_OUT_SECONDS = 10;
 
@@ -60,17 +63,17 @@ public class SelendroidHelper {
     private static final int NUM_CONNECTION_RETIRES = 5;
 
     /**
+     * Installs and uninstalls application under test and Selendroid server, starts instrumentation.
      *
      * @param androidDevice
-     * @param serverLogFile
-     * @throws IllegalArgumentException is either of arguments is null object
+     * @param tmpDir root temporary directory where all related resources produced by {@code SelendroidHelper} wile be put.
+     * @throws IllegalArgumentException is either of arguments is a null object
      */
-    public SelendroidHelper(AndroidDevice androidDevice, File serverLogFile) throws IllegalArgumentException {
+    public SelendroidHelper(AndroidDevice androidDevice, File tmpDir) throws IllegalArgumentException {
         Validate.notNull(androidDevice, "Android Device for SelendroidHelper can't be null object!");
-        Validate.notNull(serverLogFile, "Server log file for SelendroidHelper can't be null object!");
-
+        Validate.notNull(tmpDir, "Log file for SelendroidHelper can't be null object!");
         this.androidDevice = androidDevice;
-        this.serverLogFile = serverLogFile;
+        this.tmpDir = tmpDir;
     }
 
     /**
@@ -81,9 +84,9 @@ public class SelendroidHelper {
      */
     public void startInstrumentation(Command startApplicationInstrumentationCommand, String applicationBasePackage) {
         try {
-            ServerMonkey monkey = new ServerMonkey(serverLogFile, applicationBasePackage);
+            Monkey monkey = new Monkey(DroidiumNativeFileUtils.createRandomEmptyFile(tmpDir), applicationBasePackage, true);
             androidDevice.executeShellCommand(startApplicationInstrumentationCommand.getAsString(), monkey);
-            waitUntilSelendroidServerInstallation(androidDevice, monkey);
+            waitForMonkey(androidDevice, monkey, TOP_CMD);
             waitUntilSelendroidServerCommunication();
         } catch (IOException ex) {
             throw new AndroidExecutionException(ex.getMessage());
@@ -91,12 +94,28 @@ public class SelendroidHelper {
     }
 
     /**
-     * Stops instrumentation of application under test.
+     * Stops Selendroid server
      *
      * @param stopApplicationInstrumentationCommand
      */
-    public void stopInstrumentation(Command stopApplicationInstrumentationCommand) {
-        androidDevice.executeShellCommand(stopApplicationInstrumentationCommand.getAsString());
+    public void stopSelendroidServer(Command stopSelendroidServer) {
+        androidDevice.executeShellCommand(stopSelendroidServer.getAsString());
+    }
+
+    /**
+     * Stops application under test
+     *
+     * @param stopApplicationUnderTestCommand
+     */
+    public void stopApplicationUnderTest(Command stopApplicationUnderTestCommand) {
+        try {
+            Monkey monkey = new Monkey(DroidiumNativeFileUtils.createRandomEmptyFile(tmpDir),
+                stopApplicationUnderTestCommand.get(stopApplicationUnderTestCommand.size() - 1), false);
+            androidDevice.executeShellCommand(stopApplicationUnderTestCommand.getAsString(), monkey);
+            waitForMonkey(androidDevice, monkey, TOP_CMD);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -105,7 +124,14 @@ public class SelendroidHelper {
      * @param applicationUninstallCommand
      */
     public void uninstallApplicationUnderTest(Command applicationUninstallCommand) {
-        androidDevice.executeShellCommand(applicationUninstallCommand.getAsString());
+        try {
+            Monkey monkey = new Monkey(DroidiumNativeFileUtils.createRandomEmptyFile(tmpDir),
+                applicationUninstallCommand.get(applicationUninstallCommand.size() - 1), false);
+            androidDevice.executeShellCommand(applicationUninstallCommand.getAsString(), monkey);
+            waitForMonkey(androidDevice, monkey, PACKAGES_LIST_CMD);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -157,17 +183,15 @@ public class SelendroidHelper {
     }
 
     /**
-     * Waits until Selendroid server is started by looking at the output of "top" command on Android device.
+     * Waits until {@link Monkey} is done.
      *
      * @param device
      * @param monkey
      */
-    private void waitUntilSelendroidServerInstallation(AndroidDevice device, ServerMonkey monkey) throws IOException {
-
-        logger.info("Starting Selendroid instrumentation on Android device.");
+    private void waitForMonkey(AndroidDevice device, Monkey monkey, String command) throws IOException {
 
         for (int i = 0; i < 5; i++) {
-            device.executeShellCommand(TOP_CMD, monkey);
+            device.executeShellCommand(command, monkey);
             if (monkey.isActive()) {
                 return;
             }
@@ -177,7 +201,7 @@ public class SelendroidHelper {
                 e.printStackTrace();
             }
         }
-        throw new AndroidExecutionException("Unable to start Selendroid instrumentation on Android device.");
+        throw new AndroidExecutionException("Waiting for monkey timeouted.");
     }
 
     /**
@@ -186,21 +210,32 @@ public class SelendroidHelper {
      * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
      *
      */
-    private static class ServerMonkey implements AndroidDeviceOutputReciever {
+    private static class Monkey implements AndroidDeviceOutputReciever {
 
-        private static final Logger logger = Logger.getLogger(ServerMonkey.class.getName());
+        private static final Logger logger = Logger.getLogger(Monkey.class.getName());
 
         private final Writer output;
 
         private boolean active = false;
 
-        private String waitForString;
+        private boolean contains = false;
 
-        public ServerMonkey(File output, String waitForString) throws IOException {
-            Validate.notNull(output, "File to write logs for ServerMonkey can't be null!");
-            Validate.notNullOrEmpty(waitForString, "String to wait for in ServerMonkey can't be null nor empty!");
+        private final String waitForString;
+
+        /**
+         *
+         * @param output where to write output from receiver
+         * @param waitForString for which string to wait
+         * @param contains set to true if we are waiting for the presence of the {@code waitForString} in the {@code output},
+         *        set to false when we are waiting until {@code waitForString} will be not present in the {@code output}
+         * @throws IOException
+         */
+        public Monkey(File output, String waitForString, boolean contains) throws IOException {
+            Validate.notNull(output, "File to write logs for Monkey can't be null!");
+            Validate.notNullOrEmpty(waitForString, "String to wait for in Monkey can't be null nor empty!");
             this.output = new FileWriter(output);
             this.waitForString = waitForString;
+            this.contains = contains;
         }
 
         @Override
@@ -209,12 +244,19 @@ public class SelendroidHelper {
                 logger.finest(line);
                 try {
                     output.append(line).append("\n").flush();
+                    if (contains) {
+                        if (line.contains(waitForString)) {
+                            this.active = true;
+                            return;
+                        }
+                    } else {
+                        if (!line.contains(waitForString)) {
+                            this.active = true;
+                            return;
+                        }
+                    }
                 } catch (IOException e) {
                     // ignore output
-                }
-                if (line.contains(waitForString)) {
-                    this.active = true;
-                    return;
                 }
             }
         }
@@ -239,4 +281,5 @@ public class SelendroidHelper {
             return null;
         }
     }
+
 }

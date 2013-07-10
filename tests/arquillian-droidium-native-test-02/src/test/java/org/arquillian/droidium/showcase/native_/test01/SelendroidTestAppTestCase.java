@@ -39,7 +39,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 /**
- * Android Droidium testing with Selendroid - proof of concept.
+ * Android Droidium testing with {@code SelendroidDriver}- proof of concept.
  * 
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  * 
@@ -49,7 +49,7 @@ import org.openqa.selenium.WebElement;
 public class SelendroidTestAppTestCase {
 
     /**
-     * Injection of SelendroidDriver from Selendroid project into our test
+     * Injection of {@code SelendroidDriver} from Selendroid project into our test
      */
     @Drone
     SelendroidDriver driver;
@@ -85,10 +85,6 @@ public class SelendroidTestAppTestCase {
 
     /**
      * Simple test which tries to register some user.
-     * 
-     * @param android Android device itself, it is not needed in tests as such since we interact only with {@code WebDriver}
-     *        injection.
-     * @param driver {@code WebDriver} injection which sends commands to Selendroid server installed on the Android device.
      */
     @Test
     @InSequence(1)
