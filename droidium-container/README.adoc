@@ -478,7 +478,7 @@ tests are done.
 == Logcat logging configuration
 
 Arquillian Container comes with logcat support, which by default logs everything from logcat, that's of type 
-`warning` and above, into `System.out` with a prefix `LOGCAT: `.
+`warning` and above, into `System.out` with a prefix `LOGCAT:`.
 
 ==== logLevel
 ===== default: W
@@ -563,7 +563,7 @@ really want the `logPackageBlacklist` to be empty.
 
 This flag is useful if you're about to test more than one device at a time. If you set this flag to `true`, 
 the outcome varies by `logType`. For `output` and `logger`, it will add the serial id of device to the prefix 
-`LOGCAT (serial-id): `. When the `file` logging is selected, the final log file name will contain the serial id 
+`LOGCAT (serial-id):`. When the `file` logging is selected, the final log file name will contain the serial id 
 before the extension (e.g. target/logcat.log will change to target/logcat.serial-id.log).
 
 ----
