@@ -475,6 +475,103 @@ tests are done.
 </configuration>
 ----
 
+== Logcat logging configuration
+
+Arquillian Container comes with logcat support, which by default logs everything from logcat, that's of type 
+`warning` and above, into `System.out` with a prefix `LOGCAT: `.
+
+==== logLevel
+===== default: W
+
+Sets the level filter. Android supports following levels:
+
+* `V` for verbose messages
+* `D` for debug messages
+* `I` for info messages
+* `W` for warning messages
+* `E` for error messages
+
+If you set level to `V`, everything will be logged, if `W` then only warnings and errors.
+
+----
+<configuration>
+    <property name="logLevel">D</property>
+</configuration>
+----
+
+==== logType
+===== default: output
+
+Used to define what should be done with the logs read from logcat.
+
+* `output` - print to System.out
+* `logger` - log through Logger instance
+* `file` - save into file
+* `disable` - disable logcat support
+
+----
+<configuration>
+    <property name="logType">file</property>
+</configuration>
+----
+
+==== logFilePath
+===== default: target/logcat.log
+
+If `logType` is set to `file`, this is the path, where the output log file will be stored. Make sure this path 
+is accessible and writable.
+
+----
+<configuration>
+    <property name="logFilePath">target/logs/lolcat.log</property>
+</configuration>
+----
+
+==== logPackageWhitelist
+===== default: not defined
+
+You can set, what would you like to always log, no matter of what. The whitelist is applied to process name, 
+which for applications is a package name. The value can be comma separated list of rules, in which you can use 
+`*` that will behave as regex's non-greedy expression `.*?`.
+
+NOTE: If you set `logPackageWhitelist` and not `logPackageBlacklist`, it's assumed that you want to only log 
+what's specified by whitelist, so the `logPackageBlacklist` will be set to `*`.
+
+----
+<configuration>
+    <property name="logPackageWhitelist">io.selenium*,system_server,org.example.showtime</property>
+</configuration>
+----
+
+==== logPackageBlacklist
+===== default: not defined
+
+What's not catched by whitelist is then passed to blacklist. It works exactly the opposite way, that means 
+whatever matches is discarted. As mentioned in `logPackageWhitelist` description, when you set `logPackageWhitelist` 
+but not `logPackageBlacklist`, it will automatically get set to `*`. If you don't want this behavior, 
+just make sure you set `logPackageBlacklist` in your configuration to empty value. This way you declare that you 
+really want the `logPackageBlacklist` to be empty.
+
+----
+<configuration>
+    <property name="logPackageBlacklist">org.example.*,com.android.phone</property>
+</configuration>
+----
+
+==== logSerialId
+===== default: false
+
+This flag is useful if you're about to test more than one device at a time. If you set this flag to `true`, 
+the outcome varies by `logType`. For `output` and `logger`, it will add the serial id of device to the prefix 
+`LOGCAT (serial-id): `. When the `file` logging is selected, the final log file name will contain the serial id 
+before the extension (e.g. target/logcat.log will change to target/logcat.serial-id.log).
+
+----
+<configuration>
+    <property name="logSerialId">true</property>
+</configuration>
+----
+
 == Connection logic of Android container
 
 When the container you want to use, of some particular `avdName`, is not started, it is automatically started 
