@@ -1,4 +1,4 @@
-== Arquillian Droidium native test
+== Arquillian Droidium native test - SelendroidDriver
 
 When you are executing tests, you have to set name of (possibly started) AVD
 you want to use for test executions. You _have to_ provide this information 

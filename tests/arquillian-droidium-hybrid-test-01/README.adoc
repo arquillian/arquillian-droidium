@@ -1,8 +1,11 @@
-== Arquillian Droidium native test - WebDriver
+== Arquillian Droidium hybrid test - SelendroidDriver
 
 When you are executing tests, you have to set name of (possibly started) AVD
 you want to use for test executions. You _have to_ provide this information 
 for Maven otherwise tests will fail.
+
+This test shows how hybrid (native + web) applications can be tested in one test run 
+and how switching between native and web mode is done.
 
 `mvn clean test -Dname.avd=name_of_avd`
 

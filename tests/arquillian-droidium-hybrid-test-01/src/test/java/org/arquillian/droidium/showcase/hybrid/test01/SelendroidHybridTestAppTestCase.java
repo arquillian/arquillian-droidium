@@ -14,11 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.showcase.native_.test01;
+package org.arquillian.droidium.showcase.hybrid.test01;
+
+import io.selendroid.SelendroidDriver;
 
 import java.io.File;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
+import org.arquillian.droidium.showcase.hybrid.test01.utils.WaitingConditions;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -34,18 +37,24 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
- * Android Droidium testing with Selendroid - proof of concept.
+ * Android Droidium hybrid testing with {@code SelendroidDriver}- proof of concept.
+ *
+ * Selendroid and {@code SelendroidDriver} provides a way how to test native applications and web applications embedded in
+ * native applications via so-called web view and native view. {@code SelendroidDriver} can switch between these modes upon
+ * desire in one test run. This test case shows how it is done.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
 @RunWith(Arquillian.class)
 @RunAsClient
-public class SelendroidTestAppTestCase {
+public class SelendroidHybridTestAppTestCase {
 
     /**
      * @return deployment for Android device, the whole test application from Selendroid test is deployed without any change. We
@@ -71,17 +80,55 @@ public class SelendroidTestAppTestCase {
     private static final String USER_PRGRAMMING_LANGUAGE = "Scala";
 
     /**
-     * Simple test which tries to register some user.
-     *
-     * @param android Android device itself, it is not needed in tests as such since we interact only with {@code WebDriver}
-     *        injection.
-     * @param driver {@code WebDriver} injection which sends commands to Selendroid server installed on the Android device.
+     * Simple test which tries to register some user and verifies him - native view.
      */
     @Test
     @InSequence(1)
     @OperateOnDeployment("android")
-    public void test01(@ArquillianResource AndroidDevice android, @Drone WebDriver driver) {
+    public void nativeViewTest(@ArquillianResource AndroidDevice android, @Drone SelendroidDriver driver) {
+        // show here just for completeness, native mode is default
+        driver.switchTo().window("NATIVE_APP");
 
+        registerUser(driver);
+        verifyUser(driver);
+    }
+
+    /**
+     * Simple test in web view mode
+     */
+    @Test
+    @InSequence(2)
+    @OperateOnDeployment("android")
+    public void webViewTest(@ArquillianResource AndroidDevice android, @Drone SelendroidDriver driver) {
+        WebElement button = driver.findElement(By.id("buttonStartWebview"));
+        button.click();
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("Go to home screen")));
+
+        //
+        // Switching into WEBVIEW - the whole point of this project
+        //
+        driver.switchTo().window("WEBVIEW");
+
+        WebElement inputField = driver.findElement(By.id("name_input"));
+        Assert.assertNotNull(inputField);
+        inputField.clear();
+        inputField.sendKeys("John Doe");
+
+        WebElement car = driver.findElement(By.name("car"));
+        Select preferedCar = new Select(car);
+        preferedCar.selectByValue("audi");
+        inputField.submit();
+
+        WaitingConditions.pageTitleToBe(driver, "Hello: John Doe");
+    }
+
+    /**
+     * Registers a user
+     *
+     * @param driver
+     */
+    private void registerUser(SelendroidDriver driver) {
         // Go to user registration
         driver.findElement(By.id("startUserRegistration")).click();
 
@@ -118,5 +165,25 @@ public class SelendroidTestAppTestCase {
 
         // register
         driver.findElement(By.id("btnRegisterUser")).click();
+    }
+
+    /**
+     * Verifies that user is registered
+     *
+     * @param driver
+     */
+    private void verifyUser(SelendroidDriver driver) {
+        WebDriverWait wait = new WebDriverWait(driver, 5);
+        WebElement inputUserName = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("label_username_data")));
+
+        Assert.assertEquals(inputUserName.getText(), USER_NAME);
+        Assert.assertEquals(driver.findElement(By.id("label_email_data")).getText(), USER_EMAIL);
+        Assert.assertEquals(driver.findElement(By.id("label_password_data")).getText(), USER_PASSWORD);
+        Assert.assertEquals(driver.findElement(By.id("label_name_data")).getText(), USER_REAL_NAME);
+        Assert.assertEquals(driver.findElement(By.id("label_preferedProgrammingLanguage_data")).getText(),
+            USER_PRGRAMMING_LANGUAGE);
+        Assert.assertEquals(driver.findElement(By.id("label_acceptAdds_data")).getText(), "true");
+
+        driver.findElement(By.id("buttonRegisterUser")).click();
     }
 }

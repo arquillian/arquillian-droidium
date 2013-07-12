@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.showcase.native_.test01;
+package org.arquillian.droidium.showcase.native_.test02;
 
 import io.selendroid.SelendroidDriver;
 
@@ -23,7 +23,9 @@ import java.io.File;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.container.test.api.TargetsContainer;
+import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -33,32 +35,18 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 /**
  * Android Droidium testing with {@code SelendroidDriver}- proof of concept.
- * 
+ *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
- * 
+ *
  */
 @RunWith(Arquillian.class)
 @RunAsClient
 public class SelendroidTestAppTestCase {
-
-    /**
-     * Injection of {@code SelendroidDriver} from Selendroid project into our test
-     */
-    @Drone
-    SelendroidDriver driver;
-
-    /**
-     * Android device abstraction in case we need it
-     */
-    @ArquillianResource
-    AndroidDevice android;
 
     /**
      * @return deployment for Android device, the whole test application from Selendroid test is deployed without any change. We
@@ -89,7 +77,7 @@ public class SelendroidTestAppTestCase {
     @Test
     @InSequence(1)
     @OperateOnDeployment("android")
-    public void test01() {
+    public void test01(@ArquillianResource AndroidDevice android, @Drone SelendroidDriver driver) {
 
         // just to be sure injections are good
         Assert.assertNotNull(driver);

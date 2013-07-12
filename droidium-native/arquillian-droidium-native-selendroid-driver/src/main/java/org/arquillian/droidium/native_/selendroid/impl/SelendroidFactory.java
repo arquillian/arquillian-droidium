@@ -52,13 +52,12 @@ public class SelendroidFactory extends AbstractSelendroidFactory implements
 
     @Override
     public SelendroidDriver createInstance(SelendroidConfiguration configuration) {
-        SelendroidDriver driver = null;
         try {
-            driver = new SelendroidDriver(configuration.getRemoteAddress(), new DesiredCapabilities());
+            return new SelendroidDriver(configuration.getRemoteAddress(), new DesiredCapabilities());
         } catch (Exception e) {
-            logger.info("Unable to create an instance of SelendroidDriver: " + e.getMessage());
+            logger.severe("Unable to create an instance of SelendroidDriver: " + e.getMessage());
+            return null;
         }
-        return driver;
     }
 
     @Override
