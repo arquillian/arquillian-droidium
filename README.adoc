@@ -38,16 +38,18 @@ into two profiles. The first one is called _automatic_ and even it uses
 Android SDK, it does not need any additional intervention from a tester point of view.
 You execute _automatic_ tests like:
 
-`mvn clean test -Pandroid-manual-emulator`
+`mvn clean test -Pandroid-automatic
 
-On the other hand, there are tests which are expecting to have real Android device 
+Tests which are expecting to have some Android emulator already started are triggered by
+
+`mvn clean test -Pandroid-manual-emulator``
+
+Finally, there are tests which are expecting to have real Android device 
 connected via USB cable to your computer. You trigger this profile by executing:
 
 `mvn clean test -Pandroid-manual-real`
 
-Please consult testing profiles in `droidium-container/arquillian-droidium-container-impl/pom.xml`
-to know exactly what kind of emulators you have to have and what possibilities you have when 
-using AVDs or ports different from the default ones.
+IMPORTANT: Please consult testing profiles in `droidium-container/arquillian-droidium-container-impl/pom.xml` to know exactly what kind of emulators you have to have and what possibilities you have when using AVDs or ports different from the default ones.
 
 === Proof-of-concept tests
 
