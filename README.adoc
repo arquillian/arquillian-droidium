@@ -42,7 +42,7 @@ You execute _automatic_ tests like:
 
 Tests which are expecting to have some Android emulator already started are triggered by
 
-`mvn clean test -Pandroid-manual-emulator``
+`mvn clean test -Pandroid-manual-emulator`
 
 Finally, there are tests which are expecting to have real Android device 
 connected via USB cable to your computer. You trigger this profile by executing:
@@ -55,6 +55,20 @@ IMPORTANT: Please consult testing profiles in `droidium-container/arquillian-dro
 
 Test projects which are reflecting the very basic setup to bootstrap your 
 testing experience are placed in `tests` directory.
+
+=== How to contribute?
+
+You are very welcome to contribute to this set of extensions in any way. It is very welcome to test 
+possibilities of testing - simulate own scenarios and so on.
+
+You should follow these steps:
+
+* Use separate branch for every feature you are adding
+* use IDE configuration files for JBoss located https://github.com/jboss/ide-config[here]
+* Test your contribution and write tests whenever possible and necessary
+* When you are writing some testing project, please put it in `tests` directory and follow naming rules as already shown
+
+Thank you!
 
 === Contact
 
