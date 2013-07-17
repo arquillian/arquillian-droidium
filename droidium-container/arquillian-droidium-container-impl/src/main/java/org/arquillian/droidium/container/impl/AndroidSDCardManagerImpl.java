@@ -94,6 +94,7 @@ public class AndroidSDCardManagerImpl implements AndroidSDCardManager {
         sdCard.setGenerated(configuration.getGenerateSDCard());
         sdCard.setLabel(configuration.getSdCardLabel());
         sdCard.setSize(configuration.getSdSize());
+        sdCard.setGenerated(configuration.getGenerateSDCard());
 
         if (sdCard.getLabel() == null) {
             String sdCardLabel = idGenerator.get().getIdentifier(IdentifierType.SD_CARD_LABEL.getClass());

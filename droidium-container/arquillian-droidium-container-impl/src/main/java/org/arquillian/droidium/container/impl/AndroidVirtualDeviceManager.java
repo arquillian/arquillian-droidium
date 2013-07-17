@@ -125,7 +125,8 @@ public class AndroidVirtualDeviceManager {
             Command command = new Command();
             command.add(sdk.getAndroidPath()).add("create").add("avd").add("-n").add(configuration.getAvdName())
                 .add("-t").add("android-" + configuration.getApiLevel()).add("-f")
-                .add("-p").add(configuration.getGeneratedAvdPath() + configuration.getAvdName());
+                .add("-p")
+                .add(configuration.getGeneratedAvdPath() + System.getProperty("file.separator") + configuration.getAvdName());
             if (configuration.getSdCard() != null && new File(configuration.getSdCard()).exists()) {
                 command.add("-c").add(configuration.getSdCard());
             } else {

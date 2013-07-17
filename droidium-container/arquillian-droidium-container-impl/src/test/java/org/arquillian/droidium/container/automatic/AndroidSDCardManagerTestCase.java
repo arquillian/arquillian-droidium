@@ -22,6 +22,7 @@
 
 package org.arquillian.droidium.container.automatic;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -68,11 +69,11 @@ public class AndroidSDCardManagerTestCase extends AbstractAndroidTestTestBase {
 
     private static String SD_CARD = "340df030-8994-11e2-9e96-0800200c9a66.img";
 
-    private String SD_CARD_LABEL = "ba817e70-8994-11e2-9e96-0800200c9a66";
+    private final String SD_CARD_LABEL = "ba817e70-8994-11e2-9e96-0800200c9a66";
 
     private static String SD_PATH = System.getProperty("java.io.tmpdir") + System.getProperty("file.separator") + SD_CARD;
 
-    private String SD_SIZE = "128M";
+    private final String SD_SIZE = "128M";
 
     @Mock
     private IdentifierGenerator idGenerator;
@@ -171,7 +172,10 @@ public class AndroidSDCardManagerTestCase extends AbstractAndroidTestTestBase {
     }
 
     @Test
-    public void testGenerateTrueSDCardNotNullSDCardDoesNotExists() {
+    public void testGenerateTrueSDCardNotNullSDCardDoesNotExist() {
+
+        assertFalse("file of SD_PATH already exists!", new File(SD_PATH).exists());
+
         configuration = new AndroidContainerConfiguration();
         setupSDCardConfiguration(configuration, SD_PATH, SD_SIZE, SD_CARD_LABEL, true);
 

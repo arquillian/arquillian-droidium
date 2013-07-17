@@ -2,17 +2,17 @@
 
 This is the home of the following extensions for Arquillian testing platform:
 
-=== Android Droidium container
+=== Arquillian Droidium container
 
 Implementation of Arquillian container abstraction for Android devices.
 
-=== Android Droidium Web
+=== Arquillian Droidium Web
 
 Extension for supporting web testing for Droidium container. You need this 
 when you want to functionaly test your application on mobile devices.
 Web extension relies on Selenium project from where it takes Android server APK.
 
-=== Android Droidium Native
+=== Arquillian Droidium Native
 
 Extension for supporting testing of native applications for Droidium container. You 
 need this extension when you want to functionally test your native Android application.
@@ -21,6 +21,33 @@ from where it takes Selendroid server APK.
 
 Every extension has its own README and configuration documentation. You are 
 welcome to check them in their respective directories.
+
+=== How to test extensions?
+
+When you are doing `mvn clean install`, some tests are executed automatically. These 
+tests do not need any special profile to be chosen and they work out of box.
+
+Tests for Arquillian Droidium resides mainly in `droidium-container`.
+Android specific tests are skipped by default since they require Android SDK to 
+be installed on target host.
+
+If you want to try them, you *have to* have Android SDK installed locally and 
+`$ANDROID_HOME` has to point to the installation directory. 
+Next, you have to select specific profile. Android specific tests are divided 
+into two profiles. The first one is called _automatic_ and even it uses 
+Android SDK, it does not need any additional intervention from a tester point of view.
+You execute _automatic_ tests like:
+
+`mvn clean test -Pandroid-manual-emulator`
+
+On the other hand, there are tests which are expecting to have real Android device 
+connected via USB cable to your computer. You trigger this profile by executing:
+
+`mvn clean test -Pandroid-manual-real`
+
+Please consult testing profiles in `droidium-container/arquillian-droidium-container-impl/pom.xml`
+to know exactly what kind of emulators you have to have and what possibilities you have when 
+using AVDs or ports different from the default ones.
 
 === Proof-of-concept tests
 

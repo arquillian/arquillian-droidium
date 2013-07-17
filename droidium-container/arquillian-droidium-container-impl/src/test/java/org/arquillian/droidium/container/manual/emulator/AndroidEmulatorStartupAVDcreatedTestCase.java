@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.arquillian.droidium.container.manual;
+package org.arquillian.droidium.container.manual.emulator;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -75,9 +75,9 @@ public class AndroidEmulatorStartupAVDcreatedTestCase extends AbstractContainerT
 
     private ProcessExecutor processExecutor;
 
-    private String EMULATOR_AVD_NAME = System.getProperty("emulator.to.run.avd.name", "test01");
+    private final String EMULATOR_AVD_NAME = System.getProperty("emulator.to.run.avd.name", "test01");
 
-    private String EMULATOR_CONSOLE_PORT = System.getProperty("emulator.to.run.console.port", "5556");
+    private final String EMULATOR_CONSOLE_PORT = System.getProperty("emulator.to.run.console.port", "5556");
 
     @Override
     protected void addExtensions(List<Class<?>> extensions) {
@@ -92,6 +92,7 @@ public class AndroidEmulatorStartupAVDcreatedTestCase extends AbstractContainerT
         configuration = new AndroidContainerConfiguration();
         configuration.setAvdName(EMULATOR_AVD_NAME);
         configuration.setConsolePort(EMULATOR_CONSOLE_PORT);
+        configuration.setEmulatorOptions("-no-audio -no-window -memory 256 -nocache -no-snapshot-save -no-snapstorage");
         androidSDK = new AndroidSDK(configuration);
         processExecutor = new ProcessExecutor();
 

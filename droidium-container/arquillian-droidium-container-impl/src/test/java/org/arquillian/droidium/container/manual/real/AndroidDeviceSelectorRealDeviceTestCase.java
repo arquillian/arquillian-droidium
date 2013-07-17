@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.arquillian.droidium.container.manual;
+package org.arquillian.droidium.container.manual.real;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -46,29 +46,19 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 /**
- * Tests connecting to the running emulator of specific avd and console port.
- *
- * You set the name of running AVD by specifying of</br>
- * <p>{@code -Demulator.running.avd.name=avd_name}</p>
- *
- * <p>{@code -Demulator.running.console.port=port_number}</p>
- *
- * at the Maven command line in connection with -Pmanual-test profile.
- * Default AVD name is "test01", default port number is 5554.
+ * Tests getting of real Android device via {@link AndroidDeviceSelectorImpl}
  *
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
 @RunWith(MockitoJUnitRunner.class)
-public class AndroidDeviceSelectorEmulatorRunningTestCase extends AbstractContainerTestBase {
+public class AndroidDeviceSelectorRealDeviceTestCase extends AbstractContainerTestBase {
 
     private AndroidContainerConfiguration configuration;
 
+    private String PHYSICAL_DEVICE_SERIAL_ID = System.getProperty("device.serial.id");
+    
     private AndroidSDK androidSDK;
-
-    private String RUNNING_EMULATOR_AVD_NAME = System.getProperty("emulator.running.avd.name", "test01");
-
-    private String RUNNING_EMULATOR_CONSOLE_PORT = System.getProperty("emulator.running.console.port", "5554");
 
     @Override
     protected void addExtensions(List<Class<?>> extensions) {
@@ -79,8 +69,8 @@ public class AndroidDeviceSelectorEmulatorRunningTestCase extends AbstractContai
     @Before
     public void setup() {
         configuration = new AndroidContainerConfiguration();
-        configuration.setAvdName(RUNNING_EMULATOR_AVD_NAME);
-        configuration.setConsolePort(RUNNING_EMULATOR_CONSOLE_PORT);
+        configuration.setForceNewBridge(true);
+        configuration.setSerialId(PHYSICAL_DEVICE_SERIAL_ID);
         androidSDK = new AndroidSDK(configuration);
 
         getManager().getContext(ContainerContext.class).activate("doesnotmatter");
@@ -96,10 +86,11 @@ public class AndroidDeviceSelectorEmulatorRunningTestCase extends AbstractContai
     }
 
     @Test
-    public void testGetRunningEmulator() {
+    public void testGetRealDevice() {
         fire(new AndroidContainerStart());
 
         AndroidBridge bridge = getManager().getContext(ContainerContext.class).getObjectStore().get(AndroidBridge.class);
+
         bind(ContainerScoped.class, AndroidBridge.class, bridge);
 
         AndroidDevice runningDevice = getManager().getContext(ContainerContext.class)
@@ -114,4 +105,5 @@ public class AndroidDeviceSelectorEmulatorRunningTestCase extends AbstractContai
         assertEventFiredInContext(AndroidBridgeInitialized.class, ContainerContext.class);
         assertEventFiredInContext(AndroidDeviceReady.class, ContainerContext.class);
     }
+
 }

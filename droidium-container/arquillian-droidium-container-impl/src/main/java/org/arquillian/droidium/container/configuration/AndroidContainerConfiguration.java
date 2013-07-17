@@ -422,7 +422,7 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
         sb.append("adbPort\t\t\t:").append(this.adbPort).append("\n");
         sb.append("logLevel\t\t:").append(this.logLevel).append("\n");
         sb.append("logType\t\t\t:").append(this.logType).append("\n");
-        sb.append("logFilePath\t\t\t:").append(this.logFilePath).append("\n");
+        sb.append("logFilePath\t\t:").append(this.logFilePath).append("\n");
         sb.append("logPackageWhitelist\t:").append(this.logPackageWhitelist).append("\n");
         sb.append("logPackageBlacklist\t:").append(this.logPackageBlacklist).append("\n");
         return sb.toString();

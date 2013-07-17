@@ -25,8 +25,8 @@
 
     <!-- Artifact Configuration -->
     <artifactId>arquillian-droidium-container-impl</artifactId>
-    <name>Arquillian Droidium Container</name>
-    <description>Arquillian Droidium Container</description>
+    <name>Arquillian Droidium Container Impl</name>
+    <description>Arquillian Droidium Container Impl</description>
 
     <!-- Properties -->
     <properties>
@@ -185,15 +185,14 @@
         </profile>
         <profile>
         <!-- Be sure that: 
-            1) you started Android Virtual Device (emulator) with:
+            1)
+                you started Android Virtual Device (emulator) prior to test with:
                 a) AVD name test01
                 b) its console port is 5554
             2)
                 a) your port 5556 is free, it will be used when the testing 
                    of startup of container takes place
                 b) you have AVD of name test01 at your system
-            3) you have real Android mobile phone connected to PC via USB
-               you have to set its serial number, see following points.
 
             Regarding of 1)
                 AVD name can be supressed by setting -Demulator.running.avd.name=your_value
@@ -201,11 +200,8 @@
             Regarding of 2)
                 AVD name can be suppressed by -Demulator.to.run.avd.name=your_value
                 Console port can be supressed by setting -Demulator.to.run.console.port=your_value
-            Regarding of 3)
-                You HAVE TO set ID of physical device as -Ddevice.serial.id=ID
-                You get that number from \adb devices -l' command.
             -->
-            <id>android-manual</id>
+            <id>android-manual-emulator</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
@@ -217,7 +213,32 @@
                         <configuration>
                             <skipTests>false</skipTests>
                             <includes>
-                                <include>org/arquillian/droidium/container/manual/**</include>
+                                <include>org/arquillian/droidium/container/manual/emulator/**</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <!-- Be sure that:
+            1) You have real Android mobile phone connected to PC via USB.
+               You HAVE TO set ID of physical device as -Ddevice.serial.id=ID.
+               You get that number from \adb devices -l' command.
+            -->
+            <id>android-manual-real</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <skipTests>false</skipTests>
+                            <includes>
+                                <include>org/arquillian/droidium/container/manual/real/**</include>
                             </includes>
                         </configuration>
                     </plugin>

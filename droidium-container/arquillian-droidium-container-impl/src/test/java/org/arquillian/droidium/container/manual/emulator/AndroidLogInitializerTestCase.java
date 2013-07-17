@@ -1,4 +1,10 @@
-package org.arquillian.droidium.container.manual;
+package org.arquillian.droidium.container.manual.emulator;
+
+import static org.junit.Assert.assertNotNull;
+
+import java.io.IOException;
+import java.io.Writer;
+import java.util.List;
 
 import org.arquillian.droidium.container.AbstractAndroidTestTestBase;
 import org.arquillian.droidium.container.api.AndroidBridge;
@@ -19,21 +25,17 @@ import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.util.List;
-
-import static org.junit.Assert.assertNotNull;
-
 /**
  * @author <a href="mailto:tkriz@redhat.com">Tadeas Kriz</a>
  */
 @RunWith(MockitoJUnitRunner.class)
+@Ignore("not stable test")
 public class AndroidLogInitializerTestCase extends AbstractAndroidTestTestBase {
 
 
@@ -41,9 +43,9 @@ public class AndroidLogInitializerTestCase extends AbstractAndroidTestTestBase {
 
     private AndroidSDK androidSDK;
 
-    private String RUNNING_EMULATOR_AVD_NAME = System.getProperty("emulator.running.avd.name", "test01");
+    private final String RUNNING_EMULATOR_AVD_NAME = System.getProperty("emulator.running.avd.name", "test01");
 
-    private String RUNNING_EMULATOR_CONSOLE_PORT = System.getProperty("emulator.running.console.port", "5554");
+    private final String RUNNING_EMULATOR_CONSOLE_PORT = System.getProperty("emulator.running.console.port", "5554");
 
     @Override
     protected void addExtensions(List<Class<?>> extensions) {

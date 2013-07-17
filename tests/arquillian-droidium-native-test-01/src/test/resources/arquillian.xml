@@ -24,6 +24,7 @@
                     It matches remoteAddress in webdriver extension. -->
                 <property name="droneHostPort">8080</property>
                 <property name="droneGuestPort">8080</property>
+                <property name="logType">disable</property>
             </configuration>
         </container>
     </group>
