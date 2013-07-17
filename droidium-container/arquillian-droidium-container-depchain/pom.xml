@@ -28,7 +28,7 @@
     <packaging>pom</packaging>
     <name>Arquillian Droidium Container Dependency Chain</name>
     <description>Arquillian Droidium Container Dependency Chain</description>
-    
+
     <!-- Developers -->
     <developers>
         <developer>

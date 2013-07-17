@@ -45,8 +45,11 @@
         <version.arquillian.core>1.0.4.Final</version.arquillian.core>
         <version.com.android>r16</version.com.android>
         <version.maven.release.plugin>2.4.1</version.maven.release.plugin>
+        
+        <!-- Repository URLS -->
         <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
         <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
+        <jboss.public.repo.url>http://repository.jboss.org/nexus/content/groups/public</jboss.public.repo.url>
     </properties>
 
     <!-- Dependency management -->
@@ -104,6 +107,11 @@
                         <localCheckout>true</localCheckout>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                    <version>2.7</version>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
@@ -121,4 +129,14 @@
             <url>${jboss.snapshots.repo.url}</url>
         </snapshotRepository>
     </distributionManagement>
+    
+    <!-- Repositories -->
+    <repositories>
+        <repository>
+            <id>jboss-public</id>
+            <name>JBoss Public Repository</name>
+            <url>${jboss.public.repo.url}</url>
+        </repository>
+    </repositories>
+
 </project>

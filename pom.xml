@@ -70,6 +70,7 @@
         <!-- Repository URLS -->
         <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
         <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
+        <jboss.public.repo.url>http://repository.jboss.org/nexus/content/groups/public</jboss.public.repo.url>
     </properties>
 
     <!-- Dependency Management -->
@@ -144,6 +145,15 @@
                 </configuration>
             </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                    <version>2.7</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
     <!-- Profiles -->
@@ -208,5 +218,25 @@
             <url>${jboss.snapshots.repo.url}</url>
         </snapshotRepository>
     </distributionManagement>
+
+    <!-- Repositories -->
+    <repositories>
+        <repository>
+            <id>jboss-public</id>
+            <name>JBoss Public Repository</name>
+            <url>${jboss.public.repo.url}</url>
+        </repository>
+    </repositories>
+    
+    <!-- Reporting -->
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.3</version>
+            </plugin>
+        </plugins>
+    </reporting>
 
 </project>
