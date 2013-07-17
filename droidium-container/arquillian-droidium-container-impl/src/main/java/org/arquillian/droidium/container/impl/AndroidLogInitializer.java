@@ -1,7 +1,5 @@
 package org.arquillian.droidium.container.impl;
 
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.Match;
-
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
