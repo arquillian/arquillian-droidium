@@ -51,7 +51,6 @@
         <dependency>
             <groupId>org.arquillian.extension</groupId>
             <artifactId>arquillian-droidium-multiple-containers</artifactId>
-            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -163,7 +162,12 @@
             </build>
         </profile>
         <profile>
-            <!-- Profile which needs to have Android SDK installed on testing machine. -->
+            <!--
+                Profile which needs to have Android SDK installed on testing machine.
+
+                You can specify emulator timeout by setting -Demulator.startup.timeout=number.
+                Default is 600 seconds.
+            -->
             <id>android-automatic</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
@@ -193,6 +197,9 @@
                 a) your port 5556 is free, it will be used when the testing 
                    of startup of container takes place
                 b) you have AVD of name test01 at your system
+            3)
+                You can specify emulator timeout by setting -Demulator.startup.timeout=number.
+                Default is 600 seconds.
 
             Regarding of 1)
                 AVD name can be supressed by setting -Demulator.running.avd.name=your_value
