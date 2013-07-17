@@ -38,7 +38,7 @@ into two profiles. The first one is called _automatic_ and even it uses
 Android SDK, it does not need any additional intervention from a tester point of view.
 You execute _automatic_ tests like:
 
-`mvn clean test -Pandroid-automatic
+`mvn clean test -Pandroid-automatic`
 
 Tests which are expecting to have some Android emulator already started are triggered by
 
