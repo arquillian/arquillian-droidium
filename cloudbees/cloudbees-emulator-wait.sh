@@ -10,11 +10,12 @@
 AVD_NAME=test01
 MEMORY=256
 ADB_CMD=/opt/android/android-sdk-linux/platform-tools/adb
+EMULATOR_CMD=/opt/android/android-sdk-linux/tools/emulator
 
 echo "Starting emulator $AVD_NAME"
-echo "executing: 'emulator -avd $AVD_NAME -no-audio -no-window -memory $MEMORY -nocache -no-snapshot-save -no-snapstorage'"
+echo "executing: 'emulator -avd $AVD_NAME -no-skin -no-audio -no-window -memory $MEMORY -nocache -no-snapshot-save -no-snapstorage'"
 
-emulator -avd $AVD_NAME -no-audio -no-window -memory $MEMORY -nocache -no-snapshot-save -no-snapstorage &
+$EMULATOR_CMD -avd $AVD_NAME -no-skin -no-audio -no-window -memory $MEMORY -nocache -no-snapshot-save -no-snapstorage &
 
 echo "Waiting until emulator $AVD_NAME is booted"
 
