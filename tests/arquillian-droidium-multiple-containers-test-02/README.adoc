@@ -21,3 +21,7 @@ This tests uses Selendroid server APK from http://dominikdary.github.io/selendro
 
 You have to have jarsigner, keytool and so on in your system. You are usually good with default JDK installation.
 You should have these commands in `$JAVA_HOME`.
+
+This project can be run in a headless mode as well, typically in a CI service like Cloudbees.
+You are obliged to activate headless profile with `-Pheadless`. It adds the following switches to `emulator` command 
+upon its start: `-no-skin -no-audio -no-window -nocache -no-snapshot-save -no-snapstorage`.

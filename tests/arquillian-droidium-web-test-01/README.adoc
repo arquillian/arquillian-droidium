@@ -17,3 +17,7 @@ where web app is running.
 JBoss AS container is automatically downloaded for you into `target` so you do not have to 
 managed your JBoss instance on your own. Please be sure there is not any JBoss AS container already 
 running before execution of tests.
+
+This project can be run in a headless mode as well, typically in a CI service like Cloudbees.
+You are obliged to activate headless profile with `-Pheadless`. It adds the following switches to `emulator` command 
+upon its start: `-no-skin -no-audio -no-window -nocache -no-snapshot-save -no-snapstorage`.

@@ -20,7 +20,6 @@
         <groupId>org.arquillian.droidium.tests</groupId>
         <artifactId>arquillian-droidium-tests-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>arquillian-droidium-hybrid-test-01</artifactId>
@@ -106,14 +105,17 @@
     <!-- Profiles -->
     <profiles>
         <profile>
-            <id>test01</id>
+            <id>default</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>!skipDefault</name>
+                </property>
             </activation>
 
             <!-- Name of AVD you want to use in your test -->
             <properties>
                 <android.avd.name>${name.avd}</android.avd.name>
+                <android.emulator.options></android.emulator.options>
             </properties>
 
             <dependencies>
@@ -136,6 +138,20 @@
                     <scope>test</scope>
                 </dependency>
             </dependencies>
+        </profile>
+        <profile>
+            <!-- Activate this profile when you want to run in headless mode -->
+            <id>headless</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+
+            <!-- Properties -->
+            <properties>
+                <android.emulator.options>
+                    -no-skin -no-audio -no-window -nocache -no-snapshot-save -no-snapstorage
+                </android.emulator.options>
+            </properties>
         </profile>
     </profiles>
 </project> 

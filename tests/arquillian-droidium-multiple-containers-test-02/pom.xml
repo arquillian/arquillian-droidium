@@ -20,7 +20,6 @@
         <groupId>org.arquillian.droidium.tests</groupId>
         <artifactId>arquillian-droidium-tests-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>arquillian-droidium-multiple-containers-test-02</artifactId>
@@ -139,10 +138,11 @@
     <!-- Profiles -->
     <profiles>
         <profile>
-            <!-- Shows configuration of multiple container adapters on classpath -->
-            <id>test01</id>
+            <id>default</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>!skipDefault</name>
+                </property>
             </activation>
 
             <properties>
@@ -151,6 +151,7 @@
                     mvn clean test -Dname.avd.1=android-4.1.2 -Dname.avd.2=android-4.2 -->
                 <android.avd.name.1>${name.avd.1}</android.avd.name.1>
                 <android.avd.name.2>${name.avd.2}</android.avd.name.2>
+                <android.emulator.options></android.emulator.options>
             </properties>
 
             <!-- Dependencies -->
@@ -173,6 +174,20 @@
                     <scope>test</scope>
                 </dependency>
             </dependencies>
+        </profile>
+        <profile>
+            <!-- Activate this profile when you want to run in headless mode -->
+            <id>headless</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+
+            <!-- Properties -->
+            <properties>
+                <android.emulator.options>
+                    -no-skin -no-audio -no-window -nocache -no-snapshot-save -no-snapstorage
+                </android.emulator.options>
+            </properties>
         </profile>
     </profiles>
 

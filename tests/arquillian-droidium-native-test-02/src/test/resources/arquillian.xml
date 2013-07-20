@@ -20,6 +20,10 @@
                 <!-- Name of Android container to start or use during tests. This property is filtered 
                     meaning it is set in profile in pom.xml under the same name of the property. -->
                 <property name="avdName">${android.avd.name}</property>
+                <property name="emulatorOptions">${android.emulator.options}</property>
+                <property name="emulatorBootupTimeoutInSeconds">600</property>
+                <!-- Write only errors from Android device -->
+                <property name="logLevel">E</property>
                 <!-- Everything sent to host port is forwarded to guest port and vice versa. 
                     It matches remoteAddress in webdriver extension. -->
                 <property name="droneHostPort">8080</property>
