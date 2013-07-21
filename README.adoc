@@ -63,10 +63,10 @@ possibilities of testing - simulate own scenarios and so on.
 
 You should follow these steps:
 
-* Use separate branch for every feature you are adding
-* use IDE configuration files for JBoss located https://github.com/jboss/ide-config[here]
-* Test your contribution and write tests whenever possible and necessary
-* When you are writing some testing project, please put it in `tests` directory and follow naming rules as already shown
+* Use separate branch for every feature you are adding.
+* Use IDE configuration files for JBoss located https://github.com/jboss/ide-config[here].
+* Test your contribution and write tests whenever possible and necessary.
+* When you are writing some testing project, please put it in `tests` directory and follow naming rules as already shown.
 
 Thank you!
 
