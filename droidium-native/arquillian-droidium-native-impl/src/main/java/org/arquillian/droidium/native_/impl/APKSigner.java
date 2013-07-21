@@ -42,19 +42,19 @@ public class APKSigner implements Signer {
 
     private static final Logger logger = Logger.getLogger(APKSigner.class.getName());
 
-    private AndroidSDK androidSDK;
+    private final AndroidSDK androidSDK;
 
-    private DroidiumNativeConfiguration droneConfiguration;
+    private final DroidiumNativeConfiguration configuration;
 
-    private ProcessExecutor processExecutor;
+    private final ProcessExecutor processExecutor;
 
-    private AndroidApplicationHelper applicationHelper;
+    private final AndroidApplicationHelper applicationHelper;
 
     /**
      *
      * @param processExecutor
      * @param androidSDK
-     * @param droneConfiguration
+     * @param configuration
      * @param applicationHelper
      * @throws IllegalArgumentException when some of arguments is null
      */
@@ -67,7 +67,7 @@ public class APKSigner implements Signer {
         Validate.notNull(applicationHelper, "Andorid application helper can't be null object to pass to APKSigner");
         this.processExecutor = processExecutor;
         this.androidSDK = androidSDK;
-        this.droneConfiguration = droneConfiguration;
+        this.configuration = droneConfiguration;
         this.applicationHelper = applicationHelper;
     }
 
@@ -86,11 +86,11 @@ public class APKSigner implements Signer {
             .add("-signedjar")
             .add(signed.getAbsolutePath())
             .add("-storepass")
-            .add(droneConfiguration.getStorepass())
+            .add(configuration.getStorepass())
             .add("-keystore")
-            .add(droneConfiguration.getKeystore().getAbsolutePath())
+            .add(configuration.getKeystore().getAbsolutePath())
             .add(toSign.getAbsolutePath())
-            .add(droneConfiguration.getAlias());
+            .add(configuration.getAlias());
 
         logger.log(Level.INFO, jarSignerCommand.toString());
 
@@ -120,86 +120,18 @@ public class APKSigner implements Signer {
      * Sets keystore back to {@link DroidiumNativeConfiguration} to whatever exist first.
      */
     private void checkKeyStore() {
-        KeyStoreCreator keyStoreCreator = new KeyStoreCreator();
-        if (!keyStoreCreator.keyStoreExists(droneConfiguration.getKeystore())) {
+        KeyStoreCreator keyStoreCreator = new KeyStoreCreator(androidSDK, configuration);
+        if (!keyStoreCreator.keyStoreExists(configuration.getKeystore())) {
             File defaultKeyStore = new File(getDefaultKeyStorePath());
             if (!keyStoreCreator.keyStoreExists(defaultKeyStore)) {
-                throw new APKSignerException("Default keystore does not exist! No key store to use!");
+                keyStoreCreator.createKeyStore(defaultKeyStore);
             }
-            droneConfiguration.setKeystore(defaultKeyStore);
+            configuration.setKeystore(defaultKeyStore);
         }
     }
 
     private String getDefaultKeyStorePath() {
         String separator = System.getProperty("file.separator");
         return System.getProperty("user.home") + separator + ".android" + separator + "debug.keystore";
-    }
-
-    /**
-     * Creates keystore and checks if some keystore exists in the system.
-     *
-     * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>o
-     *
-     */
-    private final class KeyStoreCreator {
-
-        /**
-         * Checks if {@code keystore} exist.
-         *
-         * @param keyStore keystore to check existentiality of
-         * @return true if {@code keystore} exists, false otherwise
-         */
-        public boolean keyStoreExists(File keyStore) {
-            try {
-                Validate.isReadable(keyStore,
-                    "You must provide a valid path to keystore for signing of APK files: '"
-                        + keyStore.getAbsolutePath() + ".");
-                return true;
-            } catch (IllegalArgumentException ex) {
-                return false;
-            }
-        }
-
-        /**
-         * Creates keystore.
-         *
-         * @param keyStoreToCreate file which will be new keystore
-         *
-         * @deprecated do not use since there is a problem with not executing underlying keytool process
-         */
-        public void createKeyStore(File keyStoreToCreate) {
-
-            Command createKeyStoreCommand = new Command();
-
-            createKeyStoreCommand.add(androidSDK.getPathForJavaTool("keytool"))
-                .add("-genkey")
-                .add("-v")
-                .add("-keystore")
-                .add(keyStoreToCreate.getAbsolutePath())
-                .add("-storepass")
-                .add(droneConfiguration.getStorepass())
-                .add("-alias")
-                .add(droneConfiguration.getAlias())
-                .add("-keypass")
-                .add(droneConfiguration.getKeypass())
-                .add("-dname")
-                .addAsString("\"CN=Android Debug,O=Android,C=US\"")
-                .add("-storetype")
-                .add("JKS")
-                .add("-sigalg")
-                .add("MD5withRSA")
-                .add("-keyalg")
-                .add("RSA");
-
-            logger.log(Level.INFO, createKeyStoreCommand.toString());
-
-            try {
-                processExecutor.execute(createKeyStoreCommand.getAsList().toArray(new String[0]));
-            } catch (InterruptedException e) {
-                logger.severe("Creation of keystore was interrupted.");
-            } catch (ExecutionException e) {
-                logger.severe("Unable to create keystore, execution exception occured.");
-            }
-        }
     }
 }
