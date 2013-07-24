@@ -91,9 +91,9 @@ public final class KeyStoreCreator {
             .add("-storetype")
             .add("JKS")
             .add("-sigalg")
-            .add("MD5withRSA")
+            .add(configuration.getSigalg())
             .add("-keyalg")
-            .add("RSA");
+            .add(configuration.getKeyalg());
 
         logger.log(Level.INFO, createKeyStoreCommand.toString());
 

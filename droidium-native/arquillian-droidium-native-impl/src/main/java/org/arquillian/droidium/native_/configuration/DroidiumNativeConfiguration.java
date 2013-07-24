@@ -45,6 +45,10 @@ public class DroidiumNativeConfiguration {
 
     private String alias = "androiddebugkey";
 
+    private String sigalg = "SHA1withRSA";
+
+    private String keyalg = "RSA";
+
     private String removeTmpDir = "true";
 
     private String tmpDir = System.getProperty("java.io.tmpdir");
@@ -73,6 +77,14 @@ public class DroidiumNativeConfiguration {
 
     public String getAlias() {
         return getProperty("alias", alias);
+    }
+
+    public String getSigalg() {
+        return getProperty("sigalg", sigalg);
+    }
+
+    public String getKeyalg() {
+        return getProperty("keyalg", keyalg);
     }
 
     public boolean getRemoveTmpDir() {
@@ -170,5 +182,9 @@ public class DroidiumNativeConfiguration {
             "You must provide valid keypass for signing of APK files. You entered '" + getKeypass() + "'.");
         Validate.notNullOrEmpty(getStorepass(),
             "You must provide valid storepass for signing of APK files. You entered '" + getStorepass() + "'.");
+        Validate.notNullOrEmpty(getKeyalg(), "You must provide valid key algorithm for signing packages. You entered '"
+            + getKeyalg() + "'.");
+        Validate.notNullOrEmpty(getSigalg(), "You must provide valid key algoritm for signing packages. You entered '" +
+            getSigalg() + "'.");
     }
 }
