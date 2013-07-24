@@ -111,7 +111,7 @@ public class AndroidBridgeConnector {
      * @throws AndroidExecutionException
      */
     public void terminateAndroidDebugBridge(@Observes AndroidEmulatorShuttedDown event) throws AndroidExecutionException {
-        logger.info("Terminating Android Debug Bridge.");
+        logger.info("Disconnecting Android Debug Bridge.");
         androidBridge.get().disconnect();
         adbTerminated.fire(new AndroidBridgeTerminated());
     }
@@ -122,6 +122,6 @@ public class AndroidBridgeConnector {
      * @param event
      */
     public void afterTerminateAndroidDebugBridge(@Observes AndroidBridgeTerminated event) {
-        logger.info("Executing operations after destroying Android Debug Bridge");
+        logger.info("Executing operations after disconnecting from Android Debug Bridge");
     }
 }

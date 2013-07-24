@@ -42,9 +42,6 @@ import org.arquillian.droidium.container.spi.event.AndroidContainerStart;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStop;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
 import org.arquillian.droidium.web.AbstractAndroidTestTestBase;
-import org.arquillian.droidium.web.impl.AndroidServerInstaller;
-import org.arquillian.droidium.web.impl.AndroidServerUninstaller;
-import org.arquillian.droidium.web.impl.DroidiumWebConfigurator;
 import org.arquillian.droidium.web.spi.AndroidServerInstalled;
 import org.arquillian.droidium.web.spi.AndroidServerUninstalled;
 import org.arquillian.droidium.web.spi.DroidiumWebConfigured;
@@ -67,7 +64,7 @@ import org.mockito.runners.MockitoJUnitRunner;
  * Tests installing of Android server APK file for web-related testing.
  *
  * This test expects that AVD is started and no Android server APK is installed on it.
- * You can specify name and console port of already started emulator by system properties 
+ * You can specify name and console port of already started emulator by system properties
  * placed on the command line while testing with Maven like this:
  *
  * <p>
@@ -98,7 +95,8 @@ public class AndroidWebDriverSupportEmulatorTestCase extends AbstractAndroidTest
 
     private String EMULATOR_CONSOLE_PORT = System.getProperty("emulator.avd.port", "5554");
 
-    private String ANDROID_SERVER_APK_PATH = System.getProperty("android.server.path", "android-server-2.6.0.apk");
+    private String ANDROID_SERVER_APK_PATH = System.getProperty("android.server.path",
+        "src/test/resources/android-server-2.6.0.apk");
 
     private String APK_APP_NAME = "org.openqa.selenium.android.app";
 

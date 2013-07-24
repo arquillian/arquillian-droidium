@@ -16,8 +16,6 @@
  */
 package org.arquillian.droidium.web.impl;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -79,26 +77,9 @@ public class DroidiumWebConfigurator {
         for (ExtensionDef extensionDef : descriptor.getExtensions()) {
             if (DROIDIUM_WEB_EXTENSION_NAME.equals(extensionDef.getExtensionName())) {
                 Map<String, String> properties = extensionDef.getExtensionProperties();
-                if (properties.containsKey("serverApk")) {
-                    configuration.setServerApk(new File(properties.get("serverApk")));
-                }
+                configuration.setProperties(properties);
+                configuration.validate();
             }
-        }
-
-        Validate.isReadable(configuration.getServerApk(), "You must provide a valid path to Android Server APK: "
-            + configuration.getServerApk());
-
-        File logFile = configuration.getLogFile();
-
-        Validate.notNull(logFile, "You must provide a valid path to Android log file: "
-            + configuration.getLogFile());
-
-        // create the log file if not present
-        try {
-            logFile.createNewFile();
-        } catch (IOException e) {
-            throw new IllegalStateException("Unable to create Android log file at "
-                + logFile.getAbsolutePath(), e);
         }
 
         droidiumWebConfiguration.set(configuration);

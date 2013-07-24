@@ -16,9 +16,12 @@
  */
 package org.arquillian.droidium.web.impl;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
+import org.arquillian.droidium.container.api.AndroidExecutionException;
+import org.arquillian.droidium.container.configuration.Validate;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStop;
 import org.arquillian.droidium.web.spi.AndroidServerUninstalled;
 import org.jboss.arquillian.core.api.Event;
@@ -54,15 +57,29 @@ public class AndroidServerUninstaller {
     private Event<AndroidServerUninstalled> androidServerUninstalled;
 
     public void uninstall(@Observes(precedence = 10) AndroidContainerStop event, AndroidDevice device) {
-        Validate.notNull(device, "Injected Android device is null!");
+        Validate.notNull(device, "Injected Android device for is null!");
 
-        uninstallServerAPK(device, APK_APP_NAME);
+        try {
+            device.uninstallPackage(APK_APP_NAME);
+
+            log.info("Uninstallation of Android server for Arquillian Droidium web was performed.");
+        } catch (AndroidExecutionException ex) {
+            log.info("Uninstallation of Android server for Arquillian Droidium web failed.");
+        }
+
+        try {
+            log.log(Level.INFO,
+                "Removing port forwaring from {0} to {1} for Android server of Arquillian Droidium web support.",
+                new Object[] { device.getDroneHostPort(), device.getDroneGuestPort() });
+
+            device.removePortForwarding(device.getDroneHostPort(), device.getDroneGuestPort());
+
+            log.info("Removing of port forwarding for Arquillian Droidium web support was successful. ");
+        } catch (AndroidExecutionException ex) {
+            log.info("Removing of port forwarding for Arquillian Droidium Web support after Android server "
+                + "was uninstalled failed.");
+        }
 
         androidServerUninstalled.fire(new AndroidServerUninstalled());
-    }
-
-    private void uninstallServerAPK(AndroidDevice device, String apkAppName) {
-        device.uninstallPackage(APK_APP_NAME);
-        log.info("Uninstallation of Android Server for WebDriver support was performed.");
     }
 }

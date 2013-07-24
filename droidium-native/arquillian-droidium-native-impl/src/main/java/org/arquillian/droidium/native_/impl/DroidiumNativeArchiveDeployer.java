@@ -112,7 +112,7 @@ public class DroidiumNativeArchiveDeployer implements AndroidArchiveDeployer {
         SelendroidHelper selendroidHelper = new SelendroidHelper(androidDevice, tmpDir);
 
         SelendroidRebuilder selendroidRebuilder =
-            new SelendroidRebuilder(processExecutor, androidSDK, droidiumNativeConfiguration, applicationHelper, tmpDir);
+            new SelendroidRebuilder(processExecutor, androidSDK, applicationHelper, tmpDir);
 
         // export archive with application to tmpDir/random.file.apk
         applicationUnderTest = applicationHelper.exportArchiveToFile(

@@ -17,22 +17,27 @@
 package org.arquillian.droidium.native_.configuration;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.arquillian.droidium.container.configuration.Validate;
 
 /**
- * Configuration for Arquillian Droidium for native testing.
+ * Configuration for Arquillian Droidium for native.
  *
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
 public class DroidiumNativeConfiguration {
 
-    private static String fileSeparator = System.getProperty("file.separator");
+    private String fileSeparator = System.getProperty("file.separator");
 
-    private File serverApk = new File("selendroid-server.apk");
+    private String logFile = "target" + fileSeparator + "android.log";
 
-    private File logFile = new File("target" + DroidiumNativeConfiguration.fileSeparator + "android.log");
+    private String serverApk = "selendroid-server.apk";
 
-    private File keystore = DroidiumNativeConfiguration.getDefaultKeyStore();
+    private String keystore = System.getProperty("user.home") + fileSeparator + ".android" + fileSeparator + "debug.keystore";
 
     private String storepass = "android";
 
@@ -40,80 +45,130 @@ public class DroidiumNativeConfiguration {
 
     private String alias = "androiddebugkey";
 
-    private boolean removeTmpDir = true;
+    private String removeTmpDir = "true";
 
-    private File tmpDir = DroidiumNativeConfiguration.getTemporaryDirectory();
+    private String tmpDir = System.getProperty("java.io.tmpdir");
+
+    private Map<String, String> properties = new HashMap<String, String>();
 
     public File getLogFile() {
-        return logFile;
-    }
-
-    public void setLogFile(File logFile) {
-        this.logFile = logFile;
+        return new File(getProperty("logFile", logFile));
     }
 
     public File getServerApk() {
-        return serverApk;
-    }
-
-    public void setServerApk(File serverApk) {
-        this.serverApk = serverApk;
+        return new File(getProperty("serverApk", serverApk));
     }
 
     public File getKeystore() {
-        return keystore;
-    }
-
-    public void setKeystore(File keystore) {
-        this.keystore = keystore;
+        return new File(getProperty("keystore", keystore));
     }
 
     public String getStorepass() {
-        return storepass;
-    }
-
-    public void setStorepass(String storepass) {
-        this.storepass = storepass;
+        return getProperty("storepass", storepass);
     }
 
     public String getKeypass() {
-        return keypass;
-    }
-
-    public void setKeypass(String keypass) {
-        this.keypass = keypass;
+        return getProperty("keypass", keypass);
     }
 
     public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
+        return getProperty("alias", alias);
     }
 
     public boolean getRemoveTmpDir() {
-        return this.removeTmpDir;
-    }
-
-    public void setRemoveTmpDir(boolean remoteTmpDir) {
-        this.removeTmpDir = remoteTmpDir;
+        return Boolean.parseBoolean(getProperty("removeTmpDir", removeTmpDir));
     }
 
     public File getTmpDir() {
-        return tmpDir;
+        return new File(getProperty("tmpDir", tmpDir));
     }
 
-    public void setTmpDir(File tmpDir) {
-        this.tmpDir = tmpDir;
+    /**
+     * Sets properties as configuration.
+     *
+     * @param properties properties to set
+     * @throws IllegalArgumentException if {@code properties} is a null object
+     */
+    public void setProperties(Map<String, String> properties) throws IllegalArgumentException {
+        Validate.notNull(properties, "Properties to set for Arquillian Droidium native configuration can not be a null object");
+        this.properties = properties;
     }
 
-    public static File getDefaultKeyStore() {
-        String separator = System.getProperty("file.separator");
-        return new File(System.getProperty("user.home") + separator + ".android" + separator + "debug.keystore");
+    /**
+     * Gets value of {@code name} property. In case a value for such name does not exist or is null or empty string,
+     * {@code defaultValue} is returned.
+     *
+     * @param name name of property you want to get a value of
+     * @param defaultValue value returned in case {@code name} is a null string or it is empty
+     * @return value of a {@code name} property
+     * @throws IllegalArgumentException if either arguments are null or empty strings
+     */
+    public String getProperty(String name, String defaultValue) throws IllegalStateException {
+        Validate.notNullOrEmpty(name, "unable to get configuration value of null configuration key");
+        Validate.notNullOrEmpty(defaultValue, "unable to set configuration value of " + name + " to null");
+
+        String found = properties.get(name);
+        if (found == null || found.isEmpty()) {
+            return defaultValue;
+        } else {
+            return found;
+        }
     }
 
-    public static File getTemporaryDirectory() {
-        return new File(System.getProperty("java.io.tmpdir"));
+    /**
+     * Sets {@code property} to {@code value}.
+     *
+     * @param property property to set
+     * @param value value of property
+     * @throws IllegalArgumentException if either arguments are null or empty strings
+     */
+    public void setProperty(String property, String value) throws IllegalStateException {
+        Validate.notNullOrEmpty(property, "unable to set configuration value which key is null");
+        Validate.notNullOrEmpty(value, "unable to set configuration value which is null");
+
+        properties.put(property, value);
+    }
+
+    /**
+     * Validates configuration of Arquillian Droidium native plugin.
+     *
+     * @throws IllegalArgumentException if {@code getServerApk()} is not readable or if {@code getTmpDir()} is not readable
+     *         directory of if {@code getTmpDir()} is not writable of if {@code getAlias()},{@code getKeypass()} or
+     *         {@code getStorepass()} is either null or empty string.
+     * @throws IllegalStateException if it is impossible to create new file as {@code getLogFile()}.
+     */
+    public void validate() throws IllegalArgumentException, IllegalStateException {
+        Validate.isReadable(getServerApk(), "You must provide a valid path to Android Server APK for "
+            + "Arquillian Droidium native plugin. Plese be sure you have read access to the file you entered: "
+            + getServerApk());
+
+        Validate.isReadableDirectory(getTmpDir(),
+            "Temporary directory you chosed to use for Arquillian Droidium native plugin "
+                + "is not readable. Please be sure you entered a path you have read and write access to.");
+
+        Validate.isWriteable(getTmpDir(), "Temporary directory you chosed to use for Arquillian Droidium native plugin "
+            + "is not writable. Please be sure you entered a path you have read and write access to.");
+
+        try {
+            Validate.isReadable(getKeystore(), "Key store for Android APKs is not readable. File does not exist or you have "
+                + "no read access to this file. In case it does not exist, Arquillian Droidium native plugin tries to create "
+                + "keystore you specified dynamically in the file " + getKeystore());
+        } catch (IllegalArgumentException ex) {
+
+        }
+
+        try {
+            getLogFile().createNewFile();
+        } catch (IOException e) {
+            throw new IllegalStateException("Unable to create logging file for Arquillian Droidium native plugin at"
+                + getLogFile().getAbsolutePath(), e);
+        }
+
+        Validate.notNullOrEmpty(getAlias(),
+            "You must provide valid alias for signing of APK files. You entered '" + getAlias() + "'.");
+        Validate.notNullOrEmpty(getKeypass(),
+            "You must provide valid keypass for signing of APK files. You entered '" + getKeypass() + "'.");
+        Validate.notNullOrEmpty(getStorepass(),
+            "You must provide valid storepass for signing of APK files. You entered '" + getStorepass() + "'.");
     }
 }

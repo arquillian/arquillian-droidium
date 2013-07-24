@@ -71,4 +71,5 @@ public interface AndroidBridge {
      * @return List of available emulators
      */
     List<AndroidDevice> getEmulators();
+
 }

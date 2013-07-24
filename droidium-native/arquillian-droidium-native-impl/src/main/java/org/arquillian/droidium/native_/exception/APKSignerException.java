@@ -17,20 +17,17 @@
 package org.arquillian.droidium.native_.exception;
 
 /**
+ * Thrown when there is a failure to sign an APK package.
+ *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
 public class APKSignerException extends RuntimeException {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 5135480339532884887L;
 
-    /**
-     *
-     */
     public APKSignerException() {
+        super();
     }
 
     /**

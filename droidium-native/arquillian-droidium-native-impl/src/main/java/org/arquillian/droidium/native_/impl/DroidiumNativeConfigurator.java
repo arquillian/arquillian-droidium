@@ -16,15 +16,12 @@
  */
 package org.arquillian.droidium.native_.impl;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.impl.ProcessExecutor;
 import org.arquillian.droidium.native_.configuration.DroidiumNativeConfiguration;
-import org.arquillian.droidium.native_.configuration.Validate;
 import org.arquillian.droidium.native_.event.DroidiumNativeConfigured;
 import org.jboss.arquillian.config.descriptor.api.ArquillianDescriptor;
 import org.jboss.arquillian.config.descriptor.api.ExtensionDef;
@@ -88,33 +85,10 @@ public class DroidiumNativeConfigurator {
         for (ExtensionDef extensionDef : descriptor.getExtensions()) {
             if (DROIDIUM_NATIVE_EXTENSION_NAME.equals(extensionDef.getExtensionName())) {
                 Map<String, String> properties = extensionDef.getExtensionProperties();
-                if (properties.containsKey("serverApk")) {
-                    configuration.setServerApk(new File(properties.get("serverApk")));
-                }
+                configuration.setProperties(properties);
+                configuration.validate();
             }
         }
-
-        Validate.isReadable(configuration.getServerApk(), "You must provide a valid path to Android Server APK"
-            + configuration.getServerApk());
-
-        File serverLogFile = configuration.getLogFile();
-
-        Validate.notNull(serverLogFile, "You must provide a valid path to Arquillian Android Server Monkey log file: "
-            + configuration.getLogFile());
-
-        try {
-            serverLogFile.createNewFile();
-        } catch (IOException e) {
-            throw new IllegalStateException("Unable to create Arquillian monkey log file at "
-                + serverLogFile.getAbsolutePath(), e);
-        }
-
-        Validate.notNullOrEmpty(configuration.getAlias(),
-            "You must provide valid alias for signing of APK files. You entered '" + configuration.getAlias() + "'.");
-        Validate.notNullOrEmpty(configuration.getKeypass(),
-            "You must provide valid keypass for signing of APK files. You entered '" + configuration.getKeypass() + "'.");
-        Validate.notNullOrEmpty(configuration.getStorepass(),
-            "You must provide valid storepass for signing of APK files. You entered '" + configuration.getStorepass() + "'.");
 
         droidiumNativeConfiguration.set(configuration);
         droidiumNativeConfigured.fire(new DroidiumNativeConfigured());

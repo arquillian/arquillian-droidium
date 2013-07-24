@@ -17,6 +17,8 @@
 package org.arquillian.droidium.native_.exception;
 
 /**
+ * Thrown when there is a failure while Selendroid repackages resources.
+ *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
@@ -24,9 +26,6 @@ public class SelendroidRebuilderException extends RuntimeException {
 
     private static final long serialVersionUID = -8251730607652665504L;
 
-    /**
-     *
-     */
     public SelendroidRebuilderException() {
         super();
     }

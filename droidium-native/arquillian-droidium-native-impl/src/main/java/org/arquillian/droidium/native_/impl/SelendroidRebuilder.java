@@ -31,9 +31,8 @@ import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
+import org.arquillian.droidium.container.configuration.Validate;
 import org.arquillian.droidium.container.impl.ProcessExecutor;
-import org.arquillian.droidium.native_.configuration.DroidiumNativeConfiguration;
-import org.arquillian.droidium.native_.configuration.Validate;
 import org.arquillian.droidium.native_.exception.SelendroidRebuilderException;
 import org.arquillian.droidium.native_.utils.Command;
 import org.jboss.shrinkwrap.api.Archive;
@@ -79,12 +78,10 @@ public class SelendroidRebuilder {
      */
     public SelendroidRebuilder(ProcessExecutor processExecutor,
         AndroidSDK androidSDK,
-        DroidiumNativeConfiguration droidiumNativeConfiguration,
         AndroidApplicationHelper androidApplicationHelper,
         File workingDir) {
         Validate.notNull(processExecutor, "Process exeuctor for Selendroid rebuilder can't be null!");
         Validate.notNull(androidSDK, "Android SDK for Selendroid rebuilder can't be null!");
-        Validate.notNull(droidiumNativeConfiguration, "Android drone configuration for Selendroid rebuilder can't be null!");
         Validate.notNull(androidApplicationHelper, "Android applicatio helper for Selendroid rebuilder can't be null!");
         Validate.notNull(workingDir, "Working dir for Selendroid rebuilder can't be null!. Set it e.g. to /tmp/ ...");
         this.processExecutor = processExecutor;

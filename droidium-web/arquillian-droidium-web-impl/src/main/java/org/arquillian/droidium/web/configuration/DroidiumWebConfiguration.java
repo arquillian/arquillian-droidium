@@ -17,45 +17,98 @@
 package org.arquillian.droidium.web.configuration;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.arquillian.droidium.container.configuration.Validate;
 
 /**
  * Configuration for Droidium for web in Arquillian.
  *
- * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
 public class DroidiumWebConfiguration {
 
-    private File serverApk = new File("android-server.apk");
+    private String serverApk = "android-server.apk";
 
-    private File logFile = new File("target" + System.getProperty("file.separator") + "android.log");
+    private String logFile = "target" + System.getProperty("file.separator") + "android.log";
 
-    /**
-     * @return the serverApk
-     */
+    private Map<String, String> properties = new HashMap<String, String>();
+
     public File getServerApk() {
-        return serverApk;
+        return new File(getProperty("serverApk", serverApk));
     }
 
-    /**
-     * @param serverApk the serverApk to set
-     */
-    public void setServerApk(File serverApk) {
-        this.serverApk = serverApk;
-    }
-
-    /**
-     * @return the logFile
-     */
     public File getLogFile() {
-        return logFile;
+        return new File(getProperty("logFile", logFile));
     }
 
     /**
-     * @param logFile the logFile to set
+     * Sets properties as configuration.
+     *
+     * @param properties properties to set
+     * @throws IllegalArgumentException if {@code properties} is a null object
      */
-    public void setLogFile(File logFile) {
-        this.logFile = logFile;
+    public void setProperties(Map<String, String> properties) {
+        Validate.notNull(properties, "Properties to set for Arquillian Droidium web configuration can not be a null object.");
+        this.properties = properties;
+    }
+
+    /**
+     * Gets value of {@code name} property. In case a value for such name does not exist or is null or empty string,
+     * {@code defaultValue} is returned.
+     *
+     * @param name name of property you want to get a value of
+     * @param defaultValue value returned in case {@code name} is a null string or it is empty
+     * @return value of a {@code name} property
+     * @throws IllegalArgumentException if either arguments are null or empty strings
+     */
+    public String getProperty(String name, String defaultValue) {
+        Validate.notNullOrEmpty(name, "unable to get configuration value of null configuration key");
+        Validate.notNullOrEmpty(defaultValue, "unable to set configuration value of " + name + " to null");
+
+        String found = properties.get(name);
+        if (found == null || found.isEmpty()) {
+            return defaultValue;
+        } else {
+            return found;
+        }
+    }
+
+    /**
+     * Sets {@code property} to {@code value}.
+     *
+     * @param property property to set
+     * @param value value of property
+     * @throws IllegalArgumentException if either arguments are null or empty strings
+     */
+    public void setProperty(String property, String value) {
+        Validate.notNullOrEmpty(property, "unable to set configuration value which key is null");
+        Validate.notNullOrEmpty(value, "unable to set configuration value which is null");
+
+        properties.put(property, value);
+    }
+
+    /**
+     * Validates configuration of Arquillian Droidium web plugin.
+     *
+     * @throws IllegalArgumentException if {@code getServerApk()}
+     * @throws IllegalStateException if it is impossible to create new file as {@code getLogFile()}.
+     */
+    public void validate() {
+
+        Validate.isReadable(getServerApk(), "You must provide a valid path to Android Server APK for "
+            + "Arquillian Droidium web plugin. Plese be sure you have read access to the file you have specified: "
+            + getServerApk());
+
+        try {
+            getLogFile().createNewFile();
+        } catch (IOException e) {
+            throw new IllegalStateException("Unable to create logging file for Arquillian Droidium web plugin at"
+                + getLogFile().getAbsolutePath() + ".", e);
+        }
+
     }
 }

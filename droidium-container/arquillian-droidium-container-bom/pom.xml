@@ -43,9 +43,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.arquillian.core>1.0.4.Final</version.arquillian.core>
-        <version.com.android>r16</version.com.android>
+        <version.com.android.tools.ddms>22.1.2</version.com.android.tools.ddms>
         <version.maven.release.plugin>2.4.1</version.maven.release.plugin>
-        
+
         <!-- Repository URLS -->
         <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
         <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
@@ -87,9 +87,9 @@
 
             <!-- Android -->
             <dependency>
-                <groupId>com.android.ddmlib</groupId>
+                <groupId>com.android.tools.ddms</groupId>
                 <artifactId>ddmlib</artifactId>
-                <version>${version.com.android}</version>
+                <version>${version.com.android.tools.ddms}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -22,10 +22,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.arquillian.droidium.container.configuration.AndroidSDK;
+import org.arquillian.droidium.container.configuration.Validate;
 import org.arquillian.droidium.container.impl.ProcessExecutor;
 import org.arquillian.droidium.native_.api.Signer;
 import org.arquillian.droidium.native_.configuration.DroidiumNativeConfiguration;
-import org.arquillian.droidium.native_.configuration.Validate;
 import org.arquillian.droidium.native_.exception.APKSignerException;
 import org.arquillian.droidium.native_.utils.Command;
 import org.jboss.shrinkwrap.api.Archive;
@@ -126,7 +126,7 @@ public class APKSigner implements Signer {
             if (!keyStoreCreator.keyStoreExists(defaultKeyStore)) {
                 keyStoreCreator.createKeyStore(defaultKeyStore);
             }
-            configuration.setKeystore(defaultKeyStore);
+            configuration.setProperty("keyStore", defaultKeyStore.getAbsolutePath());
         }
     }
 

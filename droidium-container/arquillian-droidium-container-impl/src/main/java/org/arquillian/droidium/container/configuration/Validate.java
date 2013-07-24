@@ -343,4 +343,21 @@ public class Validate {
             throw new AndroidContainerConfigurationException(message);
         }
     }
+
+    /**
+     * Checks that the specified File is not null or empty and represents a writeable file, throws exception if it is empty or
+     * null and does not represent a path to a file.
+     *
+     * @param file The file to check
+     * @param message The exception message
+     * @throws IllegalArgumentException Thrown if file is null or invalid
+     */
+    public static void isWriteable(final File file, String message) throws IllegalArgumentException {
+        if (file == null) {
+            throw new IllegalArgumentException(message);
+        }
+        if (!file.exists() || !file.canWrite()) {
+            throw new IllegalArgumentException(message);
+        }
+    }
 }

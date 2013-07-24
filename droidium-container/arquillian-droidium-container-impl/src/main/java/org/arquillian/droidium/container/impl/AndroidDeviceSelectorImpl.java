@@ -224,8 +224,12 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
         }
 
         for (AndroidDevice device : devices) {
-            if (device.getConsolePort().equals(consolePort) && device.getAvdName().equals(avdName)) {
-                return device;
+            try {
+                if (device.getConsolePort().equals(consolePort) && device.getAvdName().equals(avdName)) {
+                    return device;
+                }
+            } catch (NullPointerException ex) {
+                logger.severe("Unable to connect to the emulator. Please be sure you are running adb server.");
             }
         }
 

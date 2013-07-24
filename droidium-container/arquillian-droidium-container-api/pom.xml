@@ -13,9 +13,9 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <!-- Model Version -->
-    <modelVersion>4.0.0</modelVersion>    
+    <modelVersion>4.0.0</modelVersion>
 
-	<!-- Parent -->
+    <!-- Parent -->
     <parent>
         <groupId>org.arquillian.container</groupId>
         <artifactId>arquillian-droidium-container-build</artifactId>
@@ -23,7 +23,7 @@
         <relativePath>../arquillian-droidium-container-build/pom.xml</relativePath>
     </parent>
 
-	<!-- Artifact Configuration -->
+    <!-- Artifact Configuration -->
     <artifactId>arquillian-droidium-container-api</artifactId>
     <name>Arquillian Droidium Container API</name>
     <description>Arquillian Droidium Container API</description> 
@@ -39,17 +39,17 @@
             <email>kpiwko@redhat.com</email>
         </developer>
     </developers>
-    
+
     <!-- Properties -->
     <properties>
-        <version.com.android>r16</version.com.android>
+        <version.com.android.tools.ddms>22.1.2</version.com.android.tools.ddms>
         <version.shrinkwrap.api>1.1.2</version.shrinkwrap.api>
     </properties>
 
     <!-- Dependency management -->
     <dependencyManagement>
         <dependencies>
-			<!-- Arquillian -->
+            <!-- Arquillian -->
             <dependency>
                 <groupId>org.jboss.arquillian</groupId>
                 <artifactId>arquillian-bom</artifactId>
@@ -79,14 +79,14 @@
                 <classifier>tests</classifier>
             </dependency>
 
-			<!-- Android -->
+            <!-- Android -->
             <dependency>
-                <groupId>com.android.ddmlib</groupId>
+                <groupId>com.android.tools.ddms</groupId>
                 <artifactId>ddmlib</artifactId>
-                <version>${version.com.android}</version>
+                <version>${version.com.android.tools.ddms}</version>
             </dependency>
 
-			<!-- ShrinkWrap -->
+            <!-- ShrinkWrap -->
             <dependency>
                 <groupId>org.jboss.shrinkwrap</groupId>
                 <artifactId>shrinkwrap-api</artifactId>
@@ -95,9 +95,9 @@
         </dependencies>
     </dependencyManagement>
 
-	<!-- Dependencies -->
+    <!-- Dependencies -->
     <dependencies>
-		<!-- Arquillian dependencies -->
+        <!-- Arquillian dependencies -->
         <dependency>
             <groupId>org.jboss.arquillian.core</groupId>
             <artifactId>arquillian-core-spi</artifactId>
@@ -117,13 +117,13 @@
             <classifier>tests</classifier>
         </dependency>
 
-		<!-- Android Dependencies -->
+        <!-- Android Dependencies -->
         <dependency>
-            <groupId>com.android.ddmlib</groupId>
+            <groupId>com.android.tools.ddms</groupId>
             <artifactId>ddmlib</artifactId>
         </dependency>
 
-		<!-- test dependencies -->
+        <!-- test dependencies -->
         <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
             <artifactId>arquillian-junit-standalone</artifactId>
@@ -146,11 +146,10 @@
             <classifier>tests</classifier>
         </dependency>
 
-		<!-- ShrinkWrap -->
+        <!-- ShrinkWrap -->
         <dependency>
             <groupId>org.jboss.shrinkwrap</groupId>
             <artifactId>shrinkwrap-api</artifactId>
         </dependency>
     </dependencies>
-
 </project>

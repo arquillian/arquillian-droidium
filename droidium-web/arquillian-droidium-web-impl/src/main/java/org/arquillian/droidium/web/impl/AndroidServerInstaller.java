@@ -58,6 +58,7 @@ public class AndroidServerInstaller {
 
     private static final String START_WEBDRIVER_HUB_CMD =
         "am start -a android.intent.action.MAIN -n org.openqa.selenium.android.app/.MainActivity";
+
     private static final String TOP_CMD = "top -n 1";
     private static final String APK_APP_NAME = "org.openqa.selenium.android.app";
 
@@ -69,21 +70,21 @@ public class AndroidServerInstaller {
 
     public void install(@Observes AndroidDeviceReady event) throws AndroidExecutionException, IOException {
 
-        AndroidDevice androidDevice = event.getDevice();
+        AndroidDevice device = event.getDevice();
 
-        installServerAPK(androidDevice, droneConfiguration.get().getServerApk());
-        log.info("Installation of Android Server APK for WebDriver support was performed.");
+        installServerAPK(device, droneConfiguration.get().getServerApk());
+        log.info("Installation of Android Server APK for Arquillan Droidium web support was performed.");
 
-        log.info("Starting Android Server for web testing");
+        log.info("Starting Android Server for Arquillian Droidium web testing.");
         WebDriverMonkey monkey = new WebDriverMonkey(droneConfiguration.get().getLogFile());
-        androidDevice.executeShellCommand(START_WEBDRIVER_HUB_CMD, monkey);
+        device.executeShellCommand(START_WEBDRIVER_HUB_CMD, monkey);
 
-        log.info("Waiting until Android server is present.");
-        waitUntilStarted(androidDevice, monkey);
+        log.info("Waiting until Android server for Arquillian Droidium web support is started.");
+        waitUntilStarted(device, monkey);
 
-        log.log(Level.INFO, "Creating port forwaring from {0} to {1} for WebDriver support.",
-            new Object[] { androidDevice.getDroneHostPort(), androidDevice.getDroneGuestPort() });
-        androidDevice.createPortForwarding(androidDevice.getDroneHostPort(), androidDevice.getDroneGuestPort());
+        log.log(Level.INFO, "Creating port forwaring from {0} to {1} for Android server of Arquillian Droidium web support.",
+            new Object[] { device.getDroneHostPort(), device.getDroneGuestPort() });
+        device.createPortForwarding(device.getDroneHostPort(), device.getDroneGuestPort());
 
         androidServerInstalled.fire(new AndroidServerInstalled());
     }
@@ -111,7 +112,7 @@ public class AndroidServerInstaller {
                 e.printStackTrace();
             }
         }
-        throw new AndroidExecutionException("Unable to start Android Server for WebDriver support.");
+        throw new AndroidExecutionException("Unable to start Android Server for Arquillian Droidium web support.");
     }
 
     private static class WebDriverMonkey implements AndroidDeviceOutputReciever {

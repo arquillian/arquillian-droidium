@@ -59,13 +59,13 @@ public class AndroidBridgeImpl implements AndroidBridge {
     public void connect() throws AndroidExecutionException {
         logger.info("Connecting to the Android Debug Bridge at " + adbLocation.getAbsolutePath() + " forceNewBridge = "
             + forceNewBridge);
-        this.delegate = AndroidDebugBridge.getBridge();
-        if (delegate == null) {
-            AndroidDebugBridge.init(false);
-            this.delegate = AndroidDebugBridge.createBridge(adbLocation.getAbsolutePath(), forceNewBridge);
-            waitUntilConnected();
-            waitForInitialDeviceList();
-        }
+
+        AndroidDebugBridge.initIfNeeded(false);
+
+        this.delegate = AndroidDebugBridge.createBridge(adbLocation.getAbsolutePath(), forceNewBridge);
+
+        waitUntilConnected();
+        waitForInitialDeviceList();
     }
 
     @Override
@@ -140,7 +140,7 @@ public class AndroidBridgeImpl implements AndroidBridge {
         int trials = 10;
         while (trials > 0) {
             try {
-                Thread.sleep(50);
+                Thread.sleep(300);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

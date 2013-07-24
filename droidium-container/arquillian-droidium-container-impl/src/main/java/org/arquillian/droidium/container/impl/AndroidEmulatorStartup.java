@@ -268,7 +268,7 @@ public class AndroidEmulatorStartup {
         @Override
         public void deviceConnected(IDevice device) {
             this.discoveredDevice = device;
-            logger.log(Level.FINE, "Discovered an emulator device id={0} connected to ADB bus",
+            logger.log(Level.INFO, "Discovered an emulator device id={0} connected to ADB bus",
                 device.getSerialNumber());
         }
 
