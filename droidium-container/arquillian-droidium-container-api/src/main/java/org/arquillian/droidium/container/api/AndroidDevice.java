@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
+import com.android.ddmlib.RawImage;
+
 /**
  * Representation of Android Device
  *
@@ -146,34 +148,37 @@ public interface AndroidDevice {
     String getConsolePort();
 
     /**
+     * Host is your local computer.
      *
-     * @return host port for drone-like extensions
+     * @return host port for extensions like Droidium native or web plugin
      */
     int getDroneHostPort();
 
     /**
+     * Guest port is port on the Android device side
      *
-     * @return guest port for drone-like extensions
+     * @return guest port for extensions like Droidium native or web plugin
      */
     int getDroneGuestPort();
 
     /**
+     * Host is your local computer
      *
-     * @param droneHostPort
+     * @param droneHostPort for extensions like Droidium native or web plugin
      */
     void setDroneHostPort(int droneHostPort);
 
     /**
+     * Guest port is port on the Android device side
      *
-     * @param droneGuestPort
+     * @param droneGuestPort for extensions like Droidium native or web plugin
      */
     void setDroneGuestPort(int droneGuestPort);
 
     /**
-     * Signs package with the key
+     * Takes screenshot of underlying Android device
      *
-     * @param file
+     * @return screenshot
      */
-    void signPackage(File file);
-
+    RawImage takeScreenshot();
 }

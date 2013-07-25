@@ -31,6 +31,7 @@ import com.android.ddmlib.AdbCommandRejectedException;
 import com.android.ddmlib.IDevice;
 import com.android.ddmlib.InstallException;
 import com.android.ddmlib.MultiLineReceiver;
+import com.android.ddmlib.RawImage;
 import com.android.ddmlib.ShellCommandUnresponsiveException;
 import com.android.ddmlib.TimeoutException;
 
@@ -52,6 +53,7 @@ class AndroidDeviceImpl implements AndroidDevice {
     private int droneGuestPort = 8080;
 
     AndroidDeviceImpl(IDevice delegate) {
+        Validate.notNull(delegate, "delegate to set for Android device can not be a null object.");
         this.delegate = delegate;
     }
 
@@ -106,6 +108,7 @@ class AndroidDeviceImpl implements AndroidDevice {
         return delegate.isOffline();
     }
 
+    @Override
     public String getConsolePort() {
         return isEmulator() ? getSerialNumber().split("-")[1] : null;
     }
@@ -219,7 +222,23 @@ class AndroidDeviceImpl implements AndroidDevice {
     }
 
     @Override
-    public void signPackage(File file) {
+    public RawImage takeScreenshot() {
+        if (!isOnline()) {
+            throw new AndroidExecutionException("Android device is not online, can not take any screenshots.");
+        }
+
+        RawImage screenshot = null;
+
+        try {
+            screenshot = delegate.getScreenshot();
+        } catch (IOException ex) {
+            log.info("Unable to take a screenshot of device " + getAvdName() == null ? getSerialNumber() : getAvdName());
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        } catch (AdbCommandRejectedException e) {
+            e.printStackTrace();
+        }
+        return screenshot;
     }
 
     @Override
@@ -301,6 +320,8 @@ class AndroidDeviceImpl implements AndroidDevice {
         sb.append("isEmulator\t:").append(this.isEmulator()).append("\n");
         sb.append("isOffline\t:").append(this.isOffline()).append("\n");
         sb.append("isOnline\t:").append(this.isOnline()).append("\n");
+        sb.append("hostPort\t:").append(this.getDroneHostPort()).append("\n");
+        sb.append("guestPort:\t").append(this.getDroneGuestPort()).append("\n");
         return sb.toString();
     }
 
