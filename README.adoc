@@ -22,6 +22,18 @@ from where it takes Selendroid server APK.
 Every extension has its own README and configuration documentation. You are 
 welcome to check them in their respective directories.
 
+=== Android SDK issues
+
+This project uses ddmlib of version 22.0.1. Your Android SDK tools have to be of the 
+same revision as this library. When you upgrade your Android SDK to different version
+(e.g to 22.0.4), there has to be relating version of ddmlib as Maven dependency. 
+You can check the versions of ddmlib library http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.android.tools.ddms%22%20AND%20a%3A%22ddmlib%22[here].
+
+Please stick to right version whenever possible otherwise unexpectable results and behaviour can occure.
+
+When you want to change the version of ddmlib manually, just rewrite that property in the root `pom.xml` of the project called `version.ddmlib`, however 
+it does not mean that project will be compilable every time since there can be changes in the ddmlib API over time which will not be compatible with the Droidium.
+
 === How to test extensions?
 
 When you are doing `mvn clean install`, some tests are executed automatically. These 

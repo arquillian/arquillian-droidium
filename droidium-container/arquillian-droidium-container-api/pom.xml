@@ -42,7 +42,6 @@
 
     <!-- Properties -->
     <properties>
-        <version.com.android.tools.ddms>22.1.2</version.com.android.tools.ddms>
         <version.shrinkwrap.api>1.1.2</version.shrinkwrap.api>
     </properties>
 
@@ -77,13 +76,6 @@
                 <scope>test</scope>
                 <version>${version.arquillian.core}</version>
                 <classifier>tests</classifier>
-            </dependency>
-
-            <!-- Android -->
-            <dependency>
-                <groupId>com.android.tools.ddms</groupId>
-                <artifactId>ddmlib</artifactId>
-                <version>${version.com.android.tools.ddms}</version>
             </dependency>
 
             <!-- ShrinkWrap -->

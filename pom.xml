@@ -63,6 +63,9 @@
         <!-- Arquillian Core -->
         <version.arquillian.core>1.0.4.Final</version.arquillian.core>
 
+        <!-- ddmlib version, it has to track your Android SDK tools version -->
+        <version.ddmlib>22.0.1</version.ddmlib>
+
         <!-- Other versions -->
         <version.apiviz>1.3.2.GA</version.apiviz>
         <version.maven.animal.sniffer>1.9</version.maven.animal.sniffer>
