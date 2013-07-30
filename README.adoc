@@ -29,10 +29,14 @@ same revision as this library. When you upgrade your Android SDK to different ve
 (e.g to 22.0.4), there has to be relating version of ddmlib as Maven dependency. 
 You can check the versions of ddmlib library http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.android.tools.ddms%22%20AND%20a%3A%22ddmlib%22[here].
 
-Please stick to right version whenever possible otherwise unexpectable results and behaviour can occure.
+Please stick to the right version whenever possible otherwise unexpected results and behaviour can occure.
 
 When you want to change the version of ddmlib manually, just rewrite that property in the root `pom.xml` of the project called `version.ddmlib`, however 
-it does not mean that project will be compilable every time since there can be changes in the ddmlib API over time which will not be compatible with the Droidium.
+it does not mean that project will be compilable every time since there can be changes in the ddmlib API over time which will not be compatible with Arquillian Droidium.
+=== Take screenshots during your tests
+
+That is right, you can take screenshots as you test by very simple way. You are welcome to check 
+the project which shows how to do it directly in your test methods in https://github.com/arquillian/arquillian-droidium/tree/master/tests/arquillian-droidium-screenshooter-test-01[screenshooter demo] in `tests` directory.
 
 === How to test extensions?
 
