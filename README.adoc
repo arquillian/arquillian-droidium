@@ -32,7 +32,9 @@ You can check the versions of ddmlib library http://search.maven.org/#search%7Cg
 Please stick to the right version whenever possible otherwise unexpected results and behaviour can occure.
 
 When you want to change the version of ddmlib manually, just rewrite that property in the root `pom.xml` of the project called `version.ddmlib`, however 
-it does not mean that project will be compilable every time since there can be changes in the ddmlib API over time which will not be compatible with Arquillian Droidium.
+it does not mean that project will be compilable every time since there can be changes in the ddmlib API over time which 
+will not be compatible with Arquillian Droidium.
+
 === Take screenshots during your tests
 
 That is right, you can take screenshots as you test by very simple way. You are welcome to check 
