@@ -46,7 +46,7 @@ public class AndroidScreenshotIdentifierGenerator implements IdentifierGenerator
             return uuid + "." + ScreenshotType.GIF;
         }
         if (identifierType.isInstance(ScreenshotType.JPEG)) {
-            return uuid + "." + ScreenshotType.GIF;
+            return uuid + "." + ScreenshotType.JPEG;
         }
         if (identifierType.isInstance(ScreenshotType.PNG)) {
             return uuid + "." + ScreenshotType.PNG;
