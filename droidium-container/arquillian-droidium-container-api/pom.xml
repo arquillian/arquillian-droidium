@@ -40,14 +40,17 @@
         </developer>
     </developers>
 
-    <!-- Properties -->
-    <properties>
-        <version.shrinkwrap.api>1.1.2</version.shrinkwrap.api>
-    </properties>
-
     <!-- Dependency management -->
     <dependencyManagement>
         <dependencies>
+            <!-- ShrinkWrap -->
+            <dependency>
+                <groupId>org.jboss.shrinkwrap</groupId>
+                <artifactId>shrinkwrap-bom</artifactId>
+                <version>${version.shrinkwrap_shrinkwrap}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <!-- Arquillian -->
             <dependency>
                 <groupId>org.jboss.arquillian</groupId>
@@ -79,11 +82,11 @@
             </dependency>
 
             <!-- ShrinkWrap -->
-            <dependency>
+            <!--dependency>
                 <groupId>org.jboss.shrinkwrap</groupId>
                 <artifactId>shrinkwrap-api</artifactId>
                 <version>${version.shrinkwrap.api}</version>
-            </dependency>
+            </dependency-->
         </dependencies>
     </dependencyManagement>
 

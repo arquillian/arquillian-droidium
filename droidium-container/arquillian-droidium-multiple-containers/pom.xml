@@ -52,10 +52,6 @@
     <!-- Dependencies -->
     <dependencies>
         <dependency>
-            <groupId>org.jboss.shrinkwrap.descriptors</groupId>
-            <artifactId>shrinkwrap-descriptors-spi</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.jboss.arquillian.container</groupId>
             <artifactId>arquillian-container-test-impl-base</artifactId>
         </dependency>

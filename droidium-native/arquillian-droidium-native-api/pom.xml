@@ -13,7 +13,7 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <!-- Model Version -->
-    <modelVersion>4.0.0</modelVersion>    
+    <modelVersion>4.0.0</modelVersion>
 
     <!-- Parent -->
     <parent>
@@ -42,6 +42,7 @@
         <dependency>
             <groupId>org.jboss.shrinkwrap</groupId>
             <artifactId>shrinkwrap-api</artifactId>
+            <version>${version.shrinkwrap_shrinkwrap}</version>
         </dependency>
     </dependencies>
 

@@ -61,7 +61,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Arquillian Core -->
-        <version.arquillian.core>1.0.4.Final</version.arquillian.core>
+        <version.arquillian.core>1.1.0.Final</version.arquillian.core>
+
+        <!-- ShrinkWrap -->
+        <version.shrinkwrap_shrinkwrap>1.1.3</version.shrinkwrap_shrinkwrap>
 
         <!-- ddmlib version, it has to track your Android SDK tools version -->
         <version.ddmlib>22.0.1</version.ddmlib>
@@ -79,6 +82,13 @@
     <!-- Dependency Management -->
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.jboss.shrinkwrap</groupId>
+                <artifactId>shrinkwrap-bom</artifactId>
+                <version>${version.shrinkwrap_shrinkwrap}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>org.jboss.arquillian</groupId>
                 <artifactId>arquillian-bom</artifactId>
@@ -230,7 +240,7 @@
             <url>${jboss.public.repo.url}</url>
         </repository>
     </repositories>
-    
+
     <!-- Reporting -->
     <reporting>
         <plugins>

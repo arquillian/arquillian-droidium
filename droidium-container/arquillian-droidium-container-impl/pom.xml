@@ -140,7 +140,6 @@
     <!-- Profiles -->
     <profiles>
         <profile>
-            <!-- By default, tests are skipped, use "testing" profiles to trigger tests. -->
             <id>default</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
