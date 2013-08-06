@@ -39,7 +39,7 @@
 
     <!-- Properties -->
     <properties>
-        <version.arquillian.core>1.1.0.Final</version.arquillian.core>
+        <version.arquillian.core>1.1.1.Final</version.arquillian.core>
         <!-- Taken from root parent of the project -->
         <version.com.android.tools.ddms>${version.ddmlib}</version.com.android.tools.ddms>
         <maven.compiler.source>1.6</maven.compiler.source>

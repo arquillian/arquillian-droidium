@@ -40,7 +40,7 @@
     <!-- Properties -->
     <properties>
         <!-- Versioning -->
-        <version.arquillian.core>1.1.0.Final</version.arquillian.core>
+        <version.arquillian.core>1.1.1.Final</version.arquillian.core>
         <version.shrinkwrap_shrinkwrap>1.1.3</version.shrinkwrap_shrinkwrap>
         <version.jbossas>7.1.1.Final</version.jbossas>
         <version.droidium>0.0.1-SNAPSHOT</version.droidium>

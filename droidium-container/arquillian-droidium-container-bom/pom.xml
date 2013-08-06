@@ -42,8 +42,8 @@
     <!-- Properties -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.arquillian.core>1.1.0.Final</version.arquillian.core>
-        <version.com.android.tools.ddms>22.0.1</version.com.android.tools.ddms>
+        <version.arquillian.core>1.1.1.Final</version.arquillian.core>
+        <version.com.android.tools.ddms>22.1.3</version.com.android.tools.ddms>
         <version.maven.release.plugin>2.4.1</version.maven.release.plugin>
 
         <!-- Repository URLS -->

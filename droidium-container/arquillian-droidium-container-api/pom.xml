@@ -80,13 +80,6 @@
                 <version>${version.arquillian.core}</version>
                 <classifier>tests</classifier>
             </dependency>
-
-            <!-- ShrinkWrap -->
-            <!--dependency>
-                <groupId>org.jboss.shrinkwrap</groupId>
-                <artifactId>shrinkwrap-api</artifactId>
-                <version>${version.shrinkwrap.api}</version>
-            </dependency-->
         </dependencies>
     </dependencyManagement>
 
