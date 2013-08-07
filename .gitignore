@@ -23,3 +23,6 @@ test-output/
 
 # JBoss AS
 transaction.log
+
+# Scala
+.cache
