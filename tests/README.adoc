@@ -58,3 +58,16 @@ functional tests are executed there. It is not required to start your own
 JBoss AS instance since this is done automatically upon test execution. 
 JBoss AS instance is extracted into your `target` and Arquillian connects 
 to this instance.
+
+=== arquillian-droidium-native-test-01-scala
+
+This project is the same as native-test-01 but it is coded in Scala. The whole project 
+is pure Scala project with Scala Maven plugin. You can test your mobile applications
+with Droidium and Arquillian Drone even in pure Scala! Yay!
+
+=== arquillian-droidium-screenshooter-test-01
+
+Screenshooter project shows how to take screenshots with Droidium while you are doing your 
+testing logic. Being able to take screenshots can be handy. You have plenty of options where 
+and how to take screenshots, check that project and read documentation to know more! Happy 
+screenshooting!
