@@ -1,0 +1,46 @@
+== Arquillian Droidium Archetypes
+
+Archetypes provide fast and easy way how to bootstrap your mobile testing project. You are welcome 
+to generate your own project based on archetypes provided here. There are two projects present:
+
+* native archetype
+* web archetype
+
+You can generate native project from native archetype, meaning you want to test pure native Android application. 
+On the other hand, when you generate your project from web archetype, there will be prepared project for testing 
+web application (war) which is meant to be deployed to JBoss AS container and it will be functionally tested 
+from Android point of view.
+
+=== Project generation
+
+Project generation is very simple, after the installation of whole Droidium (`mvn install`), create some 
+directory, enter there and execute:
+
+-------------------------------------
+mvn archetype:generate \
+    -DarchetypeGroupId=org.arquillian.droidium.archetypes \
+    -DarchetypeArtifactId=arquillian-droidium-archetype-native-test \
+    -DarchetypeVersion=0.0.1-SNAPSHOT
+-------------------------------------
+
+Interactive request-response dialog then follows, enter what is good for you:
+
+-------------------------------------
+Define value for property 'groupId': : net.joe.doe
+Define value for property 'artifactId': : my-first-mobile-test
+Define value for property 'version':  1.0-SNAPSHOT: : <enter>
+Define value for property 'package':  net.joe.doe: : <enter>
+Confirm properties configuration:
+groupId: net.joe.doe
+artifactId: my-first-mobile-test
+version: 1.0-SNAPSHOT
+package: net.joe.doe
+ Y: : <enter>
+-------------------------------------
+
+and you are done.
+
+The similar process holds for the web project. There is already bundled Selendroid server (or Android server from Selenium respectively) 
+for you so you just need to deliver your own applications under test on the class path and modify `@Deployment` method in test class accordingly.
+
+Happy testing!

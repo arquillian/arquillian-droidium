@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!-- JBoss, Home of Professional Open Source Copyright 2013, Red Hat, Inc. 
+    and/or its affiliates, and individual contributors by the @authors tag. See 
+    the copyright.txt in the distribution for a full listing of individual contributors. 
+    Licensed under the Apache License, Version 2.0 (the "License"); you may not 
+    use this file except in compliance with the License. You may obtain a copy 
+    of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
+    by applicable law or agreed to in writing, software distributed under the 
+    License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
+    OF ANY KIND, either express or implied. See the License for the specific 
+    language governing permissions and limitations under the License. -->
+<arquillian xmlns="http://jboss.org/schema/arquillian" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jboss.org/schema/arquillian
+    http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+
+    <!-- Container configuration -->
+    <!-- Since more then one container adapter is on classpath, you have to specify 
+        adapterImplClass for each container manually. -->
+    <group qualifier="containers" default="true">
+        <container qualifier="android" default="true">
+            <configuration>
+                <!-- Name of Android container to start or use during tests. This property is filtered 
+                    meaning it is set in profile in pom.xml under the same name of the property. -->
+                <property name="avdName">${android.avd.name}</property>
+                <property name="emulatorOptions">${android.emulator.options}</property>
+                <property name="emulatorBootupTimeoutInSeconds">600</property>
+                <!-- Write only errors from Android device -->
+                <property name="logLevel">E</property>
+                <property name="droneGuestPort">8080</property>
+                <property name="droneHostPort">8080</property>
+                <property name="adapterImplClass">org.arquillian.droidium.container.AndroidDeployableContainer</property>
+            </configuration>
+        </container>
+
+        <!-- Configuration of JBoss AS container adapter. -->
+        <container qualifier="jbossas">
+            <configuration>
+                <property name="jbossHome">${basedir}/target/jboss-as-7.1.1.Final</property>
+                <property name="javaVmArguments">-Xmx512m -XX:MaxPermSize=128m -Djboss.bind.address=${as.bind.ip}</property>
+                <property name="adapterImplClass">org.jboss.as.arquillian.container.managed.ManagedDeployableContainer</property>
+            </configuration>
+        </container>
+    </group>
+    
+    <!-- Configuration of Droidium extension for web testing -->
+    <extension qualifier="droidium-web">
+        <!-- Path of Android server APK -->
+        <property name="serverApk">android-server-2.32.0.apk</property>
+    </extension>
+    
+    <!-- Configuration of webdriver extension -->
+    <extension qualifier="webdriver">
+        <property name="browserCapabilities">android</property>
+        <property name="remoteAddress">http://localhost:8080/wd/hub</property>
+    </extension>
+
+</arquillian>
