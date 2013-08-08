@@ -14,14 +14,14 @@
 
     <!-- Model Version -->
     <modelVersion>4.0.0</modelVersion>
-    
+
     <!-- Parent -->
     <parent>
         <groupId>org.arquillian.droidium.archetypes</groupId>
         <artifactId>arquillian-droidium-archetype-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    
+
     <!-- Artifact configuration -->
     <artifactId>arquillian-droidium-archetype-web-test</artifactId>
     <packaging>jar</packaging>
