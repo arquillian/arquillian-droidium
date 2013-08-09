@@ -213,4 +213,12 @@ public interface AndroidDevice {
      *         writable directory
      */
     void setScreenshotTargetDir(String screenshotTargetDir);
+
+    /**
+     * Sets the format of images to take. After setting this, all subsequent images will be of this format when not explicitly
+     * specified otherwise.
+     *
+     * @param type type of screenshots to take from now on
+     */
+    void setScreensthotImageFormat(ScreenshotType type);
 }

@@ -59,6 +59,8 @@ class AndroidDeviceImpl implements AndroidDevice {
 
     private String screenshotTargetDir = "target" + System.getProperty("file.separator");
 
+    private ScreenshotType screenshotType = ScreenshotType.PNG;
+
     AndroidDeviceImpl(IDevice delegate) {
         Validate.notNull(delegate, "delegate to set for Android device can not be a null object.");
         this.delegate = delegate;
@@ -247,12 +249,12 @@ class AndroidDeviceImpl implements AndroidDevice {
 
     @Override
     public File takeScreenshot() {
-        return takeScreenshot(null, ScreenshotType.PNG);
+        return takeScreenshot(null, getScreenshotImageFormat());
     }
 
     @Override
     public File takeScreenshot(String fileName) {
-        return takeScreenshot(fileName, ScreenshotType.PNG);
+        return takeScreenshot(fileName, getScreenshotImageFormat());
     }
 
     @Override
@@ -316,6 +318,16 @@ class AndroidDeviceImpl implements AndroidDevice {
             e.printStackTrace();
         }
         return image;
+    }
+
+    @Override
+    public void setScreensthotImageFormat(ScreenshotType type) {
+        Validate.notNull(type, "Screenshot format to set can not be a null object!");
+        this.screenshotType = type;
+    }
+
+    private ScreenshotType getScreenshotImageFormat() {
+        return this.screenshotType;
     }
 
     @Override

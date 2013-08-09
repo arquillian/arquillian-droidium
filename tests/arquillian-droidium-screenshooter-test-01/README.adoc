@@ -33,6 +33,14 @@ android.takeScreenshot("myScreenshot", ScreenshotType.GIF);
 android.takeScreenshot("myScreenshot2"); // taken as PNG
 ----
 
+You can set the format of screenshots you want to take explicitly. From that point, 
+all screenshots will be of that format when not specified otherwise.
+
+----
+android.setScreensthotImageFormat(ScreenshotType.BMP);
+// all screenshots will be by default BMP images from now on
+----
+
 When you are executing tests, you have to set name of (possibly started) AVD
 you want to use for test executions. You _have to_ provide this information 
 for Maven otherwise tests will fail.

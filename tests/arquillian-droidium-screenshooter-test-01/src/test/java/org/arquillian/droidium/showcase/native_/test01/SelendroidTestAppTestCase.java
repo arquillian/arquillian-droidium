@@ -129,6 +129,9 @@ public class SelendroidTestAppTestCase {
 
         android.setScreenshotTargetDir("target/screenshots-2");
 
+        // from now on, take all images as BMP if not specified otherwise
+        android.setScreensthotImageFormat(ScreenshotType.BMP);
+
         // you can name it, it will be PNG image by default
         android.takeScreenshot("myscreenshot1");
 
