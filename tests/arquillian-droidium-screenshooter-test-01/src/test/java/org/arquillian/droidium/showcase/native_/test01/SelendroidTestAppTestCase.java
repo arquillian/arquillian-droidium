@@ -19,6 +19,7 @@ package org.arquillian.droidium.showcase.native_.test01;
 import java.io.File;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
+import org.arquillian.droidium.container.api.Screenshooter;
 import org.arquillian.droidium.container.api.ScreenshotType;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
@@ -39,7 +40,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 /**
- * Android Droidium testing with WebDriver and Selendroid server- showing of taking screenshots.
+ * Android Droidium testing with WebDriver and Selendroid server - showing of taking screenshots.
+ *
+ * Screenshots are taken with an injected instance of {@link Screenshooter}. {@link AndroidDevice} itself does not take
+ * screenshots, we shifted responsibility of taking screenshots to {@link Screenshooter} in order to be more flexible.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
@@ -74,26 +78,33 @@ public class SelendroidTestAppTestCase {
     /**
      * Simple test which tries to register some user.
      *
-     * @param android Android device itself, it is not needed in tests as such since we interact only with {@code WebDriver}
-     *        injection.
+     * @param screenshooter takes screenshots of {@code androidDevice}
+     * @param androidDevice Android device itself, it is not needed in tests as such since we interact only with
+     *        {@code WebDriver} injection.
      * @param driver {@code WebDriver} injection which sends commands to Selendroid server installed on the Android device.
      */
     @Test
     @InSequence(1)
     @OperateOnDeployment("android")
-    public void test01(@ArquillianResource AndroidDevice android, @Drone WebDriver driver) {
+    public void test01(@ArquillianResource Screenshooter screenshooter,
+        @ArquillianResource AndroidDevice androidDevice, @Drone WebDriver driver) {
+
+        // to check we are good
+        Assert.assertNotNull(screenshooter);
+        Assert.assertNotNull(androidDevice);
+        Assert.assertNotNull(driver);
 
         // where to save taken screenshots, by default to target/
-        android.setScreenshotTargetDir("target/screenshots-1");
+        screenshooter.setScreenshotTargetDir("target/screenshots-1");
 
         // take it!
-        android.takeScreenshot();
+        screenshooter.takeScreenshot();
 
         // Go to user registration
         driver.findElement(By.id("startUserRegistration")).click();
 
         // take it as GIF, by default, it is taken as PNG
-        android.takeScreenshot(ScreenshotType.GIF);
+        screenshooter.takeScreenshot(ScreenshotType.GIF);
 
         // enter nick
         WebElement userName = driver.findElement(By.id("inputUserName"));
@@ -127,19 +138,19 @@ public class SelendroidTestAppTestCase {
 
         acceptAddsCheckbox.click();
 
-        android.setScreenshotTargetDir("target/screenshots-2");
+        screenshooter.setScreenshotTargetDir("target/screenshots-2");
 
         // from now on, take all images as BMP if not specified otherwise
-        android.setScreensthotImageFormat(ScreenshotType.BMP);
+        screenshooter.setScreensthotImageFormat(ScreenshotType.BMP);
 
         // you can name it, it will be PNG image by default
-        android.takeScreenshot("myscreenshot1");
+        screenshooter.takeScreenshot("myscreenshot1");
 
         // register
         driver.findElement(By.id("btnRegisterUser")).click();
 
         // or you can specify file format as well
-        android.takeScreenshot("myscreenshot2", ScreenshotType.JPEG);
+        screenshooter.takeScreenshot("myscreenshot2", ScreenshotType.JPEG);
 
     }
 }

@@ -16,21 +16,16 @@
  */
 package org.arquillian.droidium.container.impl;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
-
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidDeviceOutputReciever;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
-import org.arquillian.droidium.container.api.ScreenshotType;
 import org.arquillian.droidium.container.configuration.Validate;
-import org.arquillian.droidium.container.utils.AndroidScreenshotIdentifierGenerator;
 
 import com.android.ddmlib.AdbCommandRejectedException;
 import com.android.ddmlib.IDevice;
@@ -57,31 +52,9 @@ class AndroidDeviceImpl implements AndroidDevice {
 
     private int droneGuestPort = 8080;
 
-    private String screenshotTargetDir = "target" + System.getProperty("file.separator");
-
-    private ScreenshotType screenshotType = ScreenshotType.PNG;
-
     AndroidDeviceImpl(IDevice delegate) {
         Validate.notNull(delegate, "delegate to set for Android device can not be a null object.");
         this.delegate = delegate;
-    }
-
-    @Override
-    public void setScreenshotTargetDir(String screenshotTargetDir) {
-        Validate.notNullOrEmpty(screenshotTargetDir, "Screenshot target directory can not be a null object or an empty string");
-        File file = new File(screenshotTargetDir);
-        if (!file.exists()) {
-            if (file.mkdirs()) {
-                this.screenshotTargetDir = screenshotTargetDir;
-                log.info("Created screenshot target directory: " + file.getAbsolutePath());
-            } else {
-                throw new IllegalArgumentException("Unable to create screenshot target dir " + file.getAbsolutePath());
-            }
-        } else {
-            Validate.isReadableDirectory(screenshotTargetDir,
-                "want-to-be target screenshot directory path exists and is not a directory");
-            this.screenshotTargetDir = screenshotTargetDir;
-        }
     }
 
     @Override
@@ -248,89 +221,6 @@ class AndroidDeviceImpl implements AndroidDevice {
     }
 
     @Override
-    public File takeScreenshot() {
-        return takeScreenshot(null, getScreenshotImageFormat());
-    }
-
-    @Override
-    public File takeScreenshot(String fileName) {
-        return takeScreenshot(fileName, getScreenshotImageFormat());
-    }
-
-    @Override
-    public File takeScreenshot(ScreenshotType type) {
-        return takeScreenshot(null, type);
-    }
-
-    @Override
-    public File takeScreenshot(String fileName, ScreenshotType type) {
-        if (fileName != null) {
-            if (fileName.trim().isEmpty()) {
-                throw new IllegalArgumentException("file name to save a screenshot to can not be empty string");
-            }
-        }
-        if (!isOnline()) {
-            throw new AndroidExecutionException("Android device is not online, can not take any screenshots.");
-        }
-
-        RawImage rawImage = null;
-
-        try {
-            rawImage = delegate.getScreenshot();
-        } catch (IOException ex) {
-            log.info("Unable to take a screenshot of device " + getAvdName() == null ? getSerialNumber() : getAvdName());
-            ex.printStackTrace();
-        } catch (TimeoutException ex) {
-            log.info("Taking of screenshot timeouted.");
-            ex.printStackTrace();
-        } catch (AdbCommandRejectedException ex) {
-            log.info("Command which takes screenshot was rejected.");
-            ex.printStackTrace();
-        }
-
-        BufferedImage bufferedImage = new BufferedImage(rawImage.width, rawImage.height, BufferedImage.TYPE_INT_RGB);
-
-        int index = 0;
-
-        int indexInc = rawImage.bpp >> 3;
-        for (int y = 0; y < rawImage.height; y++) {
-            for (int x = 0; x < rawImage.width; x++, index += indexInc) {
-                int value = rawImage.getARGB(index);
-                bufferedImage.setRGB(x, y, value);
-            }
-        }
-
-        String imageName = null;
-
-        if (fileName == null) {
-            imageName = new AndroidScreenshotIdentifierGenerator().getIdentifier(type.getClass());
-        }
-        else {
-            imageName = fileName + "." + type.toString();
-        }
-
-        File image = new File(screenshotTargetDir, imageName);
-
-        try {
-            ImageIO.write(bufferedImage, type.toString(), image);
-        } catch (IOException e) {
-            log.info("unable to save screenshot of type " + type.toString() + " to file " + image.getAbsolutePath());
-            e.printStackTrace();
-        }
-        return image;
-    }
-
-    @Override
-    public void setScreensthotImageFormat(ScreenshotType type) {
-        Validate.notNull(type, "Screenshot format to set can not be a null object!");
-        this.screenshotType = type;
-    }
-
-    private ScreenshotType getScreenshotImageFormat() {
-        return this.screenshotType;
-    }
-
-    @Override
     public int getDroneHostPort() {
         return droneHostPort;
     }
@@ -348,6 +238,26 @@ class AndroidDeviceImpl implements AndroidDevice {
     @Override
     public void setDroneGuestPort(int droneGuestPort) {
         this.droneGuestPort = droneGuestPort;
+    }
+
+    @Override
+    public RawImage getScreenshot() {
+        RawImage rawImage = null;
+
+        try {
+            rawImage = delegate.getScreenshot();
+        } catch (IOException ex) {
+            log.info("Unable to take a screenshot of device " + getAvdName() == null ? getSerialNumber() : getAvdName());
+            ex.printStackTrace();
+        } catch (TimeoutException ex) {
+            log.info("Taking of screenshot timeouted.");
+            ex.printStackTrace();
+        } catch (AdbCommandRejectedException ex) {
+            log.info("Command which takes screenshot was rejected.");
+            ex.printStackTrace();
+        }
+
+        return rawImage;
     }
 
     private static class PackageInstalledMonkey implements AndroidDeviceOutputReciever {

@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
+import com.android.ddmlib.RawImage;
+
 /**
  * Representation of Android Device
  *
@@ -174,51 +176,9 @@ public interface AndroidDevice {
     void setDroneGuestPort(int droneGuestPort);
 
     /**
-     * Takes screenshot in default format with random string as a name with file format extension.
+     * Gets a screenshot of underlying Android device.
      *
-     * @return screenshot of default image format
+     * @return raw screenshot for further processing
      */
-    File takeScreenshot();
-
-    /**
-     * Takes screenshot in specified format. Name of screenshot is random string with file format extension.
-     *
-     * @param type type of screenshot
-     * @return screenshot of given image type
-     */
-    File takeScreenshot(ScreenshotType type);
-
-    /**
-     * Takes screenshot of default file format with specified name.
-     *
-     * @param fileName name of file without file format extension
-     * @return screenshot of default format with specified name
-     */
-    File takeScreenshot(String fileName);
-
-    /**
-     * Takes screenshot of specified type which is saved under specified name
-     *
-     * @param fileName name of file without file format extension
-     * @param type type of screenshot required
-     * @return screenshot of specified format with a specified name
-     */
-    File takeScreenshot(String fileName, ScreenshotType type);
-
-    /**
-     * Sets a directory where all screenshots taken by {@link AndroidDevice#takeScreenshot()} will be saved from now on.
-     *
-     * @param screenshotTargetDir directory to save screenshots to
-     * @throws IllegalArgumentException if {@code screenshotTargetDir} is null, empty or does not represents existing and
-     *         writable directory
-     */
-    void setScreenshotTargetDir(String screenshotTargetDir);
-
-    /**
-     * Sets the format of images to take. After setting this, all subsequent images will be of this format when not explicitly
-     * specified otherwise.
-     *
-     * @param type type of screenshots to take from now on
-     */
-    void setScreensthotImageFormat(ScreenshotType type);
+    RawImage getScreenshot();
 }

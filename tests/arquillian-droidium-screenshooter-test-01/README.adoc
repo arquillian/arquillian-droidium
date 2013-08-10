@@ -2,20 +2,21 @@
 
 This demo projects shows how to take screenshots of your devices while you are doing tests.
 
-Screenshots are taken via injected `AndroidDevice` into test method (test class). You take 
-screenshots like
+Screenshots are taken via injected `Screenshooter` into test method (test class). 
+`Screenshooter` is container scoped so when injected, it will be covered by the instance 
+of `AndroidDevice`. You take screenshots like
 
 ----
-@ArqullianResource AndroidDevice android;
+@ArqullianResource Screenshooter screenshooter;
 
-android.takeScreenshot();
+screenshooter.takeScreenshot();
 ----
 
 Screenshot is saved by default to `target/` directory. You can set where to save 
 all subsequently taken screenshots by calling, for example
 
 ----
-android.setScreenshotTargetDir("target/some_dir");
+screenshooter.setScreenshotTargetDir("target/some_dir");
 ----
 
 You can take screenshots of different formats. Default format is PNG. You can take 
@@ -23,21 +24,21 @@ PNG, GIF, JPEG, BMP and WBMP. The format of the screenshot is specified when you
 screenshot like
 
 ----
-android.takeScreenshot(ScreenshotType.GIF)
+screenshooter.takeScreenshot(ScreenshotType.GIF)
 ----
 
 File name of screenshot is by default a random string. You can name it like 
 
 ----
-android.takeScreenshot("myScreenshot", ScreenshotType.GIF);
-android.takeScreenshot("myScreenshot2"); // taken as PNG
+screenshooter.takeScreenshot("myScreenshot", ScreenshotType.GIF);
+screenshooter.takeScreenshot("myScreenshot2"); // taken as PNG
 ----
 
 You can set the format of screenshots you want to take explicitly. From that point, 
 all screenshots will be of that format when not specified otherwise.
 
 ----
-android.setScreensthotImageFormat(ScreenshotType.BMP);
+screenshooter.setScreensthotImageFormat(ScreenshotType.BMP);
 // all screenshots will be by default BMP images from now on
 ----
 

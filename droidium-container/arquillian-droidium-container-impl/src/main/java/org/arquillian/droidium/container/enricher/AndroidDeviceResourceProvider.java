@@ -26,11 +26,12 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.arquillian.test.spi.enricher.resource.ResourceProvider;
 
 /**
- * Resource provider which allows to get control of an AVD device.
+ * Resource provider which allows to get the control of Android device.
  *
- * User can use this to install an APK, do forwardning or execute an arbitrary command on the device manually.
+ * User can use this to install an APK, do forwarding or execute an arbitrary command on the device manually.
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
+ * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  * @see AndroidDevice
  */
 public class AndroidDeviceResourceProvider implements ResourceProvider {
@@ -48,9 +49,10 @@ public class AndroidDeviceResourceProvider implements ResourceProvider {
     @Override
     public Object lookup(ArquillianResource resource, Annotation... qualifiers) {
         AndroidDevice device = androidDevice.get();
+
         if (device == null) {
-            log.severe("Unable to Inject Android Device controller into test");
-            throw new IllegalStateException("Unable to Inject Android Device controller into test");
+            log.severe("Unable to inject Android device instance into the test.");
+            throw new IllegalStateException("Unable to inject Android device instance into the test.");
         }
 
         return device;
