@@ -289,6 +289,35 @@ already is. It can have only `true` or `false` value. When not used, it is set t
 </configuration>
 ----
 
+==== adapterImplClass
+===== default: org.arquillian.droidium.container.AndroidDeployableContainer
+
+Specifies what is the implementation class of Arquillian Droidium container. You *have to* use this property 
+when you place more then one Arquillian container adapter on the class path at time. For example, when you are 
+doing web testing, you are using e.g. JBoss container. You are obliged to specify this property for every container 
+adapter in configuration section in arquillian.xml with implementation class of adapter.
+
+Note that you do not have to specify this property when you are using only Droidium container itself.
+
+----
+<group qualifier="containers" default="true">
+ <container qualifier="android" default="true">
+  <configuration>
+   <property name="adapterImplClass">
+     org.arquillian.droidium.container.AndroidDeployableContainer
+   </property>
+  </configuration>
+ </container>
+ <container qualifier="jbossas">
+  <configuration>
+   <property name="adapterImplClass">
+    org.jboss.as.arquillian.container.managed.ManagedDeployableContainer
+   </property>
+  </configuration>
+ </container>
+</group>
+----
+
 === Real Android Device Configuration
 
 ==== serialId
