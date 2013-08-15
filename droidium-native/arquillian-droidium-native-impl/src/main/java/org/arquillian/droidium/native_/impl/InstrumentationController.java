@@ -31,7 +31,6 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;
-import org.jboss.arquillian.core.spi.EventContext;
 import org.jboss.arquillian.test.spi.event.suite.BeforeClass;
 
 /**
@@ -93,13 +92,13 @@ public class InstrumentationController {
     /**
      * Decides if the instrumentation of just deployed archive is going to happen or not. If yes, {@code PerformInstrumentation}
      * event is fired with underlying deployed archive. Deployed archive is instrumented if the name of {@code @Deployment} is
-     * the same as resolved name in {@link #resolveInstrumentedDeploymentName(EventContext)}. <br>
+     * the same as resolved name in {@link #resolveInstrumentedDeploymentName(BeforeClass)}. <br>
      * <br>
      * Fires: <br>
      * <ul>
      * <li>{@link PerformInstrumentation}</li>
      * </ul>
-     *
+     * 
      * @param event
      */
     public void decidePerformingInstrumentation(@Observes AfterDeploy event) {
