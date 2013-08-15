@@ -43,8 +43,8 @@ import org.arquillian.droidium.native_.AbstractAndroidTestTestBase;
 import org.arquillian.droidium.native_.api.Instrumentable;
 import org.arquillian.droidium.native_.configuration.DroidiumNativeConfiguration;
 import org.arquillian.droidium.native_.impl.DeploymentController;
-import org.arquillian.droidium.native_.impl.InstrumentationController;
 import org.arquillian.droidium.native_.impl.DroidiumNativeConfigurator;
+import org.arquillian.droidium.native_.impl.InstrumentationController;
 import org.arquillian.droidium.native_.spi.event.InstrumentationPerformed;
 import org.arquillian.droidium.native_.spi.event.InstrumentationRemoved;
 import org.arquillian.droidium.native_.spi.event.PerformInstrumentation;
@@ -195,7 +195,7 @@ public class DroidiumMultipleDeploymentsTestCase extends AbstractAndroidTestTest
     public void testMultipleDeploymentsScenarioWithDummyTestClass() {
         TestClassActivator.activate(getManager(), DummyTestClass.class);
 
-        executeOneDeploymentTest();
+        executeOneDeploymentTest(DummyTestClass.class);
 
         assertEventFired(PerformInstrumentation.class, 1);
         assertEventFired(InstrumentationPerformed.class, 1);
@@ -209,7 +209,7 @@ public class DroidiumMultipleDeploymentsTestCase extends AbstractAndroidTestTest
     public void testMultipleDeploymentsScenarioWithDummyInstrumentableTestClass() {
         TestClassActivator.activate(getManager(), DummyInstrumentableTestClass.class);
 
-        executeOneDeploymentTest();
+        executeOneDeploymentTest(DummyInstrumentableTestClass.class);
 
         assertEventFired(PerformInstrumentation.class, 1);
         assertEventFired(InstrumentationPerformed.class, 1);
@@ -288,7 +288,7 @@ public class DroidiumMultipleDeploymentsTestCase extends AbstractAndroidTestTest
 
     // END OF TEST CLASSES TO TEST MULTIPLE DEPLOYMENT SCENARIOS OF
 
-    private void executeOneDeploymentTest() {
+    private void executeOneDeploymentTest(Class<?> testClass) {
         fire(new BeforeSuite());
         fire(new SetupContainer(registry.getContainer("android1")));
         fire(new AndroidContainerStart());
@@ -305,7 +305,7 @@ public class DroidiumMultipleDeploymentsTestCase extends AbstractAndroidTestTest
         DeployableContainer<?> container = (DeployableContainer<?>) (containers.toArray())[0];
 
         fire(new AfterStart(container));
-        fire(new BeforeClass(DummyTestClass.class));
+        fire(new BeforeClass(testClass));
         fire(new DeployDeployment(registry.getContainer("android1"), deployment));
         fire(new BeforeDeploy(container, deployment.getDescription()));
         fire(new AndroidDeployArchive(deployment.getDescription().getArchive()));
@@ -313,7 +313,7 @@ public class DroidiumMultipleDeploymentsTestCase extends AbstractAndroidTestTest
         fire(new Before(TestClassActivator.getInstance(), TestClassActivator.getMethod()));
 
         fire(new After(TestClassActivator.getInstance(), TestClassActivator.getMethod()));
-        fire(new AfterClass(DummyTestClass.class));
+        fire(new AfterClass(testClass));
         fire(new AndroidUndeployArchive(deployment.getDescription().getArchive()));
         fire(new AfterUnDeploy(container, deployment.getDescription()));
 
