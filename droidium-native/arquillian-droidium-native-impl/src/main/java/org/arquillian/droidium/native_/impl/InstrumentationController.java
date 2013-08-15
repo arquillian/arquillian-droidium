@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.native_.instrumentation;
+package org.arquillian.droidium.native_.impl;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -23,16 +23,16 @@ import java.util.logging.Logger;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.native_.api.Instrumentable;
-import org.arquillian.droidium.native_.event.InstrumentPackage;
-import org.jboss.arquillian.container.spi.client.deployment.DeploymentScenario;
+import org.arquillian.droidium.native_.spi.event.PerformInstrumentation;
+import org.arquillian.droidium.native_.spi.event.RemoveInstrumentation;
 import org.jboss.arquillian.container.spi.event.container.AfterDeploy;
+import org.jboss.arquillian.container.spi.event.container.AfterUnDeploy;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;
 import org.jboss.arquillian.core.spi.EventContext;
 import org.jboss.arquillian.test.spi.event.suite.BeforeClass;
-import org.jboss.shrinkwrap.api.Archive;
 
 /**
  * Controls whether package to be deployed specified in {@link Deployment} method will be instrumented by Selendroid server or
@@ -41,27 +41,33 @@ import org.jboss.shrinkwrap.api.Archive;
  * be instrumented. All other deployments act as prerequisites for instrumented package in order to satisfy its dependencies.
  *
  * <br>
+ * <br>
  * Observes:
  * <ul>
  * <li>{@link BeforeClass}</li>
  * <li>{@link AfterDeploy}</li>
+ * <li>{@link AfterUnDeploy}</li>
  * </ul>
  *
  * Fires: <br>
  * <br>
  * <ul>
- * <li>{@link InstrumentPackage}</li>
+ * <li>{@link PerformInstrumentation}</li>
+ * <li>{@link RemoveInstrumentation}</li>
  * </ul>
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
-public class DroidiumInstrumentationController {
+public class InstrumentationController {
 
-    private static final Logger logger = Logger.getLogger(DroidiumInstrumentationController.class.getName());
+    private static final Logger logger = Logger.getLogger(InstrumentationController.class.getName());
 
     @Inject
-    private Event<InstrumentPackage> instrumentEvent;
+    private Event<PerformInstrumentation> performInstrumentationEvent;
+
+    @Inject
+    private Event<RemoveInstrumentation> removeInstrumentationEvent;
 
     private String instrumentedDeploymentName;
 
@@ -78,37 +84,48 @@ public class DroidiumInstrumentationController {
         Method[] deploymentMethods = context.getEvent().getTestClass().getMethods(Deployment.class);
 
         if (deploymentMethods.length == 0) {
-            throw new IllegalStateException("There are not any methods annotated by " + Deployment.class.getName() + ".");
+            logger.info("There are not any methods annotated by " + Deployment.class.getName() + ". Nothing will be "
+                + "instrumented on behalf of Arquillian Droidium container.");
+            return;
         }
 
         instrumentedDeploymentName = getInstrumentedDeploymentName(deploymentMethods);
-
-        logger.info("Deployment going to be instrumented: " + instrumentedDeploymentName);
 
         context.proceed();
     }
 
     /**
-     * Decides if instrumentation of just deployed archive is going to happen or not. If yes, {@code InstrumentPackage} event is
-     * fired with underlying deployed archive. Deployed archive is instrumented if the name of {@code @Deployment} is the same
-     * as resolved name in {@code #resolveInstrumentedDeploymentName(EventContext)}.
+     * Decides if the instrumentation of just deployed archive is going to happen or not. If yes, {@code PerformInstrumentation}
+     * event is fired with underlying deployed archive. Deployed archive is instrumented if the name of {@code @Deployment} is
+     * the same as resolved name in {@link #resolveInstrumentedDeploymentName(EventContext)}. <br>
+     * <br>
+     * Fires: <br>
+     * <ul>
+     * <li>{@link PerformInstrumentation}</li>
+     * </ul>
      *
      * @param event
-     * @param deploymentScenario
      */
-    public void decideInstrumentation(@Observes AfterDeploy event, DeploymentScenario deploymentScenario) {
-
-        Archive<?> archive = null;
-
-        for (org.jboss.arquillian.container.spi.client.deployment.Deployment deployment : deploymentScenario.deployments()) {
-            if (deployment.getDescription().getName().equals(instrumentedDeploymentName)) {
-                archive = deployment.getDescription().getArchive();
-                break;
-            }
+    public void decidePerformingInstrumentation(@Observes AfterDeploy event) {
+        if (event.getDeployment().getName().equals(instrumentedDeploymentName)) {
+            performInstrumentationEvent.fire(new PerformInstrumentation(event.getDeployment().getArchive()));
         }
+    }
 
-        if (archive != null) {
-            instrumentEvent.fire(new InstrumentPackage(archive));
+    /**
+     * For just undeployed archive, decide if this archive was instrumented and cancel the instrumentation - in our case
+     * initialize the uninstallation of Selendroid server by firing {@link RemoveInstrumentation} event. <br>
+     * <br>
+     * Fires: <br>
+     * <ul>
+     * <li>{@link RemoveInstrumentation}</li>
+     * </ul>
+     *
+     * @param event
+     */
+    public void decideRemovingInstrumentation(@Observes AfterUnDeploy event) {
+        if (event.getDeployment().getName().equals(instrumentedDeploymentName)) {
+            removeInstrumentationEvent.fire(new RemoveInstrumentation(event.getDeployment().getArchive()));
         }
     }
 
@@ -120,7 +137,7 @@ public class DroidiumInstrumentationController {
         List<Method> instrumentableMethods = getInstrumentableMethods(methods);
 
         if (instrumentableMethods.size() != 1) {
-            throw new IllegalStateException("There is more then one @Deployment method but you either specified "
+            throw new IllegalStateException("There is more than one @Deployment method but you either specified "
                 + "no @Instrumentable method or you specified more then one. You can put @Instrumentable only on one "
                 + "@Deployment method. There has to be one instrumented deployment at maximum.");
         }

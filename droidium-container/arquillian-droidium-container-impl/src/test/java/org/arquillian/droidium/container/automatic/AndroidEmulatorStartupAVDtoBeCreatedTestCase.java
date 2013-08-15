@@ -71,9 +71,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class AndroidEmulatorStartupAVDtoBeCreatedTestCase extends AbstractContainerTestBase {
 
-    private final String AVD_GENERATED_NAME = "ab1be336-d30f-4d3c-90de-56bdaf198a3e";
+    private static final String AVD_GENERATED_NAME = "ab1be336-d30f-4d3c-90de-56bdaf198a3e";
 
-    private final String EMULATOR_STARTUP_TIMEOUT = System.getProperty("emulator.startup.timeout", "600");
+    private static final String EMULATOR_STARTUP_TIMEOUT = System.getProperty("emulator.startup.timeout", "600");
+
+    private static final String EMULATOR_OPTIONS = "-no-audio -no-window -memory 256 -nocache -no-snapshot-save -no-snapstorage";
 
     private AndroidContainerConfiguration configuration;
 
@@ -98,7 +100,7 @@ public class AndroidEmulatorStartupAVDtoBeCreatedTestCase extends AbstractContai
         configuration = new AndroidContainerConfiguration();
         configuration.setAbi("armeabi");
         configuration.setEmulatorBootupTimeoutInSeconds(Integer.parseInt(EMULATOR_STARTUP_TIMEOUT));
-        configuration.setEmulatorOptions("-no-audio -no-window -memory 256 -nocache -no-snapshot-save -no-snapstorage");
+        configuration.setEmulatorOptions(EMULATOR_OPTIONS);
         configuration.setGeneratedAvdPath("target" + System.getProperty("file.separator"));
         androidSDK = new AndroidSDK(configuration);
         processorExecutor = new ProcessExecutor();

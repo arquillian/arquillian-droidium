@@ -24,7 +24,6 @@ import java.util.Map;
 import org.arquillian.droidium.container.configuration.Validate;
 
 /**
- * Configuration for Arquillian Droidium for native.
  *
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *

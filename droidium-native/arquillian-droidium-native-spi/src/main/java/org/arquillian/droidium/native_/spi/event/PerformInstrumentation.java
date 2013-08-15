@@ -14,14 +14,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.web.spi;
+package org.arquillian.droidium.native_.spi.event;
+
+import org.jboss.arquillian.core.spi.Validate;
+import org.jboss.shrinkwrap.api.Archive;
 
 /**
- * Event representing and Android Web Driver Hub on device is uninstalled.
+ * Event representing that underlying package should be instrumented, in our case by Selendroid server.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
-public class AndroidServerUninstalled {
+public class PerformInstrumentation {
+
+    private Archive<?> archive;
+
+    /**
+     *
+     * @param archive Android package to instrument
+     * @throws IllegalArgumentException if {@code archive} is a null object
+     */
+    public PerformInstrumentation(Archive<?> archive) throws IllegalArgumentException {
+        Validate.notNull(archive, "APK package to instrument can not be a null object!");
+        this.archive = archive;
+    }
+
+    public Archive<?> getPackage() {
+        return archive;
+    }
 
 }

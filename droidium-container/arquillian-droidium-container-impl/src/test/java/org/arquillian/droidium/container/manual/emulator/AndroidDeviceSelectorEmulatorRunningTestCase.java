@@ -66,9 +66,9 @@ public class AndroidDeviceSelectorEmulatorRunningTestCase extends AbstractContai
 
     private AndroidSDK androidSDK;
 
-    private final String RUNNING_EMULATOR_AVD_NAME = System.getProperty("emulator.running.avd.name", "test01");
+    private static final String RUNNING_EMULATOR_AVD_NAME = System.getProperty("emulator.running.avd.name", "test01");
 
-    private final String RUNNING_EMULATOR_CONSOLE_PORT = System.getProperty("emulator.running.console.port", "5554");
+    private static final String RUNNING_EMULATOR_CONSOLE_PORT = System.getProperty("emulator.running.console.port", "5554");
 
     @Override
     protected void addExtensions(List<Class<?>> extensions) {

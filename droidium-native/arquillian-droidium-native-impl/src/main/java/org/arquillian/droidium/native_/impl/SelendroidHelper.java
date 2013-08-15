@@ -50,7 +50,7 @@ public class SelendroidHelper {
 
     private final AndroidDevice androidDevice;
 
-    private final File tmpDir;
+    private File tmpDir;
 
     private static final String TOP_CMD = "top -n 1";
 
@@ -66,13 +66,15 @@ public class SelendroidHelper {
      * Installs and uninstalls application under test and Selendroid server, starts instrumentation.
      *
      * @param androidDevice
-     * @param tmpDir root temporary directory where all related resources produced by {@code SelendroidHelper} wile be put.
-     * @throws IllegalArgumentException is either of arguments is a null object
+     * @throws IllegalArgumentException if either of arguments is a null object
      */
-    public SelendroidHelper(AndroidDevice androidDevice, File tmpDir) throws IllegalArgumentException {
+    public SelendroidHelper(AndroidDevice androidDevice) throws IllegalArgumentException {
         Validate.notNull(androidDevice, "Android Device for SelendroidHelper can't be null object!");
-        Validate.notNull(tmpDir, "Log file for SelendroidHelper can't be null object!");
         this.androidDevice = androidDevice;
+    }
+
+    public void setTmpDir(File tmpDir) {
+        Validate.notNull(tmpDir, "Temporary directory for Selendroid helper can not be a null object!");
         this.tmpDir = tmpDir;
     }
 
@@ -96,7 +98,7 @@ public class SelendroidHelper {
     /**
      * Stops Selendroid server
      *
-     * @param stopApplicationInstrumentationCommand
+     * @param stopSelendroidServer which stops Selendroid server
      */
     public void stopSelendroidServer(Command stopSelendroidServer) {
         androidDevice.executeShellCommand(stopSelendroidServer.getAsString());
@@ -105,13 +107,13 @@ public class SelendroidHelper {
     /**
      * Stops application under test
      *
-     * @param stopApplicationUnderTestCommand
+     * @param command which stops an application
      */
-    public void stopApplicationUnderTest(Command stopApplicationUnderTestCommand) {
+    public void stopApplication(Command command) {
         try {
             Monkey monkey = new Monkey(DroidiumNativeFileUtils.createRandomEmptyFile(tmpDir),
-                stopApplicationUnderTestCommand.get(stopApplicationUnderTestCommand.size() - 1), false);
-            androidDevice.executeShellCommand(stopApplicationUnderTestCommand.getAsString(), monkey);
+                command.get(command.size() - 1), false);
+            androidDevice.executeShellCommand(command.getAsString(), monkey);
             waitForMonkey(androidDevice, monkey, TOP_CMD);
         } catch (IOException e) {
             e.printStackTrace();
@@ -121,13 +123,13 @@ public class SelendroidHelper {
     /**
      * Uninstalls application under test from Android device.
      *
-     * @param applicationUninstallCommand
+     * @param command which uninstalls an application
      */
-    public void uninstallApplicationUnderTest(Command applicationUninstallCommand) {
+    public void uninstallApplication(Command command) {
         try {
             Monkey monkey = new Monkey(DroidiumNativeFileUtils.createRandomEmptyFile(tmpDir),
-                applicationUninstallCommand.get(applicationUninstallCommand.size() - 1), false);
-            androidDevice.executeShellCommand(applicationUninstallCommand.getAsString(), monkey);
+                command.get(command.size() - 1), false);
+            androidDevice.executeShellCommand(command.getAsString(), monkey);
             waitForMonkey(androidDevice, monkey, PACKAGES_LIST_CMD);
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -137,10 +139,10 @@ public class SelendroidHelper {
     /**
      * Uninstalls modified Selendroid server from Android device.
      *
-     * @param uninstallSelendroidCommand
+     * @param command which uninstalls Selendroid server
      */
-    public void uninstallSelendroidServer(Command uninstallSelendroidCommand) {
-        androidDevice.executeShellCommand(uninstallSelendroidCommand.getAsString());
+    public void uninstallSelendroidServer(Command command) {
+        androidDevice.executeShellCommand(command.getAsString());
     }
 
     /**

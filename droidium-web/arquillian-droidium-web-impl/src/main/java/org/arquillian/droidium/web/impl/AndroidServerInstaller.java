@@ -28,7 +28,7 @@ import org.arquillian.droidium.container.api.AndroidDeviceOutputReciever;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
 import org.arquillian.droidium.web.configuration.DroidiumWebConfiguration;
-import org.arquillian.droidium.web.spi.AndroidServerInstalled;
+import org.arquillian.droidium.web.spi.event.AndroidServerInstalled;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;

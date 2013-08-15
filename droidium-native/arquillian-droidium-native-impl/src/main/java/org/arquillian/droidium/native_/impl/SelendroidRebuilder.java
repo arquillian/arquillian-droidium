@@ -72,7 +72,6 @@ public class SelendroidRebuilder {
      *
      * @param processExecutor
      * @param androidSDK
-     * @param droidiumNativeConfiguration
      * @param androidApplicationHelper
      * @param workingDir directory where all files and resources this class is working with are put
      */
@@ -80,10 +79,10 @@ public class SelendroidRebuilder {
         AndroidSDK androidSDK,
         AndroidApplicationHelper androidApplicationHelper,
         File workingDir) {
-        Validate.notNull(processExecutor, "Process exeuctor for Selendroid rebuilder can't be null!");
-        Validate.notNull(androidSDK, "Android SDK for Selendroid rebuilder can't be null!");
-        Validate.notNull(androidApplicationHelper, "Android applicatio helper for Selendroid rebuilder can't be null!");
-        Validate.notNull(workingDir, "Working dir for Selendroid rebuilder can't be null!. Set it e.g. to /tmp/ ...");
+        Validate.notNull(processExecutor, "Process exeuctor for Selendroid rebuilder can not be a null object!");
+        Validate.notNull(androidSDK, "Android SDK for Selendroid rebuilder can not be null a null object!");
+        Validate.notNull(androidApplicationHelper, "Android helper for Selendroid rebuilder can not be a null object!");
+        Validate.notNull(workingDir, "Working directory for Selendroid rebuilder can not be a null object!");
         this.processExecutor = processExecutor;
         this.androidSDK = androidSDK;
         this.androidApplicationHelper = androidApplicationHelper;

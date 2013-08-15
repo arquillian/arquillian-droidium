@@ -23,7 +23,7 @@ import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.configuration.Validate;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStop;
-import org.arquillian.droidium.web.spi.AndroidServerUninstalled;
+import org.arquillian.droidium.web.spi.event.AndroidServerUninstalled;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;

@@ -14,26 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.native_.instrumentation;
-
-import java.util.logging.Logger;
-
-import org.arquillian.droidium.native_.event.InstrumentPackage;
-import org.jboss.arquillian.core.api.annotation.Observes;
-import org.jboss.shrinkwrap.api.Archive;
+package org.arquillian.droidium.native_.spi.event;
 
 /**
+ * Fired when instrumentation of a package was performed.
  *
+ * Serves as a marker event to hook another possible functionality.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
-public class DroidiumInstrumentationObserver {
+public class InstrumentationPerformed {
 
-    private static final Logger logger = Logger.getLogger(DroidiumInstrumentationController.class.getName());
-
-    public void instrumentation(@Observes InstrumentPackage event) {
-        Archive<?> archive = event.getPackage();
-        logger.info("going to instrument a package");
-    }
 }

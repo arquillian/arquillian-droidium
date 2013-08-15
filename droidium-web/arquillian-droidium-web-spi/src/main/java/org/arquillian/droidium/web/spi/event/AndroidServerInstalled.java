@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.web.spi;
+package org.arquillian.droidium.web.spi.event;
 
 /**
  * Event representing and Android Web Driver Hub on device is running and ports are redirected.

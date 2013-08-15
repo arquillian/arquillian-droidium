@@ -75,11 +75,13 @@ public class AndroidEmulatorStartupAVDcreatedTestCase extends AbstractContainerT
 
     private ProcessExecutor processExecutor;
 
-    private final String EMULATOR_AVD_NAME = System.getProperty("emulator.to.run.avd.name", "test01");
+    private static final String EMULATOR_AVD_NAME = System.getProperty("emulator.to.run.avd.name", "test01");
 
-    private final String EMULATOR_CONSOLE_PORT = System.getProperty("emulator.to.run.console.port", "5556");
+    private static final String EMULATOR_CONSOLE_PORT = System.getProperty("emulator.to.run.console.port", "5556");
 
-    private final String EMULATOR_STARTUP_TIMEOUT = System.getProperty("emulator.startup.timeout", "600");
+    private static final String EMULATOR_STARTUP_TIMEOUT = System.getProperty("emulator.startup.timeout", "600");
+
+    private static final String EMULATOR_OPTIONS = "-no-audio -no-window -memory 256 -nocache -no-snapshot-save -no-snapstorage";
 
     @Override
     protected void addExtensions(List<Class<?>> extensions) {
@@ -94,8 +96,8 @@ public class AndroidEmulatorStartupAVDcreatedTestCase extends AbstractContainerT
         configuration = new AndroidContainerConfiguration();
         configuration.setAvdName(EMULATOR_AVD_NAME);
         configuration.setConsolePort(EMULATOR_CONSOLE_PORT);
-        configuration.setEmulatorBootupTimeoutInSeconds(Integer.parseInt(EMULATOR_STARTUP_TIMEOUT));
-        configuration.setEmulatorOptions("-no-audio -no-window -memory 256 -nocache -no-snapshot-save -no-snapstorage");
+        configuration.setEmulatorBootupTimeoutInSeconds(Long.parseLong(EMULATOR_STARTUP_TIMEOUT));
+        configuration.setEmulatorOptions(EMULATOR_OPTIONS);
         androidSDK = new AndroidSDK(configuration);
         processExecutor = new ProcessExecutor();
 

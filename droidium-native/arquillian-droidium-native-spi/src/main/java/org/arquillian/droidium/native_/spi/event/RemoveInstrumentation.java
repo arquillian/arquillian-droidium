@@ -14,31 +14,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.container.api;
+package org.arquillian.droidium.native_.spi.event;
 
+import org.jboss.arquillian.core.spi.Validate;
 import org.jboss.shrinkwrap.api.Archive;
 
 /**
- * Deploys and undeploys archives, possibly to {@link AndroidDevice}.
+ * Event representing that underlying package was instrumented and this instrumentation is going to be removed, in our case by
+ * uninstallation of Selendroid server.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
-public interface AndroidArchiveDeployer {
+public class RemoveInstrumentation {
+
+    private Archive<?> archive;
 
     /**
-     * Deploys archive
      *
-     * @param archive archive to deploy
-     * @throws AndroidExecutionException
+     * @param archive archive to remove instrumentation of
+     * @throws IllegalArgumentException if {@code archive} is a null object
      */
-    void deploy(Archive<?> archive) throws AndroidExecutionException;
+    public RemoveInstrumentation(Archive<?> archive) {
+        Validate.notNull(archive, "APK package to remove the instrumentation of can not be a null object!");
+        this.archive = archive;
+    }
 
-    /**
-     * Undeploys archive
-     *
-     * @param archive archive to undeploy
-     * @throws AndroidExecutionException
-     */
-    void undeploy(Archive<?> archive) throws AndroidExecutionException;
+    public Archive<?> getPackage() {
+        return archive;
+    }
 }

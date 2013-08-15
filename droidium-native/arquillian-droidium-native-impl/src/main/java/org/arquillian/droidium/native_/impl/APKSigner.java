@@ -54,20 +54,20 @@ public class APKSigner implements Signer {
      *
      * @param processExecutor
      * @param androidSDK
-     * @param configuration
+     * @param conf
      * @param applicationHelper
      * @throws IllegalArgumentException when some of arguments is null
      */
-    public APKSigner(ProcessExecutor processExecutor, AndroidSDK androidSDK, DroidiumNativeConfiguration droneConfiguration,
+    public APKSigner(ProcessExecutor processExecutor, AndroidSDK androidSDK, DroidiumNativeConfiguration conf,
         AndroidApplicationHelper applicationHelper)
         throws IllegalArgumentException {
-        Validate.notNull(processExecutor, "ProcessExecutor can't be null object to pass to APKSigner.");
-        Validate.notNull(androidSDK, "AndroidSDK can't be null object to pass to APKSigner.");
-        Validate.notNull(droneConfiguration, "Android drone configuration can't be null object to pass to APKSigner.");
-        Validate.notNull(applicationHelper, "Andorid application helper can't be null object to pass to APKSigner");
+        Validate.notNull(processExecutor, "ProcessExecutor can nott be null object to pass to APKSigner.");
+        Validate.notNull(androidSDK, "AndroidSDK can nott be null object to pass to APKSigner.");
+        Validate.notNull(conf, "Droidium native configuration can not be null object to pass to APKSigner.");
+        Validate.notNull(applicationHelper, "Andorid application helper can not be null object to pass to APKSigner.");
         this.processExecutor = processExecutor;
         this.androidSDK = androidSDK;
-        this.configuration = droneConfiguration;
+        this.configuration = conf;
         this.applicationHelper = applicationHelper;
     }
 

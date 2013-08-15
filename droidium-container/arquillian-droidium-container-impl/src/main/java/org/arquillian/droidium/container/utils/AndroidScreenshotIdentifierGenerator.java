@@ -26,7 +26,7 @@ import org.arquillian.droidium.container.api.ScreenshotType;
  * Gets random identifier for screenshot file according to its desired file extension.
  *
  *
- * @see {@link ScreenshotType}
+ * @see ScreenshotType
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */

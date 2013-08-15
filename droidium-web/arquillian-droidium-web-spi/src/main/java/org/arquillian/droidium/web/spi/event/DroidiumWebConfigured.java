@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.web.spi;
+package org.arquillian.droidium.web.spi.event;
 
 import org.arquillian.droidium.container.spi.event.DroidiumExtensionConfigured;
 

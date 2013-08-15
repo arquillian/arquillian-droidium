@@ -50,7 +50,7 @@ public class AndroidScreenshooter implements Screenshooter {
 
     /**
      *
-     * @param androidDevice Android device to get screenshots of
+     * @param device Android device to get screenshots of
      */
     public AndroidScreenshooter(AndroidDevice device) {
         Validate.notNull(device, "Android device you try to get into Android screenshooter can not be a null object!");

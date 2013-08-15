@@ -432,7 +432,7 @@ public class AndroidSDK {
     /**
      * Gets the source properties files from all locally installed platforms.
      *
-     * @return
+     * @return list of platform directories
      */
     private List<File> getPlatformDirectories() {
         List<File> sourcePropertyFiles = new ArrayList<File>();

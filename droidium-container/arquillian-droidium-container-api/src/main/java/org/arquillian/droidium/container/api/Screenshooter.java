@@ -23,6 +23,7 @@ import java.io.File;
  *
  */
 public interface Screenshooter {
+
     /**
      * Takes screenshot in default format with random string as a name with file format extension.
      *
@@ -56,7 +57,7 @@ public interface Screenshooter {
     File takeScreenshot(String fileName, ScreenshotType type);
 
     /**
-     * Sets a directory where all screenshots taken by {@link AndroidDevice#takeScreenshot()} will be saved from now on.
+     * Sets a directory where all taken screenshots will be saved from now on.
      *
      * @param screenshotTargetDir directory to save screenshots to
      * @throws IllegalArgumentException if {@code screenshotTargetDir} is null, empty or does not represents existing and

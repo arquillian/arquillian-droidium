@@ -108,6 +108,14 @@
     <!-- Dependency Management -->
     <dependencyManagement>
         <dependencies>
+            <!-- ShrinkWrap -->
+            <dependency>
+                <groupId>org.jboss.shrinkwrap</groupId>
+                <artifactId>shrinkwrap-bom</artifactId>
+                <version>${version.shrinkwrap_shrinkwrap}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>            
             <!-- Arquillian -->
             <dependency>
                 <groupId>org.jboss.arquillian</groupId>

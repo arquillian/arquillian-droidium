@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.impl.ProcessExecutor;
 import org.arquillian.droidium.native_.configuration.DroidiumNativeConfiguration;
-import org.arquillian.droidium.native_.event.DroidiumNativeConfigured;
+import org.arquillian.droidium.native_.spi.event.DroidiumNativeConfigured;
 import org.jboss.arquillian.config.descriptor.api.ArquillianDescriptor;
 import org.jboss.arquillian.config.descriptor.api.ExtensionDef;
 import org.jboss.arquillian.core.api.Event;
@@ -61,7 +61,7 @@ public class DroidiumNativeConfigurator {
     /**
      * Extension qualifier for Arquillian Droidium native in arquillian.xml
      */
-    private static final String DROIDIUM_NATIVE_EXTENSION_NAME = "droidium-native";
+    public static final String DROIDIUM_NATIVE_EXTENSION_NAME = "droidium-native";
 
     @Inject
     @SuiteScoped
@@ -76,7 +76,7 @@ public class DroidiumNativeConfigurator {
     @Inject
     private Instance<AndroidSDK> androidSDK;
 
-    public void configureAndroidDrone(@Observes(precedence = 10) BeforeSuite event, ArquillianDescriptor descriptor) {
+    public void configureDroidiumNative(@Observes(precedence = 10) BeforeSuite event, ArquillianDescriptor descriptor) {
 
         logger.info("Configuring " + DROIDIUM_NATIVE_EXTENSION_NAME);
 

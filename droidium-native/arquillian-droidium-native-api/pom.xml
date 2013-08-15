@@ -42,7 +42,6 @@
         <dependency>
             <groupId>org.jboss.shrinkwrap</groupId>
             <artifactId>shrinkwrap-api</artifactId>
-            <version>${version.shrinkwrap_shrinkwrap}</version>
         </dependency>
     </dependencies>
 

@@ -56,8 +56,8 @@ public class AndroidDeviceSelectorRealDeviceTestCase extends AbstractContainerTe
 
     private AndroidContainerConfiguration configuration;
 
-    private String PHYSICAL_DEVICE_SERIAL_ID = System.getProperty("device.serial.id");
-    
+    private static final String PHYSICAL_DEVICE_SERIAL_ID = System.getProperty("device.serial.id");
+
     private AndroidSDK androidSDK;
 
     @Override

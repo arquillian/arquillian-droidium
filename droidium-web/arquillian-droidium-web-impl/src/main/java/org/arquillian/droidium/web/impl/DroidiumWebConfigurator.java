@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.arquillian.droidium.web.configuration.DroidiumWebConfiguration;
-import org.arquillian.droidium.web.spi.DroidiumWebConfigured;
+import org.arquillian.droidium.web.spi.event.DroidiumWebConfigured;
 import org.jboss.arquillian.config.descriptor.api.ArquillianDescriptor;
 import org.jboss.arquillian.config.descriptor.api.ExtensionDef;
 import org.jboss.arquillian.core.api.Event;

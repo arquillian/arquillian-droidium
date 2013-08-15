@@ -17,7 +17,7 @@
 package org.arquillian.droidium.native_.exception;
 
 /**
- * Thrown when there is a failure to sign an APK package.
+ * Thrown when there is a failure while signing an APK package.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *

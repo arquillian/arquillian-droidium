@@ -119,15 +119,16 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidCo
 
     @Override
     public ProtocolMetaData deploy(Archive<?> archive) throws DeploymentException {
-        logger.log(Level.INFO, "Deploying the archive to the container {0}.", getContainerName());
+        logger.log(Level.INFO, "Deploying the archive {0} to the container {1}.",
+            new Object[] { archive.getName(), getContainerName() });
         deployArchiveEvent.fire(new AndroidDeployArchive(archive));
         return new ProtocolMetaData();
     }
 
     @Override
     public void undeploy(Archive<?> archive) throws DeploymentException {
-        logger.log(Level.INFO, "Undeploying an archive from the container {0}.", getContainerName());
-
+        logger.log(Level.INFO, "Undeploying an archive {0} from the container {1}.",
+            new Object[] { archive.getName(), getContainerName() });
         undeployArchiveEvent.fire(new AndroidUndeployArchive(archive));
     }
 

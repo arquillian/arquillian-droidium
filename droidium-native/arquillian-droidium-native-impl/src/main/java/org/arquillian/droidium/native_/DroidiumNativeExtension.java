@@ -16,12 +16,13 @@
  */
 package org.arquillian.droidium.native_;
 
-import org.arquillian.droidium.native_.impl.DroidiumNativeArchiveDeployer;
+import org.arquillian.droidium.native_.impl.DeploymentController;
+import org.arquillian.droidium.native_.impl.InstrumentationController;
 import org.arquillian.droidium.native_.impl.DroidiumNativeConfigurator;
 import org.jboss.arquillian.core.spi.LoadableExtension;
 
 /**
- * An extension for Droidium native testing support in Arquillian.
+ * The extension for Droidium native testing support in Arquillian.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
@@ -31,7 +32,8 @@ public class DroidiumNativeExtension implements LoadableExtension {
     @Override
     public void register(ExtensionBuilder builder) {
         builder.observer(DroidiumNativeConfigurator.class);
-        builder.observer(DroidiumNativeArchiveDeployer.class);
+        builder.observer(DeploymentController.class);
+        builder.observer(InstrumentationController.class);
     }
 
 }

@@ -67,13 +67,13 @@ public class AndroidSDCardManagerTestCase extends AbstractAndroidTestTestBase {
 
     private ProcessExecutor executor;
 
-    private static String SD_CARD = "340df030-8994-11e2-9e96-0800200c9a66.img";
+    private static final String SD_CARD = "340df030-8994-11e2-9e96-0800200c9a66.img";
 
-    private final String SD_CARD_LABEL = "ba817e70-8994-11e2-9e96-0800200c9a66";
+    private static final String SD_CARD_LABEL = "ba817e70-8994-11e2-9e96-0800200c9a66";
 
-    private static String SD_PATH = System.getProperty("java.io.tmpdir") + System.getProperty("file.separator") + SD_CARD;
+    private static final String SD_PATH = System.getProperty("java.io.tmpdir") + System.getProperty("file.separator") + SD_CARD;
 
-    private final String SD_SIZE = "128M";
+    private static final String SD_SIZE = "128M";
 
     @Mock
     private IdentifierGenerator idGenerator;
