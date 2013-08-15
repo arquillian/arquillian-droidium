@@ -1,0 +1,3 @@
+== Event model for Arquillian Droidium.
+
+graphml files are created and editable by http://www.yworks.com/en/products_yed_about.html[yed].
