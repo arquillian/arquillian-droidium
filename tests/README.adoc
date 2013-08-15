@@ -25,6 +25,14 @@ and you are executing the same test cases. It is shown as for a completeness and
 You would normally use simple test with one AVD as with -native-test-01 but you woud execute it twice - each 
 time with different AVD specified.
 
+=== arquillian-droidium-multiple-deployments-test-01
+
+This project shows how to deploy more than one `@Deployment` into your mobile device. Only 
+one deployment will be instrumented by Selendroid server, another one (or more of them) will 
+be just installed. This possibility provides you a way how to test scenarios when you need to 
+deploy some other resources in order to perform the test itself (backed by Selendroid, Drone and 
+WebDriver). Deployment which is meant to be instrumented is obliged to be annotated by `@Instrumentable`.
+
 === arquillian-droidium-native-test-01
 
 Tests test application from http://dominikdary.github.io/selendroid/[Selendroid] project. 
