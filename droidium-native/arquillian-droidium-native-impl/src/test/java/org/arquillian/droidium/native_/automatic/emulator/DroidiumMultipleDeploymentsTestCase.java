@@ -192,6 +192,20 @@ public class DroidiumMultipleDeploymentsTestCase extends AbstractAndroidTestTest
     }
 
     @Test
+    public void testScenarioWithoutDeploymentMethod() {
+        TestClassActivator.activate(getManager(), DummyTestClassWithoutDeploymentMethod.class);
+
+        executeZeroDeploymentTest(DummyTestClassWithoutDeploymentMethod.class);
+
+        assertEventFired(PerformInstrumentation.class, 0);
+        assertEventFired(InstrumentationPerformed.class, 0);
+        assertEventFired(RemoveInstrumentation.class, 0);
+        assertEventFired(InstrumentationRemoved.class, 0);
+
+        TestClassActivator.deactivate(getManager(), DummyTestClassWithoutDeploymentMethod.class);
+    }
+
+    @Test
     public void testMultipleDeploymentsScenarioWithDummyTestClass() {
         TestClassActivator.activate(getManager(), DummyTestClass.class);
 
@@ -243,7 +257,14 @@ public class DroidiumMultipleDeploymentsTestCase extends AbstractAndroidTestTest
 
     // TEST CLASSES TO TEST MULTIPLE DEPLOYMENT SCENARIOS OF
 
-    private static class DummyTestClass {
+    private static final class DummyTestClassWithoutDeploymentMethod {
+
+        @Test
+        public void dummyTest() {
+        }
+    }
+
+    private static final class DummyTestClass {
 
         @org.jboss.arquillian.container.test.api.Deployment
         public static Archive<?> getDeployment() {
@@ -287,6 +308,29 @@ public class DroidiumMultipleDeploymentsTestCase extends AbstractAndroidTestTest
     }
 
     // END OF TEST CLASSES TO TEST MULTIPLE DEPLOYMENT SCENARIOS OF
+
+    private void executeZeroDeploymentTest(Class<?> testClass) {
+        fire(new BeforeSuite());
+        fire(new SetupContainer(registry.getContainer("android1")));
+        fire(new AndroidContainerStart());
+
+        AndroidBridge bridge = getManager().getContext(ContainerContext.class).getObjectStore().get(AndroidBridge.class);
+        assertNotNull(bridge);
+
+        bind(ContainerScoped.class, AndroidBridge.class, bridge);
+
+        DeployableContainer<?> container = (DeployableContainer<?>) (containers.toArray())[0];
+
+        fire(new AfterStart(container));
+        fire(new BeforeClass(testClass));
+        fire(new Before(TestClassActivator.getInstance(), TestClassActivator.getMethod()));
+
+        fire(new After(TestClassActivator.getInstance(), TestClassActivator.getMethod()));
+        fire(new AfterClass(testClass));
+        fire(new AndroidContainerStop());
+        fire(new AfterStop(container));
+        fire(new AfterSuite());
+    }
 
     private void executeOneDeploymentTest(Class<?> testClass) {
         fire(new BeforeSuite());

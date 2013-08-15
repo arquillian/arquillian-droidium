@@ -76,12 +76,10 @@ public class InstrumentationController {
      * {@code @Deployment} method is annotated with {@code @Instrumentable}. In case of multiple deployments, there has to be
      * one and only one {@code @Instrumentable} deployment. In case of one {@code @Deployment}, this deployment will be
      * instrumented regardless of the presence of {@code @Instrumentable} annotation.
-     *
-     * @param context
      */
-    public void resolveInstrumentedDeploymentName(@Observes EventContext<BeforeClass> context) {
+    public void resolveInstrumentedDeploymentName(@Observes BeforeClass context) {
 
-        Method[] deploymentMethods = context.getEvent().getTestClass().getMethods(Deployment.class);
+        Method[] deploymentMethods = context.getTestClass().getMethods(Deployment.class);
 
         if (deploymentMethods.length == 0) {
             logger.info("There are not any methods annotated by " + Deployment.class.getName() + ". Nothing will be "
@@ -90,8 +88,6 @@ public class InstrumentationController {
         }
 
         instrumentedDeploymentName = getInstrumentedDeploymentName(deploymentMethods);
-
-        context.proceed();
     }
 
     /**
