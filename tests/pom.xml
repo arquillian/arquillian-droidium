@@ -83,6 +83,7 @@
         <module>arquillian-droidium-hybrid-test-01</module>
         <module>arquillian-droidium-screenshooter-test-01</module>
         <module>arquillian-droidium-native-test-01-scala</module>
+        <module>arquillian-droidium-multiple-deployments-test-01</module>
     </modules>
 
 </project>
