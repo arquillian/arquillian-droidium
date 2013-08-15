@@ -267,6 +267,9 @@ public class DeploymentController implements AndroidArchiveDeployer {
             .add("-e")
             .add("main_activity")
             .add("\'" + register.getLast().getApplicationMainActivity() + "\'")
+            .add("-e")
+            .add("server_port")
+            .add(configuration.getServerPort())
             .add(SELENDROID_SERVER_ACTIVITY);
 
         logger.info(startApplicationInstrumentationCommand.toString());

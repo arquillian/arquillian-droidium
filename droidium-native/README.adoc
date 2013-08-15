@@ -56,6 +56,17 @@ under test (_aut_) to reflect its base package for instrumentation needs.
 <property name="serverApk">/path/to/your/selendroid/server/apk</property>
 ----
 
+==== serverPort
+===== default: 8080
+
+Sets a port where to hook the instance of a Selendroid server. By this way, it is possible to deploy more than 
+one application meant to be instrumented. You have to provide separate configuration of native extension per 
+Selendroid instance.
+
+----
+<property name="serverPort">8081</property>
+----
+
 ==== logFile
 ===== default: target/android.log
 

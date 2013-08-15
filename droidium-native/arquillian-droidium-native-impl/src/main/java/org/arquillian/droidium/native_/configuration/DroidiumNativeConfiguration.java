@@ -36,6 +36,8 @@ public class DroidiumNativeConfiguration {
 
     private String serverApk = "selendroid-server.apk";
 
+    private String serverPort = "8080";
+
     private String keystore = System.getProperty("user.home") + fileSeparator + ".android" + fileSeparator + "debug.keystore";
 
     private String storepass = "android";
@@ -60,6 +62,10 @@ public class DroidiumNativeConfiguration {
 
     public File getServerApk() {
         return new File(getProperty("serverApk", serverApk));
+    }
+
+    public String getServerPort() {
+        return getProperty("serverPort", serverPort);
     }
 
     public File getKeystore() {

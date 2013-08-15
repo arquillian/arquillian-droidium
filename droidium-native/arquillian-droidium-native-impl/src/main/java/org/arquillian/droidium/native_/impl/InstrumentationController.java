@@ -98,7 +98,7 @@ public class InstrumentationController {
      * <ul>
      * <li>{@link PerformInstrumentation}</li>
      * </ul>
-     * 
+     *
      * @param event
      */
     public void decidePerformingInstrumentation(@Observes AfterDeploy event) {
