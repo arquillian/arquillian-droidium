@@ -8,7 +8,7 @@ found in every project README separately.
 
 It contains these modules as standalone projects:
 
-=== arquillian-droidium-multiple-containers-test-01
+=== droidium-multiple-containers-01
 
 This project tests a scenario when multiple container adapters are on the classpath,
 which is not normally possible. It starts Android emulator of given AVD 
@@ -18,14 +18,14 @@ use any additional plugins at all. It is not required to start your own
 JBoss AS instance since this is done automatically upon test execution. JBoss AS 
 instance is extracted into your `target` and Arquillian is automatically connected to it.
 
-=== arquillian-droidium-multiple-containers-test-02
+=== droidium-multiple-containers-02
 
 This project tests a scenario when you are using two Android containers - each of different versions 
 and you are executing the same test cases. It is shown as for a completeness and as a proof it is possible.
 You would normally use simple test with one AVD as with -native-test-01 but you woud execute it twice - each 
 time with different AVD specified.
 
-=== arquillian-droidium-multiple-deployments-test-01
+=== droidium-multiple-deployments-01
 
 This project shows how to deploy more than one `@Deployment` into your mobile device. Only 
 one deployment will be instrumented by Selendroid server, another one (or more of them) will 
@@ -33,7 +33,7 @@ be just installed. This possibility provides you a way how to test scenarios whe
 deploy some other resources in order to perform the test itself (backed by Selendroid, Drone and 
 WebDriver). Deployment which is meant to be instrumented is obliged to be annotated by `@Instrumentable`.
 
-=== arquillian-droidium-native-test-01
+=== droidium-native-01
 
 Tests test application from http://dominikdary.github.io/selendroid/[Selendroid] project. 
 Internally, it repackages selendroid server according to application under test dynamically, 
@@ -43,13 +43,13 @@ executed (instrumentation is done by repackaged selendroid server) and testing i
 This project uses `arquillian-droidium-native` extension which does just mentioned. It uses 
 https://docs.jboss.org/author/display/ARQ/Drone[Arquillian Drone Web Driver].
 
-=== arquillian-droidium-native-test-02
+=== droidium-native-02
 
 It is for the first time there is the usage of `SelendroidDriver` from Selendroid 
 project shown. It uses Selendroid driver extension for Arquillian Drone - bringing Selendroid 
 and Arquillian Drone very closely together.
 
-=== arquillian-droidium-hybrid-test-01
+=== droidium-hybrid-01
 
 This project illustrates the usage of `SelendroidDriver` when one wants to test
 no only native application itself but web application embedded in native application as well.
@@ -57,7 +57,7 @@ Selendroid provides a way how to switch between so called _views_. We can look a
 an application from native point of view or we can test web application by web view 
 which is embedded into native application.
 
-=== arquillian-droidium-web-test-01
+=== droidium-web-01
 
 Tests helloworld-like application which is deployed into JBoss AS and tests 
 are performed in connection with WebDriver and Arquillian Graphene. Tests are 
@@ -67,13 +67,13 @@ JBoss AS instance since this is done automatically upon test execution.
 JBoss AS instance is extracted into your `target` and Arquillian connects 
 to this instance.
 
-=== arquillian-droidium-native-test-01-scala
+=== droidium-native-01-scala
 
 This project is the same as native-test-01 but it is coded in Scala. The whole project 
 is pure Scala project with Scala Maven plugin. You can test your mobile applications
 with Droidium and Arquillian Drone even in pure Scala! Yay!
 
-=== arquillian-droidium-screenshooter-test-01
+=== droidium-screenshooter-01
 
 Screenshooter project shows how to take screenshots with Droidium while you are doing your 
 testing logic. Being able to take screenshots can be handy. You have plenty of options where 

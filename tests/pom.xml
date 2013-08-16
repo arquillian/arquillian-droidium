@@ -27,7 +27,7 @@
     <groupId>org.arquillian.droidium.tests</groupId>
     <artifactId>arquillian-droidium-tests-parent</artifactId>
     <packaging>pom</packaging>
-    <name>Arquillian Droidium Container Tests Parent</name>
+    <name>Arquillian Droidium Tests Parent</name>
 
     <!-- Developers -->
     <developers>
@@ -75,15 +75,15 @@
 
     <!-- Modules -->
     <modules>
-        <module>arquillian-droidium-multiple-containers-test-01</module>
-        <module>arquillian-droidium-multiple-containers-test-02</module>
-        <module>arquillian-droidium-native-test-01</module>
-        <module>arquillian-droidium-native-test-02</module>
-        <module>arquillian-droidium-web-test-01</module>
-        <module>arquillian-droidium-hybrid-test-01</module>
-        <module>arquillian-droidium-screenshooter-test-01</module>
-        <module>arquillian-droidium-native-test-01-scala</module>
-        <module>arquillian-droidium-multiple-deployments-test-01</module>
+        <module>droidium-multiple-containers-01</module>
+        <module>droidium-multiple-containers-02</module>
+        <module>droidium-native-01</module>
+        <module>droidium-native-02</module>
+        <module>droidium-web-01</module>
+        <module>droidium-hybrid-01</module>
+        <module>droidium-screenshooter-01</module>
+        <module>droidium-native-01-scala</module>
+        <module>droidium-multiple-deployments-01</module>
     </modules>
 
 </project>
