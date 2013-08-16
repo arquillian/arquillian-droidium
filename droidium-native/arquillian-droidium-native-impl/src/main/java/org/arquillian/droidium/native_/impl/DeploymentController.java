@@ -125,7 +125,7 @@ public class DeploymentController implements AndroidArchiveDeployer {
 
         applicationHelper = new AndroidApplicationHelper(executor, sdk);
 
-        selendroidHelper = new SelendroidHelper(device);
+        selendroidHelper = new SelendroidHelper(device, configuration);
         selendroidHelper.setTmpDir(tmpDir);
 
         selendroidRebuilder = new SelendroidRebuilder(executor, sdk, applicationHelper, tmpDir);
@@ -327,14 +327,14 @@ public class DeploymentController implements AndroidArchiveDeployer {
 
     private void createPortForwarding() {
         logger.log(Level.INFO, "Creating port forwarding from {0} to {1}",
-            new Object[] { device.getDroneHostPort(), device.getDroneGuestPort() });
-        device.createPortForwarding(device.getDroneHostPort(), device.getDroneGuestPort());
+            new Object[] { device.getDroneHostPort(), configuration.getServerPort() });
+        device.createPortForwarding(device.getDroneHostPort(), Integer.parseInt(configuration.getServerPort()));
     }
 
     private void removePortForwarding() {
         logger.log(Level.INFO, "Removing port forwarding from {0} to {1}",
-            new Object[] { device.getDroneHostPort(), device.getDroneGuestPort() });
-        device.removePortForwarding(device.getDroneHostPort(), device.getDroneHostPort());
+            new Object[] { device.getDroneHostPort(), configuration.getServerPort() });
+        device.removePortForwarding(device.getDroneHostPort(), Integer.parseInt(configuration.getServerPort()));
     }
 
 }

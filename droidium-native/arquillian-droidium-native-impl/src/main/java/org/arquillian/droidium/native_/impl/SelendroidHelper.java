@@ -35,6 +35,7 @@ import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidDeviceOutputReciever;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.configuration.Validate;
+import org.arquillian.droidium.native_.configuration.DroidiumNativeConfiguration;
 import org.arquillian.droidium.native_.utils.Command;
 import org.arquillian.droidium.native_.utils.DroidiumNativeFileUtils;
 
@@ -49,6 +50,8 @@ public class SelendroidHelper {
     private static final Logger logger = Logger.getLogger(SelendroidHelper.class.getName());
 
     private final AndroidDevice androidDevice;
+
+    private DroidiumNativeConfiguration configuration;
 
     private File tmpDir;
 
@@ -68,9 +71,12 @@ public class SelendroidHelper {
      * @param androidDevice
      * @throws IllegalArgumentException if either of arguments is a null object
      */
-    public SelendroidHelper(AndroidDevice androidDevice) throws IllegalArgumentException {
-        Validate.notNull(androidDevice, "Android Device for SelendroidHelper can't be null object!");
+    public SelendroidHelper(AndroidDevice androidDevice, DroidiumNativeConfiguration configuration)
+        throws IllegalArgumentException {
+        Validate.notNull(androidDevice, "Android Device for SelendroidHelper can not be a null object!");
+        Validate.notNull(configuration, "Droidium native configuration for SelendroidHelper can not be a null object!");
         this.androidDevice = androidDevice;
+        this.configuration = configuration;
     }
 
     public void setTmpDir(File tmpDir) {
