@@ -214,6 +214,10 @@ public class Command {
         return command;
     }
 
+    public String[] getAsArray() {
+        return getAsList().toArray(new String[0]);
+    }
+
     public String getAsString() {
         StringBuilder sb = new StringBuilder();
         for (String s : command) {
@@ -235,6 +239,28 @@ public class Command {
         } catch (IndexOutOfBoundsException ex) {
             return null;
         }
+    }
+
+    /**
+     *
+     * @return last token from the command
+     */
+    public String getLast() {
+        if (command.isEmpty()) {
+            return null;
+        }
+        return command.get(command.size() - 1);
+    }
+
+    /**
+     *
+     * @return first token from the command
+     */
+    public String getFirst() {
+        if (command.isEmpty()) {
+            return null;
+        }
+        return command.get(0);
     }
 
     @Override

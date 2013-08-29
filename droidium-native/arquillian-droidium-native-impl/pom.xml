@@ -221,7 +221,7 @@
             <artifactId>mockito-all</artifactId>
             <scope>test</scope>
         </dependency>
-        
+
         <!-- external dependencies -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -232,7 +232,7 @@
             <artifactId>commons-io</artifactId>
         </dependency>
     </dependencies>
-    
+
     <!-- Profiles -->
     <profiles>
         <profile>
@@ -248,7 +248,9 @@
                         <configuration>
                             <skipTests>false</skipTests>
                             <includes>
-                                <include>org/arquillian/droidium/native_/impl/**</include>
+                                <include>org/arquillian/droidium/native_/sign/**</include>
+                                <include>org/arquillian/droidium/native_/selendroid/**</include>
+                                <include>org/arquillian/droidium/native_/instrumentation/impl/**</include>
                             </includes>
                         </configuration>
                     </plugin>
@@ -261,13 +263,10 @@
 
                 You can specify emulator timeout by setting -Demulator.startup.timeout=number.
                 Default is 600 seconds.
-                
-                Be sure that:
-                1)
-                    you started Android Virtual Device (emulator) prior to test with:
-                    a) AVD name test01
-                    b) its console port is 5554
-            Regarding of 1)
+
+                Be sure that Android Virtual Device (emulator) prior to test with 
+                AVD name test01 and console port is 5554 is not started.
+
                 AVD name can be supressed by setting -Demulator.running.avd.name=your_value
                 Console port can be supressed by setting -Demulator.running.console.port=your_value
             -->

@@ -21,6 +21,7 @@ import io.selendroid.SelendroidDriver;
 import java.io.File;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
+import org.arquillian.droidium.native_.api.Instrumentable;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -48,12 +49,15 @@ import org.openqa.selenium.WebElement;
 @RunAsClient
 public class SelendroidTestAppTestCase {
 
+    @Drone SelendroidDriver driver;
+
     /**
      * @return deployment for Android device, the whole test application from Selendroid test is deployed without any change. We
      *         can deploy APK archive in spite of Shrinkwrap's disability to deal with such format since APK is internally just
      *         ZIP file anyway.
      */
     @Deployment(name = "android")
+    @Instrumentable(viaPort = 8080)
     @TargetsContainer("android")
     public static Archive<?> createDeployment() {
         return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.4.2.apk"));
@@ -77,7 +81,7 @@ public class SelendroidTestAppTestCase {
     @Test
     @InSequence(1)
     @OperateOnDeployment("android")
-    public void test01(@ArquillianResource AndroidDevice android, @Drone SelendroidDriver driver) {
+    public void test01(@ArquillianResource AndroidDevice android) {
 
         // just to be sure injections are good
         Assert.assertNotNull(driver);

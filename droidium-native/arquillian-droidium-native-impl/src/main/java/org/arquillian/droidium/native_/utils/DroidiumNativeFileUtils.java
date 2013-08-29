@@ -16,12 +16,20 @@
  */
 package org.arquillian.droidium.native_.utils;
 
+import java.io.Closeable;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
+import org.jboss.arquillian.container.spi.client.deployment.Validate;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 
 /**
  * Set of utility methods for Droidium native plugin regarding file and directory management.
@@ -32,6 +40,8 @@ import org.apache.commons.io.FileUtils;
 public class DroidiumNativeFileUtils {
 
     private static final Logger logger = Logger.getLogger(DroidiumNativeFileUtils.class.getName());
+
+    private static File tmpDir = null;
 
     /**
      * Removes working directory for Droidium native plugin
@@ -47,25 +57,24 @@ public class DroidiumNativeFileUtils {
         }
     }
 
+    public static File getTmpDir() {
+        return tmpDir;
+    }
+
     /**
      * Creates directory with random name in {@code System.getProperty("java.io.tmpdir")}
-     *
-     * @return directory in system temporary directory
      */
-    public static File createWorkingDir(File parent) {
+    public static void createWorkingDir(File parent) {
         FileIdentifierGenerator fig = new FileIdentifierGenerator();
-        File temp;
 
         try {
             do {
-                temp = new File(parent, fig.getIdentifier(IdentifierType.FILE.getClass()));
-            } while (!temp.mkdir());
+                tmpDir = new File(parent, fig.getIdentifier(IdentifierType.FILE.getClass()));
+            } while (!tmpDir.mkdir());
         } catch (SecurityException ex) {
             logger.severe("Security manager denies to create the working dir in " + parent.getAbsolutePath());
             throw new RuntimeException("Unable to create working directory in " + parent.getAbsolutePath());
         }
-
-        return temp;
     }
 
     /**
@@ -94,11 +103,65 @@ public class DroidiumNativeFileUtils {
      * @param src source file
      * @param dest destination directory
      */
-    public static void copyFileToDirectory(File src, File dest) {
+    public static File copyFileToDirectory(File src, File dest) {
         try {
             FileUtils.copyFileToDirectory(src, dest);
+            return new File(dest, src.getName());
         } catch (IOException ex) {
             throw new RuntimeException("Unable to copy " + src.getAbsolutePath() + " to " + dest.getAbsolutePath());
+        }
+    }
+
+    public static File export(Archive<?> fromArchive, File toFile) {
+        if (toFile.exists() && toFile.isFile()) {
+            try {
+                if (!toFile.delete()) {
+                    // log
+                }
+            } catch (SecurityException ex) {
+            }
+        }
+
+        final OutputStream out;
+        final InputStream in;
+
+        try {
+            out = new FileOutputStream(toFile);
+            in = fromArchive.as(ZipExporter.class).exportAsInputStream();
+            write(in, out);
+            closeStream(in);
+            closeStream(out);
+            return toFile;
+        } catch (final FileNotFoundException ex) {
+        } catch (final IOException ex) {
+        }
+        return null;
+    }
+
+    private static void write(InputStream input, OutputStream output) throws IOException {
+        Validate.notNull(input, "InputStream to read from can not be null object!");
+        Validate.notNull(output, "OutputStream to write to can not be null object!");
+
+        int read = 0;
+        byte[] bytes = new byte[1024];
+
+        while ((read = input.read(bytes)) != -1) {
+            output.write(bytes, 0, read);
+        }
+
+        output.flush();
+    }
+
+    private static void closeStream(Closeable stream) {
+        if (stream == null) {
+            return;
+        }
+        try {
+            stream.close();
+        } catch (final IOException ignore) {
+            // ignore
+        } finally {
+            stream = null;
         }
     }
 }

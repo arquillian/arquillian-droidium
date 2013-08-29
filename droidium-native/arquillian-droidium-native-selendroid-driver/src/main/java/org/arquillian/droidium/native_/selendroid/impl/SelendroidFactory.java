@@ -47,7 +47,8 @@ public class SelendroidFactory extends AbstractSelendroidFactory implements
 
     @Override
     public void destroyInstance(SelendroidDriver instance) {
-        // intentionally left empty
+        // not implemented for Selendroid yet
+        // instance.close();
     }
 
     @Override

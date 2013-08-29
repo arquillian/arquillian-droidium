@@ -33,4 +33,13 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface Instrumentable {
 
+    /**
+     * Port on Android device to hook an instance of Selendroid server to.
+     * You have to hook your WebDriver instance to this port on {@code localhost}.
+     * There is a port forwarding from this port on Android device to the same
+     * port number on your host.
+     *
+     * @return port number
+     */
+    int viaPort() default 8080;
 }

@@ -19,7 +19,7 @@ package org.arquillian.droidium.native_.spi.event;
 import org.arquillian.droidium.container.spi.event.DroidiumExtensionConfigured;
 
 /**
- * Event representing that an Android Drone extension was configured.
+ * Event representing that an Android Droidium native extension was configured.
  *
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *

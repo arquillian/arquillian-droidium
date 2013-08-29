@@ -16,31 +16,53 @@
  */
 package org.arquillian.droidium.native_.spi.event;
 
+import org.arquillian.droidium.native_.spi.InstrumentationConfiguration;
+import org.arquillian.droidium.native_.spi.exception.InvalidInstrumentationConfigurationException;
 import org.jboss.arquillian.core.spi.Validate;
 import org.jboss.shrinkwrap.api.Archive;
 
 /**
  * Event representing that underlying package was instrumented and this instrumentation is going to be removed, in our case by
- * uninstallation of Selendroid server.
+ * uninstallation of the instance of Selendroid server.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
 public class RemoveInstrumentation {
 
-    private Archive<?> archive;
+    private final Archive<?> archive;
+
+    private final InstrumentationConfiguration instrumentationConfiguration;
 
     /**
      *
-     * @param archive archive to remove instrumentation of
-     * @throws IllegalArgumentException if {@code archive} is a null object
+     * @param archive archive to remove the instrumentation of
+     * @throws IllegalArgumentException if {@code archive} or {@code configuration} is a null object
+     * @throws InvalidInstrumentationConfigurationException if {@code configuration} is invalid
      */
-    public RemoveInstrumentation(Archive<?> archive) {
+    public RemoveInstrumentation(Archive<?> archive, InstrumentationConfiguration configuration) {
         Validate.notNull(archive, "APK package to remove the instrumentation of can not be a null object!");
+        Validate.notNull(configuration, "Instrumentation configuration can not be a null object!");
         this.archive = archive;
+        this.instrumentationConfiguration = configuration;
+
+        this.instrumentationConfiguration.validate();
     }
 
+    /**
+     *
+     * @return the package from {@code @Deployment} method on which the removing of the instrumentation will occur
+     */
     public Archive<?> getPackage() {
         return archive;
+    }
+
+    /**
+     *
+     * @return instrumentation configuration for the underlying deployment archive parsed from {@code @Instrumentable}
+     *         annotation placed on {@code @Deployment} method.
+     */
+    public InstrumentationConfiguration getConfiguration() {
+        return instrumentationConfiguration;
     }
 }

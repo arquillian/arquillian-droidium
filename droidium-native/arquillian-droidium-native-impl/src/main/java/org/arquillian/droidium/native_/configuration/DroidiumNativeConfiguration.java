@@ -24,6 +24,7 @@ import java.util.Map;
 import org.arquillian.droidium.container.configuration.Validate;
 
 /**
+ * Configuration for Arquillian Droidium Native extension.
  *
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *
@@ -35,8 +36,6 @@ public class DroidiumNativeConfiguration {
     private String logFile = "target" + fileSeparator + "android.log";
 
     private String serverApk = "selendroid-server.apk";
-
-    private String serverPort = "8080";
 
     private String keystore = System.getProperty("user.home") + fileSeparator + ".android" + fileSeparator + "debug.keystore";
 
@@ -62,10 +61,6 @@ public class DroidiumNativeConfiguration {
 
     public File getServerApk() {
         return new File(getProperty("serverApk", serverApk));
-    }
-
-    public String getServerPort() {
-        return getProperty("serverPort", serverPort);
     }
 
     public File getKeystore() {
@@ -163,7 +158,7 @@ public class DroidiumNativeConfiguration {
             "Temporary directory you chosed to use for Arquillian Droidium native plugin "
                 + "is not readable. Please be sure you entered a path you have read and write access to.");
 
-        Validate.isWriteable(getTmpDir(), "Temporary directory you chosed to use for Arquillian Droidium native plugin "
+        Validate.isWriteable(getTmpDir(), "Temporary directory you chose to use for Arquillian Droidium native plugin "
             + "is not writable. Please be sure you entered a path you have read and write access to.");
 
         try {

@@ -27,6 +27,7 @@ public class SelendroidConfigurationException extends RuntimeException {
     private static final long serialVersionUID = 1721186768851121025L;
 
     public SelendroidConfigurationException() {
+        super();
     }
 
     /**

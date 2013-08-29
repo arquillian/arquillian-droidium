@@ -23,7 +23,7 @@ import org.jboss.arquillian.drone.spi.Destructor;
 import org.jboss.arquillian.drone.spi.Instantiator;
 
 /**
- * Entry point for Selendroid driver extension.
+ * Entry point for Selendroid driver extension for Arquillian Droidium native
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *

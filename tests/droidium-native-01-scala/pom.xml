@@ -28,10 +28,10 @@
     <!-- Properties -->
     <properties>
         <encoding>UTF-8</encoding>
-        
+
         <!-- Arquillian Drone -->
-        <version.org.jboss.arquillian.drone>1.2.0.Alpha2</version.org.jboss.arquillian.drone>
-        
+        <version.org.jboss.arquillian.drone>1.2.0.Alpha3</version.org.jboss.arquillian.drone>
+
         <!-- Maven Compiler plugin -->
         <maven.compiler.target>1.6</maven.compiler.target>
         <maven.compiler.source>1.6</maven.compiler.source>

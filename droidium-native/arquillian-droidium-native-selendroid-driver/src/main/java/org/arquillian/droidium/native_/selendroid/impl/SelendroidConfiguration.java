@@ -27,7 +27,7 @@ import org.jboss.arquillian.drone.configuration.ConfigurationMapper;
 import org.jboss.arquillian.drone.spi.DroneConfiguration;
 
 /**
- * Configuration of Selendroid parsed from arquillian.xml.
+ * Configuration of Selendroid extension parsed from arquillian.xml.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
@@ -63,6 +63,10 @@ public class SelendroidConfiguration implements DroneConfiguration<SelendroidCon
         return remoteAddress;
     }
 
+    /**
+     *
+     * @param remoteAddress
+     */
     public void setRemoteAddress(String remoteAddress) {
         this.remoteAddress = remoteAddress;
     }

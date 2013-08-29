@@ -20,6 +20,7 @@
         <groupId>org.jboss</groupId>
         <artifactId>jboss-parent</artifactId>
         <version>10</version>
+        <relativePath></relativePath>
     </parent>
 
     <!-- Artifact Configuration -->

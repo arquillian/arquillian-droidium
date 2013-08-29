@@ -30,15 +30,13 @@ public interface AndroidArchiveDeployer {
      * Deploys archive
      *
      * @param archive archive to deploy
-     * @throws AndroidExecutionException
      */
-    void deploy(Archive<?> archive) throws AndroidExecutionException;
+    void deploy(Archive<?> archive);
 
     /**
      * Undeploys archive
      *
      * @param archive archive to undeploy
-     * @throws AndroidExecutionException
      */
-    void undeploy(Archive<?> archive) throws AndroidExecutionException;
+    void undeploy(Archive<?> archive);
 }
