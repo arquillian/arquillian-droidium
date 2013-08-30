@@ -102,7 +102,7 @@ public class DroidiumNativeConfiguration {
      * @throws IllegalArgumentException if {@code properties} is a null object
      */
     public void setProperties(Map<String, String> properties) throws IllegalArgumentException {
-        Validate.notNull(properties, "Properties to set for Arquillian Droidium native configuration can not be a null object");
+        Validate.notNull(properties, "Properties to set for Arquillian Droidium native configuration can not be a null object!");
         this.properties = properties;
     }
 

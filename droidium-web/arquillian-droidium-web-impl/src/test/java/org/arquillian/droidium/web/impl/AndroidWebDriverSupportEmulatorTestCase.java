@@ -42,6 +42,7 @@ import org.arquillian.droidium.container.spi.event.AndroidContainerStart;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStop;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
 import org.arquillian.droidium.web.AbstractAndroidTestTestBase;
+import org.arquillian.droidium.web.configuration.DroidiumWebConfigurator;
 import org.arquillian.droidium.web.spi.event.AndroidServerInstalled;
 import org.arquillian.droidium.web.spi.event.AndroidServerUninstalled;
 import org.arquillian.droidium.web.spi.event.DroidiumWebConfigured;

@@ -38,12 +38,12 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 
 /**
- * This is highly experimental project and besides this functionality is it unknown what happens.
- * 
+ * This is highly experimental project and besides this functionality it is unknown what happens.
+ *
  * Do not try this at home!
- * 
+ *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
- * 
+ *
  */
 @RunWith(Arquillian.class)
 @RunAsClient
@@ -72,9 +72,9 @@ public class SelendroidTestAppTestCase {
     @Test
     @InSequence(1)
     @OperateOnDeployment("testApp")
-    public void test01(@Drone @TestApp WebDriver testApp, @Drone @Aerogear WebDriver calculator) {
+    public void test01(@Drone @TestApp WebDriver testApp, @Drone @Aerogear WebDriver aerogear) {
         Assert.assertNotNull(testApp);
-        Assert.assertNotNull(calculator);
+        Assert.assertNotNull(aerogear);
         Assert.assertNotNull(android);
         Assert.assertNotNull(screenshooter);
     }

@@ -19,10 +19,14 @@ package org.arquillian.droidium.native_.automatic.emulator;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Method;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.arquillian.droidium.container.AndroidDeployableContainer;
 import org.arquillian.droidium.container.api.AndroidBridge;
@@ -92,12 +96,14 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * Multiple deployments & multiple instrumentations tests.
- *
+ * 
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
- *
+ * 
  */
 @RunWith(MockitoJUnitRunner.class)
 public class DroidiumMultipleDeploymentsTestCase extends AbstractAndroidTestTestBase {
+
+    private static final Logger logger = Logger.getLogger(DroidiumMultipleDeploymentsTestCase.class.getName());
 
     private AndroidContainerConfiguration configuration;
 
@@ -119,7 +125,7 @@ public class DroidiumMultipleDeploymentsTestCase extends AbstractAndroidTestTest
 
     private static final String EMULATOR_STARTUP_TIMEOUT = System.getProperty("emulator.startup.timeout", "600");
 
-    private static final String EMULATOR_OPTIONS = "-no-audio -no-window -memory 256 -nocache -no-snapshot-save -no-snapstorage";
+    private static final String EMULATOR_OPTIONS = "";// "-no-audio -no-window -memory 256 -nocache -no-snapshot-save -no-snapstorage";
 
     private static final String SELENDROID_SERVER_APK = "src/test/resources/selendroid-server-0.4.2.apk";
 
@@ -131,7 +137,7 @@ public class DroidiumMultipleDeploymentsTestCase extends AbstractAndroidTestTest
     private DeployableContainer<AndroidContainerConfiguration> deployableContainer = new AndroidDeployableContainer();
 
     private ContainerRegistry registry;
-
+    
     @SuppressWarnings("rawtypes")
     private Collection<DeployableContainer> containers;
 
@@ -158,7 +164,7 @@ public class DroidiumMultipleDeploymentsTestCase extends AbstractAndroidTestTest
         configuration.setEmulatorOptions(EMULATOR_OPTIONS);
         configuration.setDroneGuestPort(8080);
         configuration.setDroneHostPort(8080);
-        //configuration.setAbi(ANDROID_EMULATOR_ABI);
+        // configuration.setAbi(ANDROID_EMULATOR_ABI);
         androidSDK = new AndroidSDK(configuration);
         processExecutor = new ProcessExecutor();
 
@@ -186,10 +192,26 @@ public class DroidiumMultipleDeploymentsTestCase extends AbstractAndroidTestTest
         bind(ContainerScoped.class, ProcessExecutor.class, processExecutor);
     }
 
+    @org.junit.BeforeClass
+    public static void portsAreFreeToBindTo() {
+        List<Integer> ports = new ArrayList<Integer>();
+        
+        ports.add(8080);
+        ports.add(8081);
+        ports.add(8082);
+        ports.add(8083);
+        
+        for (Integer port : ports) {
+            if (!isPortFree(port)) {
+                throw new IllegalStateException("Be sure port " + port + " is free to bind to prior to the test execution!");
+            }
+        }
+    }
+
     @org.junit.After
     public void disposeMocks() {
-        //AndroidBridge bridge = getManager().getContext(ContainerContext.class).getObjectStore().get(AndroidBridge.class);
-        //bridge.disconnect();
+        // AndroidBridge bridge = getManager().getContext(ContainerContext.class).getObjectStore().get(AndroidBridge.class);
+        // bridge.disconnect();
 
         TestClassActivator.deactivate(getManager(), DummyTestClass.class);
         TestClassActivator.deactivate(getManager(), DummyTestClassWithoutDeploymentMethod.class);
@@ -205,11 +227,15 @@ public class DroidiumMultipleDeploymentsTestCase extends AbstractAndroidTestTest
         getManager().getContext(ClassContext.class).destroy(DummyMultipleDeploymentsInstrumentableTestClass.class);
         getManager().getContext(ClassContext.class).destroy(DummyInstrumentableTestClassWithPort.class);
         getManager().getContext(ClassContext.class).destroy(DummyMultipleInstrumentableDeploymentsTestClass.class);
-        getManager().getContext(ClassContext.class).destroy(DummyMultipleInstrumentableDeploymentsTestClassWithWrongPorts.class);
+        getManager().getContext(ClassContext.class)
+            .destroy(DummyMultipleInstrumentableDeploymentsTestClassWithWrongPorts.class);
     }
 
     @Test
     public void testScenarioWithoutDeploymentMethod() {
+
+        logger.info("TEST CASE : testScenarioWithoutDeploymentMethod");
+
         TestClassActivator.activate(getManager(), DummyTestClassWithoutDeploymentMethod.class);
 
         executeZeroDeploymentTest(DummyTestClassWithoutDeploymentMethod.class);
@@ -224,6 +250,9 @@ public class DroidiumMultipleDeploymentsTestCase extends AbstractAndroidTestTest
 
     @Test
     public void testMultipleDeploymentsScenarioWithDummyTestClass() {
+
+        logger.info("TEST CASE : testMultipleDeploymentsScenarioWithDummyTestClass");
+
         TestClassActivator.activate(getManager(), DummyTestClass.class);
 
         executeOneDeploymentTest(DummyTestClass.class);
@@ -238,6 +267,9 @@ public class DroidiumMultipleDeploymentsTestCase extends AbstractAndroidTestTest
 
     @Test
     public void testMultipleDeploymentsScenarioWithDummyInstrumentableTestClass() {
+
+        logger.info("TEST CASE : testMultipleDeploymentsScenarioWithDummyInstrumentableTestClass");
+
         TestClassActivator.activate(getManager(), DummyInstrumentableTestClass.class);
 
         executeOneDeploymentTest(DummyInstrumentableTestClass.class);
@@ -250,15 +282,11 @@ public class DroidiumMultipleDeploymentsTestCase extends AbstractAndroidTestTest
         TestClassActivator.deactivate(getManager(), DummyInstrumentableTestClass.class);
     }
 
-    @Test(expected = InstrumentationMapperException.class)
-    public void testMultipleDeploymentsScenarioWithoutInstrumentableTestClass() {
-        TestClassActivator.activate(getManager(), DummyMutlipleDeploymentWithoutInstrumentableTestClass.class);
-
-        executeTwoDeploymentsTest(DummyMutlipleDeploymentWithoutInstrumentableTestClass.class);
-    }
-
     @Test
     public void testMultipleDeploymentScenarioWithDummyMultipleDeploymentsInstrumentableTestClass() {
+
+        logger.info("TEST CASE : testMultipleDeploymentScenarioWithDummyMultipleDeploymentsInstrumentableTestClass");
+
         TestClassActivator.activate(getManager(), DummyMultipleDeploymentsInstrumentableTestClass.class);
 
         executeTwoDeploymentsTest(DummyMultipleDeploymentsInstrumentableTestClass.class);
@@ -273,6 +301,9 @@ public class DroidiumMultipleDeploymentsTestCase extends AbstractAndroidTestTest
 
     @Test
     public void testMultipleDeploymentsScenarioWithDummyInstrumentableTestClassWithPort() {
+
+        logger.info("TEST CASE : testMultipleDeploymentsScenarioWithDummyInstrumentableTestClassWithPort");
+
         TestClassActivator.activate(getManager(), DummyInstrumentableTestClassWithPort.class);
 
         executeOneDeploymentTest(DummyInstrumentableTestClassWithPort.class);
@@ -287,23 +318,39 @@ public class DroidiumMultipleDeploymentsTestCase extends AbstractAndroidTestTest
 
     @Test
     public void testDumyMultipleInstrumentableDeploymentsTestClassWithDifferentPorts() {
+
+        logger.info("TEST CASE : testDumyMultipleInstrumentableDeploymentsTestClassWithDifferentPorts");
+
         TestClassActivator.activate(getManager(), DummyMultipleInstrumentableDeploymentsTestClass.class);
 
-      executeTwoDeploymentsTest(DummyMultipleInstrumentableDeploymentsTestClass.class);
+        executeTwoDeploymentsTest(DummyMultipleInstrumentableDeploymentsTestClass.class);
 
-      assertEventFired(PerformInstrumentation.class, 2);
-      assertEventFired(InstrumentationPerformed.class, 2);
-      assertEventFired(RemoveInstrumentation.class, 2);
-      assertEventFired(InstrumentationRemoved.class, 2);
+        assertEventFired(PerformInstrumentation.class, 2);
+        assertEventFired(InstrumentationPerformed.class, 2);
+        assertEventFired(RemoveInstrumentation.class, 2);
+        assertEventFired(InstrumentationRemoved.class, 2);
 
-      TestClassActivator.deactivate(getManager(), DummyMultipleInstrumentableDeploymentsTestClass.class);
+        TestClassActivator.deactivate(getManager(), DummyMultipleInstrumentableDeploymentsTestClass.class);
     }
 
-    @Test(expected = InstrumentationMapperException.class)
-    public void testDumyMultipleInstrumentableDeploymentsTestClassWithWrongPorts() {
-        TestClassActivator.activate(getManager(), DummyMultipleInstrumentableDeploymentsTestClassWithWrongPorts.class);
-        executeTwoDeploymentsTest(DummyMultipleInstrumentableDeploymentsTestClassWithWrongPorts.class);
-    }
+//    @Test(expected = InstrumentationMapperException.class)
+//    public void testDumyMultipleInstrumentableDeploymentsTestClassWithWrongPorts() {
+//
+//        logger.info("TEST CASE : testDumyMultipleInstrumentableDeploymentsTestClassWithWrongPorts");
+//
+//        TestClassActivator.activate(getManager(), DummyMultipleInstrumentableDeploymentsTestClassWithWrongPorts.class);
+//        executeTwoDeploymentsTest(DummyMultipleInstrumentableDeploymentsTestClassWithWrongPorts.class);
+//    }
+//
+//    @Test(expected = InstrumentationMapperException.class)
+//    public void testMultipleDeploymentsScenarioWithoutInstrumentableTestClass() {
+//
+//        logger.info("TEST CASE : testMultipleDeploymentsScenarioWithoutInstrumentableTestClass");
+//
+//        TestClassActivator.activate(getManager(), DummyMutlipleDeploymentWithoutInstrumentableTestClass.class);
+//
+//        executeTwoDeploymentsTest(DummyMutlipleDeploymentWithoutInstrumentableTestClass.class);
+//    }
 
     private static Archive<?> getSelendroidDeployment() {
         return ShrinkWrap.createFromZipFile(JavaArchive.class, new File(SELENDROID_TEST_APP_APK));
@@ -515,7 +562,6 @@ public class DroidiumMultipleDeploymentsTestCase extends AbstractAndroidTestTest
 
         DeployableContainer<?> container = (DeployableContainer<?>) (containers.toArray())[0];
 
-
         fire(new AfterStart(container));
         fire(new BeforeClass(testClass));
         fire(new GenerateDeployment(new TestClass(testClass)));
@@ -580,4 +626,17 @@ public class DroidiumMultipleDeploymentsTestCase extends AbstractAndroidTestTest
             return method;
         }
     }
+    
+    
+    private static boolean isPortFree(Integer port) {
+        Socket socket = new Socket();
+        try {
+            socket.bind(new InetSocketAddress(port));
+            socket.close();
+        } catch (IOException ex) {
+            return false;
+        }
+        return true;
+    }
+
 }

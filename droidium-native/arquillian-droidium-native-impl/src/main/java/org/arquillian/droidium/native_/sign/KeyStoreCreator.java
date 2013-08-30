@@ -29,9 +29,9 @@ import org.arquillian.droidium.native_.configuration.DroidiumNativeConfiguration
 import org.arquillian.droidium.native_.utils.Command;
 
 /**
- * Creates keystore and checks if some keystore exists in the system.
+ * Creates keystore and checks if some keystore already exists in the system.
  *
- * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>o
+ * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
 public final class KeyStoreCreator {

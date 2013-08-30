@@ -33,6 +33,11 @@ import org.jboss.arquillian.test.spi.event.suite.BeforeClass;
  * <li>{@link BeforeClass}</li>
  * </ul>
  *
+ * Creates:
+ * <ul>
+ * <li>{@code Map<String, InstrumentationConfiguration>} which is {@code @ClassScoped}</li>
+ * </ul>
+ *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  * @see InstrumentationMapper
  */

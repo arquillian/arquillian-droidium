@@ -14,12 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.web.impl;
+package org.arquillian.droidium.web.configuration;
 
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.arquillian.droidium.web.configuration.DroidiumWebConfiguration;
 import org.arquillian.droidium.web.spi.event.DroidiumWebConfigured;
 import org.jboss.arquillian.config.descriptor.api.ArquillianDescriptor;
 import org.jboss.arquillian.config.descriptor.api.ExtensionDef;
@@ -70,7 +69,7 @@ public class DroidiumWebConfigurator {
 
     public void configureDroidiumWeb(@Observes(precedence = 10) BeforeSuite event, ArquillianDescriptor descriptor) {
 
-        logger.info("Configuring Android Drone for web");
+        logger.info("Configuring " + DROIDIUM_WEB_EXTENSION_NAME);
 
         DroidiumWebConfiguration configuration = new DroidiumWebConfiguration();
 

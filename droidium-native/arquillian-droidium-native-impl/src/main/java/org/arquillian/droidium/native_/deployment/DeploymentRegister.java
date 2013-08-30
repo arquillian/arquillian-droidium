@@ -53,7 +53,7 @@ public class DeploymentRegister<T extends DroidiumDeployment> {
     }
 
     /**
-     * Gets lastly added deployment in the register.
+     * Gets lastly added deployment into the register.
      *
      * @return deployment which was added last or {@code null} if none was added yet
      */

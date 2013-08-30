@@ -116,7 +116,11 @@ public class SelendroidDeployment extends DroidiumDeployment {
 
     @Override
     public Archive<?> getDeployment() {
-        return instrumentedDeployment.getDeployment();
+        if (getInstrumentedDeployment() == null) {
+            throw new IllegalStateException("You have not set what deployment you want to instrument yet. Please "
+                + "call setInstrumentedDeployment(AndroidDeployment) firstly.");
+        }
+        return getInstrumentedDeployment().getDeployment();
     }
 
     /**

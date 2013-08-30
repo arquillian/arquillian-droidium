@@ -16,9 +16,9 @@
  */
 package org.arquillian.droidium.web;
 
+import org.arquillian.droidium.web.configuration.DroidiumWebConfigurator;
 import org.arquillian.droidium.web.impl.AndroidServerInstaller;
 import org.arquillian.droidium.web.impl.AndroidServerUninstaller;
-import org.arquillian.droidium.web.impl.DroidiumWebConfigurator;
 import org.jboss.arquillian.core.spi.LoadableExtension;
 
 /**

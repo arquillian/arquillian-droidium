@@ -19,7 +19,7 @@ package org.arquillian.droidium.native_.deployment;
 import org.jboss.shrinkwrap.api.Archive;
 
 /**
- * Represents a deployment to Android device.
+ * Represents an installable deployment to Android device.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
