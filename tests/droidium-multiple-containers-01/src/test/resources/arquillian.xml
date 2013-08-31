@@ -25,8 +25,7 @@
                 <property name="adapterImplClass">org.arquillian.droidium.container.AndroidDeployableContainer</property>
                 <property name="emulatorOptions">${android.emulator.options}</property>
                 <property name="emulatorBootupTimeoutInSeconds">600</property>
-                <!-- Write only errors from Android device -->
-                <property name="logLevel">E</property>
+                <property name="logType">disable</property>
             </configuration>
         </container>
 

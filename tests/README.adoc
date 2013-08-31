@@ -79,3 +79,9 @@ Screenshooter project shows how to take screenshots with Droidium while you are 
 testing logic. Being able to take screenshots can be handy. You have plenty of options where 
 and how to take screenshots, check that project and read documentation to know more! Happy 
 screenshooting!
+
+=== droidium-multiple-instrumentables-01
+
+This is the experimental testing project which shows how you can instrument multiple 
+deployments where each has its own Selendroid server installed and each Selendroid server 
+is backed by different injection of WebDriver from Arquillian Drone.

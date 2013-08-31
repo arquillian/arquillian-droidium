@@ -43,7 +43,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
- * Android Droidium hybrid testing with {@code SelendroidDriver}- proof of concept.
+ * Android Droidium hybrid testing with {@code SelendroidDriver} - proof of concept.
  *
  * Selendroid and {@code SelendroidDriver} provides a way how to test native applications and web applications embedded in
  * native applications via so-called web view and native view. {@code SelendroidDriver} can switch between these modes upon
@@ -64,7 +64,7 @@ public class SelendroidHybridTestAppTestCase {
     @Deployment(name = "android")
     @TargetsContainer("android")
     public static Archive<?> createDeployment() {
-        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.4.2.apk"));
+        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.5.0.apk"));
     }
 
     private static final String USER_NAME = "john";

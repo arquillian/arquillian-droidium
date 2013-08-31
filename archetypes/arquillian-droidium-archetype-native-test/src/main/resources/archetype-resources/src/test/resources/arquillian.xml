@@ -12,12 +12,7 @@
                 <property name="avdName">${android.avd.name}</property>
                 <property name="emulatorOptions">${android.emulator.options}</property>
                 <property name="emulatorBootupTimeoutInSeconds">600</property>
-                <!-- Write only errors from Android device -->
-                <property name="logLevel">E</property>
-                <!-- Everything sent to host port is forwarded to guest port and vice versa. 
-                    It matches remoteAddress in webdriver extension. -->
-                <property name="droneHostPort">8080</property>
-                <property name="droneGuestPort">8080</property>
+                <property name="logType">disable</property>
             </configuration>
         </container>
     </group>
@@ -26,7 +21,7 @@
         for testing native Android applications via Selendroid -->
     <extension qualifier="droidium-native">
         <!-- path you your selendroid-server.apk -->
-        <property name="serverApk">selendroid-server-0.4.2.apk</property>
+        <property name="serverApk">selendroid-server-0.5.0.apk</property>
     </extension>
 
     <!-- Support for Graphene WebDriver which is injected into test while using Selendroid -->

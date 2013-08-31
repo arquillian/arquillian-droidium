@@ -37,7 +37,7 @@
         <version.droidium>0.0.1-SNAPSHOT</version.droidium>
 
         <!-- Arquillian Drone -->
-        <version.org.jboss.arquillian.drone>1.2.0.Alpha2</version.org.jboss.arquillian.drone>
+        <version.org.jboss.arquillian.drone>1.2.0.Alpha3</version.org.jboss.arquillian.drone>
 
         <!-- maven-compiler-plugin -->
         <maven.compiler.target>1.6</maven.compiler.target>

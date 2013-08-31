@@ -125,11 +125,11 @@ public class DroidiumMultipleDeploymentsTestCase extends AbstractAndroidTestTest
 
     private static final String EMULATOR_STARTUP_TIMEOUT = System.getProperty("emulator.startup.timeout", "600");
 
-    private static final String EMULATOR_OPTIONS = "";// "-no-audio -no-window -memory 256 -nocache -no-snapshot-save -no-snapstorage";
+    private static final String EMULATOR_OPTIONS = "-no-audio -no-window -memory 256 -nocache -no-snapshot-save -no-snapstorage";
 
-    private static final String SELENDROID_SERVER_APK = "src/test/resources/selendroid-server-0.4.2.apk";
+    private static final String SELENDROID_SERVER_APK = "src/test/resources/selendroid-server-0.5.0.apk";
 
-    private static final String SELENDROID_TEST_APP_APK = "src/test/resources/selendroid-test-app-0.4.2.apk";
+    private static final String SELENDROID_TEST_APP_APK = "src/test/resources/selendroid-test-app-0.5.0.apk";
 
     // just to have something to deploy, it does not matter at all what apk we are deploying here
     private static final String AEROGEAR_APP = "src/test/resources/aerogear-test-android.apk";

@@ -60,7 +60,7 @@ public class SelendroidTestAppTestCase {
     @Deployment(name = "android")
     @TargetsContainer("android")
     public static Archive<?> createDeployment() {
-        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.4.2.apk"));
+        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.5.0.apk"));
     }
 
     private static final String USER_NAME = "john";

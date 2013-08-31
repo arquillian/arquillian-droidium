@@ -21,7 +21,6 @@ import io.selendroid.SelendroidDriver;
 import java.io.File;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
-import org.arquillian.droidium.native_.api.Instrumentable;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -40,7 +39,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 /**
- * Android Droidium testing with {@code SelendroidDriver}- proof of concept.
+ * Android Droidium testing with {@code SelendroidDriver} - proof of concept.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
@@ -57,10 +56,9 @@ public class SelendroidTestAppTestCase {
      *         ZIP file anyway.
      */
     @Deployment(name = "android")
-    @Instrumentable(viaPort = 8080)
     @TargetsContainer("android")
     public static Archive<?> createDeployment() {
-        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.4.2.apk"));
+        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.5.0.apk"));
     }
 
     private static final String USER_NAME = "john";

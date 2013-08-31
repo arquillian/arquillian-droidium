@@ -30,12 +30,12 @@
         <encoding>UTF-8</encoding>
 
         <!-- Arquillian Drone -->
-        <version.org.jboss.arquillian.drone>1.2.0.Alpha3</version.org.jboss.arquillian.drone>
+        <version.org.jboss.arquillian.drone>1.2.0.Beta1</version.org.jboss.arquillian.drone>
 
         <!-- Maven Compiler plugin -->
         <maven.compiler.target>1.6</maven.compiler.target>
         <maven.compiler.source>1.6</maven.compiler.source>
-        
+
         <!-- Scala versions -->
         <scala.tools.version>2.10</scala.tools.version>
         <scala.version>2.10.0</scala.version>

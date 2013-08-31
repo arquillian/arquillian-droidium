@@ -63,7 +63,7 @@ public class SelendroidTestAppTestCase {
     @Deployment(name = "selendroid") // name is the must, you can not deploy two deployments with the same default name
     @TargetsContainer("android") // doest not have to be here since we have just one container present
     public static Archive<?> createSelendroidDeployment() {
-        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.4.2.apk"));
+        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.5.0.apk"));
     }
 
     @Deployment(name = "aerogear")
@@ -81,7 +81,7 @@ public class SelendroidTestAppTestCase {
      */
     @Test
     @InSequence(1)
-    @OperateOnDeployment("selendroid") // the must in order to be able to inject AndroidDevice, omit it when no device is needed
+    @OperateOnDeployment("selendroid")
     public void test01(@ArquillianResource AndroidDevice android, @Drone WebDriver driver) {
 
         // Go to user registration

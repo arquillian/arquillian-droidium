@@ -33,9 +33,9 @@
         <!-- Droidium container -->
         <version.droidium.container>0.0.1-SNAPSHOT</version.droidium.container>
         <!-- Arquillian Drone -->
-        <version.arquillian.drone>1.2.0.Alpha3</version.arquillian.drone>
+        <version.arquillian.drone>1.2.0.Beta1</version.arquillian.drone>
         <!-- Selendroid -->
-        <version.selendroid>0.4.2</version.selendroid>
+        <version.selendroid>0.5.0</version.selendroid>
     </properties>
 
     <!-- Developers -->
