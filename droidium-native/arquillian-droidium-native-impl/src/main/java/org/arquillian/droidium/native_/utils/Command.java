@@ -155,7 +155,7 @@ public class Command {
     }
 
     /**
-     * Deletes all multiple space and preserve original sense of the text input.
+     * Deletes all multiple spaces and preserve original sense of the text input.
      *
      * @param text
      * @return {@code text} without multiple spaces

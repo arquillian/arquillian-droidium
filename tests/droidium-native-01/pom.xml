@@ -28,7 +28,7 @@
     <!-- Properties -->
     <properties>
         <!-- Arquillian Drone -->
-        <version.org.jboss.arquillian.drone>1.2.0.Beta1</version.org.jboss.arquillian.drone>
+        <version.org.jboss.arquillian.drone>1.2.0.Final-SNAPSHOT</version.org.jboss.arquillian.drone>
         <!-- maven-compiler-plugin -->
         <maven.compiler.target>1.6</maven.compiler.target>
         <maven.compiler.source>1.6</maven.compiler.source>

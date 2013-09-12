@@ -20,9 +20,6 @@ import junit.framework.Assert;
 
 import org.arquillian.droidium.native_.spi.InstrumentationConfiguration;
 import org.arquillian.droidium.native_.spi.exception.InvalidInstrumentationConfigurationException;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -77,8 +74,7 @@ public class PerformInstrumentationConfigurationTestCase {
     @Test(expected = InvalidInstrumentationConfigurationException.class)
     public void testPerformInstrumentationEventWithUnsetPortForConfiguration() {
         InstrumentationConfiguration c1 = new InstrumentationConfiguration();
-        Archive<?> archive = ShrinkWrap.create(JavaArchive.class);
-        new PerformInstrumentation(archive, c1);
+        new PerformInstrumentation("someDeployment", c1);
     }
 
 }

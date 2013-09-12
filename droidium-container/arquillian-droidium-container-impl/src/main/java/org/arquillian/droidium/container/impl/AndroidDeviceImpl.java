@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.arquillian.droidium.container.api.ActivityManagerProvider;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidDeviceOutputReciever;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
@@ -42,19 +43,32 @@ import com.android.ddmlib.TimeoutException;
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
-class AndroidDeviceImpl implements AndroidDevice {
+public class AndroidDeviceImpl implements AndroidDevice {
 
     private static final Logger log = Logger.getLogger(AndroidDeviceImpl.class.getName());
 
     private IDevice delegate;
+
+    private ActivityManagerProvider activityManagerProvider;
 
     private int droneHostPort = 14444;
 
     private int droneGuestPort = 8080;
 
     AndroidDeviceImpl(IDevice delegate) {
-        Validate.notNull(delegate, "delegate to set for Android device can not be a null object.");
+        Validate.notNull(delegate, "delegate to set for Android device can not be a null object");
         this.delegate = delegate;
+    }
+
+    @Override
+    public void setActivityManagerProvider(ActivityManagerProvider activityManagerProvider) {
+        Validate.notNull(activityManagerProvider, "Activity manager provider to set for Android device can not be a null object!");
+        this.activityManagerProvider = activityManagerProvider;
+    }
+
+    @Override
+    public ActivityManagerProvider getActivityManagerProvider() {
+        return activityManagerProvider;
     }
 
     @Override
@@ -120,7 +134,7 @@ class AndroidDeviceImpl implements AndroidDevice {
             public void processNewLines(String[] lines) {
                 if (log.isLoggable(Level.INFO)) {
                     for (String line : lines) {
-                        log.log(Level.INFO, "Shell command {0}: {1}", new Object[] { commandString, line });
+                        log.log(Level.FINE, "Shell command {0}: {1}", new Object[] { commandString, line });
                     }
                 }
             }
@@ -247,13 +261,13 @@ class AndroidDeviceImpl implements AndroidDevice {
         try {
             rawImage = delegate.getScreenshot();
         } catch (IOException ex) {
-            log.info("Unable to take a screenshot of device " + getAvdName() == null ? getSerialNumber() : getAvdName());
+            log.severe("Unable to take a screenshot of device " + getAvdName() == null ? getSerialNumber() : getAvdName());
             ex.printStackTrace();
         } catch (TimeoutException ex) {
-            log.info("Taking of screenshot timeouted.");
+            log.severe("Taking of screenshot timeouted.");
             ex.printStackTrace();
         } catch (AdbCommandRejectedException ex) {
-            log.info("Command which takes screenshot was rejected.");
+            log.severe("Command which takes screenshot was rejected.");
             ex.printStackTrace();
         }
 

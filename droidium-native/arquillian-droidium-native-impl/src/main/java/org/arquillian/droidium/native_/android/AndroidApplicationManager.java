@@ -25,13 +25,14 @@ import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Validate;
 import org.arquillian.droidium.container.impl.ProcessExecutor;
-import org.arquillian.droidium.native_.deployment.impl.AndroidDeployment;
+import org.arquillian.droidium.native_.spi.AndroidDeployment;
 import org.arquillian.droidium.native_.utils.Command;
 import org.arquillian.droidium.native_.utils.DroidiumNativeFileUtils;
 import org.arquillian.droidium.native_.utils.Monkey;
 
 /**
- * Manages deployment and undeployment of Android applications.
+ * Manages deployment and undeployment of Android applications. It installs, uninstalls and disable running applications on
+ * Android device.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
@@ -55,7 +56,7 @@ public class AndroidApplicationManager {
      * @param device
      * @param executor
      * @param sdk
-     * @throws IllegalArgumentException if any of parameters is a null object
+     * @throws IllegalArgumentException if either {@code device} or {@code executor} or {@code sdk} is a null object
      */
     public AndroidApplicationManager(AndroidDevice device, ProcessExecutor executor, AndroidSDK sdk) {
         Validate.notNull(device, "Android device you are trying to pass to Android application manager is a null object!");
@@ -86,15 +87,14 @@ public class AndroidApplicationManager {
             .add("install")
             .add(deployment.getResignedApk().getAbsolutePath());
 
-        logger.info("AUT installation command: " + installCommand.toString());
+        logger.fine("AUT installation command: " + installCommand.toString());
 
         String applicationBasePackage = deployment.getApplicationBasePackage();
 
         try {
             executor.execute(installCommand.getAsArray());
         } catch (InterruptedException e) {
-            throw new AndroidExecutionException("Installation of the application '" + applicationBasePackage
-                + "' was interrupted.");
+            throw new AndroidExecutionException("Installation of the application '" + applicationBasePackage + "' was interrupted.");
         } catch (ExecutionException e) {
             throw new AndroidExecutionException("Unable to execute installation command "
                 + installCommand.getAsString()
@@ -114,10 +114,11 @@ public class AndroidApplicationManager {
      * @param deployment
      * @throws IllegalArgumentException if {@code deployment} or {@code deployment.getApplicationBasePackage()} is a null
      *         object.
+     * @throws AndroidExecutionException when uninstallation fails
      */
     public void uninstall(AndroidDeployment deployment) {
-        Validate.notNull(deployment, "Android deployment you are trying to pass is a null object!");
-        Validate.notNull(deployment.getApplicationBasePackage(), "Application base package name is a null object!");
+        Validate.notNull(deployment, "Android deployment you are trying to uninstall can not be a null object!");
+        Validate.notNull(deployment.getApplicationBasePackage(), "Application base package can not be a null object!");
 
         Command command = new Command().addAsString("pm uninstall " + deployment.getApplicationBasePackage());
 
@@ -127,7 +128,7 @@ public class AndroidApplicationManager {
             device.executeShellCommand(command.getAsString(), monkey);
             Monkey.wait(device, monkey, PACKAGES_LIST_CMD);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            throw new AndroidExecutionException("Unable to uninstall application "+ deployment.getApplicationBasePackage() +" from Android device.");
         }
     }
 
@@ -137,10 +138,11 @@ public class AndroidApplicationManager {
      * @param deployment
      * @throws IllegalArgumentException if {@code deployment} or {@code deployment.getApplicationBasePackage()} is a null
      *         object.
+     * @throws AndroidExecutionException when killing fails
      */
     public void disable(AndroidDeployment deployment) {
-        Validate.notNull(deployment, "Android deployment you are trying to pass is a null object!");
-        Validate.notNull(deployment.getApplicationBasePackage(), "Application base package name is a null object!");
+        Validate.notNull(deployment, "Android deployment you are trying to kill can not be a null object!");
+        Validate.notNull(deployment.getApplicationBasePackage(), "Application base package name can not be a null object!");
 
         Command command = new Command().addAsString("pm disable " + deployment.getApplicationBasePackage());
 
@@ -150,7 +152,7 @@ public class AndroidApplicationManager {
             device.executeShellCommand(command.getAsString(), monkey);
             Monkey.wait(device, monkey, TOP_CMD);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new AndroidExecutionException("Unable to disable running application " + deployment.getApplicationBasePackage());
         }
     }
 }

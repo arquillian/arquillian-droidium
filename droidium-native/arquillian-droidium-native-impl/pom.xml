@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- JBoss, Home of Professional Open Source Copyright 2013, Red Hat, Inc. 
-    and/or its affiliates, and individual contributors by the @authors tag. See 
-    the copyright.txt in the distribution for a full listing of individual contributors. 
-    Licensed under the Apache License, Version 2.0 (the "License"); you may not 
-    use this file except in compliance with the License. You may obtain a copy 
-    of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
-    by applicable law or agreed to in writing, software distributed under the 
-    License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
-    OF ANY KIND, either express or implied. See the License for the specific 
+<!-- JBoss, Home of Professional Open Source Copyright 2013, Red Hat, Inc.
+    and/or its affiliates, and individual contributors by the @authors tag. See
+    the copyright.txt in the distribution for a full listing of individual contributors.
+    Licensed under the Apache License, Version 2.0 (the "License"); you may not
+    use this file except in compliance with the License. You may obtain a copy
+    of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required
+    by applicable law or agreed to in writing, software distributed under the
+    License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
+    OF ANY KIND, either express or implied. See the License for the specific
     language governing permissions and limitations under the License. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -33,6 +33,9 @@
         <!-- Droidium container versions -->
         <version.droidium.container>0.0.1-SNAPSHOT</version.droidium.container>
         <version.droidium.native>0.0.1-SNAPSHOT</version.droidium.native>
+
+        <!-- Drone versions -->
+        <version.arquillian.drone>1.2.0.Final-SNAPSHOT</version.arquillian.drone>
 
         <!-- Other versions -->
         <version.httpclient>4.2.5</version.httpclient>
@@ -104,6 +107,17 @@
                 <artifactId>commons-io</artifactId>
                 <version>${version.commons.io}</version>
             </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian.extension</groupId>
+                <artifactId>arquillian-drone-spi</artifactId>
+                <version>${version.arquillian.drone}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian.extension</groupId>
+                <artifactId>arquillian-drone-webdriver-depchain</artifactId>
+                <type>pom</type>
+                <version>${version.arquillian.drone}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -136,6 +150,17 @@
             <groupId>org.arquillian.container</groupId>
             <artifactId>arquillian-droidium-container-spi</artifactId>
             <version>${version.droidium.container}</version>
+        </dependency>
+
+        <!-- Drone dependencies -->
+        <dependency>
+            <groupId>org.jboss.arquillian.extension</groupId>
+            <artifactId>arquillian-drone-spi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.extension</groupId>
+            <artifactId>arquillian-drone-webdriver-depchain</artifactId>
+            <type>pom</type>
         </dependency>
 
         <!-- Arquillian dependencies -->
@@ -264,7 +289,7 @@
                 You can specify emulator timeout by setting -Demulator.startup.timeout=number.
                 Default is 600 seconds.
 
-                Be sure that Android Virtual Device (emulator) prior to test with 
+                Be sure that Android Virtual Device (emulator) prior to test with
                 AVD name test01 and console port is 5554 is not started.
 
                 AVD name can be supressed by setting -Demulator.running.avd.name=your_value

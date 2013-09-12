@@ -181,4 +181,16 @@ public interface AndroidDevice {
      * @return raw screenshot for further processing
      */
     RawImage getScreenshot();
+
+    /**
+     *
+     * @param activityManagerProvider
+     */
+    void setActivityManagerProvider(ActivityManagerProvider activityManagerProvider);
+
+    /**
+     *
+     * @return gets activity manager provider for this Android device
+     */
+    ActivityManagerProvider getActivityManagerProvider();
 }

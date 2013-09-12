@@ -28,7 +28,8 @@
     <!-- Properties -->
     <properties>
         <!-- Arquillian Drone -->
-        <version.org.jboss.arquillian.drone>1.2.0.Alpha3</version.org.jboss.arquillian.drone>
+        <version.org.jboss.arquillian.drone>1.2.0.Beta1</version.org.jboss.arquillian.drone>
+        <version.org.jboss.arquillian.graphene>2.0.0.Alpha4</version.org.jboss.arquillian.graphene>
         <!-- maven-compiler-plugin -->
         <maven.compiler.target>1.6</maven.compiler.target>
         <maven.compiler.source>1.6</maven.compiler.source>
@@ -37,6 +38,12 @@
     <!-- Dependency Management -->
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.jboss.arquillian.graphene</groupId>
+                <artifactId>graphene-webdriver</artifactId>
+                <version>${version.org.jboss.arquillian.graphene}</version>
+                <type>pom</type>
+            </dependency>
             <!-- Arquillian Drone BOM -->
             <dependency>
                 <groupId>org.jboss.arquillian.extension</groupId>

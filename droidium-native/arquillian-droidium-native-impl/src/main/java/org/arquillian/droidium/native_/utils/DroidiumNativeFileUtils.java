@@ -32,7 +32,9 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 
 /**
- * Set of utility methods for Droidium native plugin regarding file and directory management.
+ * Set of utility methods for Droidium native plugin regarding of file and directory management. It creates temporary directory
+ * where all resources needed while the test execution is running are stored e.g. rebuilt packages and Selendroid stuff are
+ * stored there.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
@@ -57,12 +59,20 @@ public class DroidiumNativeFileUtils {
         }
     }
 
+    /**
+     * Gets temporary directory created by {@link #createWorkingDir(File)}
+     *
+     * @return temporary directory where Droidium puts all resources, APKs and files during test execution
+     */
     public static File getTmpDir() {
         return tmpDir;
     }
 
     /**
-     * Creates directory with random name in {@code System.getProperty("java.io.tmpdir")}
+     * Creates directory with random name, by default in {@code System.getProperty("java.io.tmpdir")}.
+     *
+     * Temporary resource directory can be specified by {@code tmpDir} configuration property in extension configuraion in
+     * arquillian.xml.
      */
     public static void createWorkingDir(File parent) {
         FileIdentifierGenerator fig = new FileIdentifierGenerator();
@@ -98,10 +108,10 @@ public class DroidiumNativeFileUtils {
     }
 
     /**
-     * Copies file to directory
+     * Copies {@code src} file to {@code dest} directory.
      *
-     * @param src source file
-     * @param dest destination directory
+     * @param src source file to copy
+     * @param dest destination directory where file is copied
      */
     public static File copyFileToDirectory(File src, File dest) {
         try {
@@ -112,13 +122,24 @@ public class DroidiumNativeFileUtils {
         }
     }
 
+    /**
+     * @return random name for APK file name (ends with .apk suffix)
+     */
+    public static String getRandomAPKFileName() {
+        return new APKIdentifierGenerator().getIdentifier(IdentifierType.APK.getClass());
+    }
+
+    /**
+     * Exports archive to file
+     *
+     * @param fromArchive archive to export its content from
+     * @param toFile file to export the content from archive to
+     * @return {@code toFile} or null if exporting fails
+     */
     public static File export(Archive<?> fromArchive, File toFile) {
         if (toFile.exists() && toFile.isFile()) {
-            try {
-                if (!toFile.delete()) {
-                    // log
-                }
-            } catch (SecurityException ex) {
+            if (!toFile.delete()) {
+                logger.fine("File to export the archive to exists and it can not be removed.");
             }
         }
 

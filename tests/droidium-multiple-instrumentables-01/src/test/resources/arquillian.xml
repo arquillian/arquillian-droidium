@@ -29,7 +29,7 @@
 
     <!-- We want to test native Android applications via Selendroid driver -->
     <extension qualifier="droidium-native">
-        <property name="serverApk">selendroid-server-0.4.2.apk</property>
+        <property name="serverApk">selendroid-server-0.5.0.apk</property>
     </extension>
 
     <extension qualifier="webdriver-testapp">
@@ -37,9 +37,9 @@
         <property name="remoteAddress">http://localhost:8080/wd/hub</property>
     </extension>
 
-    <extension qualifier="webdriver-aerogear">
+<!--     <extension qualifier="webdriver-aerogear">
         <property name="browserCapabilities">android</property>
         <property name="remoteAddress">http://localhost:8081/wd/hub</property>
-    </extension>
+    </extension> -->
 
 </arquillian>

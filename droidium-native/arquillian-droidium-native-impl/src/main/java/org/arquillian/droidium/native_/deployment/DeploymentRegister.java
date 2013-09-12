@@ -19,6 +19,7 @@ package org.arquillian.droidium.native_.deployment;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.arquillian.droidium.native_.spi.DroidiumDeployment;
 import org.jboss.arquillian.core.spi.Validate;
 import org.jboss.shrinkwrap.api.Archive;
 
@@ -91,6 +92,24 @@ public class DeploymentRegister<T extends DroidiumDeployment> {
             }
         }
         return null;
+    }
+
+    /**
+     *
+     * @param deploymentName name of deployment to get
+     * @return deployment of such {@code deploymentName} or null if no such deployment was found
+     */
+    public T get(String deploymentName) {
+        for (T deployment : deployments) {
+            if (deployment.getDeploymentName().equals(deploymentName)) {
+                return deployment;
+            }
+        }
+        return null;
+    }
+
+    public List<T> getAll() {
+        return deployments;
     }
 
 }

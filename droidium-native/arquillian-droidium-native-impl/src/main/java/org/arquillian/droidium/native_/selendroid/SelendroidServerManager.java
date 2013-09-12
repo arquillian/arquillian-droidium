@@ -34,14 +34,14 @@ import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Validate;
 import org.arquillian.droidium.container.impl.ProcessExecutor;
-import org.arquillian.droidium.native_.deployment.impl.SelendroidDeployment;
+import org.arquillian.droidium.native_.spi.SelendroidDeployment;
 import org.arquillian.droidium.native_.utils.Command;
 import org.arquillian.droidium.native_.utils.DroidiumNativeFileUtils;
 import org.arquillian.droidium.native_.utils.Monkey;
 
 /**
- * Manages deployment and undeployment of Selendroid servers which instrument Android packages. There is one-to-one relationship
- * between Selendroid server and instrumented Android application in general.
+ * Manages deployment and undeployment of Selendroid servers which instrument Android packages.
+ * There is strict one-to-one relationship between Selendroid server and instrumented Android application.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
@@ -85,6 +85,7 @@ public class SelendroidServerManager {
      *
      * @param deployment deployment to install to Android device
      * @throws IllegalArgumentException if {@code deployment} or {@code SelendroidDeployment#getResigned()} is a null object
+     * @throws AndroidExecutionException
      */
     public void install(SelendroidDeployment deployment) {
         Validate.notNull(deployment, "Selendroid deployment to deploy can not be a null object!");
@@ -97,7 +98,7 @@ public class SelendroidServerManager {
             .add("install")
             .add(deployment.getResigned().getAbsolutePath());
 
-        logger.info("Selendroid server installation command: " + selendroidInstallCommand.toString());
+        logger.fine("Selendroid server installation command: " + selendroidInstallCommand.toString());
 
         try {
             executor.execute(selendroidInstallCommand.getAsArray());
@@ -119,6 +120,7 @@ public class SelendroidServerManager {
      * @throws IllegalArgumentException if {@code deployment} is a null object or if
      *         {@link SelendroidDeployment#getInstrumentedDeployment()} is a null object or if
      *         {@link SelendroidDeployment#getInstrumentationConfiguration()} is a null object.
+     * @throws AndroidExecutionException
      */
     public void instrument(SelendroidDeployment deployment) {
         Validate.notNull(deployment, "Deployment to instument is a null object!");
@@ -135,13 +137,14 @@ public class SelendroidServerManager {
             .add("instrument")
             .add("-e")
             .add("main_activity")
-            .add("\'" + deployment.getInstrumentedDeployment().getApplicationMainActivity() + "\'")
+            //.add("\'" + deployment.getInstrumentedDeployment().getApplicationMainActivity() + "\'")
+            .add("\'\'")
             .add("-e")
             .add("server_port")
             .add(deployment.getInstrumentationConfiguration().getPort())
             .add(deployment.getServerBasePackage() + "/io.selendroid.ServerInstrumentation");
 
-        logger.info(startApplicationInstrumentationCommand.toString());
+        logger.fine(startApplicationInstrumentationCommand.toString());
 
         try {
             Monkey monkey = new Monkey(DroidiumNativeFileUtils.createRandomEmptyFile(DroidiumNativeFileUtils.getTmpDir()),
@@ -175,14 +178,13 @@ public class SelendroidServerManager {
     public void uninstall(SelendroidDeployment deployment) {
         Validate.notNull(deployment, "Selendroid deployment to uninstall can not be a null object!");
         try {
-            device.executeShellCommand(new Command()
-                .addAsString("pm uninstall " + deployment.getServerBasePackage()).getAsString());
+            Command command = new Command();
+            command.addAsString("pm uninstall " + deployment.getServerBasePackage());
+            device.executeShellCommand(command.getAsString());
         } catch (AndroidExecutionException ex) {
-
             throw new AndroidExecutionException("Unable to uninstall Selendroid server.", ex);
         } finally {
             int port = Integer.parseInt(deployment.getInstrumentationConfiguration().getPort());
-
             removePortForwarding(port, port);
         }
     }
@@ -241,14 +243,14 @@ public class SelendroidServerManager {
     private void createPortForwarding(int from, int to) {
         validatePort(from);
         validatePort(to);
-        logger.log(Level.INFO, "Creating port forwarding from {0} to {1}", new Object[] { from, to });
+        logger.log(Level.FINE, "Creating port forwarding from {0} to {1}", new Object[] { from, to });
         device.createPortForwarding(from, to);
     }
 
     private void removePortForwarding(int from, int to) {
         validatePort(from);
         validatePort(to);
-        logger.log(Level.INFO, "Removing port forwarding from {0} to {1}", new Object[] { from, to });
+        logger.log(Level.FINE, "Removing port forwarding from {0} to {1}", new Object[] { from, to });
         device.removePortForwarding(from, to);
     }
 

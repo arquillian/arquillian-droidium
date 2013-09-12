@@ -56,7 +56,7 @@ public final class KeyStoreCreator {
     }
 
     /**
-     * Checks if {@code keystore} exist.
+     * Checks if {@code keystore} exists.
      *
      * @param keyStore keystore to check the existentiality of
      * @return true if {@code keystore} exists, false otherwise
@@ -72,7 +72,9 @@ public final class KeyStoreCreator {
     }
 
     /**
-     * Creates keystore.
+     * Creates keystore. You can change the {@code -keypass} argument of keytool command by setting {@code keypass} property
+     * in arquillian.xml. You can change {@code -sigalg} and {@code -keyalg} and {@code -storepass} as well by the same way.
+     * Storetype is {@code JKS} and {@code -dname} is {@code CN=Android,O=Android,C=US}.
      *
      * @param keyStoreToCreate file which will be new keystore
      */
@@ -102,6 +104,7 @@ public final class KeyStoreCreator {
 
         logger.log(Level.INFO, createKeyStoreCommand.toString());
 
+        // it seems ProcessExecutor hangs here for some reason, I was not able to execute keytool command with it.
         BufferedReader bufferedReader = null;
         try {
             ProcessBuilder builder = new ProcessBuilder(createKeyStoreCommand.getAsList());

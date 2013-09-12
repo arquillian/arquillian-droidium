@@ -32,7 +32,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
 /**
- * Signs arbitrary APK files.
+ * Signs and resigns arbitrary APK files.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
@@ -66,8 +66,8 @@ public class APKSigner {
 
     /**
      *
-     * @param toSign
-     * @param signed
+     * @param toSign file to sign
+     * @param signed file after the signing
      * @return {@code signed} file
      */
     public File sign(File toSign, File signed) {
@@ -90,7 +90,7 @@ public class APKSigner {
             .add(toSign.getAbsolutePath())
             .add(configuration.getAlias());
 
-        logger.log(Level.INFO, jarSignerCommand.toString());
+        logger.log(Level.FINE, jarSignerCommand.toString());
 
 
         try {
@@ -106,7 +106,7 @@ public class APKSigner {
 
     /**
      *
-     * @param toResign
+     * @param toResign file to resign
      * @param resigned
      * @return {@code resigned} file
      */

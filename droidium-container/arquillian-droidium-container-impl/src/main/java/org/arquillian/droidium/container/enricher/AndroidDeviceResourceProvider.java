@@ -17,7 +17,6 @@
 package org.arquillian.droidium.container.enricher;
 
 import java.lang.annotation.Annotation;
-import java.util.logging.Logger;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.jboss.arquillian.core.api.Instance;
@@ -36,8 +35,6 @@ import org.jboss.arquillian.test.spi.enricher.resource.ResourceProvider;
  */
 public class AndroidDeviceResourceProvider implements ResourceProvider {
 
-    private static final Logger log = Logger.getLogger(AndroidDeviceResourceProvider.class.getName());
-
     @Inject
     Instance<AndroidDevice> androidDevice;
 
@@ -48,10 +45,10 @@ public class AndroidDeviceResourceProvider implements ResourceProvider {
 
     @Override
     public Object lookup(ArquillianResource resource, Annotation... qualifiers) {
+
         AndroidDevice device = androidDevice.get();
 
         if (device == null) {
-            log.severe("Unable to inject Android device instance into the test.");
             throw new IllegalStateException("Unable to inject Android device instance into the test.");
         }
 

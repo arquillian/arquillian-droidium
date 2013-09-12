@@ -37,8 +37,7 @@ public class FileIdentifierGenerator implements IdentifierGenerator {
             return uuid;
         }
         throw new IdentifierGeneratorException(
-            "Not possible to generate any identifier for file of type "
-                + identifierType.getName());
+            "Not possible to generate any identifier for file of type " + identifierType.getName());
     }
 
 }

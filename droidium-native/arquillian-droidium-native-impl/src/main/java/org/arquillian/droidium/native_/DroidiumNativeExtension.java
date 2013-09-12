@@ -16,10 +16,22 @@
  */
 package org.arquillian.droidium.native_;
 
+import org.arquillian.droidium.container.api.ActivityManagerProvider;
+import org.arquillian.droidium.native_.activity.DroidiumNativeActivityManager;
+import org.arquillian.droidium.native_.activity.DroidiumNativeActivityManagerProvider;
 import org.arquillian.droidium.native_.configuration.DroidiumNativeConfigurator;
-import org.arquillian.droidium.native_.deployment.impl.DeploymentController;
-import org.arquillian.droidium.native_.instrumentation.impl.InstrumentationResolver;
-import org.arquillian.droidium.native_.instrumentation.impl.InstrumentationDecider;
+import org.arquillian.droidium.native_.configuration.DroidiumNativeResourceManager;
+import org.arquillian.droidium.native_.configuration.ExtensionDroneResolver;
+import org.arquillian.droidium.native_.deployment.ActivityDeploymentScanner;
+import org.arquillian.droidium.native_.deployment.AndroidDeploymentInstaller;
+import org.arquillian.droidium.native_.deployment.AndroidDeploymentUninstaller;
+import org.arquillian.droidium.native_.deployment.DeploymentWebDriverResolver;
+import org.arquillian.droidium.native_.instrumentation.DeploymentInstrumentationResolver;
+import org.arquillian.droidium.native_.instrumentation.InstrumentationPerformDecider;
+import org.arquillian.droidium.native_.instrumentation.InstrumentationPerformer;
+import org.arquillian.droidium.native_.instrumentation.InstrumentationRemoveDecider;
+import org.arquillian.droidium.native_.selendroid.SelendroidDeploymentInstaller;
+import org.arquillian.droidium.native_.selendroid.SelendroidDeploymentUninstaller;
 import org.jboss.arquillian.core.spi.LoadableExtension;
 
 /**
@@ -32,10 +44,34 @@ public class DroidiumNativeExtension implements LoadableExtension {
 
     @Override
     public void register(ExtensionBuilder builder) {
+
+        // configuration
         builder.observer(DroidiumNativeConfigurator.class);
-        builder.observer(DeploymentController.class);
-        builder.observer(InstrumentationResolver.class);
-        builder.observer(InstrumentationDecider.class);
+        builder.observer(DroidiumNativeResourceManager.class);
+
+        // resolvers
+        builder.observer(DeploymentInstrumentationResolver.class);
+        builder.observer(DeploymentWebDriverResolver.class);
+        builder.observer(ExtensionDroneResolver.class);
+
+        // instrumentation
+        builder.observer(InstrumentationPerformDecider.class);
+        builder.observer(InstrumentationRemoveDecider.class);
+        builder.observer(InstrumentationPerformer.class);
+
+        // installers & uninstallers
+        builder.observer(AndroidDeploymentInstaller.class);
+        builder.observer(AndroidDeploymentUninstaller.class);
+        builder.observer(SelendroidDeploymentInstaller.class);
+        builder.observer(SelendroidDeploymentUninstaller.class);
+
+        // activity related
+        builder.observer(DroidiumNativeActivityManagerProvider.class);
+        builder.observer(DroidiumNativeActivityManager.class);
+        builder.observer(ActivityDeploymentScanner.class);
+
+        // services
+        builder.service(ActivityManagerProvider.class, DroidiumNativeActivityManagerProvider.class);
     }
 
 }

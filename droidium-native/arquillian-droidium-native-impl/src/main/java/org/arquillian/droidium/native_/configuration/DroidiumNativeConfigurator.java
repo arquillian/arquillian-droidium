@@ -30,24 +30,22 @@ import org.jboss.arquillian.test.spi.annotation.SuiteScoped;
 import org.jboss.arquillian.test.spi.event.suite.BeforeSuite;
 
 /**
- * Configures Arquillian Droidium Native extension.
- *
+ * Creates configuration for Droidium native plugin. <br>
+ * <br>
  * Observes:
  * <ul>
  * <li>{@link BeforeSuite}</li>
  * </ul>
- *
- * Creates:
+ * Produces suite scoped:<br>
  * <ul>
  * <li>{@link DroidiumNativeConfiguration}</li>
  * </ul>
- *
- * Fires:
+ * Fires:<br>
  * <ul>
  * <li>{@link DroidiumNativeConfigured}</li>
  * </ul>
  *
- * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
+ * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
 public class DroidiumNativeConfigurator {
@@ -66,7 +64,9 @@ public class DroidiumNativeConfigurator {
     @Inject
     private Event<DroidiumNativeConfigured> droidiumNativeConfigured;
 
-    // precendence is important here, registration of extensions goes first in every case
+    // higher precedence is set here because container is started in the same scope so we need to be sure
+    // it is configured firstly since we are injecting configuration into DroidiumNativeResourceManager and we need that to be
+    // instantiated before AfterStart of the container
     public void configureDroidiumNative(@Observes(precedence = 10) BeforeSuite event, ArquillianDescriptor descriptor) {
 
         logger.info("Configuring " + DROIDIUM_NATIVE_EXTENSION_NAME);

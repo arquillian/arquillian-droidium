@@ -38,8 +38,7 @@ public class APKIdentifierGenerator implements IdentifierGenerator {
         if (identifierType.isInstance(IdentifierType.APK)) {
             return uuid + apkSuffix;
         }
-        throw new IdentifierGeneratorException("Not possible to generate any identifier for APK file of type "
-            + identifierType.getName());
+        throw new IdentifierGeneratorException("Not possible to generate any identifier for APK file of type " + identifierType.getName());
     }
 
 }

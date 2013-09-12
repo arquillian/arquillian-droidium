@@ -22,8 +22,8 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.arquillian.droidium.native_.AbstractAndroidTestTestBase;
-import org.arquillian.droidium.native_.instrumentation.impl.InstrumentationMapper;
-import org.arquillian.droidium.native_.instrumentation.impl.InstrumentationMapperException;
+import org.arquillian.droidium.native_.instrumentation.InstrumentationScanner;
+import org.arquillian.droidium.native_.instrumentation.InstrumentationMapperException;
 import org.arquillian.droidium.native_.spi.InstrumentationConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +39,7 @@ public class InstrumentationMapperTestCase extends AbstractAndroidTestTestBase {
     @Test
     public void testEmptyMap() {
         Map<String, InstrumentationConfiguration> map = new HashMap<String, InstrumentationConfiguration>();
-        Assert.assertTrue(InstrumentationMapper.validate(map));
+        Assert.assertTrue(InstrumentationScanner.validate(map));
     }
 
     @Test(expected = InstrumentationMapperException.class)
@@ -55,7 +55,7 @@ public class InstrumentationMapperTestCase extends AbstractAndroidTestTestBase {
         map.put("deployment1", c1);
         map.put("deployment2", c2);
 
-        InstrumentationMapper.validate(map);
+        InstrumentationScanner.validate(map);
     }
 
     @Test
@@ -71,6 +71,6 @@ public class InstrumentationMapperTestCase extends AbstractAndroidTestTestBase {
         map.put("deployment1", c1);
         map.put("deployment2", c2);
 
-        Assert.assertTrue(InstrumentationMapper.validate(map));
+        Assert.assertTrue(InstrumentationScanner.validate(map));
     }
 }

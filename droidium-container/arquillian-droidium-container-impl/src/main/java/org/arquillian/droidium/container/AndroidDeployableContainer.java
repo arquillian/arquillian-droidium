@@ -20,16 +20,18 @@ package org.arquillian.droidium.container;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.arquillian.droidium.container.api.ActivityManagerProvider;
+import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.IdentifierGenerator;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
+import org.arquillian.droidium.container.impl.DefaultActivityManagerProvider;
 import org.arquillian.droidium.container.impl.ProcessExecutor;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStart;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStop;
-import org.arquillian.droidium.container.spi.event.AndroidDeployArchive;
-import org.arquillian.droidium.container.spi.event.AndroidProtocolDescriptionEvent;
-import org.arquillian.droidium.container.spi.event.AndroidProtocolMetaDataEvent;
-import org.arquillian.droidium.container.spi.event.AndroidUndeployArchive;
+import org.arquillian.droidium.container.spi.event.AndroidDeploy;
+import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
+import org.arquillian.droidium.container.spi.event.AndroidUndeploy;
 import org.arquillian.droidium.container.utils.AndroidIdentifierGenerator;
 import org.jboss.arquillian.container.spi.client.container.DeployableContainer;
 import org.jboss.arquillian.container.spi.client.container.DeploymentException;
@@ -38,8 +40,11 @@ import org.jboss.arquillian.container.spi.client.protocol.ProtocolDescription;
 import org.jboss.arquillian.container.spi.client.protocol.metadata.ProtocolMetaData;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.core.api.Event;
+import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.InstanceProducer;
 import org.jboss.arquillian.core.api.annotation.Inject;
+import org.jboss.arquillian.core.api.annotation.Observes;
+import org.jboss.arquillian.core.spi.ServiceLoader;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.descriptor.api.Descriptor;
 
@@ -48,7 +53,26 @@ import org.jboss.shrinkwrap.descriptor.api.Descriptor;
  * Android Managed container for the Arquillian project
  * </p>
  *
- * Deployable Android Container class with the whole lifecycle.
+ * Deployable Android Container class with the whole lifecycle.<br>
+ * <br>
+ * Observes:
+ * <ul>
+ * <li>{@link AndroidDeviceReady}</li>
+ * </ul>
+ * Produces ContainerScoped:
+ * <ul>
+ * <li>{@link AndroidSDK}</li>
+ * <li>{@link IdentifierGenerator}</li>
+ * <li>{@link ProcessExecutor}</li>
+ * <li>{@link AndroidContainerConfiguration}</li>
+ * </ul>
+ * Fires:
+ * <ul>
+ * <li>{@link AndroidContainerStart}</li>
+ * <li>{@link AndroidContainerStop}</li>
+ * <li>{@link AndroidDeploy}</li>
+ * <li>{@link AndroidUndeploy}</li>
+ * </ul>
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  */
@@ -79,16 +103,16 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidCo
     private Event<AndroidContainerStop> androidContainerStopEvent;
 
     @Inject
-    private Event<AndroidDeployArchive> deployArchiveEvent;
+    private Event<AndroidDeploy> deployArchiveEvent;
 
     @Inject
-    private Event<AndroidUndeployArchive> undeployArchiveEvent;
+    private Event<AndroidUndeploy> undeployArchiveEvent;
 
     @Inject
-    private Event<AndroidProtocolMetaDataEvent> androidProtocolMetaDataEvent;
+    private Instance<AndroidDevice> androidDevice;
 
     @Inject
-    private Event<AndroidProtocolDescriptionEvent> androidProtocolDescriptionEvent;
+    private Instance<ServiceLoader> serviceLoader;
 
     @Override
     public Class<AndroidContainerConfiguration> getConfigurationClass() {
@@ -97,10 +121,7 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidCo
 
     @Override
     public ProtocolDescription getDefaultProtocol() {
-        logger.log(Level.INFO, "Getting default protocol");
-        AndroidProtocolDescriptionEvent protocolDescriptionEvent = new AndroidProtocolDescriptionEvent();
-        androidProtocolDescriptionEvent.fire(protocolDescriptionEvent);
-        return protocolDescriptionEvent.getProtocolDescription();
+        return new ProtocolDescription("android-protocol");
     }
 
     @Override
@@ -119,17 +140,13 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidCo
 
     @Override
     public ProtocolMetaData deploy(Archive<?> archive) throws DeploymentException {
-        logger.log(Level.INFO, "Deploying the archive {0} to the container {1}.",
-            new Object[] { archive.getName(), getContainerName() });
-        deployArchiveEvent.fire(new AndroidDeployArchive(archive));
+        deployArchiveEvent.fire(new AndroidDeploy(archive));
         return new ProtocolMetaData();
     }
 
     @Override
     public void undeploy(Archive<?> archive) throws DeploymentException {
-        logger.log(Level.INFO, "Undeploying an archive {0} from the container {1}.",
-            new Object[] { archive.getName(), getContainerName() });
-        undeployArchiveEvent.fire(new AndroidUndeployArchive(archive));
+        undeployArchiveEvent.fire(new AndroidUndeploy(archive));
     }
 
     @Override
@@ -146,6 +163,15 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidCo
     @Override
     public void deploy(Descriptor descriptor) throws DeploymentException {
         throw new UnsupportedOperationException("Deployment of a descriptor is not supported");
+    }
+
+    public void onDeviceReady(@Observes AndroidDeviceReady event) {
+        ActivityManagerProvider activityManagerProvider = getActivityManagerProvider();
+        androidDevice.get().setActivityManagerProvider(activityManagerProvider);
+    }
+
+    private ActivityManagerProvider getActivityManagerProvider() {
+        return serviceLoader.get().onlyOne(ActivityManagerProvider.class, DefaultActivityManagerProvider.class);
     }
 
     /**

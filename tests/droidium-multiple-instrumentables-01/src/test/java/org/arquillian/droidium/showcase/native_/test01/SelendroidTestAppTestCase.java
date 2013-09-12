@@ -39,11 +39,11 @@ import org.openqa.selenium.WebDriver;
 
 /**
  * This is highly experimental project and besides this functionality it is unknown what happens.
- *
+ * 
  * Do not try this at home!
- *
+ * 
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
- *
+ * 
  */
 @RunWith(Arquillian.class)
 @RunAsClient
@@ -55,26 +55,24 @@ public class SelendroidTestAppTestCase {
     @ArquillianResource
     Screenshooter screenshooter;
 
-    @Deployment(name = "testApp")
-    @Instrumentable(viaPort = 8080)
+    @Deployment(name = "aerogear", order = 1)
     @TargetsContainer("android")
-    public static Archive<?> getDeployment1() {
-        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.4.2.apk"));
+    public static Archive<?> getEmailValidator() {
+        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("email-validator-app.apk"));
     }
 
-    @Deployment(name = "aerogear")
-    @Instrumentable(viaPort = 8081)
+    @Deployment(name = "testApp", order = 2)
+    @Instrumentable(viaPort = 8080)
     @TargetsContainer("android")
-    public static Archive<?> getDeployment2() {
-        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("aerogear-test-android.apk"));
+    public static Archive<?> getInstrumented() {
+        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("instrumented-app.apk"));
     }
 
     @Test
     @InSequence(1)
     @OperateOnDeployment("testApp")
-    public void test01(@Drone @TestApp WebDriver testApp, @Drone @Aerogear WebDriver aerogear) {
+    public void test01(@Drone @TestApp WebDriver testApp) {
         Assert.assertNotNull(testApp);
-        Assert.assertNotNull(aerogear);
         Assert.assertNotNull(android);
         Assert.assertNotNull(screenshooter);
     }

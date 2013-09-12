@@ -25,13 +25,14 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Validate;
 import org.arquillian.droidium.container.impl.ProcessExecutor;
-import org.arquillian.droidium.native_.utils.AndroidApplicationHelper;
 import org.arquillian.droidium.native_.utils.Command;
 import org.arquillian.droidium.native_.utils.DroidiumNativeFileUtils;
 import org.jboss.shrinkwrap.api.Archive;
@@ -39,11 +40,16 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
 /**
- * Rebuilds Selendroid application.
+ * Rebuilds Selendroid application. It takes raw Selendroid server AndroidManifest.xml located in resources. This manifest is
+ * modified to reflect the target package which will be instrumented by it and new AndroidManifest.xml is compiled. After it,
+ * new Selendroid server is built and it is ready to be resigned and installed into target device where it waits for the
+ * execution of the instrumentation command.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  */
 public class SelendroidRebuilder {
+
+    private static final Logger logger = Logger.getLogger(SelendroidRebuilder.class.getName());
 
     private final ProcessExecutor processExecutor;
 
@@ -55,12 +61,12 @@ public class SelendroidRebuilder {
     public static final String SELENDROID_PACKAGE_NAME = "package=\"io.selendroid\"";
 
     /**
-     * String in AndroidManifest.xml for Selendroid server to be replaced with target package of application under test
+     * String in AndroidManifest.xml for Selendroid server to be replaced with target package of application under test.
      */
     public static final String SELENDROID_TEST_PACKAGE = "io.selendroid.testapp";
 
     /**
-     * Needs to be deleted from AndroidManifest.xml since such resource is not present and aapt dump fails because of this
+     * Needs to be deleted from AndroidManifest.xml since such resource is not present and aapt dump fails because of this.
      */
     public static final String ICON = "android:icon=\"@drawable/selenium_icon\"";
 
@@ -68,6 +74,7 @@ public class SelendroidRebuilder {
      *
      * @param processExecutor
      * @param androidSDK
+     * @throws IllegalStateException if some argument is a null object
      */
     public SelendroidRebuilder(ProcessExecutor processExecutor, AndroidSDK androidSDK) {
         Validate.notNull(processExecutor, "Process exeuctor for Selendroid rebuilder can not be a null object!");
@@ -82,9 +89,10 @@ public class SelendroidRebuilder {
      * @param selendroidWorkingCopy
      * @param selendroidPackageName package name of Selendroid server to use upon rebuilding
      * @param applicationBasePackage name of application base package to use upon rebuilding
-     * @return application meant to be resigned
+     * @return rebuilt Selendroid server meant to be resigned
      * @throws IllegalArgumentException if {@code selendroidPackageName} is null object or if {@code selendroidPackageName} or
      *         {@code applicationBasePackage} is a null object or an empty string
+     * @throws SelendroidRebuilderException if rebuilding fails
      */
     @SuppressWarnings("resource")
     public File rebuild(File selendroidWorkingCopy, String selendroidPackageName, String applicationBasePackage) {
@@ -109,8 +117,8 @@ public class SelendroidRebuilder {
         InputStream androidManifestStream = this.getClass().getClassLoader().getResourceAsStream("AndroidManifest.xml");
 
         if (androidManifestStream == null) {
-            throw new SelendroidRebuilderException("class loader of " + this.getClass().getName() +
-                " could not find AndroidManifest.xml");
+            throw new SelendroidRebuilderException("the class loader of " + this.getClass().getName() +
+                " could not find AndroidManifest.xml resource");
         }
 
         try {
@@ -134,16 +142,17 @@ public class SelendroidRebuilder {
         finalArchive.delete("AndroidManifest.xml");
         finalArchive.add(dummyArchive.get("AndroidManifest.xml").getAsset(), "AndroidManifest.xml");
 
-        File targetFile = new File(DroidiumNativeFileUtils.getTmpDir(), AndroidApplicationHelper.getRandomAPKFileName());
+        File targetFile = new File(DroidiumNativeFileUtils.getTmpDir(), DroidiumNativeFileUtils.getRandomAPKFileName());
 
         return DroidiumNativeFileUtils.export(finalArchive, targetFile);
     }
 
     /**
-     * Creates dummy APK file to get compiled AndroidManifest.xml.
+     * Creates dummy APK file in order to get compiled AndroidManifest.xml.
      *
      * @param dummyAPK APK to store dummy APK to
      * @param androidManifest AndroidManifest.xml to be used while creating dummy APK
+     * @throws SelendroidRebuilderException when creating of dummy APK fails
      */
     private void createDummyAPK(File dummyAPK, File androidManifest) {
         Command createDummyPackage = new Command();
@@ -158,7 +167,7 @@ public class SelendroidRebuilder {
             .add(dummyAPK.getAbsolutePath());
 
         try {
-            processExecutor.execute(createDummyPackage.getAsList().toArray(new String[0]));
+            processExecutor.execute(createDummyPackage.getAsArray());
         } catch (InterruptedException e) {
             throw new SelendroidRebuilderException("Command was interrupted: " + createDummyPackage.toString());
         } catch (ExecutionException e) {
@@ -167,12 +176,13 @@ public class SelendroidRebuilder {
     }
 
     /**
-     * Filters {@code toBeReplaced} manifest and writes it after filtering to {@code finalManifest}.
+     * Filters {@code toBeReplaced} manifest and writes it, after filtering, to {@code finalManifest}.
      *
      * @param toBeReplaced manifest file to be filtered
      * @param finalManifest manifest file after the filtering
      * @param selendroidPackageName Selendroid package name to set in {@code finalManifest} instead of the old one
      * @param applicationBasePackage application base package to set in {@code finalManifest} instead of the old one
+     * @throws SelendroidRebuilderException
      */
     private void filter(File toBeReplaced, File finalManifest, String selendroidPackageName, String applicationBasePackage) {
         try {
@@ -183,13 +193,14 @@ public class SelendroidRebuilder {
                 .filter(SELENDROID_TEST_PACKAGE, applicationBasePackage)
                 .filter(ICON, "");
 
+            if (logger.isLoggable(Level.FINE))
             for (String line : filter.getFiltered()) {
                 System.out.println(line);
             }
 
             FileUtils.writeLines(finalManifest, filter.getFiltered());
         } catch (IOException e) {
-            throw new SelendroidRebuilderException("Unable to filter Android manifes. Tried to filter "
+            throw new SelendroidRebuilderException("Unable to filter Android manifest. Tried to filter "
                 + toBeReplaced.getAbsolutePath() + " into " + finalManifest.getAbsolutePath() + ".");
         }
     }

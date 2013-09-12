@@ -48,6 +48,7 @@ public class DroidiumContainerExtension implements LoadableExtension {
         builder.service(ResourceProvider.class, AndroidDeviceResourceProvider.class);
         builder.service(ResourceProvider.class, AndroidScreenshooterResourceProvider.class);
         builder.service(AndroidDeviceSelector.class, AndroidDeviceSelectorImpl.class);
+        builder.observer(AndroidDeployableContainer.class);
         builder.observer(AndroidBridgeConnector.class);
         builder.observer(AndroidLogInitializer.class);
         builder.observer(AndroidDeviceSelectorImpl.class);

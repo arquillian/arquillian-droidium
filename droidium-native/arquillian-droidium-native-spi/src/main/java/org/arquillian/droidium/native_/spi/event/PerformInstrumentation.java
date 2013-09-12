@@ -17,9 +17,6 @@
 package org.arquillian.droidium.native_.spi.event;
 
 import org.arquillian.droidium.native_.spi.InstrumentationConfiguration;
-import org.arquillian.droidium.native_.spi.exception.InvalidInstrumentationConfigurationException;
-import org.jboss.arquillian.core.spi.Validate;
-import org.jboss.shrinkwrap.api.Archive;
 
 /**
  * Event representing that underlying package should be instrumented, in our case by Selendroid server.
@@ -29,39 +26,27 @@ import org.jboss.shrinkwrap.api.Archive;
  */
 public class PerformInstrumentation {
 
-    private final Archive<?> archive;
+    private final String deploymentName;
 
     private final InstrumentationConfiguration instrumentationConfiguration;
 
     /**
      *
-     * @param archive Android package to remove the instrumentation from
-     * @param configuration Instrumentation configuration
-     * @throws IllegalArgumentException if {@code archive} or {@code configuration} is a null object
-     * @throws InvalidInstrumentationConfigurationException when {@code configuration} is invalid
+     * @param deploymentName
+     * @param configuration
+     * @throws InvalidInstrumentationConfigurationException if {@code configuration} is invalid
      */
-    public PerformInstrumentation(Archive<?> archive, InstrumentationConfiguration configuration) {
-        Validate.notNull(archive, "APK package to instrument can not be a null object!");
-        Validate.notNull(configuration, "Instrumentation configuration can not be a null object");
-        this.archive = archive;
+    public PerformInstrumentation(String deploymentName, InstrumentationConfiguration configuration) {
+        this.deploymentName = deploymentName;
         this.instrumentationConfiguration = configuration;
 
         this.instrumentationConfiguration.validate();
     }
 
-    /**
-     *
-     * @return archive on which the instrumentation will occur
-     */
-    public Archive<?> getPackage() {
-        return archive;
+    public String getDeploymentName() {
+        return deploymentName;
     }
 
-    /**
-     *
-     * @return instrumentation configuration for the underlying deployment archive parsed from {@code @Instrumentable}
-     *         annotation placed on {@code @Deployment} method.
-     */
     public InstrumentationConfiguration getConfiguration() {
         return instrumentationConfiguration;
     }

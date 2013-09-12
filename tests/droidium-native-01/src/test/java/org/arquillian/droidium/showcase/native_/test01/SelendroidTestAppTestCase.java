@@ -19,6 +19,7 @@ package org.arquillian.droidium.showcase.native_.test01;
 import java.io.File;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
+import org.arquillian.droidium.native_.api.Instrumentable;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -30,12 +31,9 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 
 /**
  * Android Droidium testing with Selendroid - proof of concept.
@@ -47,76 +45,65 @@ import org.openqa.selenium.WebElement;
 @RunAsClient
 public class SelendroidTestAppTestCase {
 
-    /**
-     * @return deployment for Android device, the whole test application from Selendroid test is deployed without any change. We
-     *         can deploy APK archive in spite of Shrinkwrap's disability to deal with such format since APK is internally just
-     *         ZIP file anyway.
-     */
-    @Deployment(name = "android")
+    // injection for switching between activities
+    @ArquillianResource
+    AndroidDevice android;
+
+    // class scoped Drone, it will be available to use
+    // during whole test execution
+    @Drone
+    @Selendroid
+    WebDriver test_app;
+
+    // port put here matches the one in arquillian.xml
+    // and in turn "selendroid" suffix has to match annotation
+    // put on WebDriver in test01 method
+    @Deployment(name = "selendroid-test-app")
+    @Instrumentable(viaPort = 8081)
     @TargetsContainer("android")
-    public static Archive<?> createDeployment() {
+    public static Archive<?> SelendroidDeployment() {
         return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.5.0.apk"));
     }
 
-    private static final String USER_NAME = "john";
+    // port put here matches the one in arquillian.xml
+    // and in turn "aerogear" suffix has to match annotation
+    // put on WebDriver in test02 method
+    @Deployment(name = "aerogear-test-app")
+    @Instrumentable(viaPort = 8082)
+    @TargetsContainer("android")
+    public static Archive<?> createAerogeadDepoyment() {
+        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("aerogear-test-android.apk"));
+    }
 
-    private static final String USER_EMAIL = "john@doe.com";
-
-    private static final String USER_PASSWORD = "p4ssw0rd";
-
-    private static final String USER_REAL_NAME = "John Doe";
-
-    private static final String USER_REAL_OLD = "Mr. Burns";
-
-    private static final String USER_PRGRAMMING_LANGUAGE = "Scala";
-
-    /**
-     * Simple test which tries to register some user.
-     *
-     * @param android Android device itself, it is not needed in tests as such since we interact only with {@code WebDriver}
-     *        injection.
-     * @param driver {@code WebDriver} injection which sends commands to Selendroid server installed on the Android device.
-     */
     @Test
     @InSequence(1)
-    @OperateOnDeployment("android")
-    public void test01(@ArquillianResource AndroidDevice android, @Drone WebDriver driver) {
+    @OperateOnDeployment("selendroid-test-app")
+    public void test01() {
+        // activities are automatically scanned upon deployment installation and Android
+        // activity manager knows on which WebDriver instance it should start that activity up
+        android.getActivityManagerProvider()
+            .getActivityManager().startActivity("io.selendroid.testapp.HomeScreenActivity");
 
-        // Go to user registration
-        driver.findElement(By.id("startUserRegistration")).click();
-
-        // enter nick
-        WebElement userName = driver.findElement(By.id("inputUserName"));
-        userName.sendKeys(USER_NAME);
-        Assert.assertEquals(userName.getText(), USER_NAME);
-
-        // enter e-mail
-        WebElement inputEmail = driver.findElement(By.id("inputEmail"));
-        inputEmail.sendKeys(USER_EMAIL);
-        Assert.assertEquals(inputEmail.getText(), USER_EMAIL);
-
-        // enter password
-        WebElement inputPassword = driver.findElement(By.id("inputPassword"));
-        inputPassword.sendKeys(USER_PASSWORD);
-        Assert.assertEquals(inputPassword.getText(), USER_PASSWORD);
-
-        // check value in name field, clear it and write new one
-        WebElement inputName = driver.findElement(By.id("inputName"));
-        Assert.assertEquals(inputName.getText(), USER_REAL_OLD);
-        inputName.clear();
-        inputName.sendKeys(USER_REAL_NAME);
-        Assert.assertEquals(inputName.getText(), USER_REAL_NAME);
-
-        // enter favorite language
-        driver.findElement(By.id("input_preferedProgrammingLanguage")).click();
-        driver.findElement(By.linkText(USER_PRGRAMMING_LANGUAGE)).click();
-
-        // accept adds checkbox
-        WebElement acceptAddsCheckbox = driver.findElement(By.id("input_adds"));
-        Assert.assertEquals(acceptAddsCheckbox.isSelected(), false);
-        acceptAddsCheckbox.click();
-
-        // register
-        driver.findElement(By.id("btnRegisterUser")).click();
+        // ... tests
     }
+
+    // Showing of method scoped Drone, it will be possible to use it only in this method
+    @Test
+    @InSequence(2)
+    @OperateOnDeployment("aerogear-test-app")
+    public void test02(@Drone @Aerogear WebDriver aerogear) {
+        android.getActivityManagerProvider()
+            .getActivityManager().startActivity("org.jboss.aerogear.pushtest.MainActivity");
+
+        // ... tests
+
+        // you can do something like this after you want to switch to another activity
+        // android.getActivityManagerProvider().getActivityManager().startActivity("another.activity")
+
+        // since you have both Drones available here (class scoped and method scoped as well) you can
+        // choose whatever activity from both deployments you want. After this method ends, you can
+        // start activities only from the selendroid-test-app deployment since the second WebDriver
+        // is destroyed
+    }
+
 }
