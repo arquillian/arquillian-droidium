@@ -90,15 +90,20 @@ public class InstrumentationPerformDecider {
             }
         }
 
-        InstrumentationConfiguration instrumentationConfiguration = instrumentationMapper.get().getDeploymentName(
-            deploymentName);
+        if (deploymentName == null) {
+            logger.log(Level.FINE, "There is not any matching deployment name to be instrumented. You wanted to "
+                + "instrument some @Deployment with backed WebDriver instance but you have not specified @Instrumentable "
+                + "annotation on that @Deployment. There has to be always at least one @Instrumentable deployment.");
+            return;
+        }
+
+        InstrumentationConfiguration instrumentationConfiguration = instrumentationMapper.get().getDeploymentName(deploymentName);
 
         if (instrumentationConfiguration != null) {
 
             logger.log(Level.FINE, "instrumentation against deployment {0}", new Object[] { deploymentName });
 
-            beforeInstrumentationPerformed
-                .fire(new BeforeInstrumentationPerformed(deploymentName, instrumentationConfiguration));
+            beforeInstrumentationPerformed.fire(new BeforeInstrumentationPerformed(deploymentName, instrumentationConfiguration));
             performInstumentation.fire(new PerformInstrumentation(deploymentName, instrumentationConfiguration));
             afterInstrumentationPerformed.fire(new AfterInstrumentationPerformed(deploymentName, instrumentationConfiguration));
         }

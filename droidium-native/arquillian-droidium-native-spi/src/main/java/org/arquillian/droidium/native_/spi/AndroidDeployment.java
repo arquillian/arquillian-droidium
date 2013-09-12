@@ -133,4 +133,29 @@ public class AndroidDeployment extends DroidiumDeployment {
         return applicationMainActivity;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((deploymentName == null) ? 0 : deploymentName.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        AndroidDeployment other = (AndroidDeployment) obj;
+        if (deploymentName == null) {
+            if (other.deploymentName != null)
+                return false;
+        } else if (!deploymentName.equals(other.deploymentName))
+            return false;
+        return true;
+    }
+
 }

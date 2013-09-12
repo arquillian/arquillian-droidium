@@ -16,11 +16,10 @@
  */
 package org.arquillian.droidium.showcase.hybrid.test01;
 
-import io.selendroid.SelendroidDriver;
-
 import java.io.File;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
+import org.arquillian.droidium.native_.api.Instrumentable;
 import org.arquillian.droidium.showcase.hybrid.test01.utils.WaitingConditions;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
@@ -37,17 +36,14 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
- * Android Droidium hybrid testing with {@code SelendroidDriver} - proof of concept.
- *
- * Selendroid and {@code SelendroidDriver} provides a way how to test native applications and web applications embedded in
- * native applications via so-called web view and native view. {@code SelendroidDriver} can switch between these modes upon
- * desire in one test run. This test case shows how it is done.
+ * Android Droidium hybrid testing with {@code WebDriver} - proof of concept.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
@@ -62,9 +58,10 @@ public class SelendroidHybridTestAppTestCase {
      *         ZIP file anyway.
      */
     @Deployment(name = "android")
+    @Instrumentable
     @TargetsContainer("android")
     public static Archive<?> createDeployment() {
-        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.5.0.apk"));
+        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.5.1.apk"));
     }
 
     private static final String USER_NAME = "john";
@@ -85,7 +82,10 @@ public class SelendroidHybridTestAppTestCase {
     @Test
     @InSequence(1)
     @OperateOnDeployment("android")
-    public void nativeViewTest(@ArquillianResource AndroidDevice android, @Drone SelendroidDriver driver) {
+    public void nativeViewTest(@ArquillianResource AndroidDevice android, @Drone WebDriver driver) {
+
+        android.getActivityManagerProvider().getActivityManager().startActivity("io.selendroid.testapp.HomeScreenActivity");
+
         // show here just for completeness, native mode is default
         driver.switchTo().window("NATIVE_APP");
 
@@ -99,7 +99,10 @@ public class SelendroidHybridTestAppTestCase {
     @Test
     @InSequence(2)
     @OperateOnDeployment("android")
-    public void webViewTest(@ArquillianResource AndroidDevice android, @Drone SelendroidDriver driver) {
+    public void webViewTest(@ArquillianResource AndroidDevice android, @Drone WebDriver driver) {
+        
+        android.getActivityManagerProvider().getActivityManager().startActivity("io.selendroid.testapp.HomeScreenActivity");
+        
         WebElement button = driver.findElement(By.id("buttonStartWebview"));
         button.click();
         WebDriverWait wait = new WebDriverWait(driver, 10);
@@ -128,7 +131,7 @@ public class SelendroidHybridTestAppTestCase {
      *
      * @param driver
      */
-    private void registerUser(SelendroidDriver driver) {
+    private void registerUser(WebDriver driver) {
         // Go to user registration
         driver.findElement(By.id("startUserRegistration")).click();
 
@@ -172,7 +175,7 @@ public class SelendroidHybridTestAppTestCase {
      *
      * @param driver
      */
-    private void verifyUser(SelendroidDriver driver) {
+    private void verifyUser(WebDriver driver) {
         WebDriverWait wait = new WebDriverWait(driver, 5);
         WebElement inputUserName = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("label_username_data")));
 

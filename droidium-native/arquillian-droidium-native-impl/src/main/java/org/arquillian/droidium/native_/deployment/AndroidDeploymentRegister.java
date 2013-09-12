@@ -23,4 +23,20 @@ import org.arquillian.droidium.native_.spi.AndroidDeployment;
  *
  */
 public class AndroidDeploymentRegister extends DeploymentRegister<AndroidDeployment> {
+
+    /**
+     *
+     * @param deploymentName name of deployment to get
+     * @return deployment of such {@code deploymentName} or null if no such deployment was found
+     */
+    @Override
+    public AndroidDeployment get(String deploymentName) {
+        for (AndroidDeployment deployment : getAll()) {
+            if (deployment.getDeploymentName().equals(deploymentName)) {
+                return deployment;
+            }
+        }
+        return null;
+    }
+
 }

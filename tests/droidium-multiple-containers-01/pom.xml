@@ -134,7 +134,7 @@
                 <dependency>
                     <groupId>org.arquillian.container</groupId>
                     <artifactId>arquillian-droidium-container-depchain</artifactId>
-                    <version>${version.droidium}</version>
+                    <version>${project.version}</version>
                     <type>pom</type>
                     <scope>test</scope>
                 </dependency>

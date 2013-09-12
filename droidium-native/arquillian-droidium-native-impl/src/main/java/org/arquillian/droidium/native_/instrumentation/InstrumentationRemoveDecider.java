@@ -90,8 +90,9 @@ public class InstrumentationRemoveDecider {
 
         if (selendroidDeployment != null) {
             selendroidUndeploy.fire(new SelendroidUndeploy(selendroidDeployment));
+            selendroidDeploymentRegister.get().remove(selendroidDeployment);
         } else {
-            logger.log(Level.INFO, "There is not such instrumented deployment for Drone qualifier '{0}'",
+            logger.log(Level.FINE, "There is not such instrumented deployment for Drone qualifier {0}",
                 new Object[] { qualifier });
         }
     }

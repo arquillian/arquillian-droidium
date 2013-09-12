@@ -24,29 +24,6 @@
     <artifactId>arquillian-droidium-screenshooter-test-01</artifactId>
     <description>Proof-of-concept Arquillian Droidium screenshooter tests with WebDriver integration.</description>
 
-    <!-- Properties -->
-    <properties>
-        <!-- Arquillian Drone -->
-        <version.org.jboss.arquillian.drone>1.2.0.Beta1</version.org.jboss.arquillian.drone>
-        <!-- maven-compiler-plugin -->
-        <maven.compiler.target>1.6</maven.compiler.target>
-        <maven.compiler.source>1.6</maven.compiler.source>
-    </properties>
-
-    <!-- Dependency Management -->
-    <dependencyManagement>
-        <dependencies>
-            <!-- Arquillian Drone BOM -->
-            <dependency>
-                <groupId>org.jboss.arquillian.extension</groupId>
-                <artifactId>arquillian-drone-bom</artifactId>
-                <version>${version.org.jboss.arquillian.drone}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <!-- Dependencies -->
     <dependencies>
         <!-- Arquillian Drone WebDriver support -->
@@ -121,7 +98,7 @@
                 <dependency>
                     <groupId>org.arquillian.container</groupId>
                     <artifactId>arquillian-droidium-container-depchain</artifactId>
-                    <version>${version.droidium}</version>
+                    <version>${project.version}</version>
                     <type>pom</type>
                     <scope>test</scope>
                 </dependency>
@@ -131,7 +108,7 @@
                 <dependency>
                     <groupId>org.arquillian.extension</groupId>
                     <artifactId>arquillian-droidium-native-depchain</artifactId>
-                    <version>${version.droidium}</version>
+                    <version>${project.version}</version>
                     <type>pom</type>
                     <scope>test</scope>
                 </dependency>

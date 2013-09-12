@@ -44,6 +44,8 @@ public class SelendroidDeployment extends DroidiumDeployment {
 
     private String androidDeploymentName;
 
+    private String selendroidPackageName;
+
     /**
      *
      * @param selendroidWorkingCopy
@@ -171,6 +173,53 @@ public class SelendroidDeployment extends DroidiumDeployment {
             + "be a null object nor an empty string!");
         this.androidDeploymentName = androidDeploymentName;
         return this;
+    }
+
+    /**
+     *
+     * @param selendroidPackageName name of the Selendroid package as in its AndroidManifest.xml
+     * @return this
+     */
+    public SelendroidDeployment setSelendroidPackageName(String selendroidPackageName) {
+        Validate.notNullOrEmpty(selendroidPackageName,
+            "Selendroid package name to set can not be a null object not an empty string!");
+        this.selendroidPackageName = selendroidPackageName;
+        return this;
+    }
+
+    public String getSelendroidPackageName() {
+        return this.selendroidPackageName;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((selendroidPackageName == null) ? 0 : selendroidPackageName.hashCode());
+        result = prime * result + ((serverBasePackage == null) ? 0 : serverBasePackage.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        SelendroidDeployment other = (SelendroidDeployment) obj;
+        if (selendroidPackageName == null) {
+            if (other.selendroidPackageName != null)
+                return false;
+        } else if (!selendroidPackageName.equals(other.selendroidPackageName))
+            return false;
+        if (serverBasePackage == null) {
+            if (other.serverBasePackage != null)
+                return false;
+        } else if (!serverBasePackage.equals(other.serverBasePackage))
+            return false;
+        return true;
     }
 
 }

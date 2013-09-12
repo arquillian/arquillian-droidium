@@ -30,7 +30,6 @@
 
     <!-- Artifact configuration -->
     <artifactId>arquillian-droidium-web-test-01</artifactId>
-    <version>7.1.2-SNAPSHOT</version>
     <packaging>war</packaging>
 
     <url>http://jboss.org/jbossas</url>
@@ -58,8 +57,7 @@
         <version.compiler.plugin>2.3.1</version.compiler.plugin>
         <version.war.plugin>2.1.1</version.war.plugin>
         <!-- Beta1 instead of Alpha3 of Drone is not compatible with Alpha4 of Graphene -->
-        <version.org.jboss.arquillian.drone>1.2.0.Alpha3</version.org.jboss.arquillian.drone>
-        <version.org.jboss.arquillian.graphene>2.0.0.Alpha4</version.org.jboss.arquillian.graphene>
+        <version.org.jboss.arquillian.graphene>2.0.0.Alpha5</version.org.jboss.arquillian.graphene>
 
         <!-- maven-compiler-plugin -->
         <maven.compiler.target>1.6</maven.compiler.target>
@@ -80,14 +78,6 @@
                 <groupId>org.jboss.spec</groupId>
                 <artifactId>jboss-javaee-6.0</artifactId>
                 <version>${version.jboss.spec.javaee.6.0}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <!-- Arquillian Drone BOM -->
-            <dependency>
-                <groupId>org.jboss.arquillian.extension</groupId>
-                <artifactId>arquillian-drone-bom</artifactId>
-                <version>${version.org.jboss.arquillian.drone}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -276,14 +266,14 @@
                     <artifactId>arquillian-droidium-container-depchain</artifactId>
                     <type>pom</type>
                     <scope>test</scope>
-                    <version>${version.droidium}</version>
+                    <version>${project.version}</version>
                 </dependency>
 
                 <!-- Arquillian Droidium for web testing -->
                 <dependency>
                     <groupId>org.arquillian.extension</groupId>
                     <artifactId>arquillian-droidium-web-depchain</artifactId>
-                    <version>${version.droidium}</version>
+                    <version>${project.version}</version>
                     <type>pom</type>
                     <scope>test</scope>
                 </dependency>

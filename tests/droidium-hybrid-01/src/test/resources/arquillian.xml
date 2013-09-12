@@ -31,11 +31,12 @@
         for testing native Android applications via Selendroid -->
     <extension qualifier="droidium-native">
         <!-- path you your selendroid-server.apk -->
-        <property name="serverApk">selendroid-server-0.5.0.apk</property>
+        <property name="serverApk">selendroid-server-0.5.1.apk</property>
     </extension>
 
     <!-- Selendroid Driver extension -->
-    <extension qualifier="selendroid">
+    <extension qualifier="webdriver">
+        <property name="browser">android</property>
         <property name="remoteAddress">http://localhost:8080/wd/hub</property>
     </extension>
 

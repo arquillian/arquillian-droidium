@@ -34,10 +34,10 @@
         <version.jbossas>7.1.1.Final</version.jbossas>
 
         <!-- Droidium container -->
-        <version.droidium>0.0.1-SNAPSHOT</version.droidium>
+        <version.droidium>1.0.0.Alpha1</version.droidium>
 
         <!-- Arquillian Drone -->
-        <version.org.jboss.arquillian.drone>1.2.0.Alpha3</version.org.jboss.arquillian.drone>
+        <version.org.jboss.arquillian.drone>1.2.0.Final</version.org.jboss.arquillian.drone>
 
         <!-- maven-compiler-plugin -->
         <maven.compiler.target>1.6</maven.compiler.target>

@@ -40,11 +40,14 @@
         <!-- JBoss dependency versions -->
         <version.jboss.maven.plugin>7.3.Final</version.jboss.maven.plugin>
 
+        <!-- Droidium container -->$
+        <version.droidium>1.0.0.Alpha1</version.droidium>
+
         <!-- other plugin versions -->
         <version.compiler.plugin>2.3.1</version.compiler.plugin>
         <version.war.plugin>2.1.1</version.war.plugin>
-        <version.org.jboss.arquillian.drone>1.2.0.Alpha3</version.org.jboss.arquillian.drone>
-        <version.org.jboss.arquillian.graphene>2.0.0.Alpha4</version.org.jboss.arquillian.graphene>
+        <version.org.jboss.arquillian.drone>1.2.0.Final</version.org.jboss.arquillian.drone>
+        <version.org.jboss.arquillian.graphene>2.0.0.Beta1</version.org.jboss.arquillian.graphene>
 
         <!-- maven-compiler-plugin -->
         <maven.compiler.target>1.6</maven.compiler.target>

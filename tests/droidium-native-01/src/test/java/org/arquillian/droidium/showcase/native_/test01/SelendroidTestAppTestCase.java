@@ -57,12 +57,12 @@ public class SelendroidTestAppTestCase {
 
     // port put here matches the one in arquillian.xml
     // and in turn "selendroid" suffix has to match annotation
-    // put on WebDriver in test01 method
+    // put on WebDriver
     @Deployment(name = "selendroid-test-app")
-    @Instrumentable(viaPort = 8081)
+    @Instrumentable(viaPort = 8081) // by default, port is 8080, it has to match with extension's remoteAddress port
     @TargetsContainer("android")
     public static Archive<?> SelendroidDeployment() {
-        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.5.0.apk"));
+        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.5.1.apk"));
     }
 
     // port put here matches the one in arquillian.xml
@@ -104,6 +104,11 @@ public class SelendroidTestAppTestCase {
         // choose whatever activity from both deployments you want. After this method ends, you can
         // start activities only from the selendroid-test-app deployment since the second WebDriver
         // is destroyed
+        //
+        // Selendroid server for particular WebDriver instance is uninstalled upon every destruction 
+        // of that instance. For class scoped Drone, it occurs in the end of the class (AfterClass).
+        // For method scoped Drones, it occurs in the end of the method (After). AfterClass and 
+        // After are here mentioned in Arquillian sense.
     }
 
 }

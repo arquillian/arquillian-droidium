@@ -16,6 +16,8 @@
  */
 package org.arquillian.droidium.scala.showcase.native_.test01
 
+import org.arquillian.droidium.container.api.AndroidDevice
+import org.arquillian.droidium.native_.api.Instrumentable
 import org.junit.runner.RunWith
 import org.jboss.arquillian.junit.Arquillian
 import org.jboss.arquillian.container.test.api.Deployment
@@ -45,8 +47,9 @@ import org.openqa.selenium.WebElement
 object SelendroidTestAppScalaTestCase {
 
     @Deployment
+    @Instrumentable
     def deployment() : JavaArchive =
-        ShrinkWrap createFromZipFile (classOf[JavaArchive], new File("selendroid-test-app-0.5.0.apk"))
+        ShrinkWrap createFromZipFile (classOf[JavaArchive], new File("selendroid-test-app-0.5.1.apk"))
 
 }
 
@@ -68,6 +71,8 @@ class SelendroidTestAppScalaTestCase {
 
     @Test
     def test01(@ArquillianResource device : AndroidDevice, @Drone driver : WebDriver) {
+
+        device.getActivityManagerProvider().getActivityManager().startActivity("io.selendroid.testapp.HomeScreenActivity")
 
         // Go to user registration
         driver findElement (By id "startUserRegistration") click

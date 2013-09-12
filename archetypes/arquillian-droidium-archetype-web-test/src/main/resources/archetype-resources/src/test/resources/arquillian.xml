@@ -25,7 +25,7 @@
                 <property name="emulatorOptions">${android.emulator.options}</property>
                 <property name="emulatorBootupTimeoutInSeconds">600</property>
                 <!-- Write only errors from Android device -->
-                <property name="logLevel">E</property>
+                <property name="logType">disable</property>
                 <property name="droneGuestPort">8080</property>
                 <property name="droneHostPort">8080</property>
                 <property name="adapterImplClass">org.arquillian.droidium.container.AndroidDeployableContainer</property>
@@ -41,16 +41,16 @@
             </configuration>
         </container>
     </group>
-    
+
     <!-- Configuration of Droidium extension for web testing -->
     <extension qualifier="droidium-web">
         <!-- Path of Android server APK -->
         <property name="serverApk">android-server-2.32.0.apk</property>
     </extension>
-    
+
     <!-- Configuration of webdriver extension -->
     <extension qualifier="webdriver">
-        <property name="browserCapabilities">android</property>
+        <property name="browser">android</property>
         <property name="remoteAddress">http://localhost:8080/wd/hub</property>
     </extension>
 

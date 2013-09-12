@@ -3,10 +3,8 @@
 Shows how to deploy more than one deployment into Android device.
 
 Application which will be instrumented by Selendroid server has its `@Deployment` 
-method annotated with `@Instrumentable`. If there is specified only one `@Deployment` method, 
-you can ommit `@Instrumentable` annotation. This deployment will be instrumented automatically, 
-preserving the previous behaviour. When more than one deployment is specified, you *have to* 
-annotate the application you want to instrument by`@Instrumentable`.
+method annotated with `@Instrumentable`. When more than one deployment is specified, 
+you *have to* annotate the application you want to instrument by`@Instrumentable`.
 
 When you are executing tests, you have to set name of (possibly started) AVD
 you want to use for test executions. You _have to_ provide this information 

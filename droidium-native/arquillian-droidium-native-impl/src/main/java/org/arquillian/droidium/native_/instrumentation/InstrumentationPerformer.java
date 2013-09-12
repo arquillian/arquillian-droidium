@@ -109,6 +109,7 @@ public class InstrumentationPerformer {
             .setRebuilt(selendroidRebuilt)
             .setResigned(selendroidResigned)
             .setServerBasePackage(applicationHelper.get().getApplicationBasePackage(selendroidResigned))
+            .setSelendroidPackageName(selendroidPackageName)
             .setInstrumentedDeployment(instrumentedDeployment)
             .setDeploymentName(event.getDeploymentName())
             .setInstrumentationConfiguration(event.getConfiguration());
@@ -119,8 +120,7 @@ public class InstrumentationPerformer {
 
         selendroidServerManager.get().instrument(deployment);
 
-        afterInstrumentationPerformed.fire(new AfterInstrumentationPerformed(event.getDeploymentName(), event
-            .getConfiguration()));
+        afterInstrumentationPerformed.fire(new AfterInstrumentationPerformed(event.getDeploymentName(), event.getConfiguration()));
     }
 
     private File getSelendroidResigned(File selendroidRebuilt) {

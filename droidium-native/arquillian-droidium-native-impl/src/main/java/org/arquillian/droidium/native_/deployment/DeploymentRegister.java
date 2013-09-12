@@ -29,23 +29,25 @@ import org.jboss.shrinkwrap.api.Archive;
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
-public class DeploymentRegister<T extends DroidiumDeployment> {
+public abstract class DeploymentRegister<T extends DroidiumDeployment> {
 
-    private final List<T> deployments = new ArrayList<T>();
+    final List<T> deployments = new ArrayList<T>();
 
     /**
-     * Adds deployment into the register.
+     * Adds deployment into the register. Trying to add duplicates (according to equals contract for T) is ignored.
      *
      * @param deployment deployment to add
      * @throws IllegalArgumentException if {@code deployment} is a null object
      */
     public void add(T deployment) {
         Validate.notNull(deployment, "Deployment to add can not be a null object!");
-        deployments.add(deployment);
+        if (!deployments.contains(deployment)) {
+            deployments.add(deployment);
+        }
     }
 
     /**
-     * Gets firstly added deployment in the register.
+     * Gets firstly added deployment into the register.
      *
      * @return deployment which was added first or {@code null} if none was added yet
      */
@@ -96,20 +98,31 @@ public class DeploymentRegister<T extends DroidiumDeployment> {
 
     /**
      *
-     * @param deploymentName name of deployment to get
-     * @return deployment of such {@code deploymentName} or null if no such deployment was found
+     * @return all deployments in registry
      */
-    public T get(String deploymentName) {
-        for (T deployment : deployments) {
-            if (deployment.getDeploymentName().equals(deploymentName)) {
-                return deployment;
-            }
-        }
-        return null;
-    }
-
     public List<T> getAll() {
         return deployments;
     }
+
+    public void remove(int i) {
+        deployments.remove(i);
+    }
+
+    /**
+     *
+     * @param deployment deployment you want to remove from registry
+     * @throws IllegalArgumentException if {@code deployment} is a null object
+     */
+    public void remove(T deployment) {
+        Validate.notNull(deployment, "You are trying to remove null object from the registry!");
+        deployments.remove(deployment);
+    }
+
+    /**
+     *
+     * @param deploymentName name of deployment to get
+     * @return deployment of such {@code deploymentName} or null if no such deployment was found
+     */
+    public abstract T get(String deploymentName);
 
 }

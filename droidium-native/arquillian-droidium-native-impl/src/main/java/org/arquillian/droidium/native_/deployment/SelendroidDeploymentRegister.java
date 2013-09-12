@@ -25,4 +25,16 @@ import org.arquillian.droidium.native_.spi.SelendroidDeployment;
  */
 public class SelendroidDeploymentRegister extends DeploymentRegister<SelendroidDeployment> {
 
+    @Override
+    public SelendroidDeployment get(String deploymentName) {
+        // reverse order, corner case for 2 method scoped drivers, each
+        // in one method, without qualifiers, instrumenting the same deployment
+        for (int i = getAll().size() - 1; i >= 0; i--) {
+            if (get(i).getDeploymentName().equals(deploymentName)) {
+                return get(i);
+            }
+        }
+        return null;
+    }
+
 }

@@ -19,6 +19,7 @@ package org.arquillian.droidium.showcase.native_.test01;
 import java.io.File;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
+import org.arquillian.droidium.native_.api.Instrumentable;
 import org.arquillian.droidium.container.api.Screenshooter;
 import org.arquillian.droidium.container.api.ScreenshotType;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -58,9 +59,10 @@ public class SelendroidTestAppTestCase {
      *         ZIP file anyway.
      */
     @Deployment(name = "android")
+    @Instrumentable
     @TargetsContainer("android")
     public static Archive<?> createDeployment() {
-        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.5.0.apk"));
+        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.5.1.apk"));
     }
 
     private static final String USER_NAME = "john";
@@ -78,8 +80,8 @@ public class SelendroidTestAppTestCase {
     /**
      * Simple test which tries to register some user.
      *
-     * @param screenshooter takes screenshots of {@code androidDevice}
-     * @param androidDevice Android device itself, it is not needed in tests as such since we interact only with
+     * @param screenshooter takes screenshots of {@code device}
+     * @param device Android device itself, it is not needed in tests as such since we interact only with
      *        {@code WebDriver} injection.
      * @param driver {@code WebDriver} injection which sends commands to Selendroid server installed on the Android device.
      */
@@ -87,11 +89,13 @@ public class SelendroidTestAppTestCase {
     @InSequence(1)
     @OperateOnDeployment("android")
     public void test01(@ArquillianResource Screenshooter screenshooter,
-        @ArquillianResource AndroidDevice androidDevice, @Drone WebDriver driver) {
+        @ArquillianResource AndroidDevice device, @Drone WebDriver driver) {
+
+        device.getActivityManagerProvider().getActivityManager().startActivity("io.selendroid.testapp.HomeScreenActivity");
 
         // to check we are good
         Assert.assertNotNull(screenshooter);
-        Assert.assertNotNull(androidDevice);
+        Assert.assertNotNull(device);
         Assert.assertNotNull(driver);
 
         // where to save taken screenshots, by default to target/
