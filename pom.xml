@@ -174,40 +174,6 @@
     <!-- Profiles -->
     <profiles>
         <profile>
-            <id>jboss-staging-repository-group</id>
-
-            <repositories>
-                <repository>
-                    <id>jboss-staging-repository-group</id>
-                    <name>JBoss Staging Repository Group</name>
-                    <url>https://repository.jboss.org/nexus/content/groups/staging</url>
-                    <layout>default</layout>
-                    <releases>
-                        <enabled>true</enabled>
-                        <updatePolicy>never</updatePolicy>
-                    </releases>
-                    <snapshots>
-                        <enabled>true</enabled>
-                        <updatePolicy>never</updatePolicy>
-                    </snapshots>
-                </repository>
-            </repositories>
-            <pluginRepositories>
-                <pluginRepository>
-                    <id>jboss-staging-repository-group</id>
-                    <name>JBoss Staging Repository Group</name>
-                    <url>https://repository.jboss.org/nexus/content/groups/staging</url>
-                    <releases>
-                        <enabled>true</enabled>
-                    </releases>
-                    <snapshots>
-                        <enabled>true</enabled>
-                    </snapshots>
-                </pluginRepository>
-            </pluginRepositories>
-        </profile>
-
-        <profile>
             <id>release</id>
             <build>
                 <plugins>
