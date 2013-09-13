@@ -30,11 +30,6 @@
 
     <!-- Properties -->
     <properties>
-        <!-- Droidium container versions -->
-        <version.droidium.container>0.0.1-SNAPSHOT</version.droidium.container>
-        <version.droidium.web>0.0.1-SNAPSHOT</version.droidium.web>
-
-        <!-- Other versions -->
         <version.mockito>1.9.5</version.mockito>
     </properties>
 
@@ -122,8 +117,8 @@
         <dependency>
             <groupId>org.arquillian.extension</groupId>
             <artifactId>arquillian-droidium-web-spi</artifactId>
-            <version>${version.droidium.web}</version>
-        </dependency>        
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- Test dependencies -->
         <dependency>

@@ -28,11 +28,6 @@
     <name>Arquillian Droidium Web SPI</name>
     <description>Arquillian Droidium Web SPI</description>
 
-    <!-- Properties -->
-    <properties>
-        <version.droidium.container>0.0.1-SNAPSHOT</version.droidium.container>
-    </properties>
-
     <!-- Developers -->
     <developers>
         <developer>
@@ -46,7 +41,7 @@
         <dependency>
             <groupId>org.arquillian.container</groupId>
             <artifactId>arquillian-droidium-container-spi</artifactId>
-            <version>${version.droidium.container}</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

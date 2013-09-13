@@ -30,12 +30,8 @@
 
     <!-- Properties -->
     <properties>
-        <!-- Droidium container versions -->
-        <version.droidium.container>0.0.1-SNAPSHOT</version.droidium.container>
-        <version.droidium.native>0.0.1-SNAPSHOT</version.droidium.native>
-
         <!-- Drone versions -->
-        <version.arquillian.drone>1.2.0.Final-SNAPSHOT</version.arquillian.drone>
+        <version.arquillian.drone>1.2.0.Beta2</version.arquillian.drone>
 
         <!-- Other versions -->
         <version.httpclient>4.2.5</version.httpclient>
@@ -127,29 +123,29 @@
         <dependency>
             <groupId>org.arquillian.extension</groupId>
             <artifactId>arquillian-droidium-native-api</artifactId>
-            <version>${version.droidium.native}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.arquillian.extension</groupId>
             <artifactId>arquillian-droidium-native-spi</artifactId>
-            <version>${version.droidium.native}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- Arquillian Droidium Container Dependencies -->
         <dependency>
             <groupId>org.arquillian.container</groupId>
             <artifactId>arquillian-droidium-container-api</artifactId>
-            <version>${version.droidium.container}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.arquillian.container</groupId>
             <artifactId>arquillian-droidium-container-impl</artifactId>
-            <version>${version.droidium.container}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.arquillian.container</groupId>
             <artifactId>arquillian-droidium-container-spi</artifactId>
-            <version>${version.droidium.container}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- Drone dependencies -->
