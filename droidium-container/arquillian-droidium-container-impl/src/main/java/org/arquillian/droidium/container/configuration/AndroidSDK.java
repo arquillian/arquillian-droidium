@@ -254,7 +254,7 @@ public class AndroidSDK {
     }
 
     public String getPathForJavaTool(String tool) {
-        String[] possiblePaths = { javaPath + "/bin/" + tool };
+        String[] possiblePaths = { javaPath + "/bin/" + tool, javaPath + "/bin/" + tool + ".exe" };
 
         for (String possiblePath : possiblePaths) {
             File file = new File(possiblePath);
