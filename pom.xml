@@ -93,7 +93,6 @@
         <module>droidium-container</module>
         <module>droidium-native</module>
         <module>droidium-web</module>
-        <module>archetypes</module>
     </modules>
 
     <!-- Build -->
