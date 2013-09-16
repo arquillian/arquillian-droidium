@@ -44,7 +44,6 @@
 
     <!-- Modules -->
     <modules>
-        <module>arquillian-droidium-container-bom</module>
         <module>arquillian-droidium-container-build</module>
         <module>arquillian-droidium-container-api</module>
         <module>arquillian-droidium-container-spi</module>
