@@ -186,7 +186,6 @@ public class SelendroidRebuilder {
      */
     private void filter(File toBeReplaced, File finalManifest, String selendroidPackageName, String applicationBasePackage) {
         try {
-            @SuppressWarnings("unchecked")
             ManifestFilter filter = new ManifestFilter(FileUtils.readLines(toBeReplaced));
 
             filter.filter(SELENDROID_PACKAGE_NAME, "package=\"" + selendroidPackageName + "\"")
