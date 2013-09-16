@@ -18,7 +18,6 @@ package org.arquillian.droidium.native_.spi;
 
 import java.io.File;
 
-import org.jboss.arquillian.core.spi.Validate;
 import org.jboss.shrinkwrap.api.Archive;
 
 /**

@@ -40,7 +40,6 @@
 
     <!-- Modules -->
     <modules>
-        <module>arquillian-droidium-web-build-config</module>
         <module>arquillian-droidium-web-build</module>
         <module>arquillian-droidium-web-spi</module>
         <module>arquillian-droidium-web-impl</module>

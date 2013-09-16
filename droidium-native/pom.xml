@@ -40,7 +40,6 @@
 
     <!-- Modules -->
     <modules>
-        <module>arquillian-droidium-native-build-config</module>
         <module>arquillian-droidium-native-build</module>
         <module>arquillian-droidium-native-api</module>
         <module>arquillian-droidium-native-spi</module>
