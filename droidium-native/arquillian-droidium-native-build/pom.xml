@@ -44,14 +44,14 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <configuration>
-                    <configLocation>arquillian-droidium-native-checkstyle/checkstyle.xml</configLocation>
+                    <configLocation>arquillian-droidium-checkstyle/checkstyle.xml</configLocation>
                     <consoleOutput>true</consoleOutput>
                     <failsOnError>true</failsOnError>
                 </configuration>
                 <dependencies>
                     <dependency>
-                        <groupId>org.arquillian.extension</groupId>
-                        <artifactId>arquillian-droidium-native-build-config</artifactId>
+                        <groupId>org.arquillian.droidium</groupId>
+                        <artifactId>arquillian-droidium-build-config</artifactId>
                         <version>${project.version}</version>
                     </dependency>
                 </dependencies>
