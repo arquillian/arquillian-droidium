@@ -61,7 +61,7 @@ public class SelendroidTestAppTestCase {
 
     @Instrumentable // tells that this deployment will be instrumented by Arquillian Droidium
     @Deployment(name = "selendroid") // name is the must, you can not deploy two deployments with the same default name
-    @TargetsContainer("android") // doest not have to be here since we have just one container present
+    @TargetsContainer("android") // does not have to be here since we have just one container present
     public static Archive<?> createSelendroidDeployment() {
         return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.5.1.apk"));
     }

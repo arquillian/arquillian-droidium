@@ -6,8 +6,8 @@ possibly cooperating with native and web extensions.
 All necessary configuration needed in order to execute tests can be 
 found in every project README separately.
 
-*Selendroid server and Selendroid testing applicatins APKs are located in this 
-directory. Please copy them to the root directory of each project when applicable 
+*Selendroid server and Selendroid testing application APKs are located in this 
+directory. Please copy them over to the root directory of each project when applicable 
 (where pom.xml is located) in order to satisfy project dependencies.*
 
 It contains these modules as standalone projects:

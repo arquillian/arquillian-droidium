@@ -1,29 +1,57 @@
 <?xml version="1.0"?>
-<!-- JBoss, Home of Professional Open Source Copyright 2013, Red Hat, Inc. 
-    and/or its affiliates, and individual contributors by the @authors tag. See 
-    the copyright.txt in the distribution for a full listing of individual contributors. 
-    Licensed under the Apache License, Version 2.0 (the "License"); you may not 
-    use this file except in compliance with the License. You may obtain a copy 
-    of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
-    by applicable law or agreed to in writing, software distributed under the 
-    License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
-    OF ANY KIND, either express or implied. See the License for the specific 
+<!-- JBoss, Home of Professional Open Source Copyright 2013, Red Hat, Inc.
+    and/or its affiliates, and individual contributors by the @authors tag. See
+    the copyright.txt in the distribution for a full listing of individual contributors.
+    Licensed under the Apache License, Version 2.0 (the "License"); you may not
+    use this file except in compliance with the License. You may obtain a copy
+    of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required
+    by applicable law or agreed to in writing, software distributed under the
+    License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
+    OF ANY KIND, either express or implied. See the License for the specific
     language governing permissions and limitations under the License. -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <!-- Model version -->
     <modelVersion>4.0.0</modelVersion>
-
-    <!-- Parent -->
-    <parent>
-        <groupId>org.arquillian.droidium.tests</groupId>
-        <artifactId>arquillian-droidium-tests-parent</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
-
+    
+    <!-- Arfitact configuration -->
+    <groupId>org.arquillian.droidium.tests</groupId>
     <artifactId>arquillian-droidium-hybrid-test-01</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+
     <description>Proof-of-concept Arquillian Droidium tests with Selendroid Driver integration - hybrid testing - web and native application together</description>
+
+    <!-- Properties -->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <version.shrinkwrap_shrinkwrap>1.1.3</version.shrinkwrap_shrinkwrap>
+        <version.arquillian.core>1.1.1.Final</version.arquillian.core>
+        <version.junit>4.11</version.junit>
+        <version.arquillian.drone>1.2.0.Beta2</version.arquillian.drone>
+        <maven.compiler.source>1.6</maven.compiler.source>
+        <maven.compiler.target>1.6</maven.compiler.target>
+    </properties>
+
+    <!-- Dependency Management -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jboss.shrinkwrap</groupId>
+                <artifactId>shrinkwrap-bom</artifactId>
+                <version>${version.shrinkwrap_shrinkwrap}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>${version.arquillian.core}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <!-- Dependencies -->
     <dependencies>
@@ -39,7 +67,6 @@
             <groupId>org.jboss.arquillian.junit</groupId>
             <artifactId>arquillian-junit-container</artifactId>
             <scope>test</scope>
-            <version>${version.arquillian.core}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -55,6 +82,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
                 <executions>
                     <execution>
                         <phase>process-test-resources</phase>
@@ -62,7 +90,9 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
@@ -107,7 +137,7 @@
                     <scope>test</scope>
                 </dependency>
 
-                <!-- Arquillian Droidium Native extension in order to be able 
+                <!-- Arquillian Droidium Native extension in order to be able
                     to test native Android applications. -->
                 <dependency>
                     <groupId>org.arquillian.extension</groupId>

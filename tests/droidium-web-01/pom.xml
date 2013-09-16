@@ -21,15 +21,10 @@
     <!-- Model version -->
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- Parent -->
-    <parent>
-        <groupId>org.arquillian.droidium.tests</groupId>
-        <artifactId>arquillian-droidium-tests-parent</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
-    </parent>
-
     <!-- Artifact configuration -->
+    <groupId>org.arquillian.droidium.tests</groupId>
     <artifactId>arquillian-droidium-web-test-01</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
 
     <url>http://jboss.org/jbossas</url>
@@ -55,6 +50,9 @@
 
         <!-- other plugin versions -->
         <version.org.jboss.arquillian.graphene>2.0.0.Beta1</version.org.jboss.arquillian.graphene>
+        <version.arquillian.core>1.1.1.Final</version.arquillian.core>
+        <version.junit>4.11</version.junit>
+        <version.org.jboss.as>7.1.1.Final</version.org.jboss.as>
 
         <!-- maven-compiler-plugin -->
         <maven.compiler.target>1.6</maven.compiler.target>
@@ -141,7 +139,9 @@
         <finalName>jboss-as-helloworld</finalName>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
+                <version>2.4</version>
                 <configuration>
                     <!-- Java EE 6 doesn't require web.xml, Maven needs to catch up! -->
                     <failOnMissingWebXml>false</failOnMissingWebXml>
@@ -156,7 +156,9 @@
             <!-- Compiler plugin enforces Java 1.6 compatibility and activates 
                 annotation processors -->
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
@@ -165,6 +167,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
                 <executions>
                     <execution>
                         <phase>process-test-resources</phase>
@@ -174,6 +177,7 @@
             <plugin>
                 <groupId>org.eclipse.m2e</groupId>
                 <artifactId>lifecycle-mapping</artifactId>
+                <version>1.0.0</version>
                 <configuration>
                     <lifecycleMappingMetadata>
                         <pluginExecutions>
@@ -226,6 +230,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.16</version>
                         <configuration>
                             <skipTests>true</skipTests>
                         </configuration>
