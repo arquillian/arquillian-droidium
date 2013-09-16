@@ -73,11 +73,11 @@
         <!-- Other versions -->
         <version.apiviz>1.3.2.GA</version.apiviz>
         <version.maven.animal.sniffer>1.9</version.maven.animal.sniffer>
+        
+        <!-- Droidium is compiled against and using JDK6 -->
+        <maven.compiler.target>1.6</maven.compiler.target>
+        <maven.compiler.source>1.6</maven.compiler.source>
 
-        <!-- Repository URLS -->
-        <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
-        <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
-        <jboss.public.repo.url>http://repository.jboss.org/nexus/content/groups/public</jboss.public.repo.url>
     </properties>
 
     <!-- Dependency Management -->
@@ -118,26 +118,6 @@
     <!-- Build -->
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <inherited>true</inherited>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                    <compilerVersion>1.6</compilerVersion>
-                    <showDeprecation>false</showDeprecation>
-                    <showWarnings>true</showWarnings>
-                    <optimize>true</optimize>
-                    <fork>true</fork>
-                    <compilerArguments>
-                        <source>1.6</source>
-                        <target>1.6</target>
-                    </compilerArguments>
-                    <argLine>-Xmx512M</argLine>
-                    <executable>${JAVA_HOME}/bin/javac</executable>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>animal-sniffer-maven-plugin</artifactId>
@@ -218,32 +198,6 @@
             </build>
         </profile>
     </profiles>
-
-    <!-- Distribution Management -->
-    <distributionManagement>
-        <repository>
-            <id>jboss-releases-repository</id>
-            <name>JBoss Releases Repository</name>
-            <url>${jboss.releases.repo.url}</url>
-        </repository>
-        <snapshotRepository>
-            <id>jboss-snapshots-repository</id>
-            <name>JBoss Snapshots Repository</name>
-            <url>${jboss.snapshots.repo.url}</url>
-        </snapshotRepository>
-    </distributionManagement>
-
-    <!-- Repositories -->
-    <repositories>
-        <repository>
-            <id>jboss-public</id>
-            <name>JBoss Public Repository</name>
-            <url>${jboss.public.repo.url}</url>
-            <snapshots>
-                <updatePolicy>never</updatePolicy>
-            </snapshots>
-        </repository>
-    </repositories>
 
     <!-- Reporting -->
     <reporting>
