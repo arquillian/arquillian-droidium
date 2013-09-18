@@ -35,7 +35,7 @@ When you want to try Droidium, you have to basically put into `pom.xml` just thi
     <artifactId>arquillian-droidium-container-depchain</artifactId>
     <type>pom</type>
     <scope>test</scope>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${droidium.version}</version>
 </dependency>
 ----
 

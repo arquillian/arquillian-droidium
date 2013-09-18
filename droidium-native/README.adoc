@@ -22,7 +22,7 @@ while testing:
 <dependency>
     <groupId>org.arquillian.extension</groupId>
     <artifactId>arquillian-droidium-native-depchain</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${droidium.version}</version>
     <scope>test</scope>
     <type>pom</type>
 </dependency>
