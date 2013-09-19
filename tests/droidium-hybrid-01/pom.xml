@@ -14,11 +14,11 @@
 
     <!-- Model version -->
     <modelVersion>4.0.0</modelVersion>
-    
+
     <!-- Arfitact configuration -->
     <groupId>org.arquillian.droidium.tests</groupId>
     <artifactId>arquillian-droidium-hybrid-test-01</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0.Alpha1</version>
 
     <description>Proof-of-concept Arquillian Droidium tests with Selendroid Driver integration - hybrid testing - web and native application together</description>
 

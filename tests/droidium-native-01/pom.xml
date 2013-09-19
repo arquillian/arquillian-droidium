@@ -18,7 +18,7 @@
     <!-- Artifact configuration -->
     <groupId>org.arquillian.droidium.tests</groupId>
     <artifactId>arquillian-droidium-native-test-01</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0.Alpha1</version>
 
     <description>Proof-of-concept Arquillian Droidium tests with Selendroid integration.</description>
 
