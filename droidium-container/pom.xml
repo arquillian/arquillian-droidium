@@ -49,6 +49,7 @@
         <module>arquillian-droidium-container-depchain</module>
         <module>arquillian-droidium-container-impl</module>
         <module>arquillian-droidium-multiple-containers</module>
+        <module>arquillian-protocol-android</module>
     </modules>
 
 </project>

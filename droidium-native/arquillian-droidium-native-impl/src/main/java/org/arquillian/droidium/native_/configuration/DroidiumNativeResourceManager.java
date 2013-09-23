@@ -36,7 +36,6 @@ import org.arquillian.droidium.native_.selendroid.SelendroidRebuilder;
 import org.arquillian.droidium.native_.selendroid.SelendroidServerManager;
 import org.arquillian.droidium.native_.sign.APKSigner;
 import org.arquillian.droidium.native_.utils.DroidiumNativeFileUtils;
-import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.container.spi.event.container.AfterStart;
 import org.jboss.arquillian.container.spi.event.container.BeforeStop;
 import org.jboss.arquillian.core.api.Instance;
@@ -64,12 +63,8 @@ import org.jboss.arquillian.test.spi.annotation.SuiteScoped;
  * <li>{@link SelendroidServerManager}</li>
  * <li>{@link AndroidDeploymentRegister}</li>
  * <li>{@link SelendroidDeploymentRegister}</li>
- * </ul>
- *
- * Produces container scoped:
- * <ul>
- * <li>{@link APKSigner}</li>
  * <li>{@link SelendroidRebuilder}</li>
+ * <li>{@link APKSigner}</li>
  * </ul>
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
@@ -118,7 +113,7 @@ public class DroidiumNativeResourceManager {
     private InstanceProducer<DeploymentWebDriverMapper> deploymentWebDriverMapper;
 
     @Inject
-    @ContainerScoped
+    @SuiteScoped
     private InstanceProducer<APKSigner> apkSigner;
 
     @Inject
@@ -130,7 +125,7 @@ public class DroidiumNativeResourceManager {
     private InstanceProducer<SelendroidServerManager> selendroidServerManager;
 
     @Inject
-    @ContainerScoped
+    @SuiteScoped
     private InstanceProducer<SelendroidRebuilder> selendroidRebuilder;
 
     @Inject

@@ -121,7 +121,7 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidCo
 
     @Override
     public ProtocolDescription getDefaultProtocol() {
-        return new ProtocolDescription("android-protocol");
+        return new ProtocolDescription("Android 1.0");
     }
 
     @Override
