@@ -23,7 +23,7 @@
     </parent>
 
     <!-- Artifact configuration -->
-    <groupId>org.arquillian.droidium.archetypes</groupId>
+    <groupId>org.arquillian.droidium.archetype</groupId>
     <artifactId>arquillian-droidium-archetype-parent</artifactId>
     <packaging>pom</packaging>
     <name>Arquillian Droidium Archetype Parent</name>

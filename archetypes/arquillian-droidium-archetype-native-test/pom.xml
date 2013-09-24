@@ -16,7 +16,7 @@
 
     <!-- Parent -->
     <parent>
-        <groupId>org.arquillian.droidium.archetypes</groupId>
+        <groupId>org.arquillian.droidium.archetype</groupId>
         <artifactId>arquillian-droidium-archetype-parent</artifactId>
         <version>1.0.0.Alpha2-SNAPSHOT</version>
     </parent>
