@@ -70,7 +70,7 @@ public class DroidiumWebConfiguration {
         Validate.notNullOrEmpty(defaultValue, "unable to set configuration value of " + name + " to null");
 
         String found = properties.get(name);
-        if (found == null || found.isEmpty()) {
+        if (found == null || found.length() == 0) {
             return defaultValue;
         } else {
             return found;
