@@ -35,6 +35,10 @@ public class DroidiumWebConfiguration {
 
     private String logFile = "target" + System.getProperty("file.separator") + "android.log";
 
+    private String options = "";
+
+    private String debug = "false";
+
     private Map<String, String> properties = new HashMap<String, String>();
 
     public File getServerApk() {
@@ -43,6 +47,14 @@ public class DroidiumWebConfiguration {
 
     public File getLogFile() {
         return new File(getProperty("logFile", logFile));
+    }
+
+    public String getOptions() {
+        return new String(getProperty("options", options));
+    }
+
+    public boolean getDebug() {
+        return Boolean.parseBoolean(getProperty("debug", this.debug));
     }
 
     /**
@@ -67,7 +79,7 @@ public class DroidiumWebConfiguration {
      */
     public String getProperty(String name, String defaultValue) {
         Validate.notNullOrEmpty(name, "unable to get configuration value of null configuration key");
-        Validate.notNullOrEmpty(defaultValue, "unable to set configuration value of " + name + " to null");
+        Validate.notNull(defaultValue, "unable to set configuration value of " + name + " to null");
 
         String found = properties.get(name);
         if (found == null || found.length() == 0) {
@@ -86,7 +98,7 @@ public class DroidiumWebConfiguration {
      */
     public void setProperty(String property, String value) {
         Validate.notNullOrEmpty(property, "unable to set configuration value which key is null");
-        Validate.notNullOrEmpty(value, "unable to set configuration value which is null");
+        Validate.notNull(value, "unable to set configuration value which is null");
 
         properties.put(property, value);
     }

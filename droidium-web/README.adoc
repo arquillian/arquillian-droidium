@@ -57,3 +57,22 @@ Sets path to log file where communication with Android device during testing is 
 ----
 <property name="logFile">/path/to/file/you/have/access/to</property>
 ----
+
+==== options
+===== default: empty string
+
+String to add as an option to `org.openqa.selenium.android.app/.MainActivity` from Selenium project when WebDriver hub is 
+about to be created.
+
+----
+<property name="options">-e debug true</property>
+---- 
+
+==== debug
+===== default: false
+
+Turns debug output to console from WebDriver hub on / off. Value has to be boolean-like.
+
+----
+<property name="debug">true</property>
+----

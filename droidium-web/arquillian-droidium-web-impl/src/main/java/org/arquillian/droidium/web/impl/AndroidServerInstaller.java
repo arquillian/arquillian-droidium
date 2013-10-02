@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidDeviceOutputReciever;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
+import org.arquillian.droidium.container.configuration.Command;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
 import org.arquillian.droidium.web.configuration.DroidiumWebConfiguration;
 import org.arquillian.droidium.web.spi.event.AndroidServerInstalled;
@@ -56,28 +57,24 @@ public class AndroidServerInstaller {
 
     private static final Logger log = Logger.getLogger(AndroidServerInstaller.class.getName());
 
-    private static final String START_WEBDRIVER_HUB_CMD =
-        "am start -a android.intent.action.MAIN -n org.openqa.selenium.android.app/.MainActivity";
-
-    private static final String TOP_CMD = "top -n 1";
     private static final String APK_APP_NAME = "org.openqa.selenium.android.app";
 
     @Inject
     private Event<AndroidServerInstalled> androidServerInstalled;
 
     @Inject
-    private Instance<DroidiumWebConfiguration> droneConfiguration;
+    private Instance<DroidiumWebConfiguration> configuration;
 
     public void install(@Observes AndroidDeviceReady event) throws AndroidExecutionException, IOException {
 
         AndroidDevice device = event.getDevice();
 
-        installServerAPK(device, droneConfiguration.get().getServerApk());
+        installServerAPK(device, configuration.get().getServerApk());
         log.info("Installation of Android Server APK for Arquillan Droidium web support was performed.");
 
         log.info("Starting Android Server for Arquillian Droidium web testing.");
-        WebDriverMonkey monkey = new WebDriverMonkey(droneConfiguration.get().getLogFile());
-        device.executeShellCommand(START_WEBDRIVER_HUB_CMD, monkey);
+        WebDriverMonkey monkey = new WebDriverMonkey(configuration.get().getLogFile());
+        device.executeShellCommand(getWebDriverHubCommand().toString(), monkey);
 
         log.info("Waiting until Android server for Arquillian Droidium web support is started.");
         waitUntilStarted(device, monkey);
@@ -97,12 +94,32 @@ public class AndroidServerInstaller {
         device.installPackage(apk, true);
     }
 
+    private Command getTopCommand() {
+        Command command = new Command();
+        command.add("top -n 1");
+        return command;
+    }
+
+    private Command getWebDriverHubCommand() {
+        Command command = new Command();
+        command.add("am start -a android.intent.action.MAIN -n org.openqa.selenium.android.app/.MainActivity");
+
+        command.add(configuration.get().getOptions());
+
+        // if debug is not already set via "options" and we specified we want to use debugging via debug option
+        if (!command.getAsString().contains("-e debug") && configuration.get().getDebug()) {
+            command.add("-e debug true");
+        }
+
+        return command;
+    }
+
     private void waitUntilStarted(AndroidDevice device, WebDriverMonkey monkey) throws IOException,
         AndroidExecutionException {
 
         log.info("Starting Web Driver Hub on Android device.");
         for (int i = 0; i < 5; i++) {
-            device.executeShellCommand(TOP_CMD, monkey);
+            device.executeShellCommand(getTopCommand().toString(), monkey);
             if (monkey.isWebDriverHubStarted()) {
                 return;
             }

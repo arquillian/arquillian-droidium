@@ -360,4 +360,5 @@ public class Validate {
             throw new IllegalArgumentException(message);
         }
     }
+
 }
