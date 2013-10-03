@@ -79,7 +79,7 @@ public class AndroidServerInstaller {
         log.info("Waiting until Android server for Arquillian Droidium web support is started.");
         waitUntilStarted(device, monkey);
 
-        log.log(Level.INFO, "Creating port forwaring from {0} to {1} for Android server of Arquillian Droidium web support.",
+        log.log(Level.INFO, "Creating port forwarding from {0} to {1} from Android server to Arquillian Droidium web plugin.",
             new Object[] { device.getDroneHostPort(), device.getDroneGuestPort() });
         device.createPortForwarding(device.getDroneHostPort(), device.getDroneGuestPort());
 

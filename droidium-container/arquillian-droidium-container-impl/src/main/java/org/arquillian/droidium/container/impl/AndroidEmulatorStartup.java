@@ -99,10 +99,12 @@ public class AndroidEmulatorStartup {
     @Inject
     private Event<AndroidDeviceReady> androidDeviceReady;
 
-    public void createAndroidEmulator(@Observes AndroidVirtualDeviceAvailable event) throws AndroidExecutionException {
+    public void startAndroidEmulator(@Observes AndroidVirtualDeviceAvailable event) throws AndroidExecutionException {
         if (!androidBridge.get().isConnected()) {
             throw new IllegalStateException("Android debug bridge must be connected in order to spawn the emulator");
         }
+
+        logger.log(Level.INFO, "Starting Android emulator of AVD name {0}.", configuration.get().getAvdName());
 
         AndroidContainerConfiguration configuration = this.configuration.get();
         AndroidDevice emulator = null;

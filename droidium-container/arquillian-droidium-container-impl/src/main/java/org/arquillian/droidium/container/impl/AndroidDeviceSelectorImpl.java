@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -125,13 +126,18 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
         AndroidDevice device = null;
 
         if (isConnectingToPhysicalDevice()) {
-            device = getPhysicalDevice();
-            if (device != null) {
-                setDronePorts(device);
-                androidDevice.set(device);
-                screenshooter.set(new AndroidScreenshooter(device));
-                androidDeviceReady.fire(new AndroidDeviceReady(device));
-                return;
+            try {
+                device = getPhysicalDevice();
+                if (device != null) {
+                    setDronePorts(device);
+                    androidDevice.set(device);
+                    screenshooter.set(new AndroidScreenshooter(device));
+                    androidDeviceReady.fire(new AndroidDeviceReady(device));
+                    return;
+                }
+            } catch (AndroidExecutionException ex) {
+                logger.log(Level.INFO, "Unable to connect to physical device with serial ID {0}. ",
+                    new Object[] { configuration.get().getSerialId() });
             }
         }
 
@@ -191,7 +197,7 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
         return isAvdNameDefined() && !isConsolePortDefined();
     }
 
-    private AndroidDevice getVirtualDevice() throws AndroidExecutionException {
+    private AndroidDevice getVirtualDevice() {
 
         String consolePort = configuration.get().getConsolePort();
         String avdName = configuration.get().getAvdName();
@@ -210,7 +216,6 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
             } catch (AndroidExecutionException ex) {
                 return null;
             }
-
         }
 
         try {
@@ -234,6 +239,8 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
         for (AndroidDevice device : devices) {
             try {
                 if (device.getConsolePort().equals(consolePort) && device.getAvdName().equals(avdName)) {
+                    logger.log(Level.INFO, "Connecting to virtual device running on console port {0} with AVD name {1}.",
+                        new Object[] { consolePort, avdName });
                     return device;
                 }
             } catch (NullPointerException ex) {
@@ -256,6 +263,7 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
         for (AndroidDevice device : devices) {
             String deviceConsolePort = device.getConsolePort();
             if (deviceConsolePort != null && deviceConsolePort.equals(consolePort)) {
+                logger.log(Level.INFO, "Connecting to virtual device running on console port {0}.", consolePort);
                 return device;
             }
         }
@@ -275,6 +283,7 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
         for (AndroidDevice device : devices) {
             String deviceAvdName = device.getAvdName();
             if (deviceAvdName != null && deviceAvdName.equals(avdName)) {
+                logger.log(Level.INFO, "Connecting to virtual device running on AVD of name {0}.", avdName);
                 return device;
             }
         }
@@ -289,12 +298,12 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
         List<AndroidDevice> devices = androidBridge.get().getDevices();
 
         if (devices == null || devices.size() == 0) {
-            throw new AndroidExecutionException("There are no devices on the Android bridge.");
+            throw new AndroidExecutionException("There are no physical devices on the Android bridge.");
         }
 
         for (AndroidDevice device : devices) {
             if (!device.isEmulator() && serialId.equals(device.getSerialNumber())) {
-                logger.info("Detected physical device with serial ID " + serialId + ".");
+                logger.log(Level.INFO, "Connecting to physical device with serial ID {0}", serialId);
                 return device;
             }
         }

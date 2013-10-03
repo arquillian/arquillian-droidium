@@ -17,9 +17,6 @@
  */
 package org.arquillian.droidium.container;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.arquillian.droidium.container.api.ActivityManagerProvider;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.IdentifierGenerator;
@@ -78,8 +75,6 @@ import org.jboss.shrinkwrap.descriptor.api.Descriptor;
  */
 public class AndroidDeployableContainer implements DeployableContainer<AndroidContainerConfiguration> {
 
-    private static final Logger logger = Logger.getLogger(AndroidDeployableContainer.class.getSimpleName());
-
     @Inject
     @ContainerScoped
     private InstanceProducer<AndroidContainerConfiguration> configuration;
@@ -134,7 +129,6 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidCo
 
     @Override
     public void start() throws LifecycleException {
-        logger.log(Level.INFO, "Starting the container {0}.", getContainerName());
         this.androidContainerStartEvent.fire(new AndroidContainerStart());
     }
 
@@ -151,7 +145,6 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidCo
 
     @Override
     public void stop() throws LifecycleException {
-        logger.log(Level.INFO, "Stopping the container {0}.", getContainerName());
         this.androidContainerStopEvent.fire(new AndroidContainerStop());
     }
 
@@ -172,31 +165,6 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidCo
 
     private ActivityManagerProvider getActivityManagerProvider() {
         return serviceLoader.get().onlyOne(ActivityManagerProvider.class, DefaultActivityManagerProvider.class);
-    }
-
-    /**
-     * Gets name of the container.
-     *
-     * When container is backed by emulator, it gets its AVD name, otherwise it gets serial number of the physical device. If we
-     * are connecting to a running emulator, its console port is taken as the identification.
-     *
-     * @return descriptive name of the container
-     */
-    private String getContainerName() {
-        if (configuration.get().getAvdName() == null) {
-            if (configuration.get().getSerialId() == null) {
-                if (configuration.get().getConsolePort() != null) {
-                    return "running at port " + configuration.get().getConsolePort();
-                }
-                else {
-                    return "unsuccessful to determine container id";
-                }
-            } else {
-                return configuration.get().getSerialId();
-            }
-        } else {
-            return configuration.get().getAvdName();
-        }
     }
 
 }

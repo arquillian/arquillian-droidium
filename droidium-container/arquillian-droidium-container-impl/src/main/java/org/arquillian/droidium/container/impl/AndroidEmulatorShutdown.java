@@ -39,6 +39,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
@@ -102,6 +103,7 @@ public class AndroidEmulatorShutdown {
         AndroidContainerConfiguration configuration = this.configuration.get();
 
         if (emulator != null && device.isEmulator()) {
+            logger.log(Level.INFO, "Stopping Android emulator of AVD name {0}.", configuration.getAvdName());
             final ProcessExecutor executor = this.executor.get();
             final Process p = emulator.getProcess();
             CountDownWatch countdown = new CountDownWatch(configuration.getEmulatorShutdownTimeoutInSeconds(),
