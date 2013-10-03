@@ -41,7 +41,7 @@
         <version.jboss.maven.plugin>7.3.Final</version.jboss.maven.plugin>
 
         <!-- Droidium container -->$
-        <version.droidium>1.0.0.Alpha1</version.droidium>
+        <version.droidium>1.0.0.Alpha2</version.droidium>
 
         <!-- other plugin versions -->
         <version.compiler.plugin>2.3.1</version.compiler.plugin>
@@ -252,8 +252,7 @@
                 <!-- Arquillian Droidium container adapter -->
                 <dependency>
                     <groupId>org.arquillian.container</groupId>
-                    <artifactId>arquillian-droidium-container-depchain</artifactId>
-                    <type>pom</type>
+                    <artifactId>arquillian-droidium-container</artifactId>
                     <scope>test</scope>
                     <version>${version.droidium}</version>
                 </dependency>

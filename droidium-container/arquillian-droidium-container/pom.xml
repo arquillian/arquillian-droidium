@@ -23,9 +23,9 @@
     </parent>
 
     <!-- Artifact Configuration -->
-    <artifactId>arquillian-droidium-container-impl</artifactId>
-    <name>Arquillian Droidium Container Impl</name>
-    <description>Arquillian Droidium Container Impl</description>
+    <artifactId>arquillian-droidium-container</artifactId>
+    <name>Arquillian Droidium Container</name>
+    <description>Arquillian Droidium Container</description>
 
     <!-- Properties -->
     <properties>
@@ -45,7 +45,17 @@
             <groupId>org.arquillian.container</groupId>
             <artifactId>arquillian-droidium-container-spi</artifactId>
             <version>${project.version}</version>
-        </dependency>        
+        </dependency>
+        <dependency>
+            <groupId>org.arquillian.protocol</groupId>
+            <artifactId>arquillian-protocol-android</artifactId>
+            <version>${project.version}</version>
+        </dependency>    
+        <dependency>
+            <groupId>org.arquillian.extension</groupId>
+            <artifactId>arquillian-droidium-multiple-containers</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- Arquillian dependencies -->
         <dependency>
@@ -109,14 +119,6 @@
             <groupId>org.jboss.arquillian.container</groupId>
             <artifactId>arquillian-container-impl-base</artifactId>
             <scope>test</scope>
-        </dependency>
-        
-        <!-- FIXME - is this really test dependency -->
-        <dependency>
-            <groupId>org.arquillian.extension</groupId>
-            <artifactId>arquillian-droidium-multiple-containers</artifactId>
-            <scope>test</scope>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>

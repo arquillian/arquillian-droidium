@@ -18,7 +18,7 @@
     <!-- Artifact configuraton -->
     <groupId>org.arquillian.droidium.tests</groupId>
     <artifactId>arquillian-droidium-native-test-01-scala</artifactId>
-    <version>1.0.0.Alpha1</version>
+    <version>1.0.0.Alpha2-SNAPSHOT</version>
 
     <description>Proof-of-concept Arquillian Droidium tests with Selendroid integration written in Scala</description>
 
@@ -197,9 +197,8 @@
                 <!-- Arquillian Droidium container support -->
                 <dependency>
                     <groupId>org.arquillian.container</groupId>
-                    <artifactId>arquillian-droidium-container-depchain</artifactId>
+                    <artifactId>arquillian-droidium-container</artifactId>
                     <version>${project.version}</version>
-                    <type>pom</type>
                     <scope>test</scope>
                 </dependency>
 

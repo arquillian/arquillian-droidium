@@ -38,17 +38,7 @@
         <!-- Arquillian Droidium Container Dependencies -->
         <dependency>
             <groupId>org.arquillian.container</groupId>
-            <artifactId>arquillian-droidium-container-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.arquillian.container</groupId>
-            <artifactId>arquillian-droidium-container-spi</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.arquillian.container</groupId>
-            <artifactId>arquillian-droidium-container-impl</artifactId>
+            <artifactId>arquillian-droidium-container</artifactId>
             <version>${project.version}</version>
         </dependency>
 

@@ -46,8 +46,7 @@
         <module>arquillian-droidium-container-build</module>
         <module>arquillian-droidium-container-api</module>
         <module>arquillian-droidium-container-spi</module>
-        <module>arquillian-droidium-container-depchain</module>
-        <module>arquillian-droidium-container-impl</module>
+        <module>arquillian-droidium-container</module>
         <module>arquillian-droidium-multiple-containers</module>
         <module>arquillian-protocol-android</module>
     </modules>

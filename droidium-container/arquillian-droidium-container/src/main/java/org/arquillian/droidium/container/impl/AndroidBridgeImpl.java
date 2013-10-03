@@ -60,7 +60,7 @@ public class AndroidBridgeImpl implements AndroidBridge {
         logger.info("Connecting to the Android Debug Bridge at " + adbLocation.getAbsolutePath() + " forceNewBridge = "
             + forceNewBridge);
 
-        AndroidDebugBridge.initIfNeeded(true);
+        AndroidDebugBridge.initIfNeeded(false);
 
         this.delegate = AndroidDebugBridge.createBridge(adbLocation.getAbsolutePath(), forceNewBridge);
 
