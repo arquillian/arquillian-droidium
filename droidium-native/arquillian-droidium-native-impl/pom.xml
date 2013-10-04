@@ -192,9 +192,10 @@
                         <configuration>
                             <skipTests>false</skipTests>
                             <includes>
+                                <include>org/arquillian/droidium/native_/activity/**</include>
                                 <include>org/arquillian/droidium/native_/sign/**</include>
                                 <include>org/arquillian/droidium/native_/selendroid/**</include>
-                                <include>org/arquillian/droidium/native_/instrumentation/impl/**</include>
+                                <include>org/arquillian/droidium/native_/instrumentation/**</include>
                             </includes>
                         </configuration>
                     </plugin>

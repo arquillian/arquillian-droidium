@@ -42,7 +42,8 @@ public class NativeActivityManager implements ActivityManager {
             throw new NoMatchingWebDriverInstanceFoundException("It seems you are trying to start an "
                 + "activity which is not backed by any WebDriver instance.");
         }
-        driver.get("and-activity://" + activity);
+
+        driver.get("and-activity://" + activityWebDriverMapper.getActivity(driver, activity));
     }
 
     @Override
