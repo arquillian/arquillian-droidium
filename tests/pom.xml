@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.arquillian.droidium</groupId>
         <artifactId>arquillian-droidium-parent</artifactId>
-        <version>1.0.0.Alpha1</version>
+        <version>1.0.0.Alpha2-SNAPSHOT</version>
     </parent>
 
     <!-- Artifact Configuration -->
@@ -40,6 +40,7 @@
     <modules>
         <module>droidium-multiple-containers-01</module>
         <module>droidium-native-01</module>
+        <module>droidium-native-02</module>
         <module>droidium-web-01</module>
         <module>droidium-hybrid-01</module>
         <module>droidium-screenshooter-01</module>

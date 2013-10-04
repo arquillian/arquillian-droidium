@@ -155,6 +155,7 @@
                         <configuration>
                             <skipTests>false</skipTests>
                             <includes>
+                                <include>org/arquillian/droidium/container/activity/**</include>
                                 <include>org/arquillian/droidium/container/configuration/**</include>
                                 <include>**/multiplecontainers/*TestCase.class</include>
                             </includes>

@@ -1,0 +1,26 @@
+== Arquillian Droidium test - Default Activity Manager
+
+There is not any native plugin on the classpath however we are able to 
+start and stop activities (but we do not instrument them at all). We do so 
+by default activity manager which gets treated when no other activity manager 
+is on class path.
+
+You are obliged to specify activities you want to start as you are used to 
+when you are doing so manually with `am start -n some.package/.SomeActivity`.
+When you use FQDN of some class as the activity to start, it is interpreted as 
+`am start -n f.q.d/.n`.
+
+When you are executing tests, you have to set name of (possibly started) AVD
+you want to use for test executions. You _have to_ provide this information 
+for Maven otherwise tests will fail.
+
+`mvn clean test -Dname.avd=name_of_avd`
+
+This project can be run in a headless mode as well, typically in a CI service like Cloudbees.
+You are obliged to activate headless profile with `-Pheadless`. It adds the following switches to `emulator` command 
+upon its start: `-no-skin -no-audio -no-window -nocache -no-snapshot-save -no-snapstorage`.
+
+This tests uses Selendroid server APK from http://dominikdary.github.io/selendroid/[Selendroid] project.
+
+You have to have `jarsigner`, `keytool` and so on in your system. You are usually good with default JDK installation.
+You should have these commands in `$JAVA_HOME`.

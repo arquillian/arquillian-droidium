@@ -54,13 +54,13 @@ public class ActivityWebDriverMapperTestCase {
     public void getSameInstanceOfFQDNActivities() {
         WebDriver instance = mapper.getInstance("foo.bar.Baz");
         WebDriver instance2 = mapper.getInstance("foo.bar.Hello");
-        
+
         Assert.assertNotNull(instance);
         Assert.assertNotNull(instance2);
-        
+
         Assert.assertSame(instance, instance2);
     }
-    
+
     @Test
     public void getUniqueInstanceOfFQDNActivity() {
         WebDriver instance = mapper.getInstance("foo.bar.Baz");
@@ -68,7 +68,7 @@ public class ActivityWebDriverMapperTestCase {
 
         WebDriver instance2 = mapper.getInstance("abc.def.Baz");
         Assert.assertNotNull(instance2);
-        
+
         Assert.assertNotSame(instance, instance2);
     }
 
@@ -79,7 +79,7 @@ public class ActivityWebDriverMapperTestCase {
 
         WebDriver instance2 = mapper.getInstance("Bla");
         Assert.assertNotNull(instance2);
-        
+
         Assert.assertNotSame(instance, instance2);
     }
 
@@ -105,7 +105,7 @@ public class ActivityWebDriverMapperTestCase {
 
         WebDriver instance2 = mapper.getInstance("def.Baz");
         Assert.assertNotNull(instance2);
-        
+
         Assert.assertNotSame(instance, instance2);
     }
 }

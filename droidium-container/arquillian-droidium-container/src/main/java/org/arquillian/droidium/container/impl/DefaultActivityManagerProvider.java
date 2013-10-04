@@ -16,8 +16,6 @@
  */
 package org.arquillian.droidium.container.impl;
 
-import java.util.logging.Logger;
-
 import org.arquillian.droidium.container.api.ActivityManager;
 import org.arquillian.droidium.container.api.ActivityManagerProvider;
 
@@ -28,16 +26,10 @@ import org.arquillian.droidium.container.api.ActivityManagerProvider;
  */
 public class DefaultActivityManagerProvider implements ActivityManagerProvider {
 
-    private static final Logger logger = Logger.getLogger(DefaultActivityManagerProvider.class.getName());
-
     private ActivityManager activityManager;
 
     @Override
     public ActivityManager getActivityManager() {
-        if (activityManager == null) {
-            logger.info("You are using default implementation of activity manager provider and you have not set any "
-                + "activity manager for it so far. Please implement your own or put Droidium native plugin on the classpath.");
-        }
         return this.activityManager;
     }
 
