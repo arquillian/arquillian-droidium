@@ -14,15 +14,12 @@
     http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
 
     <!-- Container configuration -->
-    <!-- Since more then one container adapter is on classpath, you have to specify 
-        adapterImplClass for each container manually. -->
     <group qualifier="containers" default="true">
         <container qualifier="android" default="true">
             <configuration>
                 <!-- Name of Android container to start or use during tests. This property is filtered 
                     meaning it is set in profile in pom.xml under the same name of the property. -->
                 <property name="avdName">${android.avd.name}</property>
-                <property name="adapterImplClass">org.arquillian.droidium.container.AndroidDeployableContainer</property>
                 <property name="emulatorOptions">${android.emulator.options}</property>
                 <property name="emulatorBootupTimeoutInSeconds">600</property>
                 <property name="logType">disable</property>
@@ -33,7 +30,6 @@
         <container qualifier="jbossas">
             <configuration>
                 <property name="jbossHome">${basedir}/target/jboss-as-7.1.1.Final</property>
-                <property name="adapterImplClass">org.jboss.as.arquillian.container.managed.ManagedDeployableContainer</property>
             </configuration>
         </container>
     </group>
