@@ -20,6 +20,8 @@ package org.arquillian.droidium.container.configuration;
 import java.io.File;
 import java.util.logging.Logger;
 
+import org.arquillian.droidium.container.log.LogLevel;
+import org.arquillian.droidium.container.log.LogType;
 import org.jboss.arquillian.container.spi.client.container.ContainerConfiguration;
 
 /**
@@ -30,9 +32,9 @@ import org.jboss.arquillian.container.spi.client.container.ContainerConfiguratio
  */
 public class AndroidContainerConfiguration implements ContainerConfiguration {
 
-    private static final Logger logger = Logger.getLogger(AndroidContainerConfiguration.class.getName());
+    private String fileSeparator = System.getProperty("file.separator");
 
-    private boolean skip;
+    private static final Logger logger = Logger.getLogger(AndroidContainerConfiguration.class.getName());
 
     private boolean forceNewBridge = true;
 
@@ -81,6 +83,22 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
     private String logPackageWhitelist;
 
     private String logPackageBlacklist;
+
+    private String keystore = System.getProperty("user.home") + fileSeparator + ".android" + fileSeparator + "debug.keystore";
+
+    private String storepass = "android";
+
+    private String keypass = "android";
+
+    private String alias = "androiddebugkey";
+
+    private String sigalg = "SHA1withRSA";
+
+    private String keyalg = "RSA";
+
+    private boolean removeTmpDir = true;
+
+    private String tmpDir = System.getProperty("java.io.tmpdir");
 
     // useful when more containers are being used, also affects log filename!
     private boolean logSerialId;
@@ -134,14 +152,6 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
 
     public void setEmulatorOptions(String emulatorOptions) {
         this.emulatorOptions = emulatorOptions;
-    }
-
-    public boolean isSkip() {
-        return skip;
-    }
-
-    public void setSkip(boolean skip) {
-        this.skip = skip;
     }
 
     public boolean isForceNewBridge() {
@@ -268,7 +278,7 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
         this.logLevel = logLevel;
     }
 
-    public String getLogtype() {
+    public String getLogType() {
         return logType;
     }
 
@@ -311,6 +321,70 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
 
     public void setLogSerialId(boolean logSerialId) {
         this.logSerialId = logSerialId;
+    }
+
+    public String getKeystore() {
+        return keystore;
+    }
+
+    public void setKeystore(String keystore) {
+        this.keystore = keystore;
+    }
+
+    public String getStorepass() {
+        return storepass;
+    }
+
+    public void setStorepass(String storepass) {
+        this.storepass = storepass;
+    }
+
+    public String getKeypass() {
+        return keypass;
+    }
+
+    public void setKeypass(String keypass) {
+        this.keypass = keypass;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    public String getSigalg() {
+        return sigalg;
+    }
+
+    public void setSigalg(String sigalg) {
+        this.sigalg = sigalg;
+    }
+
+    public String getKeyalg() {
+        return keyalg;
+    }
+
+    public void setKeyalg(String keyalg) {
+        this.keyalg = keyalg;
+    }
+
+    public boolean getRemoveTmpDir() {
+        return removeTmpDir;
+    }
+
+    public void setRemoveTmpDir(boolean removeTmpDir) {
+        this.removeTmpDir = removeTmpDir;
+    }
+
+    public String getTmpDir() {
+        return tmpDir;
+    }
+
+    public void setTmpDir(String tmpDir) {
+        this.tmpDir = tmpDir;
     }
 
     @Override
@@ -383,11 +457,9 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
             Validate.isPortValid(droneGuestPort);
         }
 
-        // TODO validate log configuration
-
         if(logPackageWhitelist != null && !logPackageWhitelist.equals("") && logPackageBlacklist == null) {
             logPackageBlacklist = "*";
-            logger.warning("\"logPackageBlacklist\" isn't defined, but \"logPackageWhitelist\" is. Assuming \"*\" as a value for \"logPackageBlacklist\"!"); // TODO give better info
+            logger.warning("\"logPackageBlacklist\" isn't defined, but \"logPackageWhitelist\" is. Assuming \"*\" as a value for \"logPackageBlacklist\"!");
         }
 
         if (emulatorBootupTimeoutInSeconds <= 0) {
@@ -399,6 +471,32 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
             throw new AndroidContainerConfigurationException(
                 "Emulator shutdown timeout has to be bigger then 0.");
         }
+
+        Validate.isReadableDirectory(getTmpDir(),
+            "Temporary directory you chosed to use for Arquillian Droidium native plugin "
+                + "is not readable. Please be sure you entered a path you have read and write access to.");
+
+        Validate.isWriteable(new File(getTmpDir()), "Temporary directory you chose to use for Arquillian Droidium native plugin "
+            + "is not writable. Please be sure you entered a path you have read and write access to.");
+
+        try {
+            Validate.isReadable(getKeystore(), "Key store for Android APKs is not readable. File does not exist or you have "
+                + "no read access to this file. In case it does not exist, Arquillian Droidium native plugin tries to create "
+                + "keystore you specified dynamically in the file " + getKeystore());
+        } catch (IllegalArgumentException ex) {
+
+        }
+
+        Validate.notNullOrEmpty(getAlias(),
+            "You must provide valid alias for signing of APK files. You entered '" + getAlias() + "'.");
+        Validate.notNullOrEmpty(getKeypass(),
+            "You must provide valid keypass for signing of APK files. You entered '" + getKeypass() + "'.");
+        Validate.notNullOrEmpty(getStorepass(),
+            "You must provide valid storepass for signing of APK files. You entered '" + getStorepass() + "'.");
+        Validate.notNullOrEmpty(getKeyalg(), "You must provide valid key algorithm for signing packages. You entered '"
+            + getKeyalg() + "'.");
+        Validate.notNullOrEmpty(getSigalg(), "You must provide valid key algoritm for signing packages. You entered '" +
+            getSigalg() + "'.");
     }
 
     @Override
@@ -409,7 +507,6 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
         sb.append("apiLevel\t\t:").append(this.apiLevel).append("\n");
         sb.append("serialId\t\t:").append(this.serialId).append("\n");
         sb.append("force\t\t\t:").append(this.forceNewBridge).append("\n");
-        sb.append("skip\t\t\t:").append(this.skip).append("\n");
         sb.append("sdCard\t\t\t:").append(this.sdCard).append("\n");
         sb.append("sdSize\t\t\t:").append(this.sdSize).append("\n");
         sb.append("generateSD\t\t:").append(this.generateSDCard).append("\n");
@@ -425,6 +522,14 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
         sb.append("logFilePath\t\t:").append(this.logFilePath).append("\n");
         sb.append("logPackageWhitelist\t:").append(this.logPackageWhitelist).append("\n");
         sb.append("logPackageBlacklist\t:").append(this.logPackageBlacklist).append("\n");
+        sb.append("keystore\t\t:").append(this.keystore).append("\n");
+        sb.append("keypass\t\t\t:").append(this.keypass).append("\n");
+        sb.append("storepass\t\t:").append(this.storepass).append("\n");
+        sb.append("alias\t\t\t:").append(this.alias).append("\n");
+        sb.append("sigalg\t\t\t:").append(this.sigalg).append("\n");
+        sb.append("keyalg\t\t\t:").append(this.keyalg).append("\n");
+        sb.append("removeTmpDir\t\t:").append(this.removeTmpDir).append("\n");
+        sb.append("tmpDir\t\t\t:").append(this.tmpDir).append("\n");
         return sb.toString();
     }
 

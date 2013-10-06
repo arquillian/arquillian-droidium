@@ -18,20 +18,20 @@ package org.arquillian.droidium.native_.instrumentation;
 
 import java.io.File;
 
-import org.arquillian.droidium.native_.android.AndroidApplicationHelper;
+import org.arquillian.droidium.container.deployment.AndroidDeploymentRegister;
+import org.arquillian.droidium.container.impl.AndroidApplicationHelper;
+import org.arquillian.droidium.container.sign.APKSigner;
+import org.arquillian.droidium.container.spi.AndroidDeployment;
+import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.arquillian.droidium.native_.configuration.DroidiumNativeConfiguration;
-import org.arquillian.droidium.native_.deployment.AndroidDeploymentRegister;
 import org.arquillian.droidium.native_.deployment.SelendroidDeploymentRegister;
 import org.arquillian.droidium.native_.selendroid.SelendroidRebuilder;
 import org.arquillian.droidium.native_.selendroid.SelendroidServerManager;
-import org.arquillian.droidium.native_.sign.APKSigner;
-import org.arquillian.droidium.native_.spi.AndroidDeployment;
 import org.arquillian.droidium.native_.spi.SelendroidDeployment;
 import org.arquillian.droidium.native_.spi.event.AfterInstrumentationPerformed;
 import org.arquillian.droidium.native_.spi.event.BeforeInstrumentationPerformed;
 import org.arquillian.droidium.native_.spi.event.PerformInstrumentation;
 import org.arquillian.droidium.native_.spi.event.SelendroidDeploy;
-import org.arquillian.droidium.native_.utils.DroidiumNativeFileUtils;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;
@@ -125,12 +125,12 @@ public class InstrumentationPerformer {
 
     private File getSelendroidResigned(File selendroidRebuilt) {
         return signer.get().resign(selendroidRebuilt,
-            new File(DroidiumNativeFileUtils.getTmpDir(), DroidiumNativeFileUtils.getRandomAPKFileName()));
+            new File(DroidiumFileUtils.getTmpDir(), DroidiumFileUtils.getRandomAPKFileName()));
     }
 
     private File getSelendroidWorkingCopy() {
-        return DroidiumNativeFileUtils.copyFileToDirectory(configuration.get().getServerApk(),
-            DroidiumNativeFileUtils.getTmpDir());
+        return DroidiumFileUtils.copyFileToDirectory(configuration.get().getServerApk(),
+            DroidiumFileUtils.getTmpDir());
     }
 
     private String getSelendroidPackageName(File selendroidWorkingCopy) {

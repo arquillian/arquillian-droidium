@@ -32,6 +32,7 @@ import org.arquillian.droidium.container.api.AndroidBridge;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.api.IdentifierGenerator;
+import org.arquillian.droidium.container.api.IdentifierType;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.impl.AndroidBridgeConnector;
@@ -49,7 +50,6 @@ import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceAvailable
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceCreate;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceDelete;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceDeleted;
-import org.arquillian.droidium.container.utils.IdentifierType;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.container.test.AbstractContainerTestBase;

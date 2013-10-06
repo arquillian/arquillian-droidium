@@ -30,6 +30,7 @@ import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidDeviceSelector;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.api.IdentifierGenerator;
+import org.arquillian.droidium.container.api.IdentifierType;
 import org.arquillian.droidium.container.api.Screenshooter;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
@@ -38,7 +39,6 @@ import org.arquillian.droidium.container.spi.event.AndroidBridgeInitialized;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceAvailable;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceCreate;
-import org.arquillian.droidium.container.utils.IdentifierType;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Instance;
@@ -56,7 +56,7 @@ import org.jboss.arquillian.core.api.annotation.Observes;
  * If we fails to connect, {@link AndroidExecutionException} is thrown. <br>
  * 2. If avd name was specified but console port was not, we try to connect to the first running emulator of such avd name. <br>
  * 3. If both avd name and console port were specified, we try to connect to this combination. <br>
- * 4. We can fail to get device in all above steps:
+ * 4. If we fail to get device in all above steps:
  * <ol>
  * <li>If AVD name was not specified, random AVD indentifier is generated.</li>
  * <li>Checking whether such AVD is already existing is performed, if it does not, such AVD name is created and marked as

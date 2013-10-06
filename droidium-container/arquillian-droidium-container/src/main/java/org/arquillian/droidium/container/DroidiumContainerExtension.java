@@ -19,15 +19,17 @@ package org.arquillian.droidium.container;
 
 import org.arquillian.droidium.container.api.AndroidDeviceSelector;
 import org.arquillian.droidium.container.configuration.DroidiumExtensionsValidation;
+import org.arquillian.droidium.container.deployment.AndroidDeploymentInstaller;
+import org.arquillian.droidium.container.deployment.AndroidDeploymentUninstaller;
 import org.arquillian.droidium.container.enricher.AndroidDeviceResourceProvider;
 import org.arquillian.droidium.container.enricher.AndroidScreenshooterResourceProvider;
 import org.arquillian.droidium.container.impl.AndroidBridgeConnector;
 import org.arquillian.droidium.container.impl.AndroidDeviceSelectorImpl;
 import org.arquillian.droidium.container.impl.AndroidEmulatorShutdown;
 import org.arquillian.droidium.container.impl.AndroidEmulatorStartup;
-import org.arquillian.droidium.container.impl.AndroidLogInitializer;
 import org.arquillian.droidium.container.impl.AndroidSDCardManagerImpl;
 import org.arquillian.droidium.container.impl.AndroidVirtualDeviceManager;
+import org.arquillian.droidium.container.log.AndroidLogInitializer;
 import org.jboss.arquillian.container.spi.client.container.DeployableContainer;
 import org.jboss.arquillian.core.spi.LoadableExtension;
 import org.jboss.arquillian.test.spi.enricher.resource.ResourceProvider;
@@ -58,6 +60,8 @@ public class DroidiumContainerExtension implements LoadableExtension {
         builder.observer(AndroidSDCardManagerImpl.class);
         builder.observer(AndroidVirtualDeviceManager.class);
         builder.observer(DroidiumExtensionsValidation.class);
+        builder.observer(AndroidDeploymentInstaller.class);
+        builder.observer(AndroidDeploymentUninstaller.class);
     }
 
 }

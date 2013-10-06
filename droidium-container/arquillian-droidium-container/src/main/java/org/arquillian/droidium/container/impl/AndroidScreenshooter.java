@@ -26,6 +26,7 @@ import javax.imageio.ImageIO;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.api.Screenshooter;
+import org.arquillian.droidium.container.api.Screenshot;
 import org.arquillian.droidium.container.api.ScreenshotType;
 import org.arquillian.droidium.container.configuration.Validate;
 import org.arquillian.droidium.container.utils.AndroidScreenshotIdentifierGenerator;
@@ -76,22 +77,22 @@ public class AndroidScreenshooter implements Screenshooter {
     }
 
     @Override
-    public File takeScreenshot() {
+    public Screenshot takeScreenshot() {
         return takeScreenshot(null, getScreenshotImageFormat());
     }
 
     @Override
-    public File takeScreenshot(String fileName) {
+    public Screenshot takeScreenshot(String fileName) {
         return takeScreenshot(fileName, getScreenshotImageFormat());
     }
 
     @Override
-    public File takeScreenshot(ScreenshotType type) {
+    public Screenshot takeScreenshot(ScreenshotType type) {
         return takeScreenshot(null, type);
     }
 
     @Override
-    public File takeScreenshot(String fileName, ScreenshotType type) {
+    public Screenshot takeScreenshot(String fileName, ScreenshotType type) {
 
         if (fileName != null) {
             if (fileName.trim().isEmpty()) {
@@ -102,7 +103,9 @@ public class AndroidScreenshooter implements Screenshooter {
             throw new AndroidExecutionException("Android device is not online, can not take any screenshots.");
         }
 
-        RawImage rawImage = device.getScreenshot();
+        AndroidScreenshot screenshot = (AndroidScreenshot) device.getScreenshot();
+
+        RawImage rawImage = screenshot.getRawImage();
 
         if (rawImage == null) {
             throw new AndroidExecutionException("Unable to get screenshot of underlying Android device.");
@@ -137,7 +140,10 @@ public class AndroidScreenshooter implements Screenshooter {
             log.info("unable to save screenshot of type " + type.toString() + " to file " + image.getAbsolutePath());
             e.printStackTrace();
         }
-        return image;
+
+        screenshot.setScreenshot(image);
+
+        return screenshot;
     }
 
     @Override

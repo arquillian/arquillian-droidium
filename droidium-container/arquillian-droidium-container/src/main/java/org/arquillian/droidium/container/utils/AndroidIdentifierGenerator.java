@@ -26,6 +26,7 @@ import java.util.UUID;
 
 import org.arquillian.droidium.container.api.IdentifierGenerator;
 import org.arquillian.droidium.container.api.IdentifierGeneratorException;
+import org.arquillian.droidium.container.api.IdentifierType;
 import org.arquillian.droidium.container.configuration.Validate;
 
 /**
@@ -40,6 +41,8 @@ public class AndroidIdentifierGenerator implements IdentifierGenerator {
 
     private String sdCardSuffix = ".img";
 
+    private static final String apkSuffix = ".apk";
+
     @Override
     public String getIdentifier(Class<?> identifierType) {
         String uuid = UUID.randomUUID().toString();
@@ -52,6 +55,12 @@ public class AndroidIdentifierGenerator implements IdentifierGenerator {
         }
         if (identifierType.isInstance(IdentifierType.SD_CARD_LABEL)) {
             return uuid;
+        }
+        if (identifierType.isInstance(IdentifierType.FILE)) {
+            return uuid;
+        }
+        if (identifierType.isInstance(IdentifierType.APK)) {
+            return uuid + apkSuffix;
         }
         throw new IdentifierGeneratorException("Not possible to generate any identifier of type " + identifierType.getName());
     }

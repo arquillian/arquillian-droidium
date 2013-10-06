@@ -18,7 +18,6 @@ package org.arquillian.droidium.container.activity;
 
 import junit.framework.Assert;
 
-import org.arquillian.droidium.container.impl.DefaultActivityManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;

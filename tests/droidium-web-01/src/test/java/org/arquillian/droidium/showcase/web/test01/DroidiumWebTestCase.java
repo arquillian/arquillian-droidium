@@ -19,6 +19,7 @@ package org.arquillian.droidium.showcase.web.test01;
 import java.io.File;
 import java.net.URL;
 
+import org.arquillian.droidium.container.api.AndroidDevice;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -29,6 +30,7 @@ import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
@@ -37,17 +39,25 @@ import org.openqa.selenium.android.AndroidDriver;
 
 /**
  * Shows basic testing of hello-world like application deployed into JBoss AS and tested from Android container point of view.
- *
+ * 
+ * If you really want, you can install packages on Android device as you are used to.
+ * 
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
- *
+ * 
  */
 @RunWith(Arquillian.class)
 @RunAsClient
 public class DroidiumWebTestCase {
 
+    @Deployment(name = "android")
+    @TargetsContainer("android")
+    public static Archive<?> getAndroidDeployment() {
+        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.5.1.apk"));
+    }
+
     @Deployment(name = "jbossas", testable = false)
     @TargetsContainer("jbossas")
-    public static Archive<?> getDeployment() {
+    public static Archive<?> getJBossASDeployment() {
         return ShrinkWrap.createFromZipFile(WebArchive.class, new File("target/jboss-as-helloworld.war"));
     }
 
@@ -60,5 +70,13 @@ public class DroidiumWebTestCase {
 
         // assert message is seen
         Assert.assertTrue(driver.getPageSource().contains("Hello World!"));
+    }
+
+    @Test
+    @InSequence(2)
+    @OperateOnDeployment("android")
+    public void test02(@ArquillianResource AndroidDevice device) {
+        Assert.assertNotNull(device);
+        Assert.assertTrue(device.isPackageInstalled("io.selendroid.testapp"));
     }
 }

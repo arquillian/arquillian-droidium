@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- JBoss, Home of Professional Open Source Copyright 2012, Red Hat, Inc. 
-    and/or its affiliates, and individual contributors by the @authors tag. See 
-    the copyright.txt in the distribution for a full listing of individual contributors. 
-    Licensed under the Apache License, Version 2.0 (the "License"); you may not 
-    use this file except in compliance with the License. You may obtain a copy 
-    of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
-    by applicable law or agreed to in writing, software distributed under the 
-    License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
-    OF ANY KIND, either express or implied. See the License for the specific 
+<!-- JBoss, Home of Professional Open Source Copyright 2012, Red Hat, Inc.
+    and/or its affiliates, and individual contributors by the @authors tag. See
+    the copyright.txt in the distribution for a full listing of individual contributors.
+    Licensed under the Apache License, Version 2.0 (the "License"); you may not
+    use this file except in compliance with the License. You may obtain a copy
+    of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required
+    by applicable law or agreed to in writing, software distributed under the
+    License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
+    OF ANY KIND, either express or implied. See the License for the specific
     language governing permissions and limitations under the License. -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <!-- Model Version -->
     <modelVersion>4.0.0</modelVersion>
@@ -31,6 +32,8 @@
     <properties>
         <!-- known to work with Android 2.3 -->
         <version.android>2.3</version.android>
+        <version.httpclient>4.2.5</version.httpclient>
+        <version.commons.io>1.3.2</version.commons.io>
     </properties>
 
     <!-- Dependencies -->
@@ -50,7 +53,7 @@
             <groupId>org.arquillian.protocol</groupId>
             <artifactId>arquillian-protocol-android</artifactId>
             <version>${project.version}</version>
-        </dependency>    
+        </dependency>
         <dependency>
             <groupId>org.arquillian.extension</groupId>
             <artifactId>arquillian-droidium-multiple-containers</artifactId>
@@ -138,6 +141,16 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${version.httpclient}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${version.commons.io}</version>
+        </dependency>
     </dependencies>
 
     <!-- Profiles -->
@@ -191,23 +204,23 @@
             </build>
         </profile>
         <profile>
-        <!-- Be sure that:
-            1)
+            <!-- Be sure that:
+                1)
                 you started Android Virtual Device (emulator) prior to test with:
                 a) AVD name test01
                 b) its console port is 5554
-            2)
-                a) your port 5556 is free, it will be used when the testing 
-                   of startup of container takes place
+                2)
+                a) your port 5556 is free, it will be used when the testing
+                of startup of container takes place
                 b) you have AVD of name test01 at your system
-            3)
+                3)
                 You can specify emulator timeout by setting -Demulator.startup.timeout=number.
                 Default is 600 seconds.
 
-            Regarding of 1)
+                Regarding of 1)
                 AVD name can be supressed by setting -Demulator.running.avd.name=your_value
                 Console port can be supressed by setting -Demulator.running.console.port=your_value
-            Regarding of 2)
+                Regarding of 2)
                 AVD name can be suppressed by -Demulator.to.run.avd.name=your_value
                 Console port can be supressed by setting -Demulator.to.run.console.port=your_value
             -->
@@ -232,9 +245,9 @@
         </profile>
         <profile>
             <!-- Be sure that:
-            1) You have real Android mobile phone connected to PC via USB.
-               You HAVE TO set ID of physical device as -Ddevice.serial.id=ID.
-               You get that number from 'adb devices -l' command.
+                1) You have real Android mobile phone connected to PC via USB.
+                You HAVE TO set ID of physical device as -Ddevice.serial.id=ID.
+                You get that number from 'adb devices -l' command.
             -->
             <id>android-manual-real</id>
             <activation>

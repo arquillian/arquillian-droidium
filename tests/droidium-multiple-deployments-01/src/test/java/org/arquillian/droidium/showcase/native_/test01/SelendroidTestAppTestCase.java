@@ -48,9 +48,7 @@ import org.openqa.selenium.WebElement;
  * <br>
  * <br>
  *
- * Deployment which is meant to be instrumented has its {@link Deployment} method annotated with {@link Instrumentable}. Only
- * one deployment can be instrumented. When only one deployment method is present in the test, this deployment is instrumented
- * automatically even without the presence of the {@code Instrumentable} annotation.
+ * Deployment which is meant to be instrumented has its {@link Deployment} method annotated with {@link Instrumentable}.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *

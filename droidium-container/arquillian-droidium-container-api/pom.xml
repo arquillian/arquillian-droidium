@@ -41,13 +41,9 @@
 
     <!-- Dependencies -->
     <dependencies>
-        
-        <!-- Android Dependencies -->
-        <!-- FIXME this should be removed and RawImage replaced with proper API -->
         <dependency>
-            <groupId>com.android.tools.ddms</groupId>
-            <artifactId>ddmlib</artifactId>
-        </dependency>
-
+            <groupId>org.jboss.shrinkwrap</groupId>
+            <artifactId>shrinkwrap-api</artifactId>
+        </dependency>        
     </dependencies>
 </project>

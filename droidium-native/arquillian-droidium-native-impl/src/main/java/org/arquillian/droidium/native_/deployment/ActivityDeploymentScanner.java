@@ -18,9 +18,9 @@ package org.arquillian.droidium.native_.deployment;
 
 import java.util.List;
 
-import org.arquillian.droidium.native_.android.AndroidApplicationHelper;
+import org.arquillian.droidium.container.impl.AndroidApplicationHelper;
+import org.arquillian.droidium.container.spi.event.AfterAndroidDeploymentDeployed;
 import org.arquillian.droidium.native_.instrumentation.DeploymentInstrumentationMapper;
-import org.arquillian.droidium.native_.spi.event.AfterAndroidDeploymentDeployed;
 import org.arquillian.droidium.native_.spi.event.AfterAndroidDeploymentScanned;
 import org.arquillian.droidium.native_.spi.event.BeforeAndroidDeploymentScanned;
 import org.jboss.arquillian.container.spi.client.deployment.DeploymentDescription;

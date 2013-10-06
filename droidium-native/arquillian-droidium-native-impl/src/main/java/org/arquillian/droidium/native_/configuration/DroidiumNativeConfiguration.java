@@ -17,7 +17,6 @@
 package org.arquillian.droidium.native_.configuration;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,68 +30,12 @@ import org.arquillian.droidium.container.configuration.Validate;
  */
 public class DroidiumNativeConfiguration {
 
-    private String fileSeparator = System.getProperty("file.separator");
-
-    private String logFile = "target" + fileSeparator + "android.log";
-
     private String serverApk = "selendroid-server.apk";
-
-    private String keystore = System.getProperty("user.home") + fileSeparator + ".android" + fileSeparator + "debug.keystore";
-
-    private String storepass = "android";
-
-    private String keypass = "android";
-
-    private String alias = "androiddebugkey";
-
-    private String sigalg = "SHA1withRSA";
-
-    private String keyalg = "RSA";
-
-    private String removeTmpDir = "true";
-
-    private String tmpDir = System.getProperty("java.io.tmpdir");
 
     private Map<String, String> properties = new HashMap<String, String>();
 
-    public File getLogFile() {
-        return new File(getProperty("logFile", logFile));
-    }
-
     public File getServerApk() {
         return new File(getProperty("serverApk", serverApk));
-    }
-
-    public File getKeystore() {
-        return new File(getProperty("keystore", keystore));
-    }
-
-    public String getStorepass() {
-        return getProperty("storepass", storepass);
-    }
-
-    public String getKeypass() {
-        return getProperty("keypass", keypass);
-    }
-
-    public String getAlias() {
-        return getProperty("alias", alias);
-    }
-
-    public String getSigalg() {
-        return getProperty("sigalg", sigalg);
-    }
-
-    public String getKeyalg() {
-        return getProperty("keyalg", keyalg);
-    }
-
-    public boolean getRemoveTmpDir() {
-        return Boolean.parseBoolean(getProperty("removeTmpDir", removeTmpDir));
-    }
-
-    public File getTmpDir() {
-        return new File(getProperty("tmpDir", tmpDir));
     }
 
     /**
@@ -153,38 +96,5 @@ public class DroidiumNativeConfiguration {
         Validate.isReadable(getServerApk(), "You must provide a valid path to Android Server APK for "
             + "Arquillian Droidium native plugin. Plese be sure you have read access to the file you entered: "
             + getServerApk());
-
-        Validate.isReadableDirectory(getTmpDir(),
-            "Temporary directory you chosed to use for Arquillian Droidium native plugin "
-                + "is not readable. Please be sure you entered a path you have read and write access to.");
-
-        Validate.isWriteable(getTmpDir(), "Temporary directory you chose to use for Arquillian Droidium native plugin "
-            + "is not writable. Please be sure you entered a path you have read and write access to.");
-
-        try {
-            Validate.isReadable(getKeystore(), "Key store for Android APKs is not readable. File does not exist or you have "
-                + "no read access to this file. In case it does not exist, Arquillian Droidium native plugin tries to create "
-                + "keystore you specified dynamically in the file " + getKeystore());
-        } catch (IllegalArgumentException ex) {
-
-        }
-
-        try {
-            getLogFile().createNewFile();
-        } catch (IOException e) {
-            throw new IllegalStateException("Unable to create logging file for Arquillian Droidium native plugin at"
-                + getLogFile().getAbsolutePath(), e);
-        }
-
-        Validate.notNullOrEmpty(getAlias(),
-            "You must provide valid alias for signing of APK files. You entered '" + getAlias() + "'.");
-        Validate.notNullOrEmpty(getKeypass(),
-            "You must provide valid keypass for signing of APK files. You entered '" + getKeypass() + "'.");
-        Validate.notNullOrEmpty(getStorepass(),
-            "You must provide valid storepass for signing of APK files. You entered '" + getStorepass() + "'.");
-        Validate.notNullOrEmpty(getKeyalg(), "You must provide valid key algorithm for signing packages. You entered '"
-            + getKeyalg() + "'.");
-        Validate.notNullOrEmpty(getSigalg(), "You must provide valid key algoritm for signing packages. You entered '" +
-            getSigalg() + "'.");
     }
 }

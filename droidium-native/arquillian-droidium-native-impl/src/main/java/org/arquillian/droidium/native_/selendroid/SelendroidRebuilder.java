@@ -34,7 +34,7 @@ import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Command;
 import org.arquillian.droidium.container.configuration.Validate;
 import org.arquillian.droidium.container.impl.ProcessExecutor;
-import org.arquillian.droidium.native_.utils.DroidiumNativeFileUtils;
+import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -102,9 +102,9 @@ public class SelendroidRebuilder {
         Validate.notNullOrEmpty(applicationBasePackage,
             "Application base package for rebuilding of Selendroid server can not be a null object nor an empty string!");
 
-        File toBeReplacedAndroidManifest = new File(DroidiumNativeFileUtils.getTmpDir(), "AndroidManifestToBeReplaced.xml");
-        File finalAndroidManifest = new File(DroidiumNativeFileUtils.getTmpDir(), "AndroidManifest.xml");
-        File dummyAPK = new File(DroidiumNativeFileUtils.getTmpDir(), "dummy.apk");
+        File toBeReplacedAndroidManifest = new File(DroidiumFileUtils.getTmpDir(), "AndroidManifestToBeReplaced.xml");
+        File finalAndroidManifest = new File(DroidiumFileUtils.getTmpDir(), "AndroidManifest.xml");
+        File dummyAPK = new File(DroidiumFileUtils.getTmpDir(), "dummy.apk");
 
         // copying of AndroidManifest.xml from resources of the native plugin to working directory
         FileOutputStream toBeReplacedAndroidManifestStream;
@@ -142,9 +142,9 @@ public class SelendroidRebuilder {
         finalArchive.delete("AndroidManifest.xml");
         finalArchive.add(dummyArchive.get("AndroidManifest.xml").getAsset(), "AndroidManifest.xml");
 
-        File targetFile = new File(DroidiumNativeFileUtils.getTmpDir(), DroidiumNativeFileUtils.getRandomAPKFileName());
+        File targetFile = new File(DroidiumFileUtils.getTmpDir(), DroidiumFileUtils.getRandomAPKFileName());
 
-        return DroidiumNativeFileUtils.export(finalArchive, targetFile);
+        return DroidiumFileUtils.export(finalArchive, targetFile);
     }
 
     /**

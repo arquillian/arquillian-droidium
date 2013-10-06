@@ -16,26 +16,19 @@
  */
 package org.arquillian.droidium.native_.configuration;
 
-import java.io.File;
-
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.impl.ProcessExecutor;
 import org.arquillian.droidium.native_.activity.ActivityWebDriverMapper;
 import org.arquillian.droidium.native_.activity.NativeActivityManager;
-import org.arquillian.droidium.native_.android.AndroidApplicationHelper;
-import org.arquillian.droidium.native_.android.AndroidApplicationManager;
 import org.arquillian.droidium.native_.deployment.ActivityDeploymentMapper;
-import org.arquillian.droidium.native_.deployment.AndroidDeploymentRegister;
 import org.arquillian.droidium.native_.deployment.DeploymentWebDriverMapper;
 import org.arquillian.droidium.native_.deployment.ExtensionDroneMapper;
 import org.arquillian.droidium.native_.deployment.SelendroidDeploymentRegister;
 import org.arquillian.droidium.native_.instrumentation.DeploymentInstrumentationMapper;
 import org.arquillian.droidium.native_.selendroid.SelendroidRebuilder;
 import org.arquillian.droidium.native_.selendroid.SelendroidServerManager;
-import org.arquillian.droidium.native_.sign.APKSigner;
-import org.arquillian.droidium.native_.utils.DroidiumNativeFileUtils;
 import org.jboss.arquillian.container.spi.event.container.AfterStart;
 import org.jboss.arquillian.container.spi.event.container.BeforeStop;
 import org.jboss.arquillian.core.api.Instance;
@@ -53,18 +46,14 @@ import org.jboss.arquillian.test.spi.annotation.SuiteScoped;
  *
  * Produces suite scoped:<br>
  * <ul>
- * <li>{@link AndroidApplicationHelper}</li>
  * <li>{@link ActivityDeploymentMapper}</li>
  * <li>{@link ActivityWebDriverMapper}</li>
  * <li>{@link ExtensionDroneMapper}</li>
  * <li>{@link DeploymentWebDriverMapper}</li>
  * <li>{@link DeploymentInstrumentationMapper}</li>
- * <li>{@link AndroidApplicationManager}</li>
  * <li>{@link SelendroidServerManager}</li>
- * <li>{@link AndroidDeploymentRegister}</li>
  * <li>{@link SelendroidDeploymentRegister}</li>
  * <li>{@link SelendroidRebuilder}</li>
- * <li>{@link APKSigner}</li>
  * </ul>
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
@@ -83,14 +72,7 @@ public class DroidiumNativeResourceManager {
     @Inject
     private Instance<ProcessExecutor> processExecutor;
 
-    @Inject
-    private Instance<DroidiumNativeConfiguration> droidiumNativeConfiguration;
-
     // producers
-
-    @Inject
-    @SuiteScoped
-    private InstanceProducer<AndroidApplicationHelper> androidApplicationHelper;
 
     @Inject
     @SuiteScoped
@@ -114,23 +96,11 @@ public class DroidiumNativeResourceManager {
 
     @Inject
     @SuiteScoped
-    private InstanceProducer<APKSigner> apkSigner;
-
-    @Inject
-    @SuiteScoped
-    private InstanceProducer<AndroidApplicationManager> androidApplicationManager;
-
-    @Inject
-    @SuiteScoped
     private InstanceProducer<SelendroidServerManager> selendroidServerManager;
 
     @Inject
     @SuiteScoped
     private InstanceProducer<SelendroidRebuilder> selendroidRebuilder;
-
-    @Inject
-    @SuiteScoped
-    private InstanceProducer<AndroidDeploymentRegister> androidDeploymentRegister;
 
     @Inject
     @SuiteScoped
@@ -143,22 +113,14 @@ public class DroidiumNativeResourceManager {
      */
     public void onAfterContainerStart(@Observes AfterStart event) {
         if (event.getDeployableContainer().getConfigurationClass() == AndroidContainerConfiguration.class) {
-            // all resources for this container will be placed there, meaning all packages and servers
-            DroidiumNativeFileUtils.createWorkingDir(droidiumNativeConfiguration.get().getTmpDir());
-
-            androidApplicationHelper.set(getAndroidApplicationHelper());
             activityDeploymentMapper.set(getActivityDeploymentMapper());
             activityWebDriverMapper.set(getActivityWebDriverMapper());
             extensionDroneMapper.set(getWebDriverPortMapper());
             deploymentWebDriverMapper.set(getDeploymentWebDriverMapper());
             deploymentInstrumentationMapper.set(getDeploymentInstrumentationMapper());
-            apkSigner.set(getAPKSigner());
 
-            androidApplicationManager.set(getAndroidApplicationManager());
             selendroidServerManager.set(getSelendroidServerManager());
             selendroidRebuilder.set(getSelendroidRebuilder());
-
-            androidDeploymentRegister.set(new AndroidDeploymentRegister());
             selendroidDeploymentRegister.set(new SelendroidDeploymentRegister());
 
             NativeActivityManager activityManager = new NativeActivityManager(activityWebDriverMapper.get());
@@ -169,23 +131,6 @@ public class DroidiumNativeResourceManager {
     private DeploymentInstrumentationMapper getDeploymentInstrumentationMapper() {
         DeploymentInstrumentationMapper deploymentInstrumentationMapper = new DeploymentInstrumentationMapper();
         return deploymentInstrumentationMapper;
-    }
-
-    /**
-     * Deletes temporary directory where all Selendroid and Android resources (files, resigned apks, logs ... ) are stored.
-     *
-     * This resource directory will not be deleted when you suppress it by {@code removeTmpDir="false"} in extension
-     * configuration in arquillian.xml.
-     *
-     * @param event
-     */
-    public void onDroidiumContainerStop(@Observes BeforeStop event) {
-        if (event.getDeployableContainer().getConfigurationClass() == AndroidContainerConfiguration.class) {
-            if (droidiumNativeConfiguration.get().getRemoveTmpDir()) {
-                File dir = DroidiumNativeFileUtils.getTmpDir();
-                DroidiumNativeFileUtils.removeWorkingDir(dir);
-            }
-        }
     }
 
     // helpers
@@ -217,25 +162,9 @@ public class DroidiumNativeResourceManager {
         return selendroidServerManager;
     }
 
-    private AndroidApplicationManager getAndroidApplicationManager() {
-        AndroidApplicationManager androidApplicationManager = new AndroidApplicationManager(androidDevice.get(),
-            processExecutor.get(), androidSDK.get());
-        return androidApplicationManager;
-    }
-
-    private APKSigner getAPKSigner() {
-        APKSigner signer = new APKSigner(processExecutor.get(), androidSDK.get(), droidiumNativeConfiguration.get());
-        return signer;
-    }
-
     private SelendroidRebuilder getSelendroidRebuilder() {
         SelendroidRebuilder selendroidRebuilder = new SelendroidRebuilder(processExecutor.get(), androidSDK.get());
         return selendroidRebuilder;
-    }
-
-    private AndroidApplicationHelper getAndroidApplicationHelper() {
-        AndroidApplicationHelper applicationHelper = new AndroidApplicationHelper(processExecutor.get(), androidSDK.get());
-        return applicationHelper;
     }
 
 }

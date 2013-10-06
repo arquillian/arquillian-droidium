@@ -35,9 +35,9 @@ import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Command;
 import org.arquillian.droidium.container.configuration.Validate;
 import org.arquillian.droidium.container.impl.ProcessExecutor;
+import org.arquillian.droidium.container.utils.DroidiumFileUtils;
+import org.arquillian.droidium.container.utils.Monkey;
 import org.arquillian.droidium.native_.spi.SelendroidDeployment;
-import org.arquillian.droidium.native_.utils.DroidiumNativeFileUtils;
-import org.arquillian.droidium.native_.utils.Monkey;
 
 /**
  * Manages deployment and undeployment of Selendroid servers which instrument Android packages.
@@ -147,7 +147,7 @@ public class SelendroidServerManager {
         logger.fine(startApplicationInstrumentationCommand.toString());
 
         try {
-            Monkey monkey = new Monkey(DroidiumNativeFileUtils.createRandomEmptyFile(DroidiumNativeFileUtils.getTmpDir()),
+            Monkey monkey = new Monkey(DroidiumFileUtils.createRandomEmptyFile(DroidiumFileUtils.getTmpDir()),
                 deployment.getInstrumentedDeployment().getApplicationBasePackage(), true);
             device.executeShellCommand(startApplicationInstrumentationCommand.getAsString(), monkey);
             Monkey.wait(device, monkey, TOP_CMD);

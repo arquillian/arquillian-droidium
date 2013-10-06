@@ -23,8 +23,6 @@ import org.arquillian.droidium.native_.configuration.DroidiumNativeConfigurator;
 import org.arquillian.droidium.native_.configuration.DroidiumNativeResourceManager;
 import org.arquillian.droidium.native_.configuration.ExtensionDroneResolver;
 import org.arquillian.droidium.native_.deployment.ActivityDeploymentScanner;
-import org.arquillian.droidium.native_.deployment.AndroidDeploymentInstaller;
-import org.arquillian.droidium.native_.deployment.AndroidDeploymentUninstaller;
 import org.arquillian.droidium.native_.deployment.DeploymentWebDriverResolver;
 import org.arquillian.droidium.native_.instrumentation.DeploymentInstrumentationResolver;
 import org.arquillian.droidium.native_.instrumentation.InstrumentationPerformDecider;
@@ -60,8 +58,6 @@ public class DroidiumNativeExtension implements LoadableExtension {
         builder.observer(InstrumentationPerformer.class);
 
         // installers & uninstallers
-        builder.observer(AndroidDeploymentInstaller.class);
-        builder.observer(AndroidDeploymentUninstaller.class);
         builder.observer(SelendroidDeploymentInstaller.class);
         builder.observer(SelendroidDeploymentUninstaller.class);
 

@@ -16,6 +16,8 @@
  */
 package org.arquillian.droidium.showcase.multiple.test01;
 
+import java.io.File;
+
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.showcase.classes.Foo;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -44,26 +46,16 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 @RunAsClient
 public class MultipleContainersTestCase {
 
-    /**
-     * Present just to satisfy Arquillian.
-     *
-     * It is not installed into Android device for real.
-     *
-     * @return
-     */
-    @Deployment(name = "android", order = 1, testable = false)
+    @Deployment(name = "android")
     @TargetsContainer("android")
-    public static Archive<?> createDeployment1() {
-        System.out.println("create deployment for android");
-        return ShrinkWrap.create(JavaArchive.class, "android.jar");
+    public static Archive<?> createAndroidDeployment() {
+        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.5.1.apk"));
     }
 
-    @Deployment(name = "jbossas", order = 2, testable = false)
+    @Deployment(name = "jbossas")
     @TargetsContainer("jbossas")
-    public static Archive<?> createDeployment2() {
-        System.out.println("create deployment for JBoss AS");
-        return ShrinkWrap.create(JavaArchive.class, "jbossas.jar")
-            .addClass(Foo.class);
+    public static Archive<?> createJBossASDeployment() {
+        return ShrinkWrap.create(JavaArchive.class, "jbossas.jar").addClass(Foo.class);
     }
 
     @Test
@@ -71,6 +63,7 @@ public class MultipleContainersTestCase {
     @OperateOnDeployment("android")
     public void test01(@ArquillianResource AndroidDevice android) {
         Assert.assertTrue(android != null);
+        Assert.assertTrue(android.isPackageInstalled("io.selendroid.testapp"));
     }
 
     @Test

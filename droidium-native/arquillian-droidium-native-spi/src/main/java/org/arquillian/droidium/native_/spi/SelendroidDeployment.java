@@ -18,6 +18,8 @@ package org.arquillian.droidium.native_.spi;
 
 import java.io.File;
 
+import org.arquillian.droidium.container.api.DroidiumDeployment;
+import org.arquillian.droidium.container.spi.AndroidDeployment;
 import org.jboss.shrinkwrap.api.Archive;
 
 /**

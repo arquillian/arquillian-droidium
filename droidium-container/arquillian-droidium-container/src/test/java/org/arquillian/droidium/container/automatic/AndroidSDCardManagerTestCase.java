@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.arquillian.droidium.container.AbstractAndroidTestTestBase;
 import org.arquillian.droidium.container.api.IdentifierGenerator;
+import org.arquillian.droidium.container.api.IdentifierType;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.impl.AndroidSDCardManagerImpl;
@@ -39,7 +40,6 @@ import org.arquillian.droidium.container.spi.event.AndroidSDCardCreate;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardCreated;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardDelete;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardDeleted;
-import org.arquillian.droidium.container.utils.IdentifierType;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.core.api.annotation.ApplicationScoped;

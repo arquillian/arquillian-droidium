@@ -20,8 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import com.android.ddmlib.RawImage;
-
 /**
  * Representation of Android Device
  *
@@ -180,7 +178,7 @@ public interface AndroidDevice {
      *
      * @return raw screenshot for further processing
      */
-    RawImage getScreenshot();
+    Screenshot getScreenshot();
 
     /**
      *

@@ -43,7 +43,7 @@
             <groupId>org.jboss.arquillian.core</groupId>
             <artifactId>arquillian-core-spi</artifactId>
         </dependency>
-        <dependency> <!-- pridane -->
+        <dependency>
             <groupId>org.jboss.arquillian.container</groupId>
             <artifactId>arquillian-container-test-spi</artifactId>
         </dependency>

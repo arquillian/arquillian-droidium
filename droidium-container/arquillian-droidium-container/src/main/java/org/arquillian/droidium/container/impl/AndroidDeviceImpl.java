@@ -22,10 +22,13 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.arquillian.droidium.container.activity.DefaultActivityManager;
+import org.arquillian.droidium.container.activity.DefaultActivityManagerProvider;
 import org.arquillian.droidium.container.api.ActivityManagerProvider;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidDeviceOutputReciever;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
+import org.arquillian.droidium.container.api.Screenshot;
 import org.arquillian.droidium.container.configuration.Validate;
 
 import com.android.ddmlib.AdbCommandRejectedException;
@@ -258,7 +261,7 @@ public class AndroidDeviceImpl implements AndroidDevice {
     }
 
     @Override
-    public RawImage getScreenshot() {
+    public Screenshot getScreenshot() {
         RawImage rawImage = null;
 
         try {
@@ -274,7 +277,10 @@ public class AndroidDeviceImpl implements AndroidDevice {
             ex.printStackTrace();
         }
 
-        return rawImage;
+        AndroidScreenshot screenshot = new AndroidScreenshot();
+        screenshot.setRawImage(rawImage);
+
+        return screenshot;
     }
 
     private static class PackageInstalledMonkey implements AndroidDeviceOutputReciever {

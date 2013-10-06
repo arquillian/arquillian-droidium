@@ -20,8 +20,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.arquillian.droidium.container.deployment.AndroidDeploymentRegister;
 import org.arquillian.droidium.native_.configuration.DroneConfigurationHolder;
-import org.arquillian.droidium.native_.deployment.AndroidDeploymentRegister;
 import org.arquillian.droidium.native_.deployment.DeploymentWebDriverMapper;
 import org.arquillian.droidium.native_.deployment.ExtensionDroneMapper;
 import org.arquillian.droidium.native_.deployment.SelendroidDeploymentRegister;

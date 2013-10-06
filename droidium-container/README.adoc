@@ -601,6 +601,85 @@ before the extension (e.g. target/logcat.log will change to target/logcat.serial
 </configuration>
 ----
 
+=== All following paramaters regarding debug keystore and its generation are subject of `keytool` command.
+
+==== keystore
+===== default: $HOME/.android/debug.keystore
+
+Sets keystore to use for resigning packages after they are modified dynamically. Not resigning them 
+would result into impossibility to install them to Android device since certificates would be different.
+Debug key store is automatically created for you when it is not created yet, typically in `~/.android` or when you 
+specifies keystore in `keystore` property and such keystore path does not exist.
+
+----
+<property name="keystore">/path/to/your/key/store</property>
+----
+
+==== storepass
+===== default: "android"
+
+----
+<property name="storepass">storepass</property>
+----
+
+==== keypass
+===== default: "android"
+
+----
+<property name="keypass">keypass</property>
+----
+
+==== alias
+===== default: androiddebugkey
+
+----
+<property name="alias">somealias</property>
+----
+
+==== sigalg
+===== default: SHA1withRSA
+
+Tells what kind of signature algoritm to use for a debug keystore when it is created.
+
+----
+<property name="sigalg">MD5withSHA</property>
+----
+
+==== keyalg
+===== default: RSA
+
+Tells what kind of key algoritm to use for a debug keystore when it is created.
+
+----
+<property name="keyalg">some_other_keyalg</property>
+----
+
+==== tmpDir
+===== default: java.io.tmpdir
+
+Specifies where to do all repackaging operaions with Selendroid server and _aut_. All reconstruction, 
+resigning and storing of APKs is done there. From the implementation point of view, all packages and 
+directories are random UUID identifiers.
+
+This directory is deleted by default where tests are finished. It can be changed via `removeTmpDir` 
+property.
+
+----
+<property name="tmpDir">/path/to/tmp/dir</property>
+----
+
+==== removeTmpDir
+===== default: true
+
+Specifies if all temporary resources as repackaged Selendroid server should be removed by default.
+Set it to false when you want to inspect what packages are going to be installed for debug purposes, 
+however it is desired to remove this directory by default since it can occupy significant amount of 
+space. For every test run, other working directory is created every time.
+
+----
+<property name="removeTmpDir">true|false</property>
+----
+
 == Connection logic of Android container
 
 When the container you want to use, of some particular `avdName`, is not started, it is automatically started 

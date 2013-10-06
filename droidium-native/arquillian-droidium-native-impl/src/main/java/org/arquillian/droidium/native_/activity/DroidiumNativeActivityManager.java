@@ -20,12 +20,9 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
-import org.arquillian.droidium.container.spi.event.BeforeActivityManagerCreated;
-import org.arquillian.droidium.container.spi.event.AfterActivityManagerCreated;
 import org.arquillian.droidium.native_.deployment.ActivityDeploymentMapper;
 import org.arquillian.droidium.native_.deployment.DeploymentWebDriverMapper;
 import org.arquillian.droidium.native_.deployment.ExtensionDroneMapper;
-import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;
@@ -38,11 +35,6 @@ import org.openqa.selenium.WebDriver;
  * <ul>
  * <li>{@link AfterDroneInstantiated}</li>
  * <li>{@link BeforeDroneDestroyed}</li>
- * </ul>
- * Fires:
- * <ul>
- * <li>{@link AfterActivityManagerCreated}</li>
- * <li>{@link BeforeActivityManagerCreated}</li>
  * </ul>
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
@@ -66,12 +58,6 @@ public class DroidiumNativeActivityManager {
 
     @Inject
     private Instance<ActivityWebDriverMapper> activityWebDriverMapper;
-
-    @Inject
-    private Event<BeforeActivityManagerCreated> beforeActivityManagerCreated;
-
-    @Inject
-    private Event<AfterActivityManagerCreated> afterActivityManagerCreated;
 
     /**
      * Adds all activities which are controllable by just instantiated Drone instance into context.

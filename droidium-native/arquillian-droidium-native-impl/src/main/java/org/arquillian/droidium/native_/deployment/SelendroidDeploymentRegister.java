@@ -16,6 +16,7 @@
  */
 package org.arquillian.droidium.native_.deployment;
 
+import org.arquillian.droidium.container.deployment.DeploymentRegister;
 import org.arquillian.droidium.native_.spi.SelendroidDeployment;
 
 /**

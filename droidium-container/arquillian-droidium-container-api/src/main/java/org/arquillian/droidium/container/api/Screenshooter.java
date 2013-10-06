@@ -16,8 +16,6 @@
  */
 package org.arquillian.droidium.container.api;
 
-import java.io.File;
-
 /**
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
@@ -29,7 +27,7 @@ public interface Screenshooter {
      *
      * @return screenshot of default image format
      */
-    File takeScreenshot();
+    Screenshot takeScreenshot();
 
     /**
      * Takes screenshot in specified format. Name of screenshot is random string with file format extension.
@@ -37,7 +35,7 @@ public interface Screenshooter {
      * @param type type of screenshot
      * @return screenshot of given image type
      */
-    File takeScreenshot(ScreenshotType type);
+    Screenshot takeScreenshot(ScreenshotType type);
 
     /**
      * Takes screenshot of default file format with specified name.
@@ -45,7 +43,7 @@ public interface Screenshooter {
      * @param fileName name of file without file format extension
      * @return screenshot of default format with specified name
      */
-    File takeScreenshot(String fileName);
+    Screenshot takeScreenshot(String fileName);
 
     /**
      * Takes screenshot of specified type which is saved under specified name
@@ -54,7 +52,7 @@ public interface Screenshooter {
      * @param type type of screenshot required
      * @return screenshot of specified format with a specified name
      */
-    File takeScreenshot(String fileName, ScreenshotType type);
+    Screenshot takeScreenshot(String fileName, ScreenshotType type);
 
     /**
      * Sets a directory where all taken screenshots will be saved from now on.

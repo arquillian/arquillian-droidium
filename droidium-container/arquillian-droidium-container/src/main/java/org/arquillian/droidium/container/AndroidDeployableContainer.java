@@ -17,31 +17,39 @@
  */
 package org.arquillian.droidium.container;
 
+import java.io.File;
+
+import org.arquillian.droidium.container.activity.DefaultActivityManagerProvider;
 import org.arquillian.droidium.container.api.ActivityManagerProvider;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.IdentifierGenerator;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
-import org.arquillian.droidium.container.impl.DefaultActivityManagerProvider;
+import org.arquillian.droidium.container.deployment.AndroidDeploymentRegister;
+import org.arquillian.droidium.container.impl.AndroidApplicationHelper;
+import org.arquillian.droidium.container.impl.AndroidApplicationManager;
 import org.arquillian.droidium.container.impl.ProcessExecutor;
+import org.arquillian.droidium.container.sign.APKSigner;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStart;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStop;
 import org.arquillian.droidium.container.spi.event.AndroidDeploy;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
 import org.arquillian.droidium.container.spi.event.AndroidUndeploy;
 import org.arquillian.droidium.container.utils.AndroidIdentifierGenerator;
+import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.jboss.arquillian.container.spi.client.container.DeployableContainer;
 import org.jboss.arquillian.container.spi.client.container.DeploymentException;
 import org.jboss.arquillian.container.spi.client.container.LifecycleException;
 import org.jboss.arquillian.container.spi.client.protocol.ProtocolDescription;
 import org.jboss.arquillian.container.spi.client.protocol.metadata.ProtocolMetaData;
-import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
+import org.jboss.arquillian.container.spi.event.container.BeforeStop;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.InstanceProducer;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;
 import org.jboss.arquillian.core.spi.ServiceLoader;
+import org.jboss.arquillian.test.spi.annotation.SuiteScoped;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.descriptor.api.Descriptor;
 
@@ -56,8 +64,12 @@ import org.jboss.shrinkwrap.descriptor.api.Descriptor;
  * <ul>
  * <li>{@link AndroidDeviceReady}</li>
  * </ul>
- * Produces ContainerScoped:
+ * Produces SuiteScoped:
  * <ul>
+ * <li>{@link AndroidApplicationHelper}</li>
+ * <li>{@link APKSigner}</li>
+ * <li>{@link AndroidApplicationManager}</li>
+ * <li>{@link AndroidDeploymentRegister}</li>
  * <li>{@link AndroidSDK}</li>
  * <li>{@link IdentifierGenerator}</li>
  * <li>{@link ProcessExecutor}</li>
@@ -76,20 +88,36 @@ import org.jboss.shrinkwrap.descriptor.api.Descriptor;
 public class AndroidDeployableContainer implements DeployableContainer<AndroidContainerConfiguration> {
 
     @Inject
-    @ContainerScoped
+    @SuiteScoped
     private InstanceProducer<AndroidContainerConfiguration> configuration;
 
     @Inject
-    @ContainerScoped
+    @SuiteScoped
     private InstanceProducer<AndroidSDK> androidSDK;
 
     @Inject
-    @ContainerScoped
+    @SuiteScoped
     private InstanceProducer<IdentifierGenerator> idGenerator;
 
     @Inject
-    @ContainerScoped
+    @SuiteScoped
     private InstanceProducer<ProcessExecutor> executor;
+
+    @Inject
+    @SuiteScoped
+    private InstanceProducer<APKSigner> signer;
+
+    @Inject
+    @SuiteScoped
+    private InstanceProducer<AndroidApplicationManager> androidApplicationManager;
+
+    @Inject
+    @SuiteScoped
+    private InstanceProducer<AndroidApplicationHelper> androidApplicationHelper;
+
+    @Inject
+    @SuiteScoped
+    private InstanceProducer<AndroidDeploymentRegister> androidDeploymentRegister;
 
     @Inject
     private Event<AndroidContainerStart> androidContainerStartEvent;
@@ -125,6 +153,12 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidCo
         this.androidSDK.set(new AndroidSDK(this.configuration.get()));
         this.idGenerator.set(new AndroidIdentifierGenerator());
         this.executor.set(new ProcessExecutor());
+
+        this.signer.set(new APKSigner(this.executor.get(), this.androidSDK.get(), this.configuration.get()));
+        this.androidApplicationHelper.set(new AndroidApplicationHelper(executor.get(), androidSDK.get()));
+        this.androidDeploymentRegister.set(new AndroidDeploymentRegister());
+
+        DroidiumFileUtils.createWorkingDir(new File(this.configuration.get().getTmpDir()));
     }
 
     @Override
@@ -158,9 +192,25 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidCo
         throw new UnsupportedOperationException("Deployment of a descriptor is not supported");
     }
 
-    public void onDeviceReady(@Observes AndroidDeviceReady event) {
+    public void onAndroidDeviceReady(@Observes AndroidDeviceReady event) {
         ActivityManagerProvider activityManagerProvider = getActivityManagerProvider();
         androidDevice.get().setActivityManagerProvider(activityManagerProvider);
+        this.androidApplicationManager.set(new AndroidApplicationManager(androidDevice.get(), executor.get(), androidSDK.get()));
+    }
+
+    /**
+     * Deletes temporary directory where all resources (files, resigned apks, logs ... ) are stored.
+     *
+     * This resource directory will not be deleted when you suppress it by {@code removeTmpDir="false"} in configuration.
+     *
+     * @param event
+     */
+    public void onBeforeStop(@Observes BeforeStop event) {
+        if (event.getDeployableContainer().getConfigurationClass() == AndroidContainerConfiguration.class) {
+            if (configuration.get().getRemoveTmpDir()) {
+                DroidiumFileUtils.removeWorkingDir(DroidiumFileUtils.getTmpDir());
+            }
+        }
     }
 
     private ActivityManagerProvider getActivityManagerProvider() {

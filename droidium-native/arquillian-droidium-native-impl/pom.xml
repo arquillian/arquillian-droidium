@@ -34,8 +34,6 @@
         <version.arquillian.drone>1.2.0.Beta2</version.arquillian.drone>
 
         <!-- Other versions -->
-        <version.httpclient>4.2.5</version.httpclient>
-        <version.commons.io>1.3.2</version.commons.io>
         <version.mockito>1.9.5</version.mockito>
     </properties>
 
@@ -74,7 +72,6 @@
             <artifactId>arquillian-drone-spi</artifactId>
         </dependency>
 
-
         <!-- Arquillian dependencies -->
         <dependency>
             <groupId>org.jboss.arquillian.core</groupId>
@@ -101,15 +98,6 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
         </dependency>
 
         <!-- Test dependencies -->
