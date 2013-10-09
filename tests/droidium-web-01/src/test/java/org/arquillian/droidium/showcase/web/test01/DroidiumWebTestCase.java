@@ -39,11 +39,11 @@ import org.openqa.selenium.android.AndroidDriver;
 
 /**
  * Shows basic testing of hello-world like application deployed into JBoss AS and tested from Android container point of view.
- * 
+ *
  * If you really want, you can install packages on Android device as you are used to.
- * 
+ *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
- * 
+ *
  */
 @RunWith(Arquillian.class)
 @RunAsClient

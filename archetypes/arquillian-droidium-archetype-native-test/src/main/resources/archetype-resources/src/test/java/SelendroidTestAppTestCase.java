@@ -3,6 +3,7 @@ package ${package};
 import java.io.File;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
+import org.arquillian.droidium.native_.api.Instrumentable;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -28,6 +29,7 @@ public class SelendroidTestAppTestCase {
 
     @Deployment(name = "android")
     @TargetsContainer("android")
+    @Instrumentable
     public static Archive<?> createDeployment() {
         return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("your-apk-under-test"));
     }

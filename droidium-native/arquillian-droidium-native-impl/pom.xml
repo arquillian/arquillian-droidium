@@ -30,9 +30,6 @@
 
     <!-- Properties -->
     <properties>
-        <!-- Drone versions -->
-        <version.arquillian.drone>1.2.0.Beta2</version.arquillian.drone>
-
         <!-- Other versions -->
         <version.mockito>1.9.5</version.mockito>
     </properties>

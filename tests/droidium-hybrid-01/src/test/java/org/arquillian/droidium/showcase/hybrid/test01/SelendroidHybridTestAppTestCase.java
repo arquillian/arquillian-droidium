@@ -100,9 +100,9 @@ public class SelendroidHybridTestAppTestCase {
     @InSequence(2)
     @OperateOnDeployment("android")
     public void webViewTest(@ArquillianResource AndroidDevice android, @Drone WebDriver driver) {
-        
+
         android.getActivityManagerProvider().getActivityManager().startActivity("io.selendroid.testapp.HomeScreenActivity");
-        
+
         WebElement button = driver.findElement(By.id("buttonStartWebview"));
         button.click();
         WebDriverWait wait = new WebDriverWait(driver, 10);

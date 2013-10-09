@@ -36,11 +36,11 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 
 /**
  * Proof of concept test for showing multiple containers on classpath.
- * 
+ *
  * While testing web application, you can omit deployment for Android completely.
- * 
+ *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
- * 
+ *
  */
 @RunWith(Arquillian.class)
 @RunAsClient

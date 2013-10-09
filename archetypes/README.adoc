@@ -18,9 +18,9 @@ directory, enter there and execute:
 
 -------------------------------------
 mvn archetype:generate \
-    -DarchetypeGroupId=org.arquillian.droidium.archetypes \
+    -DarchetypeGroupId=org.arquillian.droidium.archetype \
     -DarchetypeArtifactId=arquillian-droidium-archetype-native-test \
-    -DarchetypeVersion=0.0.1-SNAPSHOT
+    -DarchetypeVersion=${droidium.version}
 -------------------------------------
 
 Interactive request-response dialog then follows, enter what is good for you:

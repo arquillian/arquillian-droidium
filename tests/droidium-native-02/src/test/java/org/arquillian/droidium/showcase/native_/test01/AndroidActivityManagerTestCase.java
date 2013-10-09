@@ -31,9 +31,9 @@ import org.junit.runner.RunWith;
 
 /**
  * Android Droidium - controlling of activities without native plugin.
- * 
+ *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
- * 
+ *
  */
 @RunWith(Arquillian.class)
 @RunAsClient

@@ -105,9 +105,9 @@ public class SelendroidTestAppTestCase {
         // start activities only from the selendroid-test-app deployment since the second WebDriver
         // is destroyed
         //
-        // Selendroid server for particular WebDriver instance is uninstalled upon every destruction 
+        // Selendroid server for particular WebDriver instance is uninstalled upon every destruction
         // of that instance. For class scoped Drone, it occurs in the end of the class (AfterClass).
-        // For method scoped Drones, it occurs in the end of the method (After). AfterClass and 
+        // For method scoped Drones, it occurs in the end of the method (After). AfterClass and
         // After are here mentioned in Arquillian sense.
     }
 
