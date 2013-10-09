@@ -40,6 +40,14 @@ executed (instrumentation is done by repackaged selendroid server) and testing i
 This project uses `arquillian-droidium-native` extension which does just mentioned. It uses 
 https://docs.jboss.org/author/display/ARQ/Drone[Arquillian Drone Web Driver].
 
+=== droidium-native-02
+
+This project shows how to use Droidium container in the standalone mode - there is not 
+any native or web plugin on the class path during the test run but we can start and stop 
+activities anyway. It is because of default activity manager implementation which gets 
+treated by default. You can also install and uninstall packages to Android device as 
+you are used to.
+
 === droidium-hybrid-01
 
 This project illustrates the usecase  when one wants to test
