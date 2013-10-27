@@ -98,6 +98,10 @@ public class SelendroidServerManager {
             .add("install")
             .add(deployment.getResigned().getAbsolutePath());
 
+        if (device.isPackageInstalled(deployment.getSelendroidPackageName())) {
+            device.uninstallPackage(deployment.getSelendroidPackageName());
+        }
+
         logger.fine("Selendroid server installation command: " + selendroidInstallCommand.toString());
 
         try {

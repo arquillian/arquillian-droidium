@@ -42,13 +42,13 @@ import org.jboss.arquillian.core.api.annotation.Observes;
 public class SelendroidDeploymentInstaller {
 
     @Inject
+    private Instance<SelendroidServerManager> selendroidServerManager;
+
+    @Inject
     private Event<BeforeSelendroidDeploymentDeployed> beforeSelendroidDeploymentDeployed;
 
     @Inject
     private Event<AfterSelendroidDeploymentDeployed> afterSelendroidDeploymentDeployed;
-
-    @Inject
-    private Instance<SelendroidServerManager> selendroidServerManager;
 
     public void onSelendroidDeploy(@Observes SelendroidDeploy event) {
         beforeSelendroidDeploymentDeployed.fire(new BeforeSelendroidDeploymentDeployed(event.getDeployment()));

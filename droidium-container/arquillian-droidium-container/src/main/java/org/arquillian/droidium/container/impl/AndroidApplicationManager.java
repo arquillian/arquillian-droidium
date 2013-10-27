@@ -90,6 +90,10 @@ public class AndroidApplicationManager {
 
         String applicationBasePackage = deployment.getApplicationBasePackage();
 
+        if (device.isPackageInstalled(applicationBasePackage)) {
+            device.uninstallPackage(applicationBasePackage);
+        }
+
         try {
             executor.execute(installCommand.getAsArray());
         } catch (InterruptedException e) {
