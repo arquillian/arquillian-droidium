@@ -173,15 +173,21 @@ public class AndroidApplicationHelper {
         packageName = getPackageName(output);
 
         for (int i = 0; i < output.size(); i++) {
-            if (output.get(i).contains("activity")) {
-                while (!output.get(++i).contains("android:name")) {
+            if (output.get(i).trim().startsWith("E: activity")) {
+                while (!output.get(++i).trim().contains("A: android:name")) {
                 }
-                activities.add(packageName + getActivityName(output.get(i)));
+
+                String activityName = getActivityName(output.get(i));
+
+                if (activityName.startsWith(".")) {
+                    activities.add(packageName + activityName);
+                } else {
+                    activities.add(activityName);
+                }
             }
         }
 
         return activities;
-
     }
 
     private String getPackageName(List<String> output) {
