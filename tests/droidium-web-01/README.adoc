@@ -1,6 +1,10 @@
 == Arquillian Droidium web test
 
-To build the application, simply execute `mvn clean package`. Tests are skipped.
+To build the application, simply execute 
+
+`mvn clean package`
+
+in order to build the application. Tests are skipped.
 
 When application is built, execute test profile like this:
 

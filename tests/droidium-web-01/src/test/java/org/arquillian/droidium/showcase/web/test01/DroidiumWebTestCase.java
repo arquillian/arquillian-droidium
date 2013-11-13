@@ -49,12 +49,6 @@ import org.openqa.selenium.android.AndroidDriver;
 @RunAsClient
 public class DroidiumWebTestCase {
 
-    @Deployment(name = "android")
-    @TargetsContainer("android")
-    public static Archive<?> getAndroidDeployment() {
-        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.5.1.apk"));
-    }
-
     @Deployment(name = "jbossas", testable = false)
     @TargetsContainer("jbossas")
     public static Archive<?> getJBossASDeployment() {
@@ -72,11 +66,4 @@ public class DroidiumWebTestCase {
         Assert.assertTrue(driver.getPageSource().contains("Hello World!"));
     }
 
-    @Test
-    @InSequence(2)
-    @OperateOnDeployment("android")
-    public void test02(@ArquillianResource AndroidDevice device) {
-        Assert.assertNotNull(device);
-        Assert.assertTrue(device.isPackageInstalled("io.selendroid.testapp"));
-    }
 }
