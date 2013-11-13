@@ -16,10 +16,8 @@
  */
 package org.arquillian.droidium.showcase.web.test01;
 
-import java.io.File;
 import java.net.URL;
 
-import org.arquillian.droidium.container.api.AndroidDevice;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -28,22 +26,19 @@ import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.resolver.api.maven.archive.importer.MavenImporter;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openqa.selenium.android.AndroidDriver;
+import org.openqa.selenium.WebDriver;
 
 /**
  * Shows basic testing of hello-world like application deployed into JBoss AS and tested from Android container point of view.
- *
- * If you really want, you can install packages on Android device as you are used to.
- *
+ * 
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
- *
+ * 
  */
 @RunWith(Arquillian.class)
 @RunAsClient
@@ -51,14 +46,14 @@ public class DroidiumWebTestCase {
 
     @Deployment(name = "jbossas", testable = false)
     @TargetsContainer("jbossas")
-    public static Archive<?> getJBossASDeployment() {
-        return ShrinkWrap.createFromZipFile(WebArchive.class, new File("target/jboss-as-helloworld.war"));
+    public static WebArchive getJBossASDeployment() {
+        return ShrinkWrap.create(MavenImporter.class).loadPomFromFile("pom.xml").importBuildOutput().as(WebArchive.class);
     }
 
     @Test
     @InSequence(1)
     @OperateOnDeployment("jbossas")
-    public void test01(@Drone AndroidDriver driver, @ArquillianResource URL deploymentURL) {
+    public void test01(@Drone WebDriver driver, @ArquillianResource URL deploymentURL) {
         // get deployment URL
         driver.get(deploymentURL.toString());
 
