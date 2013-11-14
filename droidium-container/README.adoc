@@ -357,6 +357,15 @@ Pretty straightforward. Which ABI your container should use.
 </configuration>
 ----
 
+==== apiLevel
+===== default: 10
+
+Sets your API level you want to use with your emulator.
+
+<configuration>
+    <property name="apiLevel">18</property>
+</configuration>
+
 ==== emulatorBootupTimeoutInSeconds
 ===== default: 120 seconds
 
