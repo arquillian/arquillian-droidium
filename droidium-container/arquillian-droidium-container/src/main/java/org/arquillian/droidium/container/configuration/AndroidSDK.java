@@ -85,16 +85,33 @@ public class AndroidSDK {
      */
     private static final String BUILD_TOOLS_FOLDER_NAME = "build-tools";
 
+    /**
+     * folder name of system images in SDK
+     */
+    private static final String SYSTEM_IMAGES_FOLDER_NAME = "system-images";
+
     private static final class Platform implements Comparable<Platform> {
         final String name;
         final String apiLevel;
         final String path;
+        final List<String> systemImages;
 
-        public Platform(String name, String apiLevel, String path) {
+        public Platform(String name, String apiLevel, String path, List<String> systemImages) {
             super();
             this.name = name;
             this.apiLevel = apiLevel;
             this.path = path;
+            this.systemImages = systemImages;
+        }
+
+        public boolean hasSystemImage(String systemImage) {
+            for (String tmp : systemImages) {
+                if (tmp.equals(systemImage)) {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         @Override
@@ -168,6 +185,49 @@ public class AndroidSDK {
         }
     }
 
+    /**
+     * Enumeration of all (up to November 2013) possible types of system images.
+     *
+     * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
+     *
+     */
+    private enum SystemImage {
+
+        X86 {
+            @Override
+            public String toString() {
+                return "x86";
+            }
+        },
+        ARMEABIV7A {
+            @Override
+            public String toString() {
+                return "armeabi-v7a";
+            }
+        },
+        MIPS {
+            @Override
+            public String toString() {
+                return "mips";
+            }
+        };
+
+        /**
+         * @return all system images concatenated to one string separated only by one space from each other
+         */
+        public static String getAll() {
+            StringBuilder sb = new StringBuilder();
+
+            for (SystemImage systemImage : SystemImage.values()) {
+                sb.append(systemImage.toString());
+                sb.append(" ");
+            }
+
+            return sb.toString().trim();
+        }
+
+    }
+
     private final File sdkPath;
     private final File javaPath;
     private final Platform platform;
@@ -206,7 +266,25 @@ public class AndroidSDK {
                 + "this API level will be used when emulator will be created. All available platforms are: {1}",
                 new Object[] { configuration.getApiLevel(), getAllPlatforms() });
             foundPlatform = availablePlatforms.get(availablePlatforms.size()-1);
-            configuration.setApiLevel(foundPlatform.apiLevel);
+        }
+
+        configuration.setApiLevel(foundPlatform.apiLevel);
+
+        if (foundPlatform.systemImages.size() == 0) {
+            logger.log(Level.INFO, "There are not any system images found for your API level. You can use Droidium "
+                + "only with physical devices connected until you specify such API level which has system images available to use. "
+                + "Your current API level is: {0}", new Object[] { configuration.getApiLevel() } );
+        }
+
+        if (!foundPlatform.hasSystemImage(configuration.getAbi())) {
+            logger.log(Level.INFO, "ABI you want to use ({1}), is not present in the system for API level {0}. "
+                + "When you have not specified it in the configuration via 'abi' property, Droidium tries to use by "
+                + "default ABI of 'x86'. When this ABI is not present, Droidium uses whatever comes first among {2}." ,
+                new Object[] { configuration.getApiLevel(), configuration.getAbi(), SystemImage.getAll()});
+
+            if (foundPlatform.systemImages.size() != 0) {
+                configuration.setAbi(foundPlatform.systemImages.get(0));
+            }
         }
 
         platform = foundPlatform;
@@ -427,8 +505,9 @@ public class AndroidSDK {
             if (properties.containsKey(PLATFORM_VERSION_PROPERTY) && properties.containsKey(API_LEVEL_PROPERTY)) {
                 String platform = properties.getProperty(PLATFORM_VERSION_PROPERTY);
                 String apiLevel = properties.getProperty(API_LEVEL_PROPERTY);
+                List<String> systemImages = getSystemImages("android-" + apiLevel);
 
-                Platform p = new Platform(platform, apiLevel, pDir.getAbsolutePath());
+                Platform p = new Platform(platform, apiLevel, pDir.getAbsolutePath(), systemImages);
                 availablePlatforms.add(p);
                 if (logger.isLoggable(Level.FINE)) {
                     logger.fine("Found available platform: " + p.toString());
@@ -461,6 +540,41 @@ public class AndroidSDK {
             }
         }
         return sourcePropertyFiles;
+    }
+
+    private List<File> getSystemImageDirectories(String systemImageDirName) {
+
+        List<File> systemImages = new ArrayList<File>();
+
+        File dir = new File(new File(sdkPath, SYSTEM_IMAGES_FOLDER_NAME), systemImageDirName);
+
+        if (!dir.exists()) {
+            return systemImages;
+        }
+
+        for (File file : dir.listFiles()) {
+            if (file.isDirectory()) {
+                systemImages.add(file);
+            }
+        }
+
+        return systemImages;
+    }
+
+    private List<String> getSystemImages(String systemImageDirName) {
+
+        List<File> systemImageDirs = getSystemImageDirectories(systemImageDirName);
+
+        List<String> images = new ArrayList<String>();
+
+        for (File dir : systemImageDirs) {
+            images.add(dir.getName());
+        }
+
+        Collections.sort(images);
+        Collections.reverse(images); // to have x86 as the first one
+
+        return images;
     }
 
 }

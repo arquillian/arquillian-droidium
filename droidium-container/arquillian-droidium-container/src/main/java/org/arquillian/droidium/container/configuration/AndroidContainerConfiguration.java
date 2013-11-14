@@ -18,6 +18,7 @@
 package org.arquillian.droidium.container.configuration;
 
 import java.io.File;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.arquillian.droidium.container.log.LogLevel;
@@ -54,7 +55,7 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
 
     private boolean generateSDCard;
 
-    private String abi;
+    private String abi = "x86";
 
     private long emulatorBootupTimeoutInSeconds = 120L;
 
@@ -398,12 +399,8 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
         if (avdName != null && serialId != null) {
             logger.warning("Both \"avdName\" and \"serialId\" properties are defined, the device "
                 + "specified by \"serialId\" will get priority if connected.");
-        }
-
-        if (avdName == null && serialId == null && consolePort == null) {
-            logger.severe("All \"avdName\", \"serialId\" and \"consolePort\" are not defined.");
-            throw new AndroidContainerConfigurationException(
-                "All \"avdName\", \"serialId\" and \"consolePort\" are not defined.");
+        } else if (avdName == null) {
+            avdName = UUID.randomUUID().toString();
         }
 
         if (generatedAvdPath != null) {

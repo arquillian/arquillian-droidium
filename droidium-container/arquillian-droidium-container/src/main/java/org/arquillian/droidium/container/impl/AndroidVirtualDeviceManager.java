@@ -123,17 +123,20 @@ public class AndroidVirtualDeviceManager {
 
         try {
             Command command = new Command();
-            command.add(sdk.getAndroidPath()).add("create").add("avd").add("-n").add(configuration.getAvdName())
-                .add("-t").add("android-" + configuration.getApiLevel()).add("-f")
+            command.add(sdk.getAndroidPath())
+                .add("create")
+                .add("avd")
+                .add("-n").add(configuration.getAvdName())
+                .add("-t").add("android-" + configuration.getApiLevel())
+                .add("-b").add(configuration.getAbi())
+                .add("-f")
                 .add("-p")
                 .add(configuration.getGeneratedAvdPath() + System.getProperty("file.separator") + configuration.getAvdName());
+
             if (configuration.getSdCard() != null && new File(configuration.getSdCard()).exists()) {
                 command.add("-c").add(configuration.getSdCard());
             } else {
                 command.add("-c").add(configuration.getSdSize());
-            }
-            if (configuration.getAbi() != null) {
-                command.add("--abi").add(configuration.getAbi());
             }
 
             logger.info("Creating new avd " + command);
@@ -143,6 +146,8 @@ public class AndroidVirtualDeviceManager {
                     put("Do you wish to create a custom hardware profile [no]", "no" + System.getProperty("line.separator"));
                 }
             }, command.getAsList().toArray(argsArrays));
+
+            configuration.setAvdGenerated(true);
 
             androidVirtualDeviceAvailable.fire(new AndroidVirtualDeviceAvailable(configuration.getAvdName()));
         } catch (InterruptedException e) {
