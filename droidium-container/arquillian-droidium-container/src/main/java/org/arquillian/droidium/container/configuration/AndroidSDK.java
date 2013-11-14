@@ -36,10 +36,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -174,7 +172,7 @@ public class AndroidSDK {
     private final File javaPath;
     private final Platform platform;
 
-    private Set<Platform> availablePlatforms;
+    private List<Platform> availablePlatforms;
 
     /**
      *
@@ -191,27 +189,40 @@ public class AndroidSDK {
 
         this.sdkPath = new File(configuration.getHome());
         this.javaPath = new File(configuration.getJavaHome());
-        this.availablePlatforms = findAvailablePlatforms();
+        availablePlatforms = findAvailablePlatforms();
 
-        platform = findPlatformByApiLevel(configuration.getApiLevel());
-        if (platform == null) {
-
-            StringBuilder sb = new StringBuilder();
-            for (Platform p : availablePlatforms) {
-                sb.append("API level: ").append(p.apiLevel).append("(").append(p.name).append("), ");
-            }
-            if (sb.length() > 0) {
-                sb.delete(sb.lastIndexOf(","), sb.length());
-            }
-
-            throw new AndroidContainerConfigurationException(
-                "Invalid SDK: API level "
-                    + configuration.getApiLevel()
-                    + " is not available. Available platforms are: "
-                    + sb.toString()
-                    + ". Use either Platform identification or API level in Arquillian configuration to identify your platform.");
+        if (availablePlatforms.size() == 0) {
+            throw new AndroidContainerConfigurationException("There are not any available platforms found on your system!");
         }
+
+        Platform foundPlatform = findPlatformByApiLevel(configuration.getApiLevel());
+
+        if (foundPlatform == null) {
+            logger.log(Level.INFO, "API level {0} you specified in configuration via 'apiLevel' property "
+                + "is not present on your system. When you have not specified it in the configuration, in such case "
+                + "Droidium tries to find API level 10 by default. When default API level is not present on your system, "
+                + "Droidium tries to find the highest API level available and sets it as the default one. When "
+                + "your emulator of some AVD name is not present in the system, Droidium will create it dynamically and "
+                + "this API level will be used when emulator will be created. All available platforms are: {1}",
+                new Object[] { configuration.getApiLevel(), getAllPlatforms() });
+            foundPlatform = availablePlatforms.get(availablePlatforms.size()-1);
+            configuration.setApiLevel(foundPlatform.apiLevel);
+        }
+
+        platform = foundPlatform;
         this.configuration = configuration;
+    }
+
+    private String getAllPlatforms() {
+        StringBuilder sb = new StringBuilder();
+        for (Platform p : availablePlatforms) {
+            sb.append("API level: ").append(p.apiLevel).append("(").append(p.name).append("), ");
+        }
+        if (sb.length() > 0) {
+            sb.delete(sb.lastIndexOf(","), sb.length());
+        }
+
+        return sb.toString();
     }
 
     public AndroidContainerConfiguration getConfiguration() {
@@ -399,7 +410,7 @@ public class AndroidSDK {
      * @throws AndroidConfigurationException
      *
      */
-    private Set<Platform> findAvailablePlatforms() throws AndroidContainerConfigurationException {
+    private List<Platform> findAvailablePlatforms() throws AndroidContainerConfigurationException {
         List<Platform> availablePlatforms = new ArrayList<Platform>();
 
         List<File> platformDirectories = getPlatformDirectories();
@@ -426,7 +437,7 @@ public class AndroidSDK {
         }
 
         Collections.sort(availablePlatforms);
-        return new LinkedHashSet<AndroidSDK.Platform>(availablePlatforms);
+        return availablePlatforms;
     }
 
     /**
