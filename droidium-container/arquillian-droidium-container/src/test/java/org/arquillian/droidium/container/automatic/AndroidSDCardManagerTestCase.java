@@ -31,7 +31,7 @@ import java.util.List;
 
 import org.arquillian.droidium.container.AbstractAndroidTestTestBase;
 import org.arquillian.droidium.container.api.IdentifierGenerator;
-import org.arquillian.droidium.container.api.IdentifierType;
+import org.arquillian.droidium.container.api.FileType;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.impl.AndroidSDCardManagerImpl;
@@ -76,7 +76,7 @@ public class AndroidSDCardManagerTestCase extends AbstractAndroidTestTestBase {
     private static final String SD_SIZE = "128M";
 
     @Mock
-    private IdentifierGenerator idGenerator;
+    private IdentifierGenerator<FileType> idGenerator;
 
     @Override
     protected void addExtensions(List<Class<?>> extensions) {
@@ -90,8 +90,8 @@ public class AndroidSDCardManagerTestCase extends AbstractAndroidTestTestBase {
 
         getManager().getContext(ContainerContext.class).activate("doesnotmatter");
 
-        Mockito.when(idGenerator.getIdentifier(IdentifierType.SD_CARD.getClass())).thenReturn(SD_CARD);
-        Mockito.when(idGenerator.getIdentifier(IdentifierType.SD_CARD_LABEL.getClass())).thenReturn(SD_CARD_LABEL);
+        Mockito.when(idGenerator.getIdentifier(FileType.SD_CARD)).thenReturn(SD_CARD);
+        Mockito.when(idGenerator.getIdentifier(FileType.SD_CARD_LABEL)).thenReturn(SD_CARD_LABEL);
         bind(ContainerScoped.class, IdentifierGenerator.class, idGenerator);
         bind(ContainerScoped.class, ProcessExecutor.class, executor);
     }

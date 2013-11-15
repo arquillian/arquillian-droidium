@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.api.AndroidSDCardManager;
 import org.arquillian.droidium.container.api.IdentifierGenerator;
-import org.arquillian.droidium.container.api.IdentifierType;
+import org.arquillian.droidium.container.api.FileType;
 import org.arquillian.droidium.container.api.SDCard;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
@@ -69,7 +69,7 @@ public class AndroidSDCardManagerImpl implements AndroidSDCardManager {
     private Instance<AndroidSDK> androidSDK;
 
     @Inject
-    private Instance<IdentifierGenerator> idGenerator;
+    private Instance<IdentifierGenerator<FileType>> idGenerator;
 
     @Inject
     private Instance<ProcessExecutor> executor;
@@ -80,10 +80,7 @@ public class AndroidSDCardManagerImpl implements AndroidSDCardManager {
     @Inject
     private Event<AndroidSDCardDeleted> androidSDCardDeleted;
 
-    private static final String SD_CARD_DEFAULT_DIR_PATH = System.getProperty("java.io.tmpdir")
-        + System.getProperty("file.separator");
-
-    private static final String SD_CARD_DEFAULT_SIZE = "128M";
+    private static final String SD_CARD_DEFAULT_DIR_PATH = System.getProperty("java.io.tmpdir");
 
     public void createSDCard(@Observes AndroidSDCardCreate event) throws AndroidExecutionException {
 
@@ -97,18 +94,14 @@ public class AndroidSDCardManagerImpl implements AndroidSDCardManager {
         sdCard.setGenerated(configuration.getGenerateSDCard());
 
         if (sdCard.getLabel() == null) {
-            String sdCardLabel = idGenerator.get().getIdentifier(IdentifierType.SD_CARD_LABEL.getClass());
+            String sdCardLabel = idGenerator.get().getIdentifier(FileType.SD_CARD_LABEL);
             sdCard.setLabel(sdCardLabel);
-        }
-
-        if (sdCard.getSize() == null) {
-            sdCard.setSize(SD_CARD_DEFAULT_SIZE);
         }
 
         if (sdCard.isGenerated()) {
             if (sdCard.getFileName() == null) {
                 String sdCardName = SD_CARD_DEFAULT_DIR_PATH
-                    + idGenerator.get().getIdentifier(IdentifierType.SD_CARD.getClass());
+                    + idGenerator.get().getIdentifier(FileType.SD_CARD);
                 sdCard.setFileName(sdCardName);
                 configuration.setSdCard(sdCardName);
                 createSDCard(sdCard);

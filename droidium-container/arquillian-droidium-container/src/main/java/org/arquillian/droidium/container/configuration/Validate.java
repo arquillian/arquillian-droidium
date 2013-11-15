@@ -17,7 +17,6 @@
 package org.arquillian.droidium.container.configuration;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Simple validation utility
@@ -239,32 +238,6 @@ public class Validate {
     }
 
     /**
-     * Checks if a file is writable.
-     *
-     * @param file file to check against writability
-     * @param message exception message
-     */
-    public static void isWritable(final File file, final String message) throws AndroidContainerConfigurationException {
-        notNull(file, "File to check against writability is null object.");
-
-        if (file.exists()) {
-            if (file.canWrite()) {
-                return;
-            }
-            else {
-                throw new AndroidContainerConfigurationException(message);
-            }
-        }
-
-        try {
-            file.createNewFile();
-            file.delete();
-        } catch (IOException e) {
-            throw new AndroidContainerConfigurationException(message);
-        }
-    }
-
-    /**
      * Checks if console port is in valid range.
      *
      * Console port has to be even number in range {@value #CONSOLE_PORT_MIN} - {@value #CONSOLE_PORT_MAX}.
@@ -352,10 +325,10 @@ public class Validate {
      * @param message The exception message
      * @throws IllegalArgumentException Thrown if file is null or invalid
      */
-    public static void isWriteable(final File file, String message) throws IllegalArgumentException {
-        if (file == null) {
-            throw new IllegalArgumentException(message);
-        }
+    public static void isWritable(final File file, String message) throws IllegalArgumentException {
+        notNull(file, "File to check against writability is a null object.");
+        notNullOrEmpty(message, "exception message can not be null or empty string");
+
         if (!file.exists() || !file.canWrite()) {
             throw new IllegalArgumentException(message);
         }

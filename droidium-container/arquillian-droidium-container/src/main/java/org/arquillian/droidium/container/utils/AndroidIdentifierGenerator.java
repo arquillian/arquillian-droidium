@@ -26,43 +26,41 @@ import java.util.UUID;
 
 import org.arquillian.droidium.container.api.IdentifierGenerator;
 import org.arquillian.droidium.container.api.IdentifierGeneratorException;
-import org.arquillian.droidium.container.api.IdentifierType;
+import org.arquillian.droidium.container.api.FileType;
 import org.arquillian.droidium.container.configuration.Validate;
 
 /**
  * Generates random identifier for AVD, SD Card or label of SD Card.
  *
- * Please consult {@link IdentifierType} for possible identifier options.
+ * Please consult {@link FileType} for possible identifier options.
  *
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
-public class AndroidIdentifierGenerator implements IdentifierGenerator {
+public class AndroidIdentifierGenerator implements IdentifierGenerator<FileType> {
 
     private String sdCardSuffix = ".img";
 
     private static final String apkSuffix = ".apk";
 
     @Override
-    public String getIdentifier(Class<?> identifierType) {
+    public String getIdentifier(FileType identifierType) {
         String uuid = UUID.randomUUID().toString();
 
-        if (identifierType.isInstance(IdentifierType.AVD)) {
-            return uuid;
+        switch (identifierType) {
+            case AVD:
+                return uuid;
+            case SD_CARD:
+                return uuid + sdCardSuffix;
+            case SD_CARD_LABEL:
+                return uuid;
+            case FILE:
+                return uuid;
+            case APK:
+                return uuid + apkSuffix;
         }
-        if (identifierType.isInstance(IdentifierType.SD_CARD)) {
-            return uuid + sdCardSuffix;
-        }
-        if (identifierType.isInstance(IdentifierType.SD_CARD_LABEL)) {
-            return uuid;
-        }
-        if (identifierType.isInstance(IdentifierType.FILE)) {
-            return uuid;
-        }
-        if (identifierType.isInstance(IdentifierType.APK)) {
-            return uuid + apkSuffix;
-        }
-        throw new IdentifierGeneratorException("Not possible to generate any identifier of type " + identifierType.getName());
+
+        throw new IdentifierGeneratorException("Not possible to generate any identifier of type " + identifierType.name());
     }
 
     /**

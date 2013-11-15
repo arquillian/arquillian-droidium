@@ -126,7 +126,7 @@ public class AndroidScreenshooter implements Screenshooter {
         String imageName = null;
 
         if (fileName == null) {
-            imageName = new AndroidScreenshotIdentifierGenerator().getIdentifier(type.getClass());
+            imageName = new AndroidScreenshotIdentifierGenerator().getIdentifier(type);
         }
         else {
             imageName = fileName + "." + type.toString();

@@ -19,7 +19,6 @@ package org.arquillian.droidium.container.utils;
 import java.util.UUID;
 
 import org.arquillian.droidium.container.api.IdentifierGenerator;
-import org.arquillian.droidium.container.api.IdentifierGeneratorException;
 import org.arquillian.droidium.container.api.ScreenshotType;
 
 /**
@@ -30,32 +29,11 @@ import org.arquillian.droidium.container.api.ScreenshotType;
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
-public class AndroidScreenshotIdentifierGenerator implements IdentifierGenerator {
+public class AndroidScreenshotIdentifierGenerator implements IdentifierGenerator<ScreenshotType> {
 
-    /**
-     * @param identifierType Takes classes of {@link ScreenshotType}.
-     */
     @Override
-    public String getIdentifier(Class<?> identifierType) throws IdentifierGeneratorException {
-        String uuid = UUID.randomUUID().toString();
-
-        if (identifierType.isInstance(ScreenshotType.BMP)) {
-            return uuid + "." + ScreenshotType.BMP;
-        }
-        if (identifierType.isInstance(ScreenshotType.GIF)) {
-            return uuid + "." + ScreenshotType.GIF;
-        }
-        if (identifierType.isInstance(ScreenshotType.JPEG)) {
-            return uuid + "." + ScreenshotType.JPEG;
-        }
-        if (identifierType.isInstance(ScreenshotType.PNG)) {
-            return uuid + "." + ScreenshotType.PNG;
-        }
-        if (identifierType.isInstance(ScreenshotType.WBMP)) {
-            return uuid + "." + ScreenshotType.WBMP;
-        }
-
-        throw new IdentifierGeneratorException("Not possible to generate any identifier of type " + identifierType.getName());
+    public String getIdentifier(ScreenshotType identifierType) {
+        return UUID.randomUUID().toString() + identifierType.toString();
     }
 
 }

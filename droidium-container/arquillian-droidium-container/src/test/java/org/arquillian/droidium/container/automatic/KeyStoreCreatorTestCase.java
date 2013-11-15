@@ -19,7 +19,7 @@ package org.arquillian.droidium.container.automatic;
 import java.io.File;
 
 import org.arquillian.droidium.container.api.IdentifierGenerator;
-import org.arquillian.droidium.container.api.IdentifierType;
+import org.arquillian.droidium.container.api.FileType;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.sign.KeyStoreCreator;
@@ -54,10 +54,10 @@ public class KeyStoreCreatorTestCase {
         androidSDK = new AndroidSDK(configuration);
         keyStoreCreator = new KeyStoreCreator(androidSDK, configuration);
 
-        IdentifierGenerator aig = new AndroidIdentifierGenerator();
+        IdentifierGenerator<FileType> aig = new AndroidIdentifierGenerator();
         keyStoreToCreate = new File(
             System.getProperty("java.io.tmpdir") + System.getProperty("file.separator")
-                + aig.getIdentifier(IdentifierType.FILE.getClass()));
+                + aig.getIdentifier(FileType.FILE));
     }
 
     @After

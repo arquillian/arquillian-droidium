@@ -17,12 +17,10 @@
 package org.arquillian.droidium.container.api;
 
 /**
- * Format of screenshot we want to have.
- *
- * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
+ * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
-public enum ScreenshotType {
+public enum ScreenshotType implements IdentifierType {
     JPEG {
         @Override
         public String toString() {

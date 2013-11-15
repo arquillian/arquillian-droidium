@@ -27,14 +27,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
-import org.arquillian.droidium.container.api.IdentifierType;
+import org.arquillian.droidium.container.api.FileType;
+import org.arquillian.droidium.container.api.IdentifierGenerator;
 import org.jboss.arquillian.container.spi.client.deployment.Validate;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 
 /**
- * Set of utility methods for Droidium regarding of file and directory management. It creates temporary directory
- * where all resources needed while the test execution is running are stored e.g. rebuilt packages are stored there.
+ * Set of utility methods for Droidium regarding of file and directory management. It creates temporary directory where all
+ * resources needed while the test execution is running are stored e.g. rebuilt packages are stored there.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
@@ -45,29 +46,33 @@ public class DroidiumFileUtils {
 
     private static File tmpDir = null;
 
-    private static final AndroidIdentifierGenerator aig = new AndroidIdentifierGenerator();
+    private static final IdentifierGenerator<FileType> aig = new AndroidIdentifierGenerator();
 
     /**
-     * Removes working directory for Droidium native plugin
+     * Removes directory
      *
      * @param dir directory to remove
      */
-    public static void removeWorkingDir(File dir) {
+    public static void removeDir(File dir) {
         try {
             FileUtils.deleteDirectory(dir);
         } catch (IOException ex) {
-            logger.log(Level.INFO, "Unable to delete temporary working dir {0}. Reason: {1}",
+            logger.log(Level.INFO, "Unable to delete directory {0}. Reason: {1}",
                 new Object[] { dir.getAbsolutePath(), ex.getMessage() });
         }
     }
 
+    public static void removeDir(String dir) {
+        DroidiumFileUtils.removeDir(new File(dir));
+    }
+
     /**
-     * Gets temporary directory created by {@link #createWorkingDir(File)}
+     * Gets temporary directory created by {@link #createTmpDir(File)}
      *
      * @return temporary directory where Droidium puts all resources, APKs and files during test execution
      */
     public static File getTmpDir() {
-        return tmpDir;
+        return DroidiumFileUtils.tmpDir;
     }
 
     /**
@@ -76,11 +81,10 @@ public class DroidiumFileUtils {
      * Temporary resource directory can be specified by {@code tmpDir} configuration property in extension configuraion in
      * arquillian.xml.
      */
-    public static void createWorkingDir(File parent) {
+    public static void createTmpDir(File parent) {
         try {
-            do {
-                tmpDir = new File(parent, aig.getIdentifier(IdentifierType.FILE.getClass()));
-            } while (!tmpDir.mkdir());
+            DroidiumFileUtils.tmpDir = new File(parent, aig.getIdentifier(FileType.FILE));
+            DroidiumFileUtils.tmpDir.mkdirs();
         } catch (SecurityException ex) {
             logger.severe("Security manager denies to create the working dir in " + parent.getAbsolutePath());
             throw new RuntimeException("Unable to create working directory in " + parent.getAbsolutePath());
@@ -98,7 +102,7 @@ public class DroidiumFileUtils {
 
         try {
             do {
-                temp = new File(parent, aig.getIdentifier(IdentifierType.FILE.getClass()));
+                temp = new File(parent, aig.getIdentifier(FileType.FILE));
             } while (!temp.createNewFile());
         } catch (IOException ex) {
             throw new RuntimeException("Unable to create file in " + parent.getAbsolutePath());
@@ -125,7 +129,7 @@ public class DroidiumFileUtils {
      * @return random name for APK file name (ends with .apk suffix)
      */
     public static String getRandomAPKFileName() {
-        return aig.getIdentifier(IdentifierType.APK.getClass());
+        return aig.getIdentifier(FileType.APK);
     }
 
     /**

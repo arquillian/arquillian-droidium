@@ -23,18 +23,19 @@
 package org.arquillian.droidium.container.api;
 
 /**
- * Generates random identifier.
  *
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
+ *
  */
-public interface IdentifierGenerator<T extends IdentifierType> {
-
-    /**
-     * Generates random identifier.
-     *
-     * @param identifierType type of identifier we want to get
-     * @return random identifier as a string
-     * @throws IdentifierGeneratorException when no identifier can be returned
-     */
-    String getIdentifier(T identifierType) throws IdentifierGeneratorException;
+public enum FileType implements IdentifierType {
+    AVD {
+    },
+    SD_CARD {
+    },
+    SD_CARD_LABEL {
+    },
+    APK {
+    },
+    FILE {
+    };
 }

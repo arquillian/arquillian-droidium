@@ -117,7 +117,6 @@ public class AndroidVirtualDeviceManager {
 
         AndroidContainerConfiguration configuration = this.configuration.get();
         AndroidSDK sdk = this.androidSDK.get();
-        Validate.notNullOrEmpty(configuration.getSdSize(), "Memory SD card size must be defined");
 
         ProcessExecutor executor = this.executor.get();
 
@@ -131,7 +130,7 @@ public class AndroidVirtualDeviceManager {
                 .add("-b").add(configuration.getAbi())
                 .add("-f")
                 .add("-p")
-                .add(configuration.getGeneratedAvdPath() + System.getProperty("file.separator") + configuration.getAvdName());
+                .add(configuration.getGeneratedAvdPath() + configuration.getAvdName());
 
             if (configuration.getSdCard() != null && new File(configuration.getSdCard()).exists()) {
                 command.add("-c").add(configuration.getSdCard());

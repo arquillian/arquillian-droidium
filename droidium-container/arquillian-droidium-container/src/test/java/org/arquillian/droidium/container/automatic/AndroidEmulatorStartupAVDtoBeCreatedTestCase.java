@@ -32,7 +32,7 @@ import org.arquillian.droidium.container.api.AndroidBridge;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.api.IdentifierGenerator;
-import org.arquillian.droidium.container.api.IdentifierType;
+import org.arquillian.droidium.container.api.FileType;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.impl.AndroidBridgeConnector;
@@ -84,7 +84,7 @@ public class AndroidEmulatorStartupAVDtoBeCreatedTestCase extends AbstractContai
     private ProcessExecutor processorExecutor;
 
     @Mock
-    private IdentifierGenerator idGenerator;
+    private IdentifierGenerator<FileType> idGenerator;
 
     @Override
     protected void addExtensions(List<Class<?>> extensions) {
@@ -107,7 +107,7 @@ public class AndroidEmulatorStartupAVDtoBeCreatedTestCase extends AbstractContai
 
         getManager().getContext(ContainerContext.class).activate("doesnotmatter");
 
-        Mockito.when(idGenerator.getIdentifier(IdentifierType.AVD.getClass())).thenReturn(AVD_GENERATED_NAME);
+        Mockito.when(idGenerator.getIdentifier(FileType.AVD)).thenReturn(AVD_GENERATED_NAME);
 
         bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration);
         bind(ContainerScoped.class, AndroidSDK.class, androidSDK);

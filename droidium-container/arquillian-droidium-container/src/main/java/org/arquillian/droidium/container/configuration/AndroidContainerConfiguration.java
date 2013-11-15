@@ -21,8 +21,11 @@ import java.io.File;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import org.arquillian.droidium.container.api.FileType;
 import org.arquillian.droidium.container.log.LogLevel;
 import org.arquillian.droidium.container.log.LogType;
+import org.arquillian.droidium.container.utils.AndroidIdentifierGenerator;
+import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.jboss.arquillian.container.spi.client.container.ContainerConfiguration;
 
 /**
@@ -43,7 +46,7 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
 
     private String avdName;
 
-    private String generatedAvdPath = System.getProperty("java.io.tmpdir") + System.getProperty("file.separator");
+    private String generatedAvdPath = System.getProperty("java.io.tmpdir");
 
     private String emulatorOptions;
 
@@ -55,7 +58,7 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
 
     private boolean generateSDCard;
 
-    private String abi = "x86";
+    private String abi;
 
     private long emulatorBootupTimeoutInSeconds = 120L;
 
@@ -79,7 +82,7 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
 
     private String logType = LogType.DEFAULT;
 
-    private String logFilePath = "target/logcat.log";
+    private String logFilePath = "target" + fileSeparator + "logcat.log";
 
     private String logPackageWhitelist;
 
@@ -99,13 +102,13 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
 
     private boolean removeTmpDir = true;
 
-    private String tmpDir = System.getProperty("java.io.tmpdir");
+    private String tmpDir = System.getProperty("java.io.tmpdir") + fileSeparator +
+        (new AndroidIdentifierGenerator()).getIdentifier(FileType.FILE);
 
     // useful when more containers are being used, also affects log filename!
     private boolean logSerialId;
 
-    // Android 2.3.3 is the default
-    private String apiLevel = "10";
+    private String apiLevel;
 
     public String getHome() {
         return home;
@@ -312,8 +315,8 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
     }
 
     public boolean isLogFilteringEnabled() {
-        return (logPackageWhitelist != null && !logPackageWhitelist.equals("") ||
-               (logPackageBlacklist != null && !logPackageBlacklist.equals("")));
+        return (logPackageWhitelist != null && !logPackageWhitelist.equals("") || (logPackageBlacklist != null && !logPackageBlacklist
+            .equals("")));
     }
 
     public boolean isLogSerialId() {
@@ -404,7 +407,7 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
         }
 
         if (generatedAvdPath != null) {
-            Validate.notNullOrEmpty(generatedAvdPath, "Directory you specified to store AVD to is empty string or null.");
+            Validate.notNullOrEmpty(generatedAvdPath, "Directory you specified to store AVD to is empty string.");
             if (!generatedAvdPath.endsWith(System.getProperty("file.separator"))) {
                 generatedAvdPath += System.getProperty("file.separator");
             }
@@ -454,9 +457,10 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
             Validate.isPortValid(droneGuestPort);
         }
 
-        if(logPackageWhitelist != null && !logPackageWhitelist.equals("") && logPackageBlacklist == null) {
+        if (logPackageWhitelist != null && !logPackageWhitelist.equals("") && logPackageBlacklist == null) {
             logPackageBlacklist = "*";
-            logger.warning("\"logPackageBlacklist\" isn't defined, but \"logPackageWhitelist\" is. Assuming \"*\" as a value for \"logPackageBlacklist\"!");
+            logger
+                .warning("\"logPackageBlacklist\" isn't defined, but \"logPackageWhitelist\" is. Assuming \"*\" as a value for \"logPackageBlacklist\"!");
         }
 
         if (emulatorBootupTimeoutInSeconds <= 0) {
@@ -469,12 +473,18 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
                 "Emulator shutdown timeout has to be bigger then 0.");
         }
 
-        Validate.isReadableDirectory(getTmpDir(),
-            "Temporary directory you chosed to use for Arquillian Droidium native plugin "
-                + "is not readable. Please be sure you entered a path you have read and write access to.");
+        File tmpDir = new File(getTmpDir());
 
-        Validate.isWriteable(new File(getTmpDir()), "Temporary directory you chose to use for Arquillian Droidium native plugin "
-            + "is not writable. Please be sure you entered a path you have read and write access to.");
+        if (!tmpDir.exists()) {
+            DroidiumFileUtils.createTmpDir(tmpDir);
+        } else {
+            Validate.isReadableDirectory(getTmpDir(),
+                "Temporary directory you chose to use for Arquillian Droidium native plugin "
+                    + "is not readable. Please be sure you entered a path you have read and write access to.");
+
+            Validate.isWritable(new File(getTmpDir()), "Temporary directory you chose to use for Arquillian Droidium "
+                + "native plugin is not writable. Please be sure you entered a path you have read and write access to.");
+        }
 
         try {
             Validate.isReadable(getKeystore(), "Key store for Android APKs is not readable. File does not exist or you have "

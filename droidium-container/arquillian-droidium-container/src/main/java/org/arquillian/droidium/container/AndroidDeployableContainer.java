@@ -17,11 +17,10 @@
  */
 package org.arquillian.droidium.container;
 
-import java.io.File;
-
 import org.arquillian.droidium.container.activity.DefaultActivityManagerProvider;
 import org.arquillian.droidium.container.api.ActivityManagerProvider;
 import org.arquillian.droidium.container.api.AndroidDevice;
+import org.arquillian.droidium.container.api.FileType;
 import org.arquillian.droidium.container.api.IdentifierGenerator;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
@@ -97,7 +96,7 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidCo
 
     @Inject
     @SuiteScoped
-    private InstanceProducer<IdentifierGenerator> idGenerator;
+    private InstanceProducer<IdentifierGenerator<FileType>> idGenerator;
 
     @Inject
     @SuiteScoped
@@ -157,8 +156,6 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidCo
         this.signer.set(new APKSigner(this.executor.get(), this.androidSDK.get(), this.configuration.get()));
         this.androidApplicationHelper.set(new AndroidApplicationHelper(executor.get(), androidSDK.get()));
         this.androidDeploymentRegister.set(new AndroidDeploymentRegister());
-
-        DroidiumFileUtils.createWorkingDir(new File(this.configuration.get().getTmpDir()));
     }
 
     @Override
@@ -195,21 +192,21 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidCo
     public void onAndroidDeviceReady(@Observes AndroidDeviceReady event) {
         ActivityManagerProvider activityManagerProvider = getActivityManagerProvider();
         androidDevice.get().setActivityManagerProvider(activityManagerProvider);
-        this.androidApplicationManager.set(new AndroidApplicationManager(androidDevice.get(), executor.get(), androidSDK.get()));
+        this.androidApplicationManager
+            .set(new AndroidApplicationManager(androidDevice.get(), executor.get(), androidSDK.get()));
     }
 
     /**
-     * Deletes temporary directory where all resources (files, resigned apks, logs ... ) are stored.
+     * Deletes temporary directory where all resources (files, resigned apks, logs ... ) are stored for native plugin.
      *
-     * This resource directory will not be deleted when you suppress it by {@code removeTmpDir="false"} in configuration.
+     * This resource directory will not be deleted when you suppress it by {@code removeTmpDir="false"} in the configuration.
      *
      * @param event
      */
     public void onBeforeStop(@Observes BeforeStop event) {
-        if (event.getDeployableContainer().getConfigurationClass() == AndroidContainerConfiguration.class) {
-            if (configuration.get().getRemoveTmpDir()) {
-                DroidiumFileUtils.removeWorkingDir(DroidiumFileUtils.getTmpDir());
-            }
+        if (event.getDeployableContainer().getConfigurationClass() == AndroidContainerConfiguration.class
+            && configuration.get().getRemoveTmpDir()) {
+            DroidiumFileUtils.removeDir(configuration.get().getTmpDir());
         }
     }
 

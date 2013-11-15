@@ -245,7 +245,6 @@ public class AndroidSDK {
         Validate.isReadableDirectory(configuration.getHome(), "Unable to read Android SDK from directory "
             + configuration.getHome());
         Validate.isReadableDirectory(configuration.getJavaHome(), "Unable to determine JAVA_HOME");
-        Validate.notNullOrEmpty(configuration.getApiLevel(), "Platform or API level for Android SDK must be specified");
 
         this.sdkPath = new File(configuration.getHome());
         this.javaPath = new File(configuration.getJavaHome());
@@ -255,35 +254,40 @@ public class AndroidSDK {
             throw new AndroidContainerConfigurationException("There are not any available platforms found on your system!");
         }
 
-        Platform foundPlatform = findPlatformByApiLevel(configuration.getApiLevel());
+        Platform foundPlatform = null;
+
+        if (configuration.getApiLevel() == null) {
+            foundPlatform = availablePlatforms.get(availablePlatforms.size() - 1); // the latest one
+            configuration.setApiLevel(foundPlatform.apiLevel);
+        } else {
+            foundPlatform = findPlatformByApiLevel(configuration.getApiLevel());
+        }
 
         if (foundPlatform == null) {
             logger.log(Level.INFO, "API level {0} you specified in configuration via 'apiLevel' property "
-                + "is not present on your system. When you have not specified it in the configuration, in such case "
-                + "Droidium tries to find API level 10 by default. When default API level is not present on your system, "
-                + "Droidium tries to find the highest API level available and sets it as the default one. When "
-                + "your emulator of some AVD name is not present in the system, Droidium will create it dynamically and "
-                + "this API level will be used when emulator will be created. All available platforms are: {1}",
+                + "is not present on your system. In such case, Droidium tries to find the highest API level "
+                + "available and sets it as the default one. When your emulator of some AVD name is not present "
+                + "in the system, Droidium will create it dynamically and this API level will be used when emulator "
+                + "will be created. All available platforms are: {1}",
                 new Object[] { configuration.getApiLevel(), getAllPlatforms() });
-            foundPlatform = availablePlatforms.get(availablePlatforms.size()-1);
+            foundPlatform = availablePlatforms.get(availablePlatforms.size() - 1);
+            configuration.setApiLevel(foundPlatform.apiLevel);
         }
-
-        configuration.setApiLevel(foundPlatform.apiLevel);
 
         if (foundPlatform.systemImages.size() == 0) {
             logger.log(Level.INFO, "There are not any system images found for your API level. You can use Droidium "
-                + "only with physical devices connected until you specify such API level which has system images available to use. "
-                + "Your current API level is: {0}", new Object[] { configuration.getApiLevel() } );
-        }
-
-        if (!foundPlatform.hasSystemImage(configuration.getAbi())) {
-            logger.log(Level.INFO, "ABI you want to use ({1}), is not present in the system for API level {0}. "
-                + "When you have not specified it in the configuration via 'abi' property, Droidium tries to use by "
-                + "default ABI of 'x86'. When this ABI is not present, Droidium uses whatever comes first among {2}." ,
-                new Object[] { configuration.getApiLevel(), configuration.getAbi(), SystemImage.getAll()});
-
-            if (foundPlatform.systemImages.size() != 0) {
+                + "only with physical devices connected until you specify such API level which has system images "
+                + "available to use. Your current API level is: {0}", new Object[] { configuration.getApiLevel() } );
+        } else {
+            if (configuration.getAbi() == null) {
                 configuration.setAbi(foundPlatform.systemImages.get(0));
+            } else {
+                if (!foundPlatform.hasSystemImage(configuration.getAbi())) {
+                    logger.log(Level.INFO, "ABI you want to use ({1}), is not present in the system for API level {0}. "
+                        + "Droidium uses whatever comes first among {2} and it is available for your API level." ,
+                        new Object[] { configuration.getApiLevel(), configuration.getAbi(), SystemImage.getAll() });
+                    configuration.setAbi(foundPlatform.systemImages.get(0));
+                }
             }
         }
 

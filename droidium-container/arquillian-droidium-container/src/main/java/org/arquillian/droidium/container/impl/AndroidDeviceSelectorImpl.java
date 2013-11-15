@@ -30,7 +30,7 @@ import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidDeviceSelector;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.api.IdentifierGenerator;
-import org.arquillian.droidium.container.api.IdentifierType;
+import org.arquillian.droidium.container.api.FileType;
 import org.arquillian.droidium.container.api.Screenshooter;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
@@ -110,7 +110,7 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
     private Instance<ProcessExecutor> executor;
 
     @Inject
-    private Instance<IdentifierGenerator> idGenerator;
+    private Instance<IdentifierGenerator<FileType>> idGenerator;
 
     @Inject
     private Event<AndroidVirtualDeviceAvailable> androidVirtualDeviceAvailable;
@@ -153,7 +153,7 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
         }
 
         if (configuration.get().getAvdName() == null) {
-            String generatedAvdName = idGenerator.get().getIdentifier(IdentifierType.AVD.getClass());
+            String generatedAvdName = idGenerator.get().getIdentifier(FileType.AVD);
             configuration.get().setAvdName(generatedAvdName);
             configuration.get().setAvdGenerated(true);
         }
