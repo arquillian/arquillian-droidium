@@ -62,7 +62,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Arquillian Core -->
-        <version.arquillian.core>1.1.1.Final</version.arquillian.core>
+        <version.arquillian.core>1.1.2.Final</version.arquillian.core>
 
         <!-- Arquillian Drone -->
         <version.arquillian.drone>1.2.0.Final</version.arquillian.drone>

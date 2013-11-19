@@ -26,7 +26,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.shrinkwrap_shrinkwrap>1.1.3</version.shrinkwrap_shrinkwrap>
-        <version.arquillian.core>1.1.1.Final</version.arquillian.core>
+        <version.arquillian.core>1.1.2.Final</version.arquillian.core>
         <version.junit>4.11</version.junit>
         <version.arquillian.drone>1.2.0.Final</version.arquillian.drone>
         <maven.compiler.source>1.6</maven.compiler.source>
