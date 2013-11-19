@@ -25,10 +25,15 @@
     <!-- Properties -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
         <version.shrinkwrap_shrinkwrap>1.2.0</version.shrinkwrap_shrinkwrap>
         <version.arquillian.core>1.1.2.Final</version.arquillian.core>
+
         <version.junit>4.8.1</version.junit>
         <version.org.jboss.as>7.1.1.Final</version.org.jboss.as>
+
+        <maven.compiler.source>1.6</maven.compiler.source>
+        <maven.compiler.target>1.6</maven.compiler.target>
 
         <android.avd.name>testingEmulator</android.avd.name>
         <android.emulator.options></android.emulator.options>
@@ -51,6 +56,24 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>org.jboss.as</groupId>
+                <artifactId>jboss-as-arquillian-container-managed</artifactId>
+                <version>${version.org.jboss.as}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.arquillian.container</groupId>
+                <artifactId>arquillian-droidium-container</artifactId>
+                <version>${project.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <scope>test</scope>
+                <version>${version.junit}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -59,33 +82,27 @@
         <dependency>
             <groupId>org.jboss.as</groupId>
             <artifactId>jboss-as-arquillian-container-managed</artifactId>
-            <version>${version.org.jboss.as}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.arquillian.container</groupId>
             <artifactId>arquillian-droidium-container</artifactId>
-            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
-        <!-- Arquillian -->
         <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
             <artifactId>arquillian-junit-container</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- JUnit -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
-            <version>${version.junit}</version>
         </dependency>
     </dependencies>
 
     <!-- Build -->
     <build>
-        <!-- Configuration for filtering variables in arquillian.xml -->
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

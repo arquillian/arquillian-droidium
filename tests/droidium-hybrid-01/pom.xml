@@ -34,6 +34,7 @@
         <version.org.jboss.arquillian.graphene2>2.0.0.Final</version.org.jboss.arquillian.graphene2>
 
         <version.junit>4.8.1</version.junit>
+
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
 
