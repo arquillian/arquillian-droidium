@@ -18,25 +18,32 @@
     <!-- Artifact configuraton -->
     <groupId>org.arquillian.droidium.tests</groupId>
     <artifactId>arquillian-droidium-native-test-01-scala</artifactId>
-    <version>1.0.0.Alpha2</version>
+    <version>1.0.0.Alpha3-SNAPSHOT</version>
 
     <description>Proof-of-concept Arquillian Droidium tests with Selendroid integration written in Scala</description>
 
     <!-- Properties -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.shrinkwrap_shrinkwrap>1.1.3</version.shrinkwrap_shrinkwrap>
+
+        <version.shrinkwrap_shrinkwrap>1.2.0</version.shrinkwrap_shrinkwrap>
         <version.org.jboss.arquillian.drone>1.2.0.Final</version.org.jboss.arquillian.drone>
         <version.arquillian.core>1.1.2.Final</version.arquillian.core>
-        <version.junit>4.11</version.junit>
+
+        <version.junit>4.8.1</version.junit>
+
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
 
         <!-- Scala versions -->
         <scala.tools.version>2.10</scala.tools.version>
         <scala.version>2.10.0</scala.version>
+        <scala.test>2.0.M6-SNAP8</scala.test>
         <scala.maven.plugin.version>3.1.3</scala.maven.plugin.version>
         <org.specs2.version>1.13</org.specs2.version>
+
+        <android.avd.name>testingEmulator</android.avd.name>
+        <android.emulator.options></android.emulator.options>
     </properties>
 
     <!-- Dependency Management -->
@@ -63,6 +70,43 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <scope>test</scope>
+                <version>${version.junit}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala-library</artifactId>
+                <version>${scala.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.specs2</groupId>
+                <artifactId>specs2_${scala.tools.version}</artifactId>
+                <version>${org.specs2.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.scalatest</groupId>
+                <artifactId>scalatest_${scala.tools.version}</artifactId>
+                <version>${scala.test}</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- Droidium -->
+            <dependency>
+                <groupId>org.arquillian.container</groupId>
+                <artifactId>arquillian-droidium-container</artifactId>
+                <version>${project.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.arquillian.extension</groupId>
+                <artifactId>arquillian-droidium-native-depchain</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -80,29 +124,37 @@
             <artifactId>arquillian-junit-container</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- JUnit -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
-            <version>${version.junit}</version>
         </dependency>
         <!-- Scala -->
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
-            <version>${scala.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.specs2</groupId>
             <artifactId>specs2_${scala.tools.version}</artifactId>
-            <version>${org.specs2.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.scalatest</groupId>
             <artifactId>scalatest_${scala.tools.version}</artifactId>
-            <version>2.0.M6-SNAP8</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Droidium -->
+        <dependency>
+            <groupId>org.arquillian.container</groupId>
+            <artifactId>arquillian-droidium-container</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.arquillian.extension</groupId>
+            <artifactId>arquillian-droidium-native-depchain</artifactId>
+            <type>pom</type>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -166,13 +218,12 @@
                 </configuration>
             </plugin>
         </plugins>
-        <!-- for filtering properties from this pom into arquillian.xml -->
         <testResources>
             <testResource>
                 <directory>src/test/resources</directory>
                 <filtering>true</filtering>
                 <includes>
-                    <include>**/arquillian.xml</include>
+                    <include>**/*.xml</include>
                 </includes>
             </testResource>
         </testResources>
@@ -180,39 +231,6 @@
 
     <!-- Profiles -->
     <profiles>
-        <profile>
-            <id>default</id>
-            <activation>
-                <property>
-                    <name>!skipDefault</name>
-                </property>
-            </activation>
-
-            <!-- Name of AVD you want to use in your test -->
-            <properties>
-                <android.avd.name>${name.avd}</android.avd.name>
-                <android.emulator.options></android.emulator.options>
-            </properties>
-            <dependencies>
-                <!-- Arquillian Droidium container support -->
-                <dependency>
-                    <groupId>org.arquillian.container</groupId>
-                    <artifactId>arquillian-droidium-container</artifactId>
-                    <version>${project.version}</version>
-                    <scope>test</scope>
-                </dependency>
-
-                <!-- Arquillian Droidium Native extension in order to be able
-                    to test native Android applications. -->
-                <dependency>
-                    <groupId>org.arquillian.extension</groupId>
-                    <artifactId>arquillian-droidium-native-depchain</artifactId>
-                    <version>${project.version}</version>
-                    <type>pom</type>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-        </profile>
         <profile>
             <!-- Activate this profile when you want to run in headless mode -->
             <id>headless</id>
