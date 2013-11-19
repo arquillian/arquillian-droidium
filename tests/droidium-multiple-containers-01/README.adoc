@@ -4,7 +4,7 @@ Tests basic scenario when you have Android device and JBoss AS container adapter
 
 You have to specify these configuration parameters once you test, the tests will fail otherwise.
 
-`mvn clean test -Dname.avd=name-of-avd`
+`mvn clean test -Dandroid.avd.name=name-of-avd`
 
 * `name.avd` - name of AVD you want to use while testing
 

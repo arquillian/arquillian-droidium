@@ -36,6 +36,9 @@
         <version.junit>4.8.1</version.junit>
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
+
+        <android.avd.name>testingEmulator</android.avd.name>
+        <android.emulator.options></android.emulator.options>
     </properties>
 
     <!-- Dependency Management -->

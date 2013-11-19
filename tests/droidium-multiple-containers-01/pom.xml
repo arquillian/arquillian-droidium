@@ -18,17 +18,20 @@
     <!-- Arfitact configuration -->
     <groupId>org.arquillian.droidium.tests</groupId>
     <artifactId>arquillian-droidium-multiple-containers-test-01</artifactId>
-    <version>1.0.0.Alpha2</version>
+    <version>1.0.0.Alpha3-SNAPSHOT</version>
 
     <description>Shows configuration of multiple container adapters on classpath</description>
 
     <!-- Properties -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.shrinkwrap_shrinkwrap>1.1.3</version.shrinkwrap_shrinkwrap>
+        <version.shrinkwrap_shrinkwrap>1.2.0</version.shrinkwrap_shrinkwrap>
         <version.arquillian.core>1.1.2.Final</version.arquillian.core>
-        <version.junit>4.11</version.junit>
+        <version.junit>4.8.1</version.junit>
         <version.org.jboss.as>7.1.1.Final</version.org.jboss.as>
+
+        <android.avd.name>testingEmulator</android.avd.name>
+        <android.emulator.options></android.emulator.options>
     </properties>
 
     <!-- Dependency Management -->
@@ -53,6 +56,18 @@
 
     <!-- Dependencies -->
     <dependencies>
+        <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-arquillian-container-managed</artifactId>
+            <version>${version.org.jboss.as}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.arquillian.container</groupId>
+            <artifactId>arquillian-droidium-container</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
         <!-- Arquillian -->
         <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
@@ -120,125 +135,76 @@
                     </lifecycleMappingMetadata>
                 </configuration>
             </plugin>
+            <plugin>
+                <!-- Unpacks JBoss AS to target -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.8</version>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.jboss.as</groupId>
+                                    <artifactId>jboss-as-dist</artifactId>
+                                    <version>${version.org.jboss.as}</version>
+                                    <type>zip</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
         <testResources>
             <testResource>
                 <directory>src/test/resources</directory>
                 <filtering>true</filtering>
                 <includes>
-                    <include>**/arquillian.xml</include>
+                    <include>**/*.xml</include>
                 </includes>
             </testResource>
         </testResources>
+        <pluginManagement>
+            <plugins>
+                <!-- Ignore/Execute plugin execution -->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-dependency-plugin</artifactId>
+                                        <versionRange>[1.0.0,)</versionRange>
+                                        <goals>
+                                            <goal>unpack</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore />
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
     <!-- Profiles -->
     <profiles>
-        <profile>
-            <id>default</id>
-            <activation>
-                <property>
-                    <name>!skipDefault</name>
-                </property>
-            </activation>
-
-            <properties>
-                <!-- Directory where your JBoss AS 7.1.1 is placed -->
-                <jboss.home>${home.jboss}</jboss.home>
-                <!-- Name of AVD (emulator) to use when starting Android device -->
-                <android.avd.name>${name.avd}</android.avd.name>
-                <android.emulator.options></android.emulator.options>
-            </properties>
-
-            <!-- Dependencies -->
-            <dependencies>
-                <!-- Arquillian container adapter for JBoss AS 7.1.1 -->
-                <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-arquillian-container-managed</artifactId>
-                    <version>${version.org.jboss.as}</version>
-                    <scope>test</scope>
-                </dependency>
-
-                <!-- Arquillian Droidium container adapter -->
-                <dependency>
-                    <groupId>org.arquillian.container</groupId>
-                    <artifactId>arquillian-droidium-container</artifactId>
-                    <version>${project.version}</version>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-
-            <!-- Unpack JBoss container into resources folder -->
-            <build>
-                <testResources>
-                    <testResource>
-                        <directory>src/test/resources</directory>
-                    </testResource>
-                    <testResource>
-                        <directory>src/test/resources-jbossas-7</directory>
-                    </testResource>
-                </testResources>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>2.8</version>
-                        <executions>
-                            <execution>
-                                <id>unpack</id>
-                                <phase>process-test-classes</phase>
-                                <goals>
-                                    <goal>unpack</goal>
-                                </goals>
-                                <configuration>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>org.jboss.as</groupId>
-                                            <artifactId>jboss-as-dist</artifactId>
-                                            <version>${version.org.jboss.as}</version>
-                                            <type>zip</type>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.directory}</outputDirectory>
-                                        </artifactItem>
-                                    </artifactItems>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-                <pluginManagement>
-                    <plugins>
-                        <!-- Ignore/Execute plugin execution -->
-                        <plugin>
-                            <groupId>org.eclipse.m2e</groupId>
-                            <artifactId>lifecycle-mapping</artifactId>
-                            <version>1.0.0</version>
-                            <configuration>
-                                <lifecycleMappingMetadata>
-                                    <pluginExecutions>
-                                        <!-- copy-dependency plugin -->
-                                        <pluginExecution>
-                                            <pluginExecutionFilter>
-                                                <groupId>org.apache.maven.plugins</groupId>
-                                                <artifactId>maven-dependency-plugin</artifactId>
-                                                <versionRange>[1.0.0,)</versionRange>
-                                                <goals>
-                                                    <goal>unpack</goal>
-                                                </goals>
-                                            </pluginExecutionFilter>
-                                            <action>
-                                                <ignore />
-                                            </action>
-                                        </pluginExecution>
-                                    </pluginExecutions>
-                                </lifecycleMappingMetadata>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
         <profile>
             <!-- Activate this profile when you want to run in headless mode -->
             <id>headless</id>
