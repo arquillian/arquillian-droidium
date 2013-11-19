@@ -17,8 +17,7 @@
     <group qualifier="containers" default="true">
         <container qualifier="android" default="true">
             <configuration>
-                <!-- Name of Android container to start or use during tests. This property is filtered 
-                    meaning it is set in profile in pom.xml under the same name of the property. -->
+                <!-- Name of Android container to start or use during tests. -->
                 <property name="avdName">${android.avd.name}</property>
                 <property name="emulatorOptions">${android.emulator.options}</property>
                 <property name="emulatorBootupTimeoutInSeconds">600</property>
@@ -34,7 +33,6 @@
         <property name="serverApk">selendroid-server-0.5.1.apk</property>
     </extension>
 
-    <!-- Selendroid Driver extension -->
     <extension qualifier="webdriver">
         <property name="browser">android</property>
         <property name="remoteAddress">http://localhost:8080/wd/hub</property>

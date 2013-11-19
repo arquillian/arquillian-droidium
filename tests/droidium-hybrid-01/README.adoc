@@ -7,7 +7,7 @@ for Maven otherwise tests will fail.
 This test shows how hybrid (native + web) applications can be tested in one test run 
 and how switching between native and web mode is done.
 
-`mvn clean test -Dname.avd=name_of_avd`
+`mvn clean test -Dandroid.avd.name=name_of_avd`
 
 This project can be run in a headless mode as well, typically in a CI service like Cloudbees.
 You are obliged to activate headless profile with `-Pheadless`. It adds the following switches to `emulator` command 
