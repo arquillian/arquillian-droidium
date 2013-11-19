@@ -1,14 +1,10 @@
 == Arquillian Droidium web test
 
-To build the application, simply execute 
+Execute tests like this:
 
-`mvn clean package`
+`mvn test -Dip.jboss=x.y.z.w -Dandroid.avd.name=android-4.1.2`
 
-in order to build the application. Tests are skipped.
-
-When application is built, execute test profile like this:
-
-`mvn test -Pandroid-test -Dip.jboss=x.y.z.w -Dname.avd=android-4.1.2`
+All parameters has to be specified.
 
 All arguments have to be specified.
 
@@ -16,7 +12,8 @@ All arguments have to be specified.
 want your JBoss AS instance to hook. This has to be external IP since localhost address will not be 
 accessible for Android device - it will be localhost of Android device itself and not of your host 
 where web app is running.
-* `name.avd` - name of AVD you want to execute tests on.
+
+* `android.avd.name` - name of AVD you want to execute tests on.
 
 JBoss AS container is automatically downloaded for you into `target` so you do not have to 
 managed your JBoss instance on your own. Please be sure there is not any JBoss AS container already 

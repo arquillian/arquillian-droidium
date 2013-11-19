@@ -23,8 +23,6 @@
                 <property name="emulatorOptions">${android.emulator.options}</property>
                 <property name="emulatorBootupTimeoutInSeconds">600</property>
                 <property name="logType">disable</property>
-                <property name="droneGuestPort">8080</property>
-                <property name="droneHostPort">8081</property>
             </configuration>
         </container>
 
@@ -32,7 +30,7 @@
         <container qualifier="jbossas">
             <configuration>
                 <property name="jbossHome">${basedir}/target/jboss-as-7.1.1.Final</property>
-                <property name="javaVmArguments">-Xmx512m -XX:MaxPermSize=128m -Djboss.bind.address=${as.bind.ip}</property>
+                <property name="javaVmArguments">-Xmx512m -XX:MaxPermSize=128m -Djboss.bind.address=${ip.jboss}</property>
             </configuration>
         </container>
     </group>
@@ -49,7 +47,7 @@
     <!-- Configuration of webdriver extension -->
     <extension qualifier="webdriver">
         <property name="browser">android</property>
-        <property name="remoteAddress">http://localhost:8081/wd/hub</property>
+        <property name="remoteAddress">http://localhost:14444/wd/hub</property>
     </extension>
 
 </arquillian>
