@@ -47,20 +47,20 @@ public class SelendroidTestAppTestCase {
 
     // injection for switching between activities
     @ArquillianResource
-    AndroidDevice android;
+    private AndroidDevice android;
 
     // class scoped Drone, it will be available to use
     // during whole test execution
     @Drone
     @Selendroid
-    WebDriver test_app;
+    private WebDriver test_app;
 
     // port put here matches the one in arquillian.xml
     // and in turn "selendroid" suffix has to match annotation
     // put on WebDriver
     @Deployment(name = "selendroid-test-app")
-    @Instrumentable(viaPort = 8081) // by default, port is 8080, it has to match with extension's remoteAddress port
-    @TargetsContainer("android")
+    @Instrumentable // by default, port is 8080, it has to match the extension's remoteAddress port
+    @TargetsContainer("android") // does not have to be here since we have just one container
     public static Archive<?> SelendroidDeployment() {
         return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.5.1.apk"));
     }
@@ -70,7 +70,6 @@ public class SelendroidTestAppTestCase {
     // put on WebDriver in test02 method
     @Deployment(name = "aerogear-test-app")
     @Instrumentable(viaPort = 8082)
-    @TargetsContainer("android")
     public static Archive<?> createAerogeadDepoyment() {
         return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("aerogear-test-android.apk"));
     }

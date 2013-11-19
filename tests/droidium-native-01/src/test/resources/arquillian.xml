@@ -37,7 +37,7 @@
     <!-- suffix of qualifier matches name of annotation put for Drone instance for Selendroid test app -->
     <extension qualifier="webdriver-selendroid">
         <property name="browser">android</property>
-        <property name="remoteAddress">http://localhost:8081/wd/hub</property>
+        <property name="remoteAddress">http://localhost:8080/wd/hub</property>
     </extension>
 
     <!-- suffix of qualifier matches name of annotation put on Drone instance for Aerogear test app -->

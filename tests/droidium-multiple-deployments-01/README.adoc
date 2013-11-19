@@ -10,7 +10,7 @@ When you are executing tests, you have to set name of (possibly started) AVD
 you want to use for test executions. You _have to_ provide this information 
 for Maven otherwise tests will fail.
 
-`mvn clean test -Dname.avd=name_of_avd`
+`mvn clean test -Dandroid.avd.name=name_of_avd`
 
 This project can be run in a headless mode as well, typically in a CI service like Cloudbees.
 You are obliged to activate headless profile with `-Pheadless`. It adds the following switches to `emulator` command 
