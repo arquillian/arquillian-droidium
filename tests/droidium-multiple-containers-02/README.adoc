@@ -1,0 +1,18 @@
+== Arquillian Droidium multiple containers test
+
+Tests basic scenario when you have JBoss AS container adapter on class path but Android container 
+adapter is not present on classpath but you have its container definition in arquillian.xml.
+
+This example is related to issue https://issues.jboss.org/browse/ARQ-1509[ARQ-1509]
+
+To execute the test:
+
+`mvn clean test`
+
+JBoss AS container is automatically downloaded for you into `target` so you do not have to 
+manage your JBoss instance on your own. Please be sure there is not any JBoss AS container already 
+running before execution of tests.
+
+This project can be run in a headless mode as well, typically in a CI service like Cloudbees.
+You are obliged to activate headless profile with `-Pheadless`. It adds the following switches to `emulator` command 
+upon its start: `-no-skin -no-audio -no-window -nocache -no-snapshot-save -no-snapstorage`.

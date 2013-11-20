@@ -22,6 +22,13 @@ use any additional plugins at all. It is not required to start your own
 JBoss AS instance since this is done automatically upon test execution. JBoss AS 
 instance is extracted into your `target` and Arquillian is automatically connected to it.
 
+=== droidium-multiple-containers-02
+
+Shows multiple container extension in action. When you have multiple containers in arquillian.xml 
+but some container adapter is missing on the classpath for that container definition, it will not be 
+added into container registry so it will not be started. There is internal matcher between 
+container definitions in arquillian.xml and adapter classes present on class path.
+
 === droidium-multiple-deployments-01
 
 This project shows how to deploy more than one `@Deployment` into your mobile device. Only 
