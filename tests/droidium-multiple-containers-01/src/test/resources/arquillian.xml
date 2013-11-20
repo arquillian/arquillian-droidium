@@ -19,8 +19,7 @@
             <configuration>
                 <!-- Name of Android container to start or use during tests. This property is filtered 
                     meaning it is set in profile in pom.xml under the same name of the property. -->
-                <!--property name="avdName">${android.avd.name}</property-->
-                <property name="avdName">android-4.1.2</property>
+                <property name="avdName">${android.avd.name}</property>
                 <property name="emulatorOptions">${android.emulator.options}</property>
                 <property name="emulatorBootupTimeoutInSeconds">600</property>
                 <property name="logType">disable</property>

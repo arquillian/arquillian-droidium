@@ -52,6 +52,8 @@ public class MultipleContainerRegistryCreator {
     static final String ARQUILLIAN_LAUNCH_PROPERTY = "arquillian.launch";
     static final String ARQUILLIAN_LAUNCH_DEFAULT = "arquillian.launch";
 
+    private static final String ANDROID_DEPLOYABLE_CONTAINER_CLASS_NAME = "org.arquillian.droidium.container.AndroidDeployableContainer";
+
     private Logger log = Logger.getLogger(MultipleContainerRegistryCreator.class.getName());
 
     @Inject
@@ -75,7 +77,9 @@ public class MultipleContainerRegistryCreator {
         for (ContainerDef container : event.getContainers()) {
             if ((activeConfiguration != null && activeConfiguration.equals(container.getContainerName()))
                     || (activeConfiguration == null && container.isDefault())) {
-                reg.create(container, serviceLoader);
+                if (isCreatingContainer(container)) {
+                    reg.create(container, serviceLoader);
+                }
             }
         }
 
@@ -83,7 +87,9 @@ public class MultipleContainerRegistryCreator {
             if ((activeConfiguration != null && activeConfiguration.equals(group.getGroupName()))
                     || (activeConfiguration == null && group.isGroupDefault())) {
                 for (ContainerDef container : group.getGroupContainers()) {
-                    reg.create(container, serviceLoader);
+                    if (isCreatingContainer(container)) {
+                        reg.create(container, serviceLoader);
+                    }
                 }
             }
         }
@@ -94,21 +100,28 @@ public class MultipleContainerRegistryCreator {
                 // 'check' if there are any DeployableContainers on CP
                 deployableContainer = serviceLoader.onlyOne(DeployableContainer.class);
             } catch (IllegalStateException e) {
-                throw new IllegalStateException("Could not add a default container to registry because multipe "
-                        + DeployableContainer.class.getName() + " found on classpath", e);
+                throw new IllegalStateException("Could not add a default container to registry because multiple "
+                        + DeployableContainer.class.getName() + " found on classpath.", e);
             } catch (Exception e) {
-                throw new IllegalStateException("Could not create the default container instance", e);
+                throw new IllegalStateException("Could not create the default container instance.", e);
             }
             if (deployableContainer != null) {
                 reg.create(new ContainerDefImpl("arquillian.xml").setContainerName("default"), serviceLoader);
             }
         } else if (activeConfiguration != null && reg.getContainers().size() == 0) {
-            throw new IllegalArgumentException("No container or group found that match given qualifier: "
+            throw new IllegalArgumentException("No container or group found that matches given qualifier: "
                     + activeConfiguration);
         }
 
         // export
         registry.set(reg);
+    }
+
+    private boolean isCreatingContainer(ContainerDef containerDef) {
+        if (ContainerGuesser.isDroidiumContainer(containerDef)) {
+            return SecurityActions.isClassPresent(ANDROID_DEPLOYABLE_CONTAINER_CLASS_NAME);
+        }
+        return true;
     }
 
     /**

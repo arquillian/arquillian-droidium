@@ -86,7 +86,7 @@ public class MultipleLocalContainersRegistry implements ContainerRegistry {
                 // just one container on cp
                 dcService = services.iterator().next();
             } else {
-                dcService = guessDeployableContainer(definition, services);
+                dcService = ContainerGuesser.guessDeployableContainer(definition, services);
 
                 // there are two containers but we failed to guess the current one, we are
                 // pretty sure it is not android or any one we can guess
@@ -136,40 +136,29 @@ public class MultipleLocalContainersRegistry implements ContainerRegistry {
         }
     }
 
-    @SuppressWarnings("rawtypes")
-    private DeployableContainer<?> guessDeployableContainer(ContainerDef definition, Collection<DeployableContainer> services) {
-
-        Map<String, String> properties = definition.getContainerProperties();
-        String containerName = definition.getContainerName().toLowerCase();
-        DeployableContainer<?> container = null;
-
-        if (containerName.contains("android")
-            || properties.containsKey("avdName")
-            || properties.containsKey("serialId")
-            || properties.containsKey("consolePort")
-            || properties.containsKey("emulatorOptions")) {
-            container = parseContainer("org.arquillian.droidium.container.AndroidDeployableContainer", services);
-        } else if (containerName.contains("jboss")) {
-            container = parseContainer("org.jboss.as.arquillian.container", services);
-        } else if (containerName.contains("glassfish")) {
-            container = parseContainer("org.jboss.arquillian.container.glassfish", services);
-        } else if (containerName.contains("tomee")) {
-            container = parseContainer("org.apache.openejb.arquillian", services);
-        } else if (containerName.contains("openshift")) {
-            container = parseContainer("org.jboss.arquillian.container.openshift", services);
-        }
-
-        return container;
+    /**
+     * Removes container from this registry.
+     *
+     * @param container container to delete
+     * @return true if container was removed, false otherwise
+     */
+    public boolean remove(Container container) {
+        return containers.remove(container);
     }
 
-    @SuppressWarnings("rawtypes")
-    private DeployableContainer<?> parseContainer(String className, Collection<DeployableContainer> services) {
-        for (DeployableContainer<?> container : services) {
-            if (container.getClass().getName().startsWith(className)) {
-                return container;
+    /**
+     * Removes container from this registry
+     *
+     * @param containerQualifier container qualifier as specified in arquillian.xml to remove
+     * @return true if container was removed, false otherwise
+     */
+    public boolean remove(String containerQualifier) {
+        for (Container container : containers) {
+            if (container.getName().equals(containerQualifier)) {
+                return remove(container);
             }
         }
-        return null;
+        return false;
     }
 
     private boolean isAndroidContainerRegistered() {
