@@ -1,0 +1,20 @@
+== Arquillian Droidium multiple containers test
+
+Tests scenario when you have JBoss container on class path and Android container on classpath 
+and both are specified in arquillian.xml and there is Drone on classpath as well with 
+webdriver extensions in arquillian.xml but no extension is asking for "android" browser 
+so it is not necessary to start Android container at all.
+
+This example is related to issue https://issues.jboss.org/browse/ARQ-1577[ARQ-1577]
+
+To execute the test:
+
+`mvn clean test`
+
+JBoss AS container is automatically downloaded for you into `target` so you do not have to 
+manage your JBoss instance on your own. Please be sure there is not any JBoss AS container already 
+running before execution of tests.
+
+This project can be run in a headless mode as well, typically in a CI service like Cloudbees.
+You are obliged to activate headless profile with `-Pheadless`. It adds the following switches to `emulator` command 
+upon its start: `-no-skin -no-audio -no-window -nocache -no-snapshot-save -no-snapstorage`.
