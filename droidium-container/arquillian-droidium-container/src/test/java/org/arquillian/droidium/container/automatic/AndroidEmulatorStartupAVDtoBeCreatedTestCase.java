@@ -73,9 +73,11 @@ public class AndroidEmulatorStartupAVDtoBeCreatedTestCase extends AbstractContai
 
     private static final String AVD_GENERATED_NAME = "ab1be336-d30f-4d3c-90de-56bdaf198a3e";
 
+    private static final String AVD_ABI = "x86";
+
     private static final String EMULATOR_STARTUP_TIMEOUT = System.getProperty("emulator.startup.timeout", "600");
 
-    private static final String EMULATOR_OPTIONS = "-no-audio -no-window -memory 256 -nocache -no-snapshot-save -no-snapstorage";
+    private static final String EMULATOR_OPTIONS = "-no-skin -no-audio -no-window -memory 343 -wipe-data -no-snapshot-save -no-snapstorage";
 
     private AndroidContainerConfiguration configuration;
 
@@ -98,7 +100,7 @@ public class AndroidEmulatorStartupAVDtoBeCreatedTestCase extends AbstractContai
     @Before
     public void setup() {
         configuration = new AndroidContainerConfiguration();
-        configuration.setAbi("armeabi");
+        configuration.setAbi(AVD_ABI);
         configuration.setEmulatorBootupTimeoutInSeconds(Integer.parseInt(EMULATOR_STARTUP_TIMEOUT));
         configuration.setEmulatorOptions(EMULATOR_OPTIONS);
         configuration.setGeneratedAvdPath("target" + System.getProperty("file.separator"));

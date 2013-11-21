@@ -18,7 +18,7 @@ echo "PATH        : $PATH"
 
 
 if [[ -z $WORKSPACE ]]; then
-	WORKSPACE=$(pwd)	
+    WORKSPACE=$(pwd)
 fi
 
 echo "WORKSPACE   : $WORKSPACE"
@@ -29,10 +29,12 @@ ls -la /opt/android/android-sdk-linux/platforms
 ls -la /opt/android/android-sdk-linux/tools
 ls -la /tmp/
 
+for i in $(ls $ANDROID_HOME/system-images); do echo -n "$i -> "; ls $ANDROID_HOME/system-images/$i; done
+
 TEST_EMULATOR_NAME=test01
-TEST_EMULATOR_PLATFORM=android-10
-TEST_EMULATOR_ABI=armeabi
-TEST_EMULATOR_MEMORY=128M
+TEST_EMULATOR_PLATFORM=android-18
+TEST_EMULATOR_ABI=x86
+TEST_EMULATOR_MEMORY=343M
 ANDROID_CMD=/opt/android/android-sdk-linux/tools/android
 
 echo "Creating of Android emulator test01 for underlying tests ... "
