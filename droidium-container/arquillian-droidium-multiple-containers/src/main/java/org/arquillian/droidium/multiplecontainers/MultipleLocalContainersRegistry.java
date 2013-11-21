@@ -106,34 +106,6 @@ public class MultipleLocalContainersRegistry implements ContainerRegistry {
         }
     }
 
-    /**
-     * Removes container from this registry.
-     *
-     * @param container container to delete
-     * @return true if container was removed, false otherwise
-     */
-    public boolean remove(Container container) {
-        return containers.remove(container);
-    }
-
-    /**
-     * Removes container from this registry
-     *
-     * @param containerQualifier container qualifier as specified in arquillian.xml to remove
-     * @return true if container was removed, false otherwise
-     */
-    public boolean remove(String containerQualifier) {
-
-        Container containerToRemove = null;
-
-        for (Container container : containers) {
-            if (container.getName().equals(containerQualifier)) {
-                containerToRemove = container;
-            }
-        }
-        return remove(containerToRemove);
-    }
-
     @Override
     public List<Container> getContainers() {
         return Collections.unmodifiableList(new ArrayList<Container>(containers));
@@ -148,9 +120,70 @@ public class MultipleLocalContainersRegistry implements ContainerRegistry {
         return findMatchingContainer(target.getName());
     }
 
+    /**
+     *
+     * @param type
+     */
+    public void remove(ContainerType type) {
+        List<Container> containersToRemove = new ArrayList<Container>();
+
+        String adapterClassString = ContainerType.getAdapterClassNamePrefix(type);
+
+        for (Container container : containers) {
+            if (container.getDeployableContainer().getClass().getName().startsWith(adapterClassString)) {
+                containersToRemove.add(container);
+            }
+        }
+
+        remove(containersToRemove);
+    }
+
+    /**
+     * Removes all containers from this registry
+     */
+    public void removeAll() {
+        containers.clear();
+    }
+
+    /**
+     * Removes container from this registry
+     *
+     * @param containerQualifier container qualifier as specified in arquillian.xml to remove
+     * @return true if container was removed, false otherwise
+     * @throws IllegalArgumentException if {@code containerQualifier} is a null object or an empty string
+     */
+    public boolean remove(String containerQualifier) {
+        Validate.notNullOrEmpty(containerQualifier, "Container qualifier marking the container to be removed can not be a "
+            + "null object nor an empty string!");
+        Container containerToRemove = null;
+
+        for (Container container : containers) {
+            if (container.getName().equals(containerQualifier)) {
+                containerToRemove = container;
+            }
+        }
+        return remove(containerToRemove);
+    }
+
+    /**
+     * Removes container from this registry.
+     *
+     * @param container container to delete
+     * @return true if container was removed, false otherwise
+     */
+    public boolean remove(Container container) {
+        return containers.remove(container);
+    }
+
     private Container addContainer(Container contianer) {
         containers.add(contianer);
         return contianer;
+    }
+
+    private void remove(List<Container> containersToRemove) {
+        for (Container container : containersToRemove) {
+            remove(container);
+        }
     }
 
     private Container findDefaultContainer() {

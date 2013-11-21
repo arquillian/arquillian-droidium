@@ -18,6 +18,7 @@
 package org.arquillian.droidium.container;
 
 import org.arquillian.droidium.container.api.AndroidDeviceSelector;
+import org.arquillian.droidium.container.configuration.DroidiumExclusionDecider;
 import org.arquillian.droidium.container.configuration.DroidiumExtensionsValidation;
 import org.arquillian.droidium.container.deployment.AndroidDeploymentInstaller;
 import org.arquillian.droidium.container.deployment.AndroidDeploymentUninstaller;
@@ -62,6 +63,7 @@ public class DroidiumContainerExtension implements LoadableExtension {
         builder.observer(DroidiumExtensionsValidation.class);
         builder.observer(AndroidDeploymentInstaller.class);
         builder.observer(AndroidDeploymentUninstaller.class);
+        builder.observer(DroidiumExclusionDecider.class);
     }
 
 }
