@@ -79,17 +79,25 @@ public class AndroidDeploymentUninstaller {
      */
     public void onAndroidDeploymentUninstall(@Observes(precedence = -100) AfterClass event) {
 
-        beforeAllUndeployed.fire(new BeforeAllAndroidDeploymentsUndeployed());
+        // this is in try-catch block since when you put this artifact on class path and even Android container is not started,
+        // observers are registered so this class observes AfterClass but androidDeploymentRegister is null object because
+        // it was not created
+        try {
+            beforeAllUndeployed.fire(new BeforeAllAndroidDeploymentsUndeployed());
 
-        for (AndroidDeployment androidDeployment : androidDeploymentRegister.get().getAll()) {
-            beforeUndeploy.fire(new BeforeAndroidDeploymentUndeployed(androidDeployment));
+            for (AndroidDeployment androidDeployment : androidDeploymentRegister.get().getAll()) {
+                beforeUndeploy.fire(new BeforeAndroidDeploymentUndeployed(androidDeployment));
 
-            androidApplicationManager.get().uninstall(androidDeployment);
+                androidApplicationManager.get().uninstall(androidDeployment);
 
-            afterUndeploy.fire(new AfterAndroidDeploymentUndeployed(androidDeployment));
+                afterUndeploy.fire(new AfterAndroidDeploymentUndeployed(androidDeployment));
+            }
+
+            afterAllUndeployed.fire(new AfterAllAndroidDeploymentsUndeployed());
+        } catch (NullPointerException ex) {
+            // intentionally empty
         }
 
-        afterAllUndeployed.fire(new AfterAllAndroidDeploymentsUndeployed());
     }
 
 }

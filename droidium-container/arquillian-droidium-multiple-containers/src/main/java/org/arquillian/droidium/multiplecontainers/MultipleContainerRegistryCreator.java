@@ -24,6 +24,7 @@ package org.arquillian.droidium.multiplecontainers;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,9 +53,7 @@ public class MultipleContainerRegistryCreator {
     static final String ARQUILLIAN_LAUNCH_PROPERTY = "arquillian.launch";
     static final String ARQUILLIAN_LAUNCH_DEFAULT = "arquillian.launch";
 
-    private static final String ANDROID_DEPLOYABLE_CONTAINER_CLASS_NAME = "org.arquillian.droidium.container.AndroidDeployableContainer";
-
-    private Logger log = Logger.getLogger(MultipleContainerRegistryCreator.class.getName());
+    private Logger logger = Logger.getLogger(MultipleContainerRegistryCreator.class.getName());
 
     @Inject
     @ApplicationScoped
@@ -70,14 +69,20 @@ public class MultipleContainerRegistryCreator {
         MultipleLocalContainersRegistry reg = new MultipleLocalContainersRegistry(injector.get());
         ServiceLoader serviceLoader = loader.get();
 
+        Collection<DeployableContainer> containers = serviceLoader.all(DeployableContainer.class);
+
+        if (containers.size() == 0) {
+            throw new ContainerAdapterNotFoundException("There are not any container adapters on the classpath");
+        }
+
         validateConfiguration(event);
 
         String activeConfiguration = getActivatedConfiguration();
 
         for (ContainerDef container : event.getContainers()) {
             if ((activeConfiguration != null && activeConfiguration.equals(container.getContainerName()))
-                    || (activeConfiguration == null && container.isDefault())) {
-                if (isCreatingContainer(container)) {
+                || (activeConfiguration == null && container.isDefault())) {
+                if (isCreatingContainer(container, containers)) {
                     reg.create(container, serviceLoader);
                 }
             }
@@ -85,9 +90,9 @@ public class MultipleContainerRegistryCreator {
 
         for (GroupDef group : event.getGroups()) {
             if ((activeConfiguration != null && activeConfiguration.equals(group.getGroupName()))
-                    || (activeConfiguration == null && group.isGroupDefault())) {
+                || (activeConfiguration == null && group.isGroupDefault())) {
                 for (ContainerDef container : group.getGroupContainers()) {
-                    if (isCreatingContainer(container)) {
+                    if (isCreatingContainer(container, containers)) {
                         reg.create(container, serviceLoader);
                     }
                 }
@@ -101,7 +106,7 @@ public class MultipleContainerRegistryCreator {
                 deployableContainer = serviceLoader.onlyOne(DeployableContainer.class);
             } catch (IllegalStateException e) {
                 throw new IllegalStateException("Could not add a default container to registry because multiple "
-                        + DeployableContainer.class.getName() + " found on classpath.", e);
+                    + DeployableContainer.class.getName() + " found on classpath.", e);
             } catch (Exception e) {
                 throw new IllegalStateException("Could not create the default container instance.", e);
             }
@@ -110,25 +115,53 @@ public class MultipleContainerRegistryCreator {
             }
         } else if (activeConfiguration != null && reg.getContainers().size() == 0) {
             throw new IllegalArgumentException("No container or group found that matches given qualifier: "
-                    + activeConfiguration);
+                + activeConfiguration);
         }
 
         // export
         registry.set(reg);
     }
 
-    private boolean isCreatingContainer(ContainerDef containerDef) {
-        if (ContainerGuesser.isDroidiumContainer(containerDef)) {
-            return SecurityActions.isClassPresent(ANDROID_DEPLOYABLE_CONTAINER_CLASS_NAME);
+    @SuppressWarnings("rawtypes")
+    private boolean isCreatingContainer(ContainerDef containerDef, Collection<DeployableContainer> containers) {
+
+        if (ContainerGuesser.guessDeployableContainer(containerDef, containers) != null) {
+            return true;
         }
-        return true;
+
+        // double check if it is Android / Droidium container
+        if (ContainerGuesser.isDroidiumContainer(containerDef, containers)) {
+            return true;
+        }
+
+        // if we are not able to guess it, we look if it has adapterImplClass property and we try to load that class
+        // and we check that the class is an instance of DeployableContainer
+        if (ContainerGuesser.hasAdapterImplClassProperty(containerDef)) {
+            if (SecurityActions.isClassPresent(ContainerGuesser.getAdapterImplClassValue(containerDef))) {
+                return SecurityActions.loadClass(ContainerGuesser.getAdapterImplClassValue(containerDef)).isInstance(
+                    DeployableContainer.class);
+            }
+        }
+
+        logger.log(Level.WARNING, "Unable to guess container type of name {0} or not such container adapter was found on the "
+            + "class path. It is expected that you pass {1} property with class name which implements DeployableContainer "
+            + "interface for given container definition. It is not necessary to specify adapterImplClass property in case "
+            + "your container qualifier name in arquillian.xml, after lowercasing, contains or is equal to word like: {2}. "
+            + "It is expected that when you name your container like that, you put Arquillian container adapter for that "
+            + "container on classpath in order to start it afterwards.",
+            new Object[] {
+                    containerDef.getContainerName(),
+                    ContainerGuesser.ADAPTER_IMPL_CONFIG_STRING,
+                    ContainerType.getAll()
+                });
+
+        return false;
     }
 
     /**
      * Validate that the Configuration given is sane
      *
-     * @param desc
-     *        The read Descriptor
+     * @param desc The read Descriptor
      */
     private void validateConfiguration(ArquillianDescriptor desc) {
         Object defaultConfig = null;
@@ -138,7 +171,7 @@ public class MultipleContainerRegistryCreator {
             if (container.isDefault()) {
                 if (defaultConfig != null) {
                     throw new IllegalStateException("Multiple Containers defined as default, only one is allowed:\n"
-                            + defaultConfig + ":" + container);
+                        + defaultConfig + ":" + container);
                 }
                 defaultConfig = container;
             }
@@ -152,11 +185,11 @@ public class MultipleContainerRegistryCreator {
                 if (defaultConfig != null) {
                     if (containerMarkedAsDefault) {
                         throw new IllegalStateException(
-                                "Multiple Containers/Groups defined as default, only one is allowed:\n" + defaultConfig
-                                        + ":" + group);
+                            "Multiple Containers/Groups defined as default, only one is allowed:\n" + defaultConfig
+                                + ":" + group);
                     }
                     throw new IllegalStateException("Multiple Groups defined as default, only one is allowed:\n"
-                            + defaultConfig + ":" + group);
+                        + defaultConfig + ":" + group);
                 }
                 defaultConfig = group;
             }
@@ -167,7 +200,7 @@ public class MultipleContainerRegistryCreator {
                 if (container.isDefault()) {
                     if (defaultInGroup != null) {
                         throw new IllegalStateException(
-                                "Multiple Containers within Group defined as default, only one is allowed:\n" + group);
+                            "Multiple Containers within Group defined as default, only one is allowed:\n" + group);
                     }
                     defaultInGroup = container;
                 }
@@ -181,12 +214,12 @@ public class MultipleContainerRegistryCreator {
         }
 
         InputStream arquillianLaunchStream = Thread.currentThread().getContextClassLoader()
-                .getResourceAsStream(ARQUILLIAN_LAUNCH_DEFAULT);
+            .getResourceAsStream(ARQUILLIAN_LAUNCH_DEFAULT);
         if (arquillianLaunchStream != null) {
             try {
                 return readActivatedValue(new BufferedReader(new InputStreamReader(arquillianLaunchStream)));
             } catch (Exception e) {
-                log.log(Level.WARNING, "Could not read resource " + ARQUILLIAN_LAUNCH_DEFAULT, e);
+                logger.log(Level.WARNING, "Could not read resource " + ARQUILLIAN_LAUNCH_DEFAULT, e);
             }
         }
         return null;

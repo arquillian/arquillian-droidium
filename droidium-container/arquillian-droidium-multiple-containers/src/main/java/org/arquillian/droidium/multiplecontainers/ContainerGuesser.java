@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.jboss.arquillian.config.descriptor.api.ContainerDef;
 import org.jboss.arquillian.container.spi.client.container.DeployableContainer;
+import org.jboss.arquillian.core.spi.Validate;
 
 /**
  *
@@ -28,6 +29,8 @@ import org.jboss.arquillian.container.spi.client.container.DeployableContainer;
  *
  */
 public class ContainerGuesser {
+
+    public static final String ADAPTER_IMPL_CONFIG_STRING = "adapterImplClass";
 
     public static boolean isDroidiumContainer(ContainerDef containerDef) {
         if (isContainerOfType(ContainerType.DROIDIUM, containerDef)
@@ -46,6 +49,18 @@ public class ContainerGuesser {
             || properties.containsKey("emulatorOptions")) {
             return true;
         }
+        return false;
+    }
+
+    @SuppressWarnings("rawtypes")
+    public static boolean isDroidiumContainer(ContainerDef containerDef, Collection<DeployableContainer> containers) {
+        // double check that it is not Android / Droidium
+        if (ContainerGuesser.isDroidiumContainer(containerDef)) {
+            if (ContainerGuesser.getContainerAdapter(ContainerType.getAdapterClassNamePrefix(ContainerType.ANDROID), containers) != null) {
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -87,27 +102,48 @@ public class ContainerGuesser {
     public static DeployableContainer<?> guessDeployableContainer(ContainerDef containerDef,
         Collection<DeployableContainer> containers) {
 
-        if (ContainerGuesser.isContainerOfType(ContainerType.ANDROID, containerDef)
-            || ContainerGuesser.isContainerOfType(ContainerType.DROIDIUM, containerDef)) {
-            return ContainerGuesser.parseContainer(ContainerType.ANDROID, containers);
-        }
-
-        if (ContainerGuesser.isContainerOfType(ContainerType.JBOSS, containerDef)) {
-            return ContainerGuesser.parseContainer(ContainerType.JBOSS, containers);
-        }
-
-        if (ContainerGuesser.isContainerOfType(ContainerType.GLASSFISH, containerDef)) {
-            return ContainerGuesser.parseContainer(ContainerType.GLASSFISH, containers);
-        }
-
-        if (ContainerGuesser.isContainerOfType(ContainerType.TOMEE, containerDef)) {
-            return ContainerGuesser.parseContainer(ContainerType.TOMEE, containers);
-        }
-
-        if (ContainerGuesser.isContainerOfType(ContainerType.OPENSHIFT, containerDef)) {
-            return ContainerGuesser.parseContainer(ContainerType.OPENSHIFT, containers);
+        for (ContainerType type : ContainerType.values()) {
+            if (ContainerGuesser.isContainerOfType(type, containerDef)) {
+                return ContainerGuesser.parseContainer(type, containers);
+            }
         }
 
         return null;
     }
+
+    @SuppressWarnings("rawtypes")
+    public static DeployableContainer<?> getContainerAdapter(String adapterImplClass, Collection<DeployableContainer> containers) {
+        Validate.notNullOrEmpty(adapterImplClass, "The value of " + ADAPTER_IMPL_CONFIG_STRING + " can not be a null object "
+            + "nor an empty string!");
+
+        Class<?> foundAdapter = null;
+
+        if (SecurityActions.isClassPresent(adapterImplClass)) {
+            foundAdapter = SecurityActions.loadClass(adapterImplClass);
+        } else {
+            return null;
+        }
+
+        for (DeployableContainer<?> container : containers) {
+            if (foundAdapter.isInstance(container)) {
+                return container;
+            }
+        }
+
+        return null;
+    }
+
+    public static boolean hasAdapterImplClassProperty(ContainerDef containerDef) {
+        for (Map.Entry<String, String> entry : containerDef.getContainerProperties().entrySet()) {
+            if (entry.getKey().equals(ADAPTER_IMPL_CONFIG_STRING)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static String getAdapterImplClassValue(ContainerDef containerDef) {
+        return containerDef.getContainerProperties().get(ADAPTER_IMPL_CONFIG_STRING);
+    }
+
 }

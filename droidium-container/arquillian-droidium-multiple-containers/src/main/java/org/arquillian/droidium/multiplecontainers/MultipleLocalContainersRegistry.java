@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,8 +58,6 @@ public class MultipleLocalContainersRegistry implements ContainerRegistry {
 
     private static final Logger logger = Logger.getLogger(MultipleContainerRegistryCreator.class.getName());
 
-    private static final String ADAPTER_IMPL_CONFIG_STRING = "adapterImplClass";
-
     public MultipleLocalContainersRegistry(Injector injector) {
         this.containers = new ArrayList<Container>();
         this.injector = injector;
@@ -74,59 +71,32 @@ public class MultipleLocalContainersRegistry implements ContainerRegistry {
             logger.log(Level.INFO, "Registering container: {0}", definition.getContainerName());
 
             @SuppressWarnings("rawtypes")
-            Collection<DeployableContainer> services = loader.all(DeployableContainer.class);
+            Collection<DeployableContainer> containers = loader.all(DeployableContainer.class);
 
             DeployableContainer<?> dcService = null;
 
-            if (services.size() == 0) {
-                throw new ContainerAdapterNotFoundException("There are not any container adapters on the classpath");
-            }
-
-            if (services.size() == 1) {
+            if (containers.size() == 1) {
                 // just one container on cp
-                dcService = services.iterator().next();
+                dcService = containers.iterator().next();
             } else {
-                dcService = ContainerGuesser.guessDeployableContainer(definition, services);
+                dcService = ContainerGuesser.guessDeployableContainer(definition, containers);
 
-                // there are two containers but we failed to guess the current one, we are
-                // pretty sure it is not android or any one we can guess
-                if (dcService == null && services.size() == 2 && isAndroidContainerRegistered()) {
-                    for (DeployableContainer<?> service : services) {
-                        if (!service.getClass().getName().equals("org.arquillian.droidium.container.AndroidDeployableContainer")) {
-                            dcService = service;
-                        }
-                    }
+                // double check if it is not Droidium by accident since we can guess more precisely from underlying properties
+                if (ContainerGuesser.isDroidiumContainer(definition, containers)) {
+                    dcService = ContainerGuesser.parseContainer(ContainerType.DROIDIUM, containers);
                 }
 
-                // >= 2 containers and none of them is Android, we just stick to adapterImplClass property
+                // we were not able to guess it but "create" method is reached from MultipleContainerRegistryCreator
+                // only if we can guess it OR that container definition has adapterImplClass present in properties and that
+                // class exists and it is an instance of DeployableContainer
                 if (dcService == null) {
-                    Map<String, String> props = definition.getContainerProperties();
-                    if (!props.containsKey(ADAPTER_IMPL_CONFIG_STRING)) {
-                        logger.log(Level.WARNING, "Unable to get container adapter class for container with "
-                            + "qualifier {0}. It is expected that you pass {1} property with class name which implements "
-                            + "DeployableContainer interface for given container definition. It is not necessary to "
-                            + "specify adapterImplClass property in case your container qualifier name in arquillian.xml, "
-                            + "after lowercasing, contains or is equal to string: android, jboss, glassfish, tomee, openshift. "
-                            + "It is expected that when you name your container like that, you put Arquillian container "
-                            + "adapter for that container on the classpath.",
-                            new Object[] { definition.getContainerName(), ADAPTER_IMPL_CONFIG_STRING });
-                        throw new ConfigurationException("Container adapter implementation class must be provided via "
-                            + ADAPTER_IMPL_CONFIG_STRING + " property.");
-                    }
-
-                    Class<?> dcImplClass = Class.forName(props.get(ADAPTER_IMPL_CONFIG_STRING));
-
-                    for (DeployableContainer<?> dc : services) {
-                        if (dcImplClass.isInstance(dc)) {
-                            dcService = dc;
-                            break;
-                        }
-                    }
+                    dcService = ContainerGuesser.getContainerAdapter(ContainerGuesser.getAdapterImplClassValue(definition), containers);
                 }
-            }
 
-            if (dcService == null) {
-                throw new ContainerAdapterNotFoundException("No suitable container adapter implementation found");
+                // if it is still null for any reason
+                if (dcService == null) {
+                    throw new ConfigurationException("Unable to get container adapter from Arquillian configuration.");
+                }
             }
 
             // before a Container is added to a collection of containers, inject into its injection point
@@ -153,22 +123,15 @@ public class MultipleLocalContainersRegistry implements ContainerRegistry {
      * @return true if container was removed, false otherwise
      */
     public boolean remove(String containerQualifier) {
+
+        Container containerToRemove = null;
+
         for (Container container : containers) {
             if (container.getName().equals(containerQualifier)) {
-                return remove(container);
+                containerToRemove = container;
             }
         }
-        return false;
-    }
-
-    private boolean isAndroidContainerRegistered() {
-        for (Container container : containers) {
-            if (container.getDeployableContainer().getConfigurationClass().getName().equals(
-                "org.arquillian.droidium.container.configuration.AndroidContainerConfiguration")) {
-                return true;
-            }
-        }
-        return false;
+        return remove(containerToRemove);
     }
 
     @Override

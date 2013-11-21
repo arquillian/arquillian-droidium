@@ -15,11 +15,16 @@
 
     <!-- Container configuration -->
     <group qualifier="containers" default="true">
+        <!-- This container will not be started because its container adapter class is not on the class path
+            That dependency is is intentionally commented out in pom.xml to show that multiple containers extension 
+            is able to "guess" containers so when this definition is not backed by adapter class, it is not 
+            added to container registry so the subsequent attempt to create JBoss container will not fail.
+            
+            For better explanation, see https://issues.jboss.org/browse/ARQ-1509s
+             
+            -->
         <container qualifier="android" default="true">
             <configuration>
-                <!-- Name of Android container to start or use during tests. This property is filtered 
-                    meaning it is set in profile in pom.xml under the same name of the property. -->
-                <!--property name="avdName">${android.avd.name}</property-->
                 <property name="avdName">android-4.1.2</property>
                 <property name="emulatorOptions">${android.emulator.options}</property>
                 <property name="emulatorBootupTimeoutInSeconds">600</property>
