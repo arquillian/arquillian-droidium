@@ -46,7 +46,7 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
 
     private String avdName;
 
-    private String generatedAvdPath = System.getProperty("java.io.tmpdir");
+    private String generatedAvdPath = resolveTmpDir();
 
     private String emulatorOptions;
 
@@ -64,9 +64,9 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
 
     private long emulatorShutdownTimeoutInSeconds = 60L;
 
-    private String home = System.getenv("ANDROID_HOME");
+    private String androidHome = resolveAndroidHome();
 
-    private String javaHome = System.getenv("JAVA_HOME");
+    private String javaHome = resolveJavaHome();
 
     private boolean avdGenerated;
 
@@ -88,7 +88,7 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
 
     private String logPackageBlacklist;
 
-    private String keystore = System.getProperty("user.home") + fileSeparator + ".android" + fileSeparator + "debug.keystore";
+    private String keystore = resolveUserHome() + fileSeparator + ".android" + fileSeparator + "debug.keystore";
 
     private String storepass = "android";
 
@@ -110,12 +110,12 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
 
     private String apiLevel;
 
-    public String getHome() {
-        return home;
+    public String getAndroidHome() {
+        return androidHome;
     }
 
-    public void setHome(String home) {
-        this.home = home;
+    public void setAndroidHome(String androidHome) {
+        this.androidHome = androidHome;
     }
 
     public String getJavaHome() {
@@ -391,11 +391,57 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
         this.tmpDir = tmpDir;
     }
 
+    public String resolveJavaHome() {
+        String JAVA_HOME_ENV = System.getenv("JAVA_HOME");
+        String JAVA_HOME_PROPERTY = System.getProperty("java.home");
+
+        return JAVA_HOME_ENV == null ? (JAVA_HOME_PROPERTY == null ? null : JAVA_HOME_PROPERTY) : JAVA_HOME_ENV;
+    }
+
+    public String resolveAndroidHome() {
+        String ANDROID_HOME_ENV = System.getenv("ANDROID_HOME");
+        String ANDROID_HOME_PROPERTY = System.getProperty("android.home");
+
+        return ANDROID_HOME_PROPERTY == null ? (ANDROID_HOME_ENV == null ? null : ANDROID_HOME_ENV) : ANDROID_HOME_PROPERTY;
+    }
+
+    public String resolveUserHome() {
+        String USER_HOME_ENV = System.getenv("HOME");
+        String USER_HOME_PROPERTY = System.getProperty("user.home");
+
+        return USER_HOME_PROPERTY == null ? (USER_HOME_ENV == null ? null : USER_HOME_ENV) : USER_HOME_PROPERTY;
+    }
+
+    public String resolveTmpDir() {
+        String TMP_DIR_ENV = System.getenv("TMPDIR");
+        if (TMP_DIR_ENV == null) {
+            TMP_DIR_ENV = System.getenv("TEMP");
+        }
+        if (TMP_DIR_ENV == null) {
+            TMP_DIR_ENV = System.getenv("TMP");
+        }
+
+        String TMP_DIR_PROPERTY = System.getProperty("java.io.tmpdir");
+
+        return TMP_DIR_PROPERTY == null ? (TMP_DIR_ENV == null ? null : TMP_DIR_ENV) : TMP_DIR_PROPERTY;
+    }
+
     @Override
     public void validate() throws AndroidContainerConfigurationException {
-        Validate.isReadableDirectory(home,
+
+        if (getAndroidHome() == null) {
+            throw new AndroidContainerConfigurationException("You have not set ANDROID_HOME environment property nor "
+                + "android.home system property. System property gets precedence.");
+        }
+
+        if (getJavaHome() == null) {
+            throw new AndroidContainerConfigurationException("You have not set JAVA_HOME environment property nor "
+                + "java.home system property. System property gets precedence.");
+        }
+
+        Validate.isReadableDirectory(androidHome,
             "You must provide Android SDK home directory. The value you've provided is not valid ("
-                + (home == null ? "" : home)
+                + (androidHome == null ? "" : androidHome)
                 + "). You can either set it via an environment variable ANDROID_HOME or via"
                 + " a property called \"home\" in Arquillian configuration.");
 
@@ -521,7 +567,7 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
         sb.append("emuBoot\t\t\t:").append(this.emulatorBootupTimeoutInSeconds).append("\n");
         sb.append("emuShut\t\t\t:").append(this.emulatorShutdownTimeoutInSeconds).append("\n");
         sb.append("emuOpts\t\t\t:").append(this.emulatorOptions).append("\n");
-        sb.append("home\t\t\t:").append(this.home).append("\n");
+        sb.append("home\t\t\t:").append(this.androidHome).append("\n");
         sb.append("consolePort\t\t:").append(this.consolePort).append("\n");
         sb.append("adbPort\t\t\t:").append(this.adbPort).append("\n");
         sb.append("logLevel\t\t:").append(this.logLevel).append("\n");

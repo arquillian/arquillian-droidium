@@ -242,11 +242,11 @@ public class AndroidSDK {
     public AndroidSDK(AndroidContainerConfiguration configuration) throws AndroidContainerConfigurationException {
 
         Validate.notNull(configuration, "AndroidSdk configuration must be provided");
-        Validate.isReadableDirectory(configuration.getHome(), "Unable to read Android SDK from directory "
-            + configuration.getHome());
+        Validate.isReadableDirectory(configuration.getAndroidHome(), "Unable to read Android SDK from directory "
+            + configuration.getAndroidHome());
         Validate.isReadableDirectory(configuration.getJavaHome(), "Unable to determine JAVA_HOME");
 
-        this.sdkPath = new File(configuration.getHome());
+        this.sdkPath = new File(configuration.getAndroidHome());
         this.javaPath = new File(configuration.getJavaHome());
         availablePlatforms = findAvailablePlatforms();
 
@@ -347,7 +347,11 @@ public class AndroidSDK {
     }
 
     public String getPathForJavaTool(String tool) {
-        String[] possiblePaths = { javaPath + "/bin/" + tool, javaPath + "/bin/" + tool + ".exe" };
+        String[] possiblePaths = {
+            javaPath + "/bin/" + tool,
+            javaPath + "/../bin/" + tool,
+            javaPath + "/bin/" + tool + ".exe",
+            javaPath + "/../bin/" + tool + ".exe" };
 
         for (String possiblePath : possiblePaths) {
             File file = new File(possiblePath);
