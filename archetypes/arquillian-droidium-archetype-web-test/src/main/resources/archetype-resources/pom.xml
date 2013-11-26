@@ -202,7 +202,7 @@
                 <directory>src/test/resources</directory>
                 <filtering>true</filtering>
                 <includes>
-                    <include>**/arquillian.xml</include>
+                    <include>**/*.xml</include>
                 </includes>
             </testResource>
         </testResources>
