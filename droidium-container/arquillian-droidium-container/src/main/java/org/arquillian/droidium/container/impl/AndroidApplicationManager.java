@@ -17,7 +17,6 @@
 package org.arquillian.droidium.container.impl;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
@@ -79,12 +78,12 @@ public class AndroidApplicationManager {
         Validate.notNull(deployment.getResignedApk(), "Application to install is a null object!");
         Validate.notNull(deployment.getApplicationBasePackage(), "Application base package name is a null object!");
 
-        Command installCommand = new Command();
-        installCommand.add(sdk.getAdbPath())
-            .add("-s")
-            .add(device.getSerialNumber())
-            .add("install")
-            .add(deployment.getResignedApk().getAbsolutePath());
+        Command installCommand = new Command()
+                .add(sdk.getAdbPath())
+                .add("-s")
+                .add(device.getSerialNumber())
+                .add("install")
+                .add(deployment.getResignedApk().getAbsolutePath());
 
         logger.fine("AUT installation command: " + installCommand.toString());
 
@@ -95,19 +94,16 @@ public class AndroidApplicationManager {
         }
 
         try {
-            executor.execute(installCommand.getAsArray());
-        } catch (InterruptedException e) {
-            throw new AndroidExecutionException("Installation of the application '" + applicationBasePackage + "' was interrupted.");
-        } catch (ExecutionException e) {
-            throw new AndroidExecutionException("Unable to execute installation command "
-                + installCommand.getAsString()
-                + " for the application "
-                + applicationBasePackage);
+            executor.execute(installCommand);
+        } catch (AndroidExecutionException e) {
+            // rewrap exception to have better stacktrace
+            throw new AndroidExecutionException(e, "Unable to execute installation command {0} for the application {1}",
+                    installCommand, applicationBasePackage);
         }
 
         if (!device.isPackageInstalled(applicationBasePackage)) {
-            throw new AndroidExecutionException("Application " + applicationBasePackage
-                + " was not installed on device " + device.getSerialNumber() + ".");
+            throw new AndroidExecutionException("Application " + applicationBasePackage + " was not installed on device "
+                    + device.getSerialNumber() + ".");
         }
     }
 
@@ -127,11 +123,12 @@ public class AndroidApplicationManager {
 
         try {
             Monkey monkey = new Monkey(DroidiumFileUtils.createRandomEmptyFile(DroidiumFileUtils.getTmpDir()),
-                command.getLast(), false);
+                    command.getLast(), false);
             device.executeShellCommand(command.getAsString(), monkey);
             Monkey.wait(device, monkey, PACKAGES_LIST_CMD);
         } catch (IOException ex) {
-            throw new AndroidExecutionException("Unable to uninstall application "+ deployment.getApplicationBasePackage() +" from Android device.");
+            throw new AndroidExecutionException("Unable to uninstall application " + deployment.getApplicationBasePackage()
+                    + " from Android device.");
         }
     }
 
@@ -151,11 +148,12 @@ public class AndroidApplicationManager {
 
         try {
             Monkey monkey = new Monkey(DroidiumFileUtils.createRandomEmptyFile(DroidiumFileUtils.getTmpDir()),
-                command.getLast(), false);
+                    command.getLast(), false);
             device.executeShellCommand(command.getAsString(), monkey);
             Monkey.wait(device, monkey, TOP_CMD);
         } catch (IOException e) {
-            throw new AndroidExecutionException("Unable to disable running application " + deployment.getApplicationBasePackage());
+            throw new AndroidExecutionException("Unable to disable running application "
+                    + deployment.getApplicationBasePackage());
         }
     }
 }

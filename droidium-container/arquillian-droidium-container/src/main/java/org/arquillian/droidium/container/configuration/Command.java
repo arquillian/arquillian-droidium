@@ -17,6 +17,7 @@
 package org.arquillian.droidium.container.configuration;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -40,10 +41,18 @@ public class Command {
      * @throws IllegalArgumentException if {@code command} is null
      */
     public Command(List<String> command) throws IllegalArgumentException {
+        this();
         if (command == null) {
             throw new IllegalArgumentException("command can't be a null list!");
         }
-        this.command = command;
+        for (String token : command) {
+            add(token);
+        }
+    }
+
+    public Command(String... tokens) {
+        this(Arrays.asList(tokens));
+
     }
 
     /**
@@ -138,8 +147,7 @@ public class Command {
                         if (tokenized.get(++j).endsWith("\"")) {
                             sb.append(" ").append(tokenized.get(j));
                             break;
-                        }
-                        else {
+                        } else {
                             sb.append(" ").append(tokenized.get(j)).append(" ");
                         }
                     }
@@ -166,8 +174,8 @@ public class Command {
         }
 
         return text.replaceAll("^ +| +$|( )+", "$1")
-            .replaceAll("\" ([^\"])", "\"$1")
-            .replaceAll("\"([^ \"]) \"", "\"$1\"");
+                .replaceAll("\" ([^\"])", "\"$1")
+                .replaceAll("\"([^ \"]) \"", "\"$1\"");
     }
 
     /**

@@ -24,17 +24,17 @@ package org.arquillian.droidium.container.impl;
  */
 public class AndroidEmulator {
 
-    private Process process;
+    private ProcessExecution process;
 
-    public AndroidEmulator(Process process) {
+    public AndroidEmulator(ProcessExecution process) {
         this.process = process;
     }
 
-    public Process getProcess() {
+    public ProcessExecution getProcess() {
         return process;
     }
 
-    public void setProcess(Process process) {
+    public void setProcess(ProcessExecution process) {
         this.process = process;
     }
 }

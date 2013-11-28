@@ -17,10 +17,10 @@
 package org.arquillian.droidium.container.sign;
 
 import java.io.File;
-import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Command;
@@ -55,7 +55,7 @@ public class APKSigner {
      * @throws IllegalArgumentException when some of arguments is a null object
      */
     public APKSigner(ProcessExecutor executor, AndroidSDK sdk, AndroidContainerConfiguration configuration)
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
         Validate.notNull(executor, "Process executor to set can not be a null object!");
         Validate.notNull(sdk, "Android SDK to set can not be a null object!");
         Validate.notNull(configuration, "Droidium configuration to set can not be a null object!");
@@ -74,31 +74,22 @@ public class APKSigner {
 
         checkKeyStore();
 
-        Command jarSignerCommand = new Command();
-
-        jarSignerCommand.add(sdk.getPathForJavaTool("jarsigner"))
-            .add("-sigalg")
-            .add("MD5withRSA")
-            .add("-digestalg")
-            .add("SHA1")
-            .add("-signedjar")
-            .add(signed.getAbsolutePath())
-            .add("-storepass")
-            .add(configuration.getStorepass())
-            .add("-keystore")
-            .add(new File(configuration.getKeystore()).getAbsolutePath())
-            .add(toSign.getAbsolutePath())
-            .add(configuration.getAlias());
+        Command jarSignerCommand = new Command()
+                .add(sdk.getPathForJavaTool("jarsigner"))
+                .add("-sigalg").add("MD5withRSA")
+                .add("-digestalg").add("SHA1")
+                .add("-signedjar").add(signed.getAbsolutePath())
+                .add("-storepass").add(configuration.getStorepass())
+                .add("-keystore").add(new File(configuration.getKeystore()).getAbsolutePath())
+                .add(toSign.getAbsolutePath())
+                .add(configuration.getAlias());
 
         logger.log(Level.FINE, jarSignerCommand.toString());
 
-
         try {
-            executor.execute(jarSignerCommand.getAsList().toArray(new String[0]));
-        } catch (InterruptedException ex) {
-            throw new APKSignerException("Signing process was interrupted.", ex);
-        } catch (ExecutionException ex) {
-            throw new APKSignerException("Unable to sign package, signing process failed.", ex);
+            executor.execute(jarSignerCommand);
+        } catch (AndroidExecutionException e) {
+            throw new APKSignerException("Unable to sign package, signing process failed.", e);
         }
 
         return signed;
@@ -126,7 +117,7 @@ public class APKSigner {
      * Sets keystore back to {@link DroidiumNativeConfiguration} to whatever exist first.
      */
     private void checkKeyStore() {
-        KeyStoreCreator keyStoreCreator = new KeyStoreCreator(sdk, configuration);
+        KeyStoreCreator keyStoreCreator = new KeyStoreCreator(executor, sdk, configuration);
         if (!keyStoreCreator.keyStoreExists(new File(configuration.getKeystore()))) {
             File defaultKeyStore = new File(getDefaultKeyStorePath());
             if (!keyStoreCreator.keyStoreExists(defaultKeyStore)) {

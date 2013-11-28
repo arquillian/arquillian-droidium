@@ -19,12 +19,12 @@ package org.arquillian.droidium.container.impl;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Command;
 import org.arquillian.droidium.container.configuration.Validate;
@@ -63,13 +63,10 @@ public class AndroidApplicationHelper {
      */
     public String getApplicationMainActivity(File apk) {
         try {
-            List<String> results = executor.execute(getAAPTBadgingCommand(apk).getAsArray());
-            return parseProperty(results, "launchable-activity");
-        } catch (InterruptedException e) {
-            logger.severe("Process to get name of main application activity was interrupted.");
-            return null;
-        } catch (ExecutionException e) {
-            logger.severe("Execution exception while getting name of main application activity occured.");
+            ProcessExecution execution = executor.execute(getAAPTBadgingCommand(apk));
+            return parseProperty(execution.getOutput(), "launchable-activity");
+        } catch (AndroidExecutionException e) {
+            logger.log(Level.SEVERE, "Execution exception while getting name of main application activity occured.", e);
             return null;
         }
     }
@@ -91,13 +88,10 @@ public class AndroidApplicationHelper {
     public String getApplicationBasePackage(File apk) {
 
         try {
-            List<String> results = executor.execute(getAAPTBadgingCommand(apk).getAsArray());
-            return parseProperty(results, "package");
-        } catch (InterruptedException e) {
-            logger.severe("Process to get name of base application package was interrupted.");
-            return null;
-        } catch (ExecutionException e) {
-            logger.severe("Execution exception while getting name of base application package occured.");
+            ProcessExecution execution = executor.execute(getAAPTBadgingCommand(apk));
+            return parseProperty(execution.getOutput(), "package");
+        } catch (AndroidExecutionException e) {
+            logger.log(Level.SEVERE, "Execution exception while getting name of main application package occured.", e);
             return null;
         }
     }
@@ -111,14 +105,11 @@ public class AndroidApplicationHelper {
         List<String> activities = new ArrayList<String>();
 
         try {
-            List<String> output = executor.execute(getAAPTXmlTreeCommand(apkFile).getAsArray());
-            activities = filterActivities(output);
-        } catch (InterruptedException e) {
-            logger.severe("Process was interrupted. Unable to get list of activitis for file: " + apkFile.getAbsolutePath());
-        } catch (ExecutionException e) {
-            logger.severe("Unable to get list of activities for file: " + apkFile.getAbsolutePath());
+            ProcessExecution execution = executor.execute(getAAPTXmlTreeCommand(apkFile));
+            activities = filterActivities(execution.getOutput());
+        } catch (AndroidExecutionException e) {
+            logger.log(Level.SEVERE, "Unable to get list of activities for file: " + apkFile.getAbsolutePath(), e);
         }
-
         return activities;
     }
 
@@ -145,26 +136,16 @@ public class AndroidApplicationHelper {
      * @return command which dumps badging from {@code apk}
      */
     private Command getAAPTBadgingCommand(File apk) {
-        Command command = new Command();
-        command.add(sdk.getAaptPath())
-            .add("dump")
-            .add("badging")
-            .add(apk.getAbsolutePath());
+        Command command = new Command(sdk.getAaptPath(), "dump", "badging", apk.getAbsolutePath());
         logger.log(Level.FINE, command.toString());
         return command;
     }
 
     private Command getAAPTXmlTreeCommand(File apkFile) {
-        Command command = new Command();
-        command.add(sdk.getAaptPath())
-            .add("dump")
-            .add("xmltree")
-            .add(apkFile.getAbsolutePath())
-            .add("AndroidManifest.xml");
+        Command command = new Command(sdk.getAaptPath(), "dump", "xmltree", apkFile.getAbsolutePath(), "AndroidManifest.xml");
         logger.log(Level.FINE, command.toString());
         return command;
     }
-
 
     private List<String> filterActivities(List<String> output) {
         String packageName;
