@@ -19,7 +19,6 @@ package org.arquillian.droidium.container.impl;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -29,11 +28,12 @@ import org.arquillian.droidium.container.api.AndroidBridge;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidDeviceSelector;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
-import org.arquillian.droidium.container.api.IdentifierGenerator;
 import org.arquillian.droidium.container.api.FileType;
+import org.arquillian.droidium.container.api.IdentifierGenerator;
 import org.arquillian.droidium.container.api.Screenshooter;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
+import org.arquillian.droidium.container.configuration.Command;
 import org.arquillian.droidium.container.configuration.Validate;
 import org.arquillian.droidium.container.spi.event.AndroidBridgeInitialized;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
@@ -137,7 +137,7 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
                 }
             } catch (AndroidExecutionException ex) {
                 logger.log(Level.INFO, "Unable to connect to physical device with serial ID {0}. ",
-                    new Object[] { configuration.get().getSerialId() });
+                        new Object[] { configuration.get().getSerialId() });
             }
         }
 
@@ -240,7 +240,7 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
             try {
                 if (device.getConsolePort().equals(consolePort) && device.getAvdName().equals(avdName)) {
                     logger.log(Level.INFO, "Connecting to virtual device running on console port {0} with AVD name {1}.",
-                        new Object[] { consolePort, avdName });
+                            new Object[] { consolePort, avdName });
                     return device;
                 }
             } catch (NullPointerException ex) {
@@ -323,17 +323,17 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
 
         Set<String> names = new HashSet<String>();
 
-        List<String> output;
+        ProcessExecution execution;
 
         try {
-            output = executor.execute(androidSDK.get().getAndroidPath(), "list", "avd");
-        } catch (InterruptedException e) {
-            throw new AndroidExecutionException("Unable to get list of available AVDs", e);
-        } catch (ExecutionException e) {
-            throw new AndroidExecutionException("Unable to get list of available AVDs", e);
+            Command command = new Command(androidSDK.get().getAndroidPath(), "list", "avd");
+            execution = executor.execute(command);
+        } catch (AndroidExecutionException e) {
+            // rewrap exception to have nicer stacktrace
+            throw new AndroidExecutionException(e, "Unable to get list of available AVDs");
         }
 
-        for (String line : output) {
+        for (String line : execution.getOutput()) {
             Matcher m;
             if (line.trim().startsWith("Name: ") && (m = deviceName.matcher(line)).matches()) {
                 String name = m.group(1);
@@ -348,5 +348,4 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
 
         return names;
     }
-
 }

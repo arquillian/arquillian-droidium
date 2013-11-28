@@ -24,12 +24,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Command;
 import org.arquillian.droidium.container.configuration.Validate;
@@ -98,9 +98,9 @@ public class SelendroidRebuilder {
     public File rebuild(File selendroidWorkingCopy, String selendroidPackageName, String applicationBasePackage) {
         Validate.notNull(selendroidWorkingCopy, "Working copy of Selendroid server to rebuild can not be a null object!");
         Validate.notNullOrEmpty(selendroidPackageName,
-            "Selendroid package name for rebuilding of Selendroid server can not be a null object nor an empty string!");
+                "Selendroid package name for rebuilding of Selendroid server can not be a null object nor an empty string!");
         Validate.notNullOrEmpty(applicationBasePackage,
-            "Application base package for rebuilding of Selendroid server can not be a null object nor an empty string!");
+                "Application base package for rebuilding of Selendroid server can not be a null object nor an empty string!");
 
         File toBeReplacedAndroidManifest = new File(DroidiumFileUtils.getTmpDir(), "AndroidManifestToBeReplaced.xml");
         File finalAndroidManifest = new File(DroidiumFileUtils.getTmpDir(), "AndroidManifest.xml");
@@ -117,8 +117,8 @@ public class SelendroidRebuilder {
         InputStream androidManifestStream = this.getClass().getClassLoader().getResourceAsStream("AndroidManifest.xml");
 
         if (androidManifestStream == null) {
-            throw new SelendroidRebuilderException("the class loader of " + this.getClass().getName() +
-                " could not find AndroidManifest.xml resource");
+            throw new SelendroidRebuilderException("the class loader of " + this.getClass().getName()
+                    + " could not find AndroidManifest.xml resource");
         }
 
         try {
@@ -155,23 +155,17 @@ public class SelendroidRebuilder {
      * @throws SelendroidRebuilderException when creating of dummy APK fails
      */
     private void createDummyAPK(File dummyAPK, File androidManifest) {
-        Command createDummyPackage = new Command();
-        createDummyPackage.add(androidSDK.getAaptPath())
-            .add("package")
-            .add("-f")
-            .add("-M")
-            .add(androidManifest.getAbsolutePath())
-            .add("-I")
-            .add(androidSDK.getPlatform() + "/android.jar")
-            .add("-F")
-            .add(dummyAPK.getAbsolutePath());
+        Command createDummyPackage = new Command()
+                .add(androidSDK.getAaptPath())
+                .add("package").add("-f").add("-M")
+                .add(androidManifest.getAbsolutePath())
+                .add("-I").add(androidSDK.getPlatform() + "/android.jar")
+                .add("-F").add(dummyAPK.getAbsolutePath());
 
         try {
-            processExecutor.execute(createDummyPackage.getAsArray());
-        } catch (InterruptedException e) {
-            throw new SelendroidRebuilderException("Command was interrupted: " + createDummyPackage.toString());
-        } catch (ExecutionException e) {
-            throw new SelendroidRebuilderException("Command failed to execute: " + createDummyPackage.toString());
+            processExecutor.execute(createDummyPackage);
+        } catch (AndroidExecutionException e) {
+            throw new SelendroidRebuilderException("Command failed to execute: " + createDummyPackage.toString(), e);
         }
     }
 
@@ -187,21 +181,20 @@ public class SelendroidRebuilder {
     private void filter(File toBeReplaced, File finalManifest, String selendroidPackageName, String applicationBasePackage) {
         try {
             @SuppressWarnings("unchecked")
-            ManifestFilter filter = new ManifestFilter(FileUtils.readLines(toBeReplaced));
-
-            filter.filter(SELENDROID_PACKAGE_NAME, "package=\"" + selendroidPackageName + "\"")
-                .filter(SELENDROID_TEST_PACKAGE, applicationBasePackage)
-                .filter(ICON, "");
+            ManifestFilter filter = new ManifestFilter(FileUtils.readLines(toBeReplaced))
+                    .filter(SELENDROID_PACKAGE_NAME, "package=\"" + selendroidPackageName + "\"")
+                    .filter(SELENDROID_TEST_PACKAGE, applicationBasePackage)
+                    .filter(ICON, "");
 
             if (logger.isLoggable(Level.FINE))
-            for (String line : filter.getFiltered()) {
-                System.out.println(line);
-            }
+                for (String line : filter.getFiltered()) {
+                    System.out.println(line);
+                }
 
             FileUtils.writeLines(finalManifest, filter.getFiltered());
         } catch (IOException e) {
             throw new SelendroidRebuilderException("Unable to filter Android manifest. Tried to filter "
-                + toBeReplaced.getAbsolutePath() + " into " + finalManifest.getAbsolutePath() + ".");
+                    + toBeReplaced.getAbsolutePath() + " into " + finalManifest.getAbsolutePath() + ".");
         }
     }
 
@@ -266,8 +259,8 @@ public class SelendroidRebuilder {
         public static List<String> replace(List<String> lines, String toReplace, String replacement) {
             Validate.notNullOrEmpty(toReplace, "The string to be replaced can not be a null object nor an empty string!");
             Validate.notNull(replacement, "The string as a replacement can not be a null object!");
-            Validate.notNull(lines, "The list to be filtered for the replacement of '"
-                + toReplace + "' for '" + replacement + "' can not be a null object!");
+            Validate.notNull(lines, "The list to be filtered for the replacement of '" + toReplace + "' for '" + replacement
+                    + "' can not be a null object!");
 
             if (lines.size() == 0) {
                 return null;

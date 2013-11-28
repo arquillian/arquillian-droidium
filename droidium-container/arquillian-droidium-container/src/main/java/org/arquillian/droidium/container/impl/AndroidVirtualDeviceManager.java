@@ -22,9 +22,7 @@
 package org.arquillian.droidium.container.impl;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.arquillian.droidium.container.api.AndroidExecutionException;
@@ -94,24 +92,23 @@ public class AndroidVirtualDeviceManager {
 
         try {
             ProcessExecutor executor = this.executor.get();
-            Process android = constructDeleteProcess(executor, androidSDK.get(), configuration.getAvdName());
-            if (deleteAVD(android, executor) == 0) {
-                logger.info("Android Virtual Device " + configuration.getAvdName() + " deleted.");
-            } else {
-                logger.info("Unable to delete Android Virtual Device " + configuration.getAvdName() + ".");
-            }
+            String avdName = configuration.getAvdName();
+            Command command = new Command();
+            command.add(androidSDK.get().getAndroidPath()).add("delete").add("avd").add("-n").add(avdName);
+            executor.execute(command);
+            logger.log(Level.INFO, "Android Virtual Device {0} deleted.", avdName);
+
         } catch (AndroidExecutionException ex) {
-            logger.info("Unable to delete AVD - " + ex.getMessage());
+            logger.log(Level.WARNING, "Unable to delete Android Virtual Device " + configuration.getAvdName(), ex);
         }
 
         androidSDCardDelete.fire(new AndroidSDCardDelete());
         androidVirtualDeviceDeleted.fire(new AndroidVirtualDeviceDeleted(configuration.getAvdName()));
     }
 
-    @SuppressWarnings("serial")
     public void createAndroidVirtualDevice(@Observes AndroidVirtualDeviceCreate event) throws AndroidExecutionException {
         Validate.notNulls(new Object[] { configuration.get(), androidSDK.get() },
-            "container configuration injection or Android SDK injection is null");
+                "container configuration injection or Android SDK injection is null");
 
         androidSDCardCreate.fire(new AndroidSDCardCreate());
 
@@ -122,15 +119,9 @@ public class AndroidVirtualDeviceManager {
 
         try {
             Command command = new Command();
-            command.add(sdk.getAndroidPath())
-                .add("create")
-                .add("avd")
-                .add("-n").add(configuration.getAvdName())
-                .add("-t").add("android-" + configuration.getApiLevel())
-                .add("-b").add(configuration.getAbi())
-                .add("-f")
-                .add("-p")
-                .add(configuration.getGeneratedAvdPath() + configuration.getAvdName());
+            command.add(sdk.getAndroidPath()).add("create").add("avd").add("-n").add(configuration.getAvdName()).add("-t")
+                    .add("android-" + configuration.getApiLevel()).add("-b").add(configuration.getAbi()).add("-f").add("-p")
+                    .add(configuration.getGeneratedAvdPath() + configuration.getAvdName());
 
             if (configuration.getSdCard() != null && new File(configuration.getSdCard()).exists()) {
                 command.add("-c").add(configuration.getSdCard());
@@ -138,53 +129,20 @@ public class AndroidVirtualDeviceManager {
                 command.add("-c").add(configuration.getSdSize());
             }
 
-            logger.info("Creating new avd " + command);
-            String[] argsArrays = new String[command.size()];
-            executor.execute(new HashMap<String, String>() {
-                {
-                    put("Do you wish to create a custom hardware profile [no]", "no" + System.getProperty("line.separator"));
-                }
-            }, command.getAsList().toArray(argsArrays));
+            logger.log(Level.INFO, "Creating new avd using: {0}", command);
+
+            ProcessInteractionBuilder interaction = new ProcessInteractionBuilder();
+            interaction.replyTo("Do you wish to create a custom hardware profile [no]").with(
+                    "no" + System.getProperty("line.separator"));
+
+            executor.execute(interaction.build(), command);
 
             configuration.setAvdGenerated(true);
 
             androidVirtualDeviceAvailable.fire(new AndroidVirtualDeviceAvailable(configuration.getAvdName()));
-        } catch (InterruptedException e) {
-            throw new AndroidExecutionException("Unable to create a new AVD Device", e);
-        } catch (ExecutionException e) {
-            throw new AndroidExecutionException("Unable to create a new AVD Device", e);
+        } catch (AndroidExecutionException e) {
+            // rewrap to have nice stacktrace
+            throw new AndroidExecutionException(e, "Unable to create a new AVD Device");
         }
     }
-
-    private Process constructDeleteProcess(ProcessExecutor executor, AndroidSDK androidSDK, String avdName)
-        throws AndroidExecutionException {
-
-        Command command = new Command();
-        command.add(androidSDK.getAndroidPath()).add("delete").add("avd").add("-n").add(avdName);
-
-        try {
-            return executor.spawn(command.getAsList());
-        } catch (InterruptedException e) {
-            throw new AndroidExecutionException(e, "Unable to delete AVD {0}.", avdName);
-        } catch (ExecutionException e) {
-            throw new AndroidExecutionException(e, "Unable to delete AVD {0}.", avdName);
-        }
-    }
-
-    private int deleteAVD(final Process android, final ProcessExecutor executor) throws AndroidExecutionException {
-        try {
-            int deleted = executor.submit(new Callable<Integer>() {
-
-                @Override
-                public Integer call() throws Exception {
-                    return android.waitFor();
-                }
-            }).get();
-
-            return deleted;
-        } catch (Exception ex) {
-            throw new AndroidExecutionException(ex);
-        }
-    }
-
 }

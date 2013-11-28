@@ -16,10 +16,7 @@
  */
 package org.arquillian.droidium.container.sign;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,6 +24,7 @@ import org.arquillian.droidium.container.configuration.AndroidContainerConfigura
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Command;
 import org.arquillian.droidium.container.configuration.Validate;
+import org.arquillian.droidium.container.impl.ProcessExecutor;
 
 /**
  * Creates keystore and checks if some keystore already exists in the system.
@@ -42,15 +40,19 @@ public final class KeyStoreCreator {
 
     private final AndroidContainerConfiguration configuration;
 
+    private final ProcessExecutor executor;
+
     /**
-     *
+     * @param execuror
      * @param sdk
      * @param configuration
      * @throws IllegalArgumentException if either {@code sdk} or {@code configuration} is a null object
      */
-    public KeyStoreCreator(AndroidSDK sdk, AndroidContainerConfiguration configuration) {
+    public KeyStoreCreator(ProcessExecutor executor, AndroidSDK sdk, AndroidContainerConfiguration configuration) {
+        Validate.notNull(configuration, "Process Executor for key store creator must not be a null object!");
         Validate.notNull(sdk, "Android sdk for key store creator can not be a null object!");
         Validate.notNull(configuration, "Droidium configuration for key store creator can not be a null object!");
+        this.executor = executor;
         this.sdk = sdk;
         this.configuration = configuration;
     }
@@ -64,7 +66,7 @@ public final class KeyStoreCreator {
     public boolean keyStoreExists(File keyStore) {
         try {
             Validate.isReadable(keyStore,
-                "You must provide a valid path to keystore for signing of APK files: '" + keyStore.getAbsolutePath() + ".");
+                    "You must provide a valid path to keystore for signing of APK files: '" + keyStore.getAbsolutePath() + ".");
             return true;
         } catch (IllegalArgumentException ex) {
             return false;
@@ -72,8 +74,8 @@ public final class KeyStoreCreator {
     }
 
     /**
-     * Creates keystore. You can change the {@code -keypass} argument of keytool command by setting {@code keypass} property
-     * in arquillian.xml. You can change {@code -sigalg} and {@code -keyalg} and {@code -storepass} as well by the same way.
+     * Creates keystore. You can change the {@code -keypass} argument of keytool command by setting {@code keypass} property in
+     * arquillian.xml. You can change {@code -sigalg} and {@code -keyalg} and {@code -storepass} as well by the same way.
      * Storetype is {@code JKS} and {@code -dname} is {@code CN=Android,O=Android,C=US}.
      *
      * @param keyStoreToCreate file which will be new keystore
@@ -83,53 +85,27 @@ public final class KeyStoreCreator {
         Command createKeyStoreCommand = new Command();
 
         createKeyStoreCommand.add(sdk.getPathForJavaTool("keytool"))
-            .add("-genkey")
-            .add("-v")
-            .add("-keystore")
-            .add(keyStoreToCreate.getAbsolutePath())
-            .add("-storepass")
-            .add(configuration.getStorepass())
-            .add("-alias")
-            .add(configuration.getAlias())
-            .add("-keypass")
-            .add(configuration.getKeypass())
-            .add("-dname")
-            .addAsString("CN=Android,O=Android,C=US")
-            .add("-storetype")
-            .add("JKS")
-            .add("-sigalg")
-            .add(configuration.getSigalg())
-            .add("-keyalg")
-            .add(configuration.getKeyalg());
+                .add("-genkey")
+                .add("-v")
+                .add("-keystore")
+                .add(keyStoreToCreate.getAbsolutePath())
+                .add("-storepass")
+                .add(configuration.getStorepass())
+                .add("-alias")
+                .add(configuration.getAlias())
+                .add("-keypass")
+                .add(configuration.getKeypass())
+                .add("-dname")
+                .addAsString("CN=Android,O=Android,C=US")
+                .add("-storetype")
+                .add("JKS")
+                .add("-sigalg")
+                .add(configuration.getSigalg())
+                .add("-keyalg")
+                .add(configuration.getKeyalg());
 
         logger.log(Level.INFO, createKeyStoreCommand.toString());
 
-        // it seems ProcessExecutor hangs here for some reason, I was not able to execute keytool command with it.
-        BufferedReader bufferedReader = null;
-        try {
-            ProcessBuilder builder = new ProcessBuilder(createKeyStoreCommand.getAsList());
-            Process process = builder.start();
-
-            bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-
-            while ((line = bufferedReader.readLine()) != null) {
-                if (logger.isLoggable(Level.FINE)) {
-                    System.out.println(line);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (bufferedReader != null) {
-                try {
-                    bufferedReader.close();
-                } catch (IOException ex) {
-
-                } finally {
-                    bufferedReader = null;
-                }
-            }
-        }
+        executor.execute(createKeyStoreCommand);
     }
 }
