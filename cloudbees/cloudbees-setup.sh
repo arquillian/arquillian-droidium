@@ -32,7 +32,7 @@ ls -la /tmp/
 for i in $(ls $ANDROID_HOME/system-images); do echo -n "$i -> "; ls $ANDROID_HOME/system-images/$i; done
 
 TEST_EMULATOR_NAME=test01
-TEST_EMULATOR_PLATFORM=android-18
+TEST_EMULATOR_PLATFORM=android-10
 TEST_EMULATOR_ABI=x86
 TEST_EMULATOR_MEMORY=343M
 ANDROID_CMD=/opt/android/android-sdk-linux/tools/android

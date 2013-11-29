@@ -98,6 +98,8 @@ public class AndroidEmulatorStartupAVDcreatedTestCase extends AbstractContainerT
         configuration.setConsolePort(EMULATOR_CONSOLE_PORT);
         configuration.setEmulatorBootupTimeoutInSeconds(Long.parseLong(EMULATOR_STARTUP_TIMEOUT));
         configuration.setEmulatorOptions(EMULATOR_OPTIONS);
+        configuration.validate();
+
         androidSDK = new AndroidSDK(configuration);
         processExecutor = new ProcessExecutor();
 

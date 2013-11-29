@@ -71,6 +71,8 @@ public class AndroidDeviceSelectorRealDeviceTestCase extends AbstractContainerTe
         configuration = new AndroidContainerConfiguration();
         configuration.setForceNewBridge(true);
         configuration.setSerialId(PHYSICAL_DEVICE_SERIAL_ID);
+        configuration.validate();
+
         androidSDK = new AndroidSDK(configuration);
 
         getManager().getContext(ContainerContext.class).activate("doesnotmatter");
