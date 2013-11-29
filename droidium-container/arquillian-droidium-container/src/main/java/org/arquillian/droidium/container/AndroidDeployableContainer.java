@@ -149,11 +149,14 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidCo
     @Override
     public void setup(AndroidContainerConfiguration configuration) {
         this.configuration.set(configuration);
-        this.androidSDK.set(new AndroidSDK(this.configuration.get()));
-        this.idGenerator.set(new AndroidIdentifierGenerator());
-        this.executor.set(new ProcessExecutor());
 
-        this.signer.set(new APKSigner(this.executor.get(), this.androidSDK.get(), this.configuration.get()));
+        AndroidContainerConfiguration conf = this.configuration.get();
+
+        this.androidSDK.set(new AndroidSDK(conf));
+        this.idGenerator.set(new AndroidIdentifierGenerator());
+        this.executor.set(new ProcessExecutor(conf.getAndroidSystemEnvironmentProperties()));
+
+        this.signer.set(new APKSigner(this.executor.get(), this.androidSDK.get(), conf));
         this.androidApplicationHelper.set(new AndroidApplicationHelper(executor.get(), androidSDK.get()));
         this.androidDeploymentRegister.set(new AndroidDeploymentRegister());
     }
@@ -206,7 +209,7 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidCo
     public void onBeforeStop(@Observes BeforeStop event) {
         if (event.getDeployableContainer().getConfigurationClass() == AndroidContainerConfiguration.class
             && configuration.get().getRemoveTmpDir()) {
-            DroidiumFileUtils.removeDir(configuration.get().getTmpDir());
+            DroidiumFileUtils.removeDir(DroidiumFileUtils.getTmpDir());
         }
     }
 

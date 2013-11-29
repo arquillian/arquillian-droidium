@@ -76,14 +76,14 @@ public class DroidiumFileUtils {
     }
 
     /**
-     * Creates directory with random name, by default in {@code System.getProperty("java.io.tmpdir")}.
+     * Creates directory with random name.
      *
-     * Temporary resource directory can be specified by {@code tmpDir} configuration property in extension configuraion in
+     * Temporary resource directory can be specified by {@code tmpDir} configuration property in extension configuration in
      * arquillian.xml.
      */
     public static void createTmpDir(File parent) {
         try {
-            DroidiumFileUtils.tmpDir = new File(parent, aig.getIdentifier(FileType.FILE));
+            DroidiumFileUtils.tmpDir = parent;
             DroidiumFileUtils.tmpDir.mkdirs();
         } catch (SecurityException ex) {
             logger.severe("Security manager denies to create the working dir in " + parent.getAbsolutePath());

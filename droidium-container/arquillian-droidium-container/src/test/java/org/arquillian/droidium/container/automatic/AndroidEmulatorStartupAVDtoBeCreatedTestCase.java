@@ -103,7 +103,7 @@ public class AndroidEmulatorStartupAVDtoBeCreatedTestCase extends AbstractContai
         configuration.setAbi(AVD_ABI);
         configuration.setEmulatorBootupTimeoutInSeconds(Integer.parseInt(EMULATOR_STARTUP_TIMEOUT));
         configuration.setEmulatorOptions(EMULATOR_OPTIONS);
-        configuration.setGeneratedAvdPath("target" + System.getProperty("file.separator"));
+
         androidSDK = new AndroidSDK(configuration);
         processorExecutor = new ProcessExecutor();
 

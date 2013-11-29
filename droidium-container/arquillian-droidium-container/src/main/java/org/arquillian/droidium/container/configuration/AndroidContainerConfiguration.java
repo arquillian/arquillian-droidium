@@ -18,6 +18,8 @@
 package org.arquillian.droidium.container.configuration;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -46,8 +48,6 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
 
     private String avdName;
 
-    private String generatedAvdPath = resolveTmpDir();
-
     private String emulatorOptions;
 
     private String sdSize = "128M";
@@ -65,6 +65,8 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
     private long emulatorShutdownTimeoutInSeconds = 60L;
 
     private String androidHome = resolveAndroidHome();
+
+    private String androidSdkHome = resolveAndroidSdkHome();
 
     private String javaHome = resolveJavaHome();
 
@@ -88,7 +90,9 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
 
     private String logPackageBlacklist;
 
-    private String keystore = resolveUserHome() + fileSeparator + ".android" + fileSeparator + "debug.keystore";
+    // by default null since its default value depends on androidSdkHome which
+    // can be changed by user, when not set by user, it will be resolved in validate() in this class
+    private String keystore = null;
 
     private String storepass = "android";
 
@@ -102,13 +106,20 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
 
     private boolean removeTmpDir = true;
 
-    private String tmpDir = System.getProperty("java.io.tmpdir") + fileSeparator +
-        (new AndroidIdentifierGenerator()).getIdentifier(FileType.FILE);
+    private String tmpDir = resolveTmpDir();
 
     // useful when more containers are being used, also affects log filename!
     private boolean logSerialId;
 
     private String apiLevel;
+
+    public String getAndroidSdkHome() {
+        return androidSdkHome;
+    }
+
+    public void setAndroidSdkHome(String androidSdkHome) {
+        this.androidSdkHome = androidSdkHome;
+    }
 
     public String getAndroidHome() {
         return androidHome;
@@ -132,14 +143,6 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
 
     public void setAvdName(String avdName) {
         this.avdName = avdName;
-    }
-
-    public void setGeneratedAvdPath(String generatedAvdPath) {
-        this.generatedAvdPath = generatedAvdPath;
-    }
-
-    public String getGeneratedAvdPath() {
-        return this.generatedAvdPath;
     }
 
     public String getSerialId() {
@@ -315,8 +318,9 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
     }
 
     public boolean isLogFilteringEnabled() {
-        return (logPackageWhitelist != null && !logPackageWhitelist.equals("") || (logPackageBlacklist != null && !logPackageBlacklist
-            .equals("")));
+        return (logPackageWhitelist != null
+            && !logPackageWhitelist.equals("")
+            || (logPackageBlacklist != null && !logPackageBlacklist.equals("")));
     }
 
     public boolean isLogSerialId() {
@@ -395,21 +399,30 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
         String JAVA_HOME_ENV = System.getenv("JAVA_HOME");
         String JAVA_HOME_PROPERTY = System.getProperty("java.home");
 
-        return JAVA_HOME_ENV == null ? (JAVA_HOME_PROPERTY == null ? null : JAVA_HOME_PROPERTY) : JAVA_HOME_ENV;
+        return checkSlash(JAVA_HOME_PROPERTY == null ? (JAVA_HOME_ENV == null ? null : JAVA_HOME_ENV) : JAVA_HOME_PROPERTY);
     }
 
     public String resolveAndroidHome() {
         String ANDROID_HOME_ENV = System.getenv("ANDROID_HOME");
         String ANDROID_HOME_PROPERTY = System.getProperty("android.home");
 
-        return ANDROID_HOME_PROPERTY == null ? (ANDROID_HOME_ENV == null ? null : ANDROID_HOME_ENV) : ANDROID_HOME_PROPERTY;
+        return checkSlash(ANDROID_HOME_PROPERTY == null ? (ANDROID_HOME_ENV == null ? null : ANDROID_HOME_ENV) : ANDROID_HOME_PROPERTY);
     }
 
     public String resolveUserHome() {
         String USER_HOME_ENV = System.getenv("HOME");
         String USER_HOME_PROPERTY = System.getProperty("user.home");
 
-        return USER_HOME_PROPERTY == null ? (USER_HOME_ENV == null ? null : USER_HOME_ENV) : USER_HOME_PROPERTY;
+        return checkSlash(USER_HOME_PROPERTY == null ? (USER_HOME_ENV == null ? null : USER_HOME_ENV) : USER_HOME_PROPERTY);
+    }
+
+    public String resolveAndroidSdkHome() {
+        String ANDROID_SDK_HOME_ENV = System.getenv("ANDROID_SDK_HOME");
+        String ANDROID_SDK_HOME_PROPERTY = System.getProperty("android.sdk.home");
+
+        return checkSlash(ANDROID_SDK_HOME_PROPERTY == null ?
+            (ANDROID_SDK_HOME_ENV == null ? resolveUserHome() : ANDROID_SDK_HOME_ENV)
+            : ANDROID_SDK_HOME_PROPERTY);
     }
 
     public String resolveTmpDir() {
@@ -423,7 +436,7 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
 
         String TMP_DIR_PROPERTY = System.getProperty("java.io.tmpdir");
 
-        return TMP_DIR_PROPERTY == null ? (TMP_DIR_ENV == null ? null : TMP_DIR_ENV) : TMP_DIR_PROPERTY;
+        return checkSlash(TMP_DIR_PROPERTY == null ? (TMP_DIR_ENV == null ? null : TMP_DIR_ENV) : TMP_DIR_PROPERTY);
     }
 
     @Override
@@ -432,46 +445,35 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
         if (getAndroidHome() == null) {
             throw new AndroidContainerConfigurationException("You have not set ANDROID_HOME environment property nor "
                 + "android.home system property. System property gets precedence.");
+        } else {
+            setAndroidHome(checkSlash(getAndroidHome()));
         }
 
         if (getJavaHome() == null) {
             throw new AndroidContainerConfigurationException("You have not set JAVA_HOME environment property nor "
                 + "java.home system property. System property gets precedence.");
+        } else {
+            setJavaHome(checkSlash(getJavaHome()));
         }
 
+        setAndroidSdkHome(checkSlash(androidSdkHome));
+        Validate.isReadableDirectory(androidSdkHome,
+            "You must provide Android SDK home directory. The value you've provided is not valid. "
+                + "You can either set it via an environment variable ANDROID_SDK_HOME or via "
+                + "property called \"androidSdkHome\" in Arquillian configuration or you can set it as system property "
+                + "\"android.sdk.home\". When this property is not specified anywhere, it defaults to \"" + resolveUserHome() + "\"");
+
         Validate.isReadableDirectory(androidHome,
-            "You must provide Android SDK home directory. The value you've provided is not valid ("
-                + (androidHome == null ? "" : androidHome)
-                + "). You can either set it via an environment variable ANDROID_HOME or via"
-                + " a property called \"home\" in Arquillian configuration.");
+            "You must provide Android home directory. The value you have provided is not valid. "
+            + "You can either set it via environment variable ANDROID_HOME or via "
+            + "property called \"androidHome\" in Arquillian configuration or you can set it as system property "
+            + "\"android.home\".");
 
         if (avdName != null && serialId != null) {
             logger.warning("Both \"avdName\" and \"serialId\" properties are defined, the device "
                 + "specified by \"serialId\" will get priority if connected.");
         } else if (avdName == null) {
             avdName = UUID.randomUUID().toString();
-        }
-
-        if (generatedAvdPath != null) {
-            Validate.notNullOrEmpty(generatedAvdPath, "Directory you specified to store AVD to is empty string.");
-            if (!generatedAvdPath.endsWith(System.getProperty("file.separator"))) {
-                generatedAvdPath += System.getProperty("file.separator");
-            }
-
-            File f = new File(generatedAvdPath);
-            if (!f.exists()) {
-                try {
-                    if (!f.mkdirs()) {
-                        throw new AndroidContainerConfigurationException("Unable to create directory where AVD will be stored.");
-                    }
-                } catch (Exception e) {
-                    throw new AndroidContainerConfigurationException("Unable to create directory where AVD will be stored " +
-                        "(" + generatedAvdPath + "). Check that you have permission to create directory you specified.");
-                }
-            }
-            Validate.isReadableDirectory(new File(generatedAvdPath), "Directory you specified as place where newly " +
-                "generated AVD will be placed does not exist (" + generatedAvdPath + ").");
-            Validate.isWritable(new File(generatedAvdPath), "Path you want to store generated AVD is not writable!");
         }
 
         if (consolePort != null) {
@@ -519,17 +521,15 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
                 "Emulator shutdown timeout has to be bigger then 0.");
         }
 
-        File tmpDir = new File(getTmpDir());
+        File tmpDir = new File(getTmpDir() + (new AndroidIdentifierGenerator()).getIdentifier(FileType.FILE));
+        setTmpDir(tmpDir.getAbsolutePath());
 
         if (!tmpDir.exists()) {
             DroidiumFileUtils.createTmpDir(tmpDir);
-        } else {
-            Validate.isReadableDirectory(getTmpDir(),
-                "Temporary directory you chose to use for Arquillian Droidium native plugin "
-                    + "is not readable. Please be sure you entered a path you have read and write access to.");
+        }
 
-            Validate.isWritable(new File(getTmpDir()), "Temporary directory you chose to use for Arquillian Droidium "
-                + "native plugin is not writable. Please be sure you entered a path you have read and write access to.");
+        if (keystore == null) {
+            keystore = getAndroidSdkHome() + ".android" + fileSeparator + "debug.keystore";
         }
 
         try {
@@ -550,40 +550,57 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
             + getKeyalg() + "'.");
         Validate.notNullOrEmpty(getSigalg(), "You must provide valid key algoritm for signing packages. You entered '" +
             getSigalg() + "'.");
+
+        System.out.println(this.toString());
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\navdName\t\t\t:").append(this.avdName).append("\n");
-        sb.append("generatedAvdPath\t:").append(this.generatedAvdPath).append("\n");
-        sb.append("apiLevel\t\t:").append(this.apiLevel).append("\n");
-        sb.append("serialId\t\t:").append(this.serialId).append("\n");
-        sb.append("force\t\t\t:").append(this.forceNewBridge).append("\n");
-        sb.append("sdCard\t\t\t:").append(this.sdCard).append("\n");
-        sb.append("sdSize\t\t\t:").append(this.sdSize).append("\n");
-        sb.append("generateSD\t\t:").append(this.generateSDCard).append("\n");
-        sb.append("abi\t\t\t:").append(this.abi).append("\n");
-        sb.append("emuBoot\t\t\t:").append(this.emulatorBootupTimeoutInSeconds).append("\n");
-        sb.append("emuShut\t\t\t:").append(this.emulatorShutdownTimeoutInSeconds).append("\n");
-        sb.append("emuOpts\t\t\t:").append(this.emulatorOptions).append("\n");
-        sb.append("home\t\t\t:").append(this.androidHome).append("\n");
-        sb.append("consolePort\t\t:").append(this.consolePort).append("\n");
-        sb.append("adbPort\t\t\t:").append(this.adbPort).append("\n");
-        sb.append("logLevel\t\t:").append(this.logLevel).append("\n");
-        sb.append("logType\t\t\t:").append(this.logType).append("\n");
-        sb.append("logFilePath\t\t:").append(this.logFilePath).append("\n");
-        sb.append("logPackageWhitelist\t:").append(this.logPackageWhitelist).append("\n");
-        sb.append("logPackageBlacklist\t:").append(this.logPackageBlacklist).append("\n");
-        sb.append("keystore\t\t:").append(this.keystore).append("\n");
-        sb.append("keypass\t\t\t:").append(this.keypass).append("\n");
-        sb.append("storepass\t\t:").append(this.storepass).append("\n");
-        sb.append("alias\t\t\t:").append(this.alias).append("\n");
-        sb.append("sigalg\t\t\t:").append(this.sigalg).append("\n");
-        sb.append("keyalg\t\t\t:").append(this.keyalg).append("\n");
-        sb.append("removeTmpDir\t\t:").append(this.removeTmpDir).append("\n");
-        sb.append("tmpDir\t\t\t:").append(this.tmpDir).append("\n");
+        sb.append("HOME\t\t\t").append(resolveUserHome());
+        sb.append("\nJAVA_HOME\t\t").append(javaHome);
+        sb.append("\nANDROID_HOME\t\t").append(androidHome);
+        sb.append("\nANDROID_SDK_HOME\t").append(androidSdkHome);
+        sb.append("\navdName\t\t\t").append(avdName);
+        sb.append("\nserialId\t\t").append(serialId);
+        sb.append("\napiLevel\t\t").append(apiLevel);
+        sb.append("\nabi\t\t\t").append(abi);
+        sb.append("\nconsolePort\t\t").append(consolePort);
+        sb.append("\nadbPort\t\t\t").append(adbPort);
+        sb.append("\nemuBoot\t\t\t").append(emulatorBootupTimeoutInSeconds);
+        sb.append("\nemuShut\t\t\t").append(emulatorShutdownTimeoutInSeconds);
+        sb.append("\nemuOpts\t\t\t").append(emulatorOptions);
+        sb.append("\nkeystore\t\t").append(keystore);
+        sb.append("\nkeypass\t\t\t").append(keypass);
+        sb.append("\nstorepass\t\t").append(storepass);
+        sb.append("\nalias\t\t\t").append(alias);
+        sb.append("\nsigalg\t\t\t").append(sigalg);
+        sb.append("\nkeyalg\t\t\t").append(keyalg);
+        sb.append("\nsdCard\t\t\t").append(sdCard);
+        sb.append("\nsdSize\t\t\t").append(sdSize);
+        sb.append("\ngenerateSD\t\t").append(generateSDCard);
+        sb.append("\nlogLevel\t\t").append(logLevel);
+        sb.append("\nlogType\t\t\t").append(logType);
+        sb.append("\nlogFilePath\t\t").append(logFilePath);
+        sb.append("\nlogPackageWhitelist\t").append(logPackageWhitelist);
+        sb.append("\nlogPackageBlacklist\t").append(logPackageBlacklist);
+        sb.append("\nremoveTmpDir\t\t").append(removeTmpDir);
+        sb.append("\ntmpDir\t\t\t").append(tmpDir);
+        sb.append("\nforce\t\t\t").append(forceNewBridge);
         return sb.toString();
+    }
+
+    public Map<String, String> getAndroidSystemEnvironmentProperties() {
+        Map<String, String> androidEnvironmentProperties = new HashMap<String, String>();
+
+        androidEnvironmentProperties.put("ANDROID_HOME", androidHome);
+        androidEnvironmentProperties.put("ANDROID_SDK_HOME", androidSdkHome);
+
+        return androidEnvironmentProperties;
+    }
+
+    private String checkSlash(String path) {
+        return path.endsWith(fileSeparator) ? path : path + fileSeparator;
     }
 
 }

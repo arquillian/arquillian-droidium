@@ -241,7 +241,7 @@ public class AndroidSDK {
      */
     public AndroidSDK(AndroidContainerConfiguration configuration) throws AndroidContainerConfigurationException {
 
-        Validate.notNull(configuration, "AndroidSdk configuration must be provided");
+        Validate.notNull(configuration, "AndroidSDK configuration must be provided");
         Validate.isReadableDirectory(configuration.getAndroidHome(), "Unable to read Android SDK from directory "
             + configuration.getAndroidHome());
         Validate.isReadableDirectory(configuration.getJavaHome(), "Unable to determine JAVA_HOME");
@@ -360,7 +360,7 @@ public class AndroidSDK {
             }
         }
 
-        throw new RuntimeException("Could not find tool '" + tool + "'.Please ensure you've set JAVA_HOME environment " +
+        throw new RuntimeException("Could not find tool '" + tool + "'. Please ensure you've set JAVA_HOME environment " +
             "property properly and that it points to your Java installation directory.");
     }
 

@@ -109,6 +109,10 @@ public class Validate {
         notNull(message, "Exception message is a null object!");
         notNull(strings, "Array to check the nullity of objects is null object!");
 
+        if (strings.length == 0) {
+            return;
+        }
+
         for (String string : strings) {
             if (string != null && string.trim().length() != 0) {
                 return;
@@ -287,11 +291,25 @@ public class Validate {
         }
     }
 
+    /**
+     * Checks if port is in range 0 - 65535
+     *
+     * @param port port number to check the validity of
+     * @return true if port is in sane range, false otherwise
+     */
     public static boolean isPortValid(int port) {
-        if (!(port > 0 && port < 65535)) {
-            throw new AndroidContainerConfigurationException("Ports have to be in range [0,65535].");
-        }
-        return true;
+        return port > 0 && port < 65535;
+    }
+
+    /**
+     * Checks if port is in range 0 - 65535
+     *
+     * @param port port number to check the validity of
+     * @return true if port is in sane range, false otherwise
+     * @throws NumberFormatException when port is not a number
+     */
+    public static boolean isPortValid(String port) {
+        return isPortValid(Integer.parseInt(port));
     }
 
     /**

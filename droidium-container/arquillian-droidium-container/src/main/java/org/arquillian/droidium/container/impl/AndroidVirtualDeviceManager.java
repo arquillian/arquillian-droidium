@@ -94,8 +94,13 @@ public class AndroidVirtualDeviceManager {
             ProcessExecutor executor = this.executor.get();
             String avdName = configuration.getAvdName();
             Command command = new Command();
-            command.add(androidSDK.get().getAndroidPath()).add("delete").add("avd").add("-n").add(avdName);
+            command.add(androidSDK.get().getAndroidPath())
+                .add("delete")
+                .add("avd")
+                .add("-n")
+                .add(avdName);
             executor.execute(command);
+
             logger.log(Level.INFO, "Android Virtual Device {0} deleted.", avdName);
 
         } catch (AndroidExecutionException ex) {
@@ -119,9 +124,16 @@ public class AndroidVirtualDeviceManager {
 
         try {
             Command command = new Command();
-            command.add(sdk.getAndroidPath()).add("create").add("avd").add("-n").add(configuration.getAvdName()).add("-t")
-                    .add("android-" + configuration.getApiLevel()).add("-b").add(configuration.getAbi()).add("-f").add("-p")
-                    .add(configuration.getGeneratedAvdPath() + configuration.getAvdName());
+            command.add(sdk.getAndroidPath())
+                .add("create")
+                .add("avd")
+                .add("-n")
+                .add(configuration.getAvdName())
+                .add("-t")
+                .add("android-" + configuration.getApiLevel())
+                .add("-b")
+                .add(configuration.getAbi())
+                .add("-f");
 
             if (configuration.getSdCard() != null && new File(configuration.getSdCard()).exists()) {
                 command.add("-c").add(configuration.getSdCard());
@@ -132,8 +144,9 @@ public class AndroidVirtualDeviceManager {
             logger.log(Level.INFO, "Creating new avd using: {0}", command);
 
             ProcessInteractionBuilder interaction = new ProcessInteractionBuilder();
-            interaction.replyTo("Do you wish to create a custom hardware profile [no]").with(
-                    "no" + System.getProperty("line.separator"));
+            interaction
+                .replyTo("Do you wish to create a custom hardware profile [no]")
+                .with("no" + System.getProperty("line.separator"));
 
             executor.execute(interaction.build(), command);
 

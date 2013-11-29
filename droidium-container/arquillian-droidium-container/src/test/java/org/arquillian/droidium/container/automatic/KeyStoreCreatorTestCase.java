@@ -55,6 +55,7 @@ public class KeyStoreCreatorTestCase {
     public void setup() {
         configuration = new AndroidContainerConfiguration();
         androidSDK = new AndroidSDK(configuration);
+        executor = new ProcessExecutor();
         keyStoreCreator = new KeyStoreCreator(executor, androidSDK, configuration);
 
         IdentifierGenerator<FileType> aig = new AndroidIdentifierGenerator();

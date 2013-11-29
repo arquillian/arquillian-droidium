@@ -33,6 +33,7 @@ import org.arquillian.droidium.container.configuration.AndroidContainerConfigura
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.impl.AndroidBridgeConnector;
 import org.arquillian.droidium.container.impl.AndroidDeviceSelectorImpl;
+import org.arquillian.droidium.container.impl.ProcessExecutor;
 import org.arquillian.droidium.container.spi.event.AndroidBridgeInitialized;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStart;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
@@ -66,6 +67,8 @@ public class AndroidDeviceSelectorEmulatorRunningTestCase extends AbstractContai
 
     private AndroidSDK androidSDK;
 
+    private ProcessExecutor processExecutor;
+
     private static final String RUNNING_EMULATOR_AVD_NAME = System.getProperty("emulator.running.avd.name", "test01");
 
     private static final String RUNNING_EMULATOR_CONSOLE_PORT = System.getProperty("emulator.running.console.port", "5554");
@@ -82,11 +85,13 @@ public class AndroidDeviceSelectorEmulatorRunningTestCase extends AbstractContai
         configuration.setAvdName(RUNNING_EMULATOR_AVD_NAME);
         configuration.setConsolePort(RUNNING_EMULATOR_CONSOLE_PORT);
         androidSDK = new AndroidSDK(configuration);
+        processExecutor = new ProcessExecutor();
 
         getManager().getContext(ContainerContext.class).activate("doesnotmatter");
 
         bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration);
         bind(ContainerScoped.class, AndroidSDK.class, androidSDK);
+        bind(ContainerScoped.class, ProcessExecutor.class, processExecutor);
     }
 
     @After

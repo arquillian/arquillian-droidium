@@ -55,7 +55,7 @@ public class APKSigner {
      * @throws IllegalArgumentException when some of arguments is a null object
      */
     public APKSigner(ProcessExecutor executor, AndroidSDK sdk, AndroidContainerConfiguration configuration)
-            throws IllegalArgumentException {
+        throws IllegalArgumentException {
         Validate.notNull(executor, "Process executor to set can not be a null object!");
         Validate.notNull(sdk, "Android SDK to set can not be a null object!");
         Validate.notNull(configuration, "Droidium configuration to set can not be a null object!");
@@ -75,14 +75,14 @@ public class APKSigner {
         checkKeyStore();
 
         Command jarSignerCommand = new Command()
-                .add(sdk.getPathForJavaTool("jarsigner"))
-                .add("-sigalg").add("MD5withRSA")
-                .add("-digestalg").add("SHA1")
-                .add("-signedjar").add(signed.getAbsolutePath())
-                .add("-storepass").add(configuration.getStorepass())
-                .add("-keystore").add(new File(configuration.getKeystore()).getAbsolutePath())
-                .add(toSign.getAbsolutePath())
-                .add(configuration.getAlias());
+            .add(sdk.getPathForJavaTool("jarsigner"))
+            .add("-sigalg").add("MD5withRSA")
+            .add("-digestalg").add("SHA1")
+            .add("-signedjar").add(signed.getAbsolutePath())
+            .add("-storepass").add(configuration.getStorepass())
+            .add("-keystore").add(new File(configuration.getKeystore()).getAbsolutePath())
+            .add(toSign.getAbsolutePath())
+            .add(configuration.getAlias());
 
         logger.log(Level.FINE, jarSignerCommand.toString());
 
@@ -111,8 +111,8 @@ public class APKSigner {
     /**
      * Checks if keystore as specified in {@link DroidiumNativeConfiguration} exists.
      *
-     * If it does not exist, checks if default keystore (in $HOME/.android/debug.keystore) exist. If default keystore does not
-     * exist, creates it.
+     * If it does not exist, checks if default keystore (in $ANDROID_SDK_HOME/.android/debug.keystore) exist. If default
+     * keystore does not exist, this method creates it.
      *
      * Sets keystore back to {@link DroidiumNativeConfiguration} to whatever exist first.
      */
@@ -129,6 +129,6 @@ public class APKSigner {
 
     private String getDefaultKeyStorePath() {
         String separator = System.getProperty("file.separator");
-        return System.getProperty("user.home") + separator + ".android" + separator + "debug.keystore";
+        return configuration.getAndroidSdkHome() + ".android" + separator + "debug.keystore";
     }
 }

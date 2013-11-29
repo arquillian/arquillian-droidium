@@ -31,6 +31,7 @@ import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Command;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceAvailable;
+import org.arquillian.droidium.container.utils.NetUtils;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Instance;
@@ -147,14 +148,26 @@ public class AndroidEmulatorStartup {
         AndroidSDK sdk = this.androidSDK.get();
         AndroidContainerConfiguration configuration = this.configuration.get();
 
-        logger.log(Level.INFO, configuration.toString());
-
         Command command = new Command();
         command.add(sdk.getEmulatorPath()).add("-avd").add(configuration.getAvdName());
 
         if (configuration.getSdCard() != null) {
             command.add("-sdcard");
             command.add(configuration.getSdCard());
+        }
+
+        if (configuration.getConsolePort() != null) {
+            if (!NetUtils.isPortFree(configuration.getConsolePort())) {
+                throw new AndroidExecutionException("It seems there is already something which listens on specified "
+                    + "console port " + configuration.getConsolePort() + " so Droidium can not start emulator there.");
+            }
+        }
+
+        if (configuration.getAdbPort() != null) {
+            if (!NetUtils.isPortFree(configuration.getAdbPort())) {
+                throw new AndroidExecutionException("It seems there is already something which listens on specified "
+                    + "adb port " + configuration.getAdbPort() + " so Droidium can not start emulator there.");
+            }
         }
 
         if (configuration.getConsolePort() != null && configuration.getAdbPort() != null) {

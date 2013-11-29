@@ -16,14 +16,9 @@
  */
 package org.arquillian.droidium.container.impl;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.arquillian.droidium.container.api.AndroidBridge;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidDeviceSelector;
@@ -39,6 +34,7 @@ import org.arquillian.droidium.container.spi.event.AndroidBridgeInitialized;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceAvailable;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceCreate;
+import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceDelete;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Instance;
@@ -52,15 +48,16 @@ import org.jboss.arquillian.core.api.annotation.Observes;
  *
  * <br>
  * <br>
- * 1. If console port was specified but avd name was not, we try to connect to running emulator which listens to specified port.
+ * 1. If console port was specified but AVD name was not, we try to connect to running emulator which listens to specified port.
  * If we fails to connect, {@link AndroidExecutionException} is thrown. <br>
- * 2. If avd name was specified but console port was not, we try to connect to the first running emulator of such avd name. <br>
- * 3. If both avd name and console port were specified, we try to connect to this combination. <br>
+ * 2. If AVD name was specified but console port was not, we try to connect to the first running emulator of such AVD name. <br>
+ * 3. If both AVD name and console port were specified, we try to connect to this combination. <br>
  * 4. If we fail to get device in all above steps:
  * <ol>
- * <li>If AVD name was not specified, random AVD indentifier is generated.</li>
- * <li>Checking whether such AVD is already existing is performed, if it does not, such AVD name is created and marked as
- * generated one. This AVD will be deleted after the whole test suite.</li>
+ * <li>If AVD name was not specified, random AVD identifier is generated.</li>
+ * <li>If AVD is among erroneous AVDs, it will be deleted, created from scratch, started and deleted after test.</li>
+ * <li>If AVD is among non-erroneous AVDs, it will be started.</li>
+ * <li>If AVD is not present, it will be created and started and deleted after test</li>
  * </ol>
  *
  * Observes:
@@ -121,9 +118,14 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
     @Inject
     private Event<AndroidDeviceReady> androidDeviceReady;
 
+    @Inject
+    private Event<AndroidVirtualDeviceDelete> androidDeviceDelete;
+
     public void selectDevice(@Observes AndroidBridgeInitialized event) throws AndroidExecutionException {
 
         AndroidDevice device = null;
+
+        AndroidContainerConfiguration configuration = this.configuration.get();
 
         if (isConnectingToPhysicalDevice()) {
             try {
@@ -137,8 +139,19 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
                 }
             } catch (AndroidExecutionException ex) {
                 logger.log(Level.INFO, "Unable to connect to physical device with serial ID {0}. ",
-                        new Object[] { configuration.get().getSerialId() });
+                        new Object[] { configuration.getSerialId() });
             }
+        }
+
+        final List<String> androidListAVDOutput = getAndroidListAVDOutput(false);
+        final List<String> compactAndroidListAVDOutput = getAndroidListAVDOutput(true);
+
+        if (logger.isLoggable(Level.INFO)) {
+            StringBuilder sb = new StringBuilder();
+            for (String line : androidListAVDOutput) {
+                sb.append(line);
+            }
+            System.out.print(sb.toString());
         }
 
         if (isConnectingToVirtualDevice()) {
@@ -152,17 +165,45 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
             }
         }
 
-        if (configuration.get().getAvdName() == null) {
+        if (configuration.getAvdName() == null) {
             String generatedAvdName = idGenerator.get().getIdentifier(FileType.AVD);
-            configuration.get().setAvdName(generatedAvdName);
-            configuration.get().setAvdGenerated(true);
+            configuration.setAvdName(generatedAvdName);
+            configuration.setAvdGenerated(true);
         }
 
-        if (!androidVirtualDeviceExists(configuration.get().getAvdName())) {
+        if (isInCompactAVDList(compactAndroidListAVDOutput, configuration.getAvdName())) {
+            androidVirtualDeviceAvailable.fire(new AndroidVirtualDeviceAvailable(configuration.getAvdName()));
+        } else if (isInRawAVDList(androidListAVDOutput, configuration.getAvdName())) {
+            logger.log(Level.INFO, "You want to start an emulator backed by AVD of name {0} which seems to be broken. "
+                + "This AVD will be deleted and AVD of the same name with configuration from arquillian.xml "
+                + "will be created and started afterwards.", new Object[] { configuration.getAvdName() });
+
+            androidDeviceDelete.fire(new AndroidVirtualDeviceDelete());
             androidVirtualDeviceCreate.fire(new AndroidVirtualDeviceCreate());
         } else {
-            androidVirtualDeviceAvailable.fire(new AndroidVirtualDeviceAvailable(configuration.get().getAvdName()));
+            androidVirtualDeviceCreate.fire(new AndroidVirtualDeviceCreate());
         }
+
+    }
+
+    private boolean isInCompactAVDList(List<String> lines, String avdName) {
+        for (String temp : lines) {
+            if (temp.contains(avdName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isInRawAVDList(List<String> lines, String avdName) {
+        for (String temp : lines) {
+            if (temp.contains("Name:")) {
+                if (temp.substring(temp.indexOf(" ")).contains(avdName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private void setDronePorts(AndroidDevice device) {
@@ -311,41 +352,19 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
         throw new AndroidExecutionException("Unable to get device with serial ID " + serialId + ".");
     }
 
-    private boolean androidVirtualDeviceExists(String avdName) throws AndroidExecutionException {
-        ProcessExecutor executor = this.executor.get();
-        Set<String> devices = getAndroidVirtualDeviceNames(executor);
-        return devices.contains(avdName);
-    }
-
-    private Set<String> getAndroidVirtualDeviceNames(ProcessExecutor executor) throws AndroidExecutionException {
-
-        final Pattern deviceName = Pattern.compile("[\\s]*Name: ([^\\s]+)[\\s]*");
-
-        Set<String> names = new HashSet<String>();
-
-        ProcessExecution execution;
-
+    private List<String> getAndroidListAVDOutput(boolean compact) {
         try {
             Command command = new Command(androidSDK.get().getAndroidPath(), "list", "avd");
-            execution = executor.execute(command);
-        } catch (AndroidExecutionException e) {
-            // rewrap exception to have nicer stacktrace
-            throw new AndroidExecutionException(e, "Unable to get list of available AVDs");
-        }
 
-        for (String line : execution.getOutput()) {
-            Matcher m;
-            if (line.trim().startsWith("Name: ") && (m = deviceName.matcher(line)).matches()) {
-                String name = m.group(1);
-                // skip a device which has no name
-                if (name == null || name.trim().length() == 0) {
-                    continue;
-                }
-                names.add(name);
-                logger.info("Available Android Device: " + name);
+            if (compact) {
+                command.add("-c");
             }
-        }
 
-        return names;
+            ProcessExecution execution = this.executor.get().execute(command);
+            return execution.getOutput();
+        } catch (AndroidExecutionException e) {
+            throw new AndroidExecutionException(e, "Unable to get list of AVDs");
+        }
     }
+
 }

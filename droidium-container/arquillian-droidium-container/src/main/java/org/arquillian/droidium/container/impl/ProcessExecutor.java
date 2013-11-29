@@ -37,6 +37,7 @@ import java.util.logging.Logger;
 
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.configuration.Command;
+import org.arquillian.droidium.container.configuration.Validate;
 
 /**
  * Executor service which is able to execute external process as well as callables
@@ -46,14 +47,24 @@ import org.arquillian.droidium.container.configuration.Command;
  */
 public class ProcessExecutor {
 
+    public static Map<String, String> ENVIRONMENT_PROPERTIES = null;
     private final ShutDownThreadHolder shutdownThreads;
     private final ExecutorService service;
     private final ScheduledExecutorService scheduledService;
 
-    public ProcessExecutor() {
+    public ProcessExecutor(Map<String, String> environmentProperies) {
+        Validate.notNull(environmentProperies, "Environment properties to set for ProcessExecutor is backed by null object!");
+        Validate.notAllNullsOrEmpty(environmentProperies.values().toArray(new String[0]), "All entries in "
+            + "environment properies map have to have values which are not null objects nor empty strings!");
+
         this.shutdownThreads = new ShutDownThreadHolder();
         this.service = Executors.newCachedThreadPool();
         this.scheduledService = Executors.newScheduledThreadPool(1);
+        ENVIRONMENT_PROPERTIES = environmentProperies;
+    }
+
+    public ProcessExecutor() {
+        this(new HashMap<String, String>());
     }
 
     /**
@@ -223,6 +234,7 @@ public class ProcessExecutor {
         @Override
         public Process call() throws Exception {
             ProcessBuilder builder = new ProcessBuilder(command.getAsArray());
+            builder.environment().putAll(ENVIRONMENT_PROPERTIES);
             builder.redirectErrorStream(redirectErrorStream);
             return builder.start();
         }
