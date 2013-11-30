@@ -91,7 +91,7 @@
 
     <!-- Modules -->
     <modules>
-        <module>build-config</module>
+        <module>build</module>
         <module>droidium-container</module>
         <module>droidium-native</module>
         <module>droidium-web</module>

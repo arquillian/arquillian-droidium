@@ -16,13 +16,14 @@
 
     <!-- Parent -->
     <parent>
-        <groupId>org.arquillian.extension</groupId>
-        <artifactId>arquillian-droidium-web-build</artifactId>
+        <groupId>org.arquillian.droidium</groupId>
+        <artifactId>arquillian-droidium-build</artifactId>
         <version>1.0.0.Alpha3-SNAPSHOT</version>
-        <relativePath>../arquillian-droidium-web-build/pom.xml</relativePath>
+        <relativePath>../../build/pom.xml</relativePath>
     </parent>
 
     <!-- Artifact Configuration -->
+    <groupId>org.arquillian.extension</groupId>
     <artifactId>arquillian-droidium-web-impl</artifactId>
     <name>Arquillian Droidium Web Implementation</name>
     <description>Arquillian Droidium Web Implementation</description>

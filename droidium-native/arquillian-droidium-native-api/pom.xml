@@ -16,13 +16,14 @@
 
     <!-- Parent -->
     <parent>
-        <groupId>org.arquillian.extension</groupId>
-        <artifactId>arquillian-droidium-native-build</artifactId>
+        <groupId>org.arquillian.droidium</groupId>
+        <artifactId>arquillian-droidium-build</artifactId>
         <version>1.0.0.Alpha3-SNAPSHOT</version>
-        <relativePath>../arquillian-droidium-native-build/pom.xml</relativePath>
+        <relativePath>../../build/pom.xml</relativePath>
     </parent>
 
     <!-- Artifact Configuration -->
+    <groupId>org.arquillian.extension</groupId>
     <artifactId>arquillian-droidium-native-api</artifactId>
     <name>Arquillian Droidium Native API</name>
     <description>Arquillian Droidium Native API</description>

@@ -266,7 +266,7 @@
                 <!-- Arquillian Droidium for web testing -->
                 <dependency>
                     <groupId>org.arquillian.extension</groupId>
-                    <artifactId>arquillian-droidium-web-depchain</artifactId>
+                    <artifactId>arquillian-droidium-web</artifactId>
                     <version>${version.droidium}</version>
                 </dependency>
             </dependencies>
@@ -276,9 +276,6 @@
                 <testResources>
                     <testResource>
                         <directory>src/test/resources</directory>
-                    </testResource>
-                    <testResource>
-                        <directory>src/test/resources-jbossas-7</directory>
                     </testResource>
                 </testResources>
                 <plugins>

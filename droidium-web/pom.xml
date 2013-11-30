@@ -39,10 +39,9 @@
 
     <!-- Modules -->
     <modules>
-        <module>arquillian-droidium-web-build</module>
         <module>arquillian-droidium-web-spi</module>
         <module>arquillian-droidium-web-impl</module>
-        <module>arquillian-droidium-web-depchain</module>
+        <module>arquillian-droidium-web</module>
     </modules>
 
 </project>

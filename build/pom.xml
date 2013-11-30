@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- JBoss, Home of Professional Open Source Copyright 2013, Red Hat, Inc. 
+<!-- JBoss, Home of Professional Open Source Copyright 2012, Red Hat, Inc. 
     and/or its affiliates, and individual contributors by the @authors tag. See 
     the copyright.txt in the distribution for a full listing of individual contributors. 
     Licensed under the Apache License, Version 2.0 (the "License"); you may not 
@@ -16,17 +16,17 @@
 
     <!-- Parent -->
     <parent>
-        <groupId>org.arquillian.extension</groupId>
-        <artifactId>arquillian-droidium-native-parent</artifactId>
+        <groupId>org.arquillian.droidium</groupId>
+        <artifactId>arquillian-droidium-parent</artifactId>
         <version>1.0.0.Alpha3-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <!-- Artifact Configuration -->
-    <artifactId>arquillian-droidium-native-build</artifactId>
+    <artifactId>arquillian-droidium-build</artifactId>
     <packaging>pom</packaging>
-    <name>Arquillian Droidium Native Build</name>
-    <description>Arquillian Droidium Native Build</description>
+    <name>Arquillian Droidium Build</name>
+    <description>Arquillian Droidium Build</description>
 
     <!-- Developers -->
     <developers>
@@ -36,29 +36,27 @@
         </developer>
     </developers>
 
+    <!-- Properties -->
+    <properties>
+        <!-- Taken from root parent of the project -->
+        <version.com.android.tools.ddms>${version.ddmlib}</version.com.android.tools.ddms>
+    </properties>
+
     <!-- Dependency Management -->
     <dependencyManagement>
         <dependencies>
-            <!-- ShrinkWrap -->
+            <!-- Arquillian and ShrinkWrap-->
             <dependency>
                 <groupId>org.jboss.shrinkwrap</groupId>
                 <artifactId>shrinkwrap-bom</artifactId>
                 <version>${version.shrinkwrap_shrinkwrap}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>            
-            <!-- Arquillian -->
+            </dependency>
             <dependency>
                 <groupId>org.jboss.arquillian</groupId>
                 <artifactId>arquillian-bom</artifactId>
                 <version>${version.arquillian.core}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.arquillian.extension</groupId>
-                <artifactId>arquillian-drone-bom</artifactId>
-                <version>${version.arquillian.drone}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -80,6 +78,7 @@
                 <groupId>org.jboss.arquillian.core</groupId>
                 <artifactId>arquillian-core-impl-base</artifactId>
                 <version>${version.arquillian.core}</version>
+                <scope>test</scope>
                 <classifier>tests</classifier>
             </dependency>
             <dependency>
@@ -105,6 +104,29 @@
                 <version>${version.arquillian.core}</version>
             </dependency>
 
+            <!-- Drone -->
+            <dependency>
+                <groupId>org.jboss.arquillian.extension</groupId>
+                <artifactId>arquillian-drone-bom</artifactId>
+                <version>${version.arquillian.drone}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Android -->
+            <dependency>
+                <groupId>com.android.tools.ddms</groupId>
+                <artifactId>ddmlib</artifactId>
+                <version>${version.com.android.tools.ddms}</version>
+            </dependency>
+
+            <!-- Containers -->
+            <dependency>
+                <groupId>org.jboss.as</groupId>
+                <artifactId>jboss-as-arquillian-container-managed</artifactId>
+                <version>${version.org.jboss.as}</version>
+            </dependency>
+
             <!-- Third party projects -->
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
@@ -116,27 +138,27 @@
                 <artifactId>commons-io</artifactId>
                 <version>${version.commons.io}</version>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 
-    <!-- Build -->
+    <!-- Plugin Configuration -->
     <build>
         <plugins>
+            <!-- Surefire -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <configuration>
-                    <configLocation>arquillian-droidium-checkstyle/checkstyle.xml</configLocation>
+                    <configLocation>../../build/src/main/resources/arquillian-droidium-checkstyle/checkstyle.xml</configLocation>
                     <consoleOutput>true</consoleOutput>
                     <failsOnError>true</failsOnError>
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.arquillian.droidium</groupId>
-                        <artifactId>arquillian-droidium-build-config</artifactId>
-                        <version>${project.version}</version>
-                    </dependency>
-                </dependencies>
                 <executions>
                     <execution>
                         <id>check-style</id>
@@ -147,12 +169,42 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>animal-sniffer-maven-plugin</artifactId>
+                <version>1.9</version>
+                <executions>
+                    <execution>
+                        <id>signature-check</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <signature>
+                        <groupId>org.codehaus.mojo.signature</groupId>
+                        <artifactId>java16</artifactId>
+                        <version>1.0</version>
+                    </signature>
+                </configuration>
+            </plugin>
         </plugins>
+
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav-jackrabbit</artifactId>
+                <version>1.0</version>
+            </extension>
+        </extensions>        
 
         <pluginManagement>
             <plugins>
-                <!--This plugin's configuration is used to store Eclipse m2e settings 
-                    only. It has no influence on the Maven build itself. -->
+                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build 
+                    itself. -->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
                     <artifactId>lifecycle-mapping</artifactId>

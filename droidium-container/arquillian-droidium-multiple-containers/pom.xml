@@ -16,10 +16,10 @@
 
     <!-- Parent -->
     <parent>
-        <groupId>org.arquillian.container</groupId>
-        <artifactId>arquillian-droidium-container-build</artifactId>
+        <groupId>org.arquillian.droidium</groupId>
+        <artifactId>arquillian-droidium-build</artifactId>
         <version>1.0.0.Alpha3-SNAPSHOT</version>
-        <relativePath>../arquillian-droidium-container-build/pom.xml</relativePath>
+        <relativePath>../../build/pom.xml</relativePath>
     </parent>
 
     <!-- Artifact configuration -->

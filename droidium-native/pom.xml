@@ -39,11 +39,10 @@
 
     <!-- Modules -->
     <modules>
-        <module>arquillian-droidium-native-build</module>
         <module>arquillian-droidium-native-api</module>
         <module>arquillian-droidium-native-spi</module>
         <module>arquillian-droidium-native-impl</module>
-        <module>arquillian-droidium-native-depchain</module>
+        <module>arquillian-droidium-native</module>
     </modules>
 
 </project>

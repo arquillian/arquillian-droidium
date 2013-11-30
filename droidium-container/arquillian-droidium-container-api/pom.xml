@@ -16,13 +16,14 @@
 
     <!-- Parent -->
     <parent>
-        <groupId>org.arquillian.container</groupId>
-        <artifactId>arquillian-droidium-container-build</artifactId>
+        <groupId>org.arquillian.droidium</groupId>
+        <artifactId>arquillian-droidium-build</artifactId>
         <version>1.0.0.Alpha3-SNAPSHOT</version>
-        <relativePath>../arquillian-droidium-container-build/pom.xml</relativePath>
+        <relativePath>../../build/pom.xml</relativePath>
     </parent>
 
     <!-- Artifact Configuration -->
+    <groupId>org.arquillian.container</groupId>
     <artifactId>arquillian-droidium-container-api</artifactId>
     <name>Arquillian Droidium Container API</name>
     <description>Arquillian Droidium Container API</description> 
@@ -44,6 +45,6 @@
         <dependency>
             <groupId>org.jboss.shrinkwrap</groupId>
             <artifactId>shrinkwrap-api</artifactId>
-        </dependency>        
+        </dependency>
     </dependencies>
 </project>

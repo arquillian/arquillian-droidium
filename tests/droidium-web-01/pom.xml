@@ -121,7 +121,7 @@
 
             <dependency>
                 <groupId>org.arquillian.extension</groupId>
-                <artifactId>arquillian-droidium-web-depchain</artifactId>
+                <artifactId>arquillian-droidium-web</artifactId>
                 <version>${project.version}</version>
                 <type>pom</type>
                 <scope>test</scope>
@@ -152,11 +152,11 @@
 
         <dependency>
             <groupId>org.arquillian.extension</groupId>
-            <artifactId>arquillian-droidium-web-depchain</artifactId>
+            <artifactId>arquillian-droidium-web</artifactId>
             <type>pom</type>
             <scope>test</scope>
         </dependency>
-        
+
         <!-- Import the CDI API, we use provided scope as the API is included in JBoss AS 7 -->
         <dependency>
             <groupId>javax.enterprise</groupId>

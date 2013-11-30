@@ -17,15 +17,15 @@
     <!-- Parent -->
     <parent>
         <groupId>org.arquillian.extension</groupId>
-        <artifactId>arquillian-droidium-native-parent</artifactId>
+        <artifactId>arquillian-droidium-web-parent</artifactId>
         <version>1.0.0.Alpha3-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <!-- Artifact Configuration -->
-    <artifactId>arquillian-droidium-native-depchain</artifactId>
-    <name>Arquillian Droidium Native Depchain</name>
-    <description>Arquillian Droidium Native Depchain</description>
+    <artifactId>arquillian-droidium-web</artifactId>
+    <name>Arquillian Droidium Web</name>
+    <description>Arquillian Droidium Web</description>
 
     <!-- Developers -->
     <developers>
@@ -39,17 +39,12 @@
     <dependencies>
         <dependency>
             <groupId>org.arquillian.extension</groupId>
-            <artifactId>arquillian-droidium-native-api</artifactId>
+            <artifactId>arquillian-droidium-web-spi</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.arquillian.extension</groupId>
-            <artifactId>arquillian-droidium-native-spi</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.arquillian.extension</groupId>
-            <artifactId>arquillian-droidium-native-impl</artifactId>
+            <artifactId>arquillian-droidium-web-impl</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
