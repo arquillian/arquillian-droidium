@@ -52,11 +52,11 @@ public class ActivityWebDriverMapper {
      * Gets WebDriver instance via which a user can control activity. Activity name can be specified as FQDN or its simple name.
      * {@code getInstance("foo.bar.Baz")} is the same as {@code getInstance("Baz")}. In case there are classes which FQDN does
      * not equal but their simple name does, e.g. {@code foo.bar.Baz} and {@code joe.doe.Baz}, when executing
-     * {@getInstance("Baz")}, {@code NotUniqueWebDriverInstanceException} is thrown since we are not sure
+     * {@code getInstance("Baz")}, {@code NotUniqueWebDriverInstanceException} is thrown since we are not sure
      * what WebDriver instance a user wants to get.
      *
      * You do not have to use simple name nor FQDN, it is sufficient to use shortest suffix of {@code activity} which is unique
-     * accross all suffixes of all activity classes.
+     * across all suffixes of all activity classes.
      *
      *
      * @param activity activity you want to get WebDriver instance for which this driver controls

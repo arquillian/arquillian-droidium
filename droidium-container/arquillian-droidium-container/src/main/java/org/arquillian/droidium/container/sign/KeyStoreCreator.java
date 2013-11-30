@@ -43,7 +43,7 @@ public final class KeyStoreCreator {
     private final ProcessExecutor executor;
 
     /**
-     * @param execuror
+     * @param executor
      * @param sdk
      * @param configuration
      * @throws IllegalArgumentException if either {@code sdk} or {@code configuration} is a null object

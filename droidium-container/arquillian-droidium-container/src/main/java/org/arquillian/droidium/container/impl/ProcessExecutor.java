@@ -176,7 +176,6 @@ public class ProcessExecutor {
      * Executes a process defined by command. Process output is discarded. Waits for process to finish and checks if process
      * finished with status code 0
      *
-     * @param interaction command interaction
      * @param command command to be execution
      * @return spawned process execution
      * @throws AndroidExecutionException if anything goes wrong

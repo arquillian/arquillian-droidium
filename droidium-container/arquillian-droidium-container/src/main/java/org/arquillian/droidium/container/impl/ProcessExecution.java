@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Representation of process execution
+ * Representation of a process execution
  *
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  *
@@ -67,7 +67,7 @@ public class ProcessExecution {
      * Adds a line to output of this process
      *
      * @param line
-     * @return
+     * @return this
      */
     public ProcessExecution appendOutput(String line) {
         output.add(line);
@@ -75,9 +75,8 @@ public class ProcessExecution {
     }
 
     /**
-     * Returs current output of the process
      *
-     * @return
+     * @return current output of the process
      */
     public List<String> getOutput() {
         return output;
@@ -87,7 +86,7 @@ public class ProcessExecution {
      * Writes {@code reply} into process input stream
      *
      * @param reply
-     * @return
+     * @return this
      * @throws IOException
      */
     public ProcessExecution replyWith(String reply) throws IOException {
@@ -101,7 +100,7 @@ public class ProcessExecution {
     /**
      * Checks whether process has finished
      *
-     * @return
+     * @return true if process has finished, false otherwise
      */
     public boolean isFinished() {
         try {
@@ -115,7 +114,7 @@ public class ProcessExecution {
     /**
      * Returns exit code
      *
-     * @return
+     * @return exit code
      * @throws IllegalStateException thrown if process is not finished
      */
     public int getExitCode() throws IllegalStateException {
@@ -128,9 +127,9 @@ public class ProcessExecution {
     }
 
     /**
-     * Checks whether {@link this#executionFailed()} was {@code 0}
+     * Checks whether {@link ProcessExecution#getExitCode()} was {@code 0}
      *
-     * @return
+     * @return true if exit code is not 0, false otherwise
      */
     public boolean executionFailed() {
         return getExitCode() != 0;

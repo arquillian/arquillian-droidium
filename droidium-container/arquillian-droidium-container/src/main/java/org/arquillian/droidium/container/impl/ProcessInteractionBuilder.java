@@ -55,7 +55,8 @@ public class ProcessInteractionBuilder {
     }
 
     /**
-     * Marks a line that should be considered as a question to be answered. Must be followed by {@see this#with(String)} call
+     * Marks a line that should be considered as a question to be answered. Must be followed by
+     * {@link ProcessInteractionBuilder#with(String)} call
      *
      * @param outputLine The question
      * @return current instance to allow chaining
@@ -70,10 +71,11 @@ public class ProcessInteractionBuilder {
     }
 
     /**
-     * Stores an answer for question defined by {@see this#replyTo(String)} call
+     * Stores an answer for question defined by {@code replyTo} call
      *
      * @param response the answer
      * @return current instance to allow chaining
+     * @see ProcessInteractionBuilder#replyTo(String)
      */
     public ProcessInteractionBuilder with(String response) {
         if (tuple.first == null) {
@@ -114,7 +116,7 @@ public class ProcessInteractionBuilder {
     }
 
     /**
-     * Builds {@see ProcessInteraction} object from defined data
+     * Builds {@link ProcessInteraction} object from defined data
      *
      * @return {@link ProcessInteraction}
      */

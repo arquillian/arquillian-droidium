@@ -74,7 +74,7 @@ public class AndroidEmulatorStartupAVDtoBeCreatedTestCase extends AbstractContai
     private static final String AVD_GENERATED_NAME = "ab1be336-d30f-4d3c-90de-56bdaf198a3e";
 
     private static final String AVD_ABI = System.getProperty("emulator.startup.abi", "x86");
-    
+
     private static final String API_LEVEL = System.getProperty("emulator.startup.apiLevel", "10");
 
     private static final String EMULATOR_STARTUP_TIMEOUT = System.getProperty("emulator.startup.timeout", "600");
