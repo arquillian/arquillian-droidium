@@ -69,7 +69,7 @@ import org.mockito.runners.MockitoJUnitRunner;
  * placed on the command line while testing with Maven like this:
  *
  * <p>
- * {@code mvn clean package -Ptest -Demulator.name=nameOfAVD -Demulator.port=5554 -Dandroid.server.path=path_to_server}
+ * {@code mvn clean package -Pandroid-web -Demulator.name=nameOfAVD -Demulator.port=5554 -Dandroid.server.path=path_to_server}
  * </p>
  *
  * <p>
@@ -92,14 +92,16 @@ public class AndroidWebDriverSupportEmulatorTestCase extends AbstractAndroidTest
 
     private ProcessExecutor processExecutor;
 
-    private String EMULATOR_AVD_NAME = System.getProperty("emulator.avd.name", "test01");
+    private static final String EMULATOR_AVD_NAME = System.getProperty("emulator.avd.name", "test01");
 
-    private String EMULATOR_CONSOLE_PORT = System.getProperty("emulator.avd.port", "5554");
+    private static final String EMULATOR_CONSOLE_PORT = System.getProperty("emulator.avd.port", "5554");
 
-    private String ANDROID_SERVER_APK_PATH = System.getProperty("android.server.path",
+    private static final String EMULATOR_OPTIONS = "-no-audio -no-window -memory 343 -no-snapshot-save -no-snapstorage";
+    
+    private static final String ANDROID_SERVER_APK_PATH = System.getProperty("android.server.path",
         "src/test/resources/android-server-2.6.0.apk");
 
-    private String APK_APP_NAME = "org.openqa.selenium.android.app";
+    private static final String APK_APP_NAME = "org.openqa.selenium.android.app";
 
     @Mock
     private ServiceLoader serviceLoader;
@@ -120,6 +122,9 @@ public class AndroidWebDriverSupportEmulatorTestCase extends AbstractAndroidTest
         configuration = new AndroidContainerConfiguration();
         configuration.setAvdName(EMULATOR_AVD_NAME);
         configuration.setConsolePort(EMULATOR_CONSOLE_PORT);
+        configuration.setEmulatorOptions(EMULATOR_OPTIONS);
+        configuration.validate();
+        
         androidSDK = new AndroidSDK(configuration);
         processExecutor = new ProcessExecutor();
 

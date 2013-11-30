@@ -142,7 +142,7 @@
                 Default values are "test01", "5554" and "android-server-2.6.0.apk" respectively.
                 Emulator with these properties will be run dynamically upon test execution.
              -->
-            <id>test</id>
+            <id>android-web</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
