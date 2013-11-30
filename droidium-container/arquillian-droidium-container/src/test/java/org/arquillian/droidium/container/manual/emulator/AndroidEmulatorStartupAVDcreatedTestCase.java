@@ -47,6 +47,7 @@ import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.container.test.AbstractContainerTestBase;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,7 +61,7 @@ import org.mockito.runners.MockitoJUnitRunner;
  *
  * <p>{@code -Demulator.to.run.console.port=port_number}</p>
  *
- * at the Maven command line in connection with -Pmanual-test profile.
+ * at the Maven command line in connection with android-manual-emulator profile.
  * Default AVD name is "test01", default port number is 5556.
  *
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
@@ -81,7 +82,7 @@ public class AndroidEmulatorStartupAVDcreatedTestCase extends AbstractContainerT
 
     private static final String EMULATOR_STARTUP_TIMEOUT = System.getProperty("emulator.startup.timeout", "600");
 
-    private static final String EMULATOR_OPTIONS = "-no-audio -no-window -memory 256 -nocache -no-snapshot-save -no-snapstorage";
+    private static final String EMULATOR_OPTIONS = "-no-audio -no-window -memory 343 -no-snapshot-save -no-snapstorage";
 
     @Override
     protected void addExtensions(List<Class<?>> extensions) {
@@ -117,30 +118,32 @@ public class AndroidEmulatorStartupAVDcreatedTestCase extends AbstractContainerT
     }
 
     @Test
-    public void testStartEmulatorOfExistingAVD() {
+    public void testStartEmulatorOfExistingAVD() throws InterruptedException {
         fire(new AndroidContainerStart());
+
+        assertEventFired(AndroidContainerStart.class, 1);
+        assertEventFired(AndroidBridgeInitialized.class, 1);
 
         AndroidBridge bridge = getManager().getContext(ContainerContext.class).getObjectStore().get(AndroidBridge.class);
         assertNotNull(bridge);
-
         bind(ContainerScoped.class, AndroidBridge.class, bridge);
 
-        AndroidDevice runningDevice = getManager().getContext(ContainerContext.class)
-                .getObjectStore().get(AndroidDevice.class);
+        assertEventFired(AndroidVirtualDeviceAvailable.class, 1);
+        assertEventFired(AndroidDeviceReady.class, 1);
+
+        List<AndroidDevice> devices = bridge.getDevices();
+        Assert.assertFalse(devices.size() == 0);
+
+        AndroidDevice runningDevice = getManager().getContext(ContainerContext.class).getObjectStore().get(AndroidDevice.class);
         assertNotNull("Android device is null!", runningDevice);
         bind(ContainerScoped.class, AndroidDevice.class, runningDevice);
 
-        AndroidEmulator emulator = getManager().getContext(ContainerContext.class)
-                .getObjectStore().get(AndroidEmulator.class);
+        AndroidEmulator emulator = getManager().getContext(ContainerContext.class).getObjectStore().get(AndroidEmulator.class);
         assertNotNull("Android emulator is null!", emulator);
         bind(ContainerScoped.class, AndroidEmulator.class, emulator);
 
         fire(new AndroidContainerStop());
 
-        assertEventFired(AndroidContainerStart.class, 1);
-        assertEventFired(AndroidBridgeInitialized.class, 1);
-        assertEventFired(AndroidVirtualDeviceAvailable.class, 1);
-        assertEventFired(AndroidDeviceReady.class, 1);
         assertEventFired(AndroidContainerStop.class, 1);
         assertEventFired(AndroidEmulatorShuttedDown.class, 1);
 

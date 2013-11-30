@@ -42,6 +42,7 @@ import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.container.test.AbstractContainerTestBase;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -61,6 +62,7 @@ import org.mockito.runners.MockitoJUnitRunner;
  *
  */
 @RunWith(MockitoJUnitRunner.class)
+@Ignore("Not stable on Cloudbees")
 public class AndroidDeviceSelectorEmulatorRunningTestCase extends AbstractContainerTestBase {
 
     private AndroidContainerConfiguration configuration;
