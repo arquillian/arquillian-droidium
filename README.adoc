@@ -19,81 +19,19 @@ need this extension when you want to functionally test your native Android appli
 Native extension relies on http://dominikdary.github.io/selendroid/[Selendroid] project 
 from where it takes Selendroid server APK.
 
-Every extension has its own README and configuration documentation. You are 
-welcome to check them in their respective directories.
+*Every extension has its own very detailed and deep README and configuration documentation in its respective directory.*
 
 === How to install Arquillian Droidium
 
-`mvn install`
+`mvn clean install`
 
-Archetype projects are installed as well as extensions themselves so you have two options how to boostrap 
-your Android mobile testing:
+=== How to use Android containre and web and native plugins?
 
-* copy over some test in `tests` directory according to your testing needs and modify it subsequently
-* generate your project from provided archetypes in `archetypes` directory
+Every extension has its own README and configuration documentation in its respective directory.
+You can find archetypes for native and web testing in archetype directory so you can boostrap your 
+testing process significantly. You can also take a look into _tests_ directory. There is bunch of 
+example projects how to use it with very deep documentation.
 
 === How to generate Javadoc?
 
 `mvn javadoc:aggregate`
-
-=== Take screenshots during your tests
-
-That is right, you can take screenshots as you test by very simple way. You are welcome to check 
-the project which shows how to do it directly in your test methods in https://github.com/arquillian/arquillian-droidium/tree/master/tests/arquillian-droidium-screenshooter-test-01[screenshooter demo] in `tests` directory.
-
-=== How to test extensions?
-
-When you are doing `mvn clean install`, some tests are executed automatically. These 
-tests do not need any special profile to be chosen and they work out of box.
-
-Tests for Arquillian Droidium resides mainly in `droidium-container`.
-Android specific tests are skipped by default since they require Android SDK to 
-be installed on target host.
-
-If you want to try them, you *have to* have Android SDK installed locally and 
-`$ANDROID_HOME` has to point to the installation directory. 
-Next, you have to select specific profile. Android specific tests are divided 
-into two profiles. The first one is called _automatic_ and even it uses 
-Android SDK, it does not need any additional intervention from a tester point of view.
-You execute _automatic_ tests like:
-
-`mvn clean test -Pandroid-automatic`
-
-Tests which are expecting to have some Android emulator already started are triggered by
-
-`mvn clean test -Pandroid-manual-emulator`
-
-Finally, there are tests which are expecting to have real Android device 
-connected via USB cable to your computer. You trigger this profile by executing:
-
-`mvn clean test -Pandroid-manual-real`
-
-IMPORTANT: Please consult testing profiles in `droidium-container/arquillian-droidium-container-impl/pom.xml` to know exactly what kind of emulators you have to have and what possibilities you have when using AVDs or ports different from the default ones.
-
-=== Proof-of-concept tests
-
-Test projects which are reflecting the very basic setup to bootstrap your 
-testing experience are placed in `tests` directory.
-
-=== How to contribute?
-
-You are very welcome to contribute to this set of extensions in any way. It is very welcome to test 
-possibilities of testing - simulate own scenarios and so on.
-
-You should follow these steps:
-
-* Use separate branch for every feature you are adding.
-* Use IDE configuration files for JBoss located https://github.com/jboss/ide-config[here].
-* Test your contribution and write tests whenever possible and necessary.
-* When you are writing some testing project, please put it in `tests` directory and follow naming rules as already shown.
-
-Thank you!
-
-=== Contact
-
-This set of extensions is being developed as a part of Google Summer of code 2013.
-
-You are welcome to check development blog of 
-
-* http://miklosovic.net[Stefan Miklosovic]
-* http://toseter.ru/[Aleksey Shilin]
