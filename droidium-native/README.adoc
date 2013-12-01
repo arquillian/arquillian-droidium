@@ -7,11 +7,12 @@ http://dominikdary.github.io/selendroid/[Selendroid] project.
 In a nutshell, it looks into your application you want to test (APK file) and it modifies 
 Selendroid server accordingly (to be more detailed, its AndroidManifest.xml). After these changes,
 it is resigned once again since the content of APK has changed and it installs modified Selendroid 
-server and application under test (_aut_) into Android device. _Aut_ is instrumented by Selendroid 
+server and application under test (_AUT_) into Android device. _AUT_ is instrumented by Selendroid 
 server.
 
 You can use good-old WebDriver from Selenium to carry out the tests since Selendroid implements 
-WebDriver API - the biggest advantage under the sun.
+WebDriver API - the biggest advantage under the sun. From code point of view, you can use `WebDriver` 
+or `AndroidDriver` injections by Drone as will be shown in a moment.
 
 == Configuration
 
@@ -21,7 +22,7 @@ while testing:
 ----
 <dependency>
     <groupId>org.arquillian.extension</groupId>
-    <artifactId>arquillian-droidium-native-depchain</artifactId>
+    <artifactId>arquillian-droidium-native</artifactId>
     <version>${droidium.version}</version>
     <scope>test</scope>
     <type>pom</type>
@@ -31,8 +32,6 @@ while testing:
 You have to register extension in `arquillian.xml` by putting this snippet into it:
 
 ----
-<!-- Support for Arquillian Droidium Native extension 
-    for testing native Android applications via Selendroid -->
 <extension qualifier="droidium-native">
     <!-- path you your selendroid-server.apk -->
     <property name="serverApk">selendroid-server.apk</property>
@@ -41,7 +40,11 @@ You have to register extension in `arquillian.xml` by putting this snippet into 
 
 You have to download Selendroid server APK from Selendroid project manually and put it 
 on classpath. It will be recognized by this extension then. Note the qualifier for 
-this extension - `droidium-native`.
+this extension - `droidium-native`. There is already Selendroid server saved for you in 
+`tests` directory. Just put that apk to your project, set extension as show above and you are done.
+
+When you put the extension artifact on the class path and you do not specify its configuration in 
+`arquillian.xml`, plugin will search for Selendroid server APK of name "selendroid-server.apk" automatically.
 
 == Configuration properties
 
@@ -50,8 +53,235 @@ this extension - `droidium-native`.
 
 Sets path to Selendroid server APK from Selendroid project which is dynamically installed on target device for 
 translating WebDriver calls to Android browser and back. Selendroid server is repacked according to application 
-under test (_aut_) to reflect its base package for instrumentation needs.
+under test (_AUT_) to reflect its base package for instrumentation needs.
+
+The path to Selendroid server can be set absolutely or relatively in a way project see it. In almost every case, 
+you are good to place server APK just beside your `pom.xml`.
 
 ----
 <property name="serverApk">/path/to/your/selendroid/server/apk</property>
 ----
+
+== Usage
+
+Using of native plugin is tightly coupled with webdriver extension from Arquillian Drone since in the end 
+you want to drive your mobile application by regular WebDriver instance. How do you do this together?
+
+For the sake of the example, let's say you have one WebDriver instance in your test and you have 
+one APK you want to instrument. Let's see the code:
+
+----
+@Drone
+WebDriver mobile;
+
+@Deployment
+@Instrumentable(viaPort = "8081")
+public static Archive<?> getDeployment()
+{
+    return ShrinkWrap.createFromZipFile(JavaArchive.class,
+        new File("selendroid-test-app-0.6.0.apk"));
+}
+
+@Test
+public void test()
+{
+    // you can use mobile instance here
+}
+----
+
+First of all, you injected `mobile` WebDriver into the test exactly as you are used to. Then `@Deployment` 
+method follows where you just returns your APK you want to functionally test. You put that APK just beside 
+your server APK where `pom.xml` is but really, the sky is the limit.
+
+You can see that even we took APK as a deployment, we can just use `JavaArchive` archive abstraction since 
+APK is really just a regular zip file as JavaArchive is. There is totally not any difference between these two.
+
+The deployment you want to control by WebDriver instance is annotated with `@Instrumentable` annotation. Every 
+deployment you want to control _has to_ be annotated with `@Instrumentable` annotation. You can deploy as many (APK) 
+deployments to Android device as you want but only these which are `@Instrumentable` will be treated as ones which 
+you want to drive with WebDriver.
+
+Next, it is very important to realize that you can use one `@Drone` injection only for _exactly one_ deployment method. 
+Now you may ask, how it is possible that `WebDriver` is coupled with some specific `@Deployment`? Very valid question. 
+You just have to configure webdriver extension in `arquillian.xml` accordingly, like this:
+
+----
+<extension qualifier="webdriver">
+    <property name="browser">android</property>
+    <property name="remoteAddress">http://localhost:8081/wd/hub</property>
+</extension>
+----
+
+Firstly, you have to set `browser` to `android`, secondly, you have to provide `removeAddress` property with that address. 
+The port in that address, `8081` _has to_ match the port in `@Instrumentable` annotation in out test case. By this you can 
+internally match injected webdriver instances to deployments. When you omit `viaPort` in `@Instrumentable`, 8080 is default.
+
+In the background, every time you inject some WebDriver which is supposed to instrument some application by way above, 
+there is Selendroid server installed on your Android device (container) along with @Deployment.
+
+You can inject `WebDriver` also into a method instead into a class like this:
+
+----
+@Test
+public void test(@Drone WebDriver mobile)
+{
+    // you have access to driver here
+}
+----
+
+However, this injection will be preserved only in that method so it will not be visible in the next method. 
+Furthermore, of course you can inject driver to every method instead once into the class but while doing so, 
+you would install (and uninstall) Selendroid server for _every_ method run and that is not what you really 
+want because it is just slower.
+
+== How to start activities?
+
+So, you have `WebDriver` in your test injected which instruments `@Deployment` (via @Instrumentable where its port matches 
+the port in arquillian.xml in webdriver extension in remoteAddress property). However, when you enter the test method, even 
+your application from `@Deployment` is fully installed along with Selendroid server, you have to start activity from APK 
+you want to really control.
+
+Starting of activities is done like this:
+
+----
+@Drone WebDriver driver;
+
+@Test
+public void test(@ArquillianResource AndroidDevice device) {
+
+    android.getActivityManagerProvider()
+        .getActivityManager()
+        .startActivity("io.selendroid.testapp.HomeScreenActivity");
+
+    // operations via driver
+
+}
+----
+
+https://github.com/arquillian/arquillian-droidium/blob/master/droidium-container/arquillian-droidium-container-api/src/main/java/org/arquillian/droidium/container/api/AndroidDevice.java[AndroidDevice] injection represents raws access to your Android device. You can _totally_ control your Android device, you can install and uninstall packages, call commands ... whatever. By calling above, you start your activity. When activity is started, it appears on display and WebDriver can use it. You do not have to do anything in order to get `AndroidDevice` injected into the test. That resource is automatically present when you are using Droidium and it will be present everytime you use Android Container. As you know, you do not have to use any plugins, native nor web. But you have that resource available anyway.
+
+The stopping of activities is not supported yet but when you think about it, you can not really _stop_ an activity. When you want to stop it, you just have to kill the app. When you want to call another activity, just execute the same command but with different FQDN.
+
+How it is possible that Droidium knows about the activities? It scans the APK you want to test (by putting @Instrumentable on it) upon the installation and there is the list of activities parsed from its AndroidManifest.xml. There is also internal mapping between WebDrivers and activities for some deployment which leads us to another section:
+
+== How to use multiple WebDrivers?
+
+Lets say you want to test not only one but two deployments. Lets see the example:
+
+----
+@Drone
+@FirstApp
+WebDriver firstApp;
+
+@Drone
+@SecondApp
+WebDriver secondApp;
+
+@Deployment(name = "first")
+@Instrumentable(viaPort = 8081)
+public static Archive<?> getFirstAppDeployment()
+{
+    return ShrinkWrap archive for the first APK
+}
+
+@Deployment(name = "second")
+@Instrumentable(viaPort = 8082)
+public static Archive<?> getSecondDeployment()
+{
+    return ShrinkWrap archive for the second APK
+}
+
+// this APK will not be backed by WebDriver
+// because you have not put @Instrumentable on it
+@Deployment
+public static Archive<?> getThirdDeployment()
+{
+    return ShrinkWrap archive for the third APK
+}
+----
+
+You have to set name of deployments because you have more then one of them. Multiple deployments have to have unique name so Arquillian can make the difference between them. Additionally, You put `@Instrumentable` on two deployments. As you recall, every `@Instrumentable` is backed by different WebDriver so that in turn means you puth this configuration to arquillian.xml when it comes to webdriver extensions:
+
+----
+<extension qualifier="webdriver-firstapp">
+    <property name="browser">android</property>
+    <property name="remoteAddress">http://localhost:8081/wd/hub</property>
+</extension>
+
+<extension qualifier="webdriver-secondapp">
+    <property name="browser">android</property>
+    <property name="remoteAddress">http://localhost:8082/wd/hub<property>
+----
+
+Almost nothing new, port numbers in extensions have to match ports in `@Instrumentable` annotation so that particular extension will control that related deployment. You have also injected two WebDrivers but you have to make the difference. Which one will instrument what app? You make the difference by putting custom annotation on them. That annotation, after lowercasing, is the same string as the suffix in webdriver qualifer name in arquillian.xml. For example, there is `@First` annotaion, after lowercasing it is "first" and you append this to "webdriver" so you have "webdriver-first" and that is exactly the qualifier in the respective extension - "webdriver-first". So by the `@First` WebDriver you can control activities only from the "getFirstDeployment". Qualifier annotations are implemented e.g https://github.com/kpiwko/arquillian-safari/blob/master/arquillian-droidium-scenario/src/test/java/org/arquillian/droidium/openblend/drones/Mobile.java[like this].
+
+You could also theoretically use two Drones in one testing method like this:
+
+----
+@Test
+@OperatesOnDeployment("first")
+public void test(
+    @First
+    @Drone WebDriver firstApp,
+    @OperatesOnDeployment("second")
+    @Second
+    @Drone WebDriver secondApp,
+    @ArquillianResource AndroidDevice device)
+{
+    // start activity in the first deployment by "device"
+    firstApp.functions() ...
+
+    // start activity in second deployment by "device"
+    secondApp.functions() ...
+}
+----
+
+You have to use `@OperatesOnDeployment` for the second Drone injection.
+
+== How do you find elements?
+
+So all is shiny and you have started activities of your APK and everything but how to know where to click? How to get elements?
+
+Since Selendroid and Drone complies to WebDriver API, you select them just the same way, for example, let's say that you have some button in your native application. That button has some "id", it is id in its layout XML file. So that in turn means that you need to do this:
+
+----
+WebElement button = driver.findById("myButton");
+button.click();
+----
+
+Easy right? Id of the button is just the same as you specified it in your layout. And this practically holds for every other element you can find.
+
+When you are on Eclipse, there is very convenient way how to get ids of elements. You need to have Android nature installed and there is _DDMS_ view you have to switch to. After that, there is very nice and interactive element inspector which shows tree of elements and how they are related to each other. Ids of these elements are just these you need to use when you are finding `WebElement` intances.
+
+Be sure that you are interacting with elements on activies you acutally see. You just can not click on an element when it is not visible e.g. when another activity takes action.
+
+Another example, you need to write something to a field:
+
+----
+WebElement field = driver.findById("userName");
+field.sendKeys("john");
+----
+
+As you see, you actually use WebDriver API on native Android activities.
+
+== FAQ
+
+[qanda]
+What happens if I put arquillian-droidium-container artifact into pom.xml and I set Android container in arquillian.xml and additionally I do the same for regular web container as JBoss AS / Wildfly and there is Drone on classpath as well but no extension in arquillian.xml has "browser" property set to "android"?::
+  Your Android container will not be started at all.
+Do I have to somehow modify my application I want to test?::
+  No.
+When I have two deployments which are instrumented, how many Selendroid servers are installed on the device?::
+  Two. There is one Selendroid server per instrumented application. The package name of Selendroid server is modified on-the-fly so you can install multiple Selendroid servers into one Android device. These package names do not clash.
+What version of Selendroid server I should use?::
+  You can be almost always sure that you should use the latest one since we try to keep in touch with Selendroid server regularly. I am comitting to Selendroid project from time to time.
+Where are all resources put e.g. repackaged Selendroid servers?::
+  By default somewhere to `$TMP`.
+Can I build my APK with ShrikWrap fluent API in the same way I can build my JavaArchive or WebArchive microdeployment?::
+  Not yet. This is too complicated to do right now and it is not the priority. There are https://github.com/TadeasKriz/shrinkwrap-android[this] and https://github.com/TadeasKriz/apkbuilder[this] projects which try to implement that but it is not finished yet.
+Is there any difference between `AndroidDriver` and `WebDriver`?::
+  Well. It depends. There _is_ some difference. You should stick to AndroidDriver injections so it just makes more sense right ... But from the usability point of view, when you do not do anything special, you are good just with `WebDriver`.
+
+Tips:
+
+1. Be sure that ports you are trying to use are free and they are not bound to anything prior to test.
