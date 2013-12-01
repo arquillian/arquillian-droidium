@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.showcase.native_.test01;
+package org.arquillian.droidium.showcase.screenshooter.test01;
 
 import java.io.File;
 
@@ -62,7 +62,7 @@ public class SelendroidTestAppTestCase {
     @Instrumentable
     @TargetsContainer("android")
     public static Archive<?> createDeployment() {
-        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.5.1.apk"));
+        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.6.0.apk"));
     }
 
     private static final String USER_NAME = "john";

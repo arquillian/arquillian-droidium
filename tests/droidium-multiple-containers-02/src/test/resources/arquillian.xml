@@ -16,12 +16,12 @@
     <!-- Container configuration -->
     <group qualifier="containers" default="true">
         <!-- This container will not be started because its container adapter class is not on the class path
-            That dependency is is intentionally commented out in pom.xml to show that multiple containers extension 
-            is able to "guess" containers so when this definition is not backed by adapter class, it is not 
+            That dependency is is intentionally commented out in pom.xml to show that multiple containers extension
+            is able to "guess" containers so when this definition is not backed by adapter class, it is not
             added to container registry so the subsequent attempt to create JBoss container will not fail.
-            
+
             For better explanation, see https://issues.jboss.org/browse/ARQ-1509
-             
+
             -->
         <container qualifier="android" default="true">
             <configuration>

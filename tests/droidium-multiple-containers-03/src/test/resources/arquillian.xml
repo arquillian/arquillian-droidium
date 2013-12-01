@@ -17,9 +17,9 @@
     <group qualifier="containers" default="true">
         <!-- This container will not be started because Drone is on class path and there are webdriver extension 
             but that extension asks for firefox browser so Android device is not necessary so it will not be started.
-            
+
             For better explanation, see https://issues.jboss.org/browse/ARQ-1577
-            
+
             -->
         <container qualifier="android" default="true">
             <configuration>
@@ -37,7 +37,7 @@
             </configuration>
         </container>
     </group>
-    
+
     <!-- Configuration of webdriver extension for firefox -->
     <extension qualifier="webdriver">
         <property name="browser">firefox</property>

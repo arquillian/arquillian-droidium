@@ -31,7 +31,7 @@
         for testing native Android applications via Selendroid -->
     <extension qualifier="droidium-native">
         <!-- path you your selendroid-server.apk -->
-        <property name="serverApk">selendroid-server-0.5.1.apk</property>
+        <property name="serverApk">selendroid-server-0.6.0.apk</property>
     </extension>
 
     <!-- suffix of qualifier matches name of annotation put for Drone instance for Selendroid test app -->

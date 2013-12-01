@@ -14,43 +14,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.showcase.native_.test01;
+package org.arquillian.droidium.showcase.multiple.test02;
 
-import java.io.File;
-
-import org.arquillian.droidium.container.api.AndroidDevice;
+import org.arquillian.droidium.showcase.classes.Foo;
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.arquillian.container.test.api.TargetsContainer;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.arquillian.junit.InSequence;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * Android Droidium - controlling of activities without native plugin.
- *
+ * Proof of concept test for showing multiple containers on classpath.
+ * 
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
- *
+ * 
  */
 @RunWith(Arquillian.class)
 @RunAsClient
-public class AndroidActivityManagerTestCase {
+public class MultipleContainersTestCase {
 
-    @ArquillianResource
-    AndroidDevice android;
-
-    @Deployment
-    public static Archive<?> getDeployment() {
-        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.5.1.apk"));
+    @Deployment(name = "jbossas")
+    @TargetsContainer("jbossas")
+    public static Archive<?> createJBossASDeployment() {
+        return ShrinkWrap.create(JavaArchive.class, "jbossas.jar").addClass(Foo.class);
     }
 
     @Test
-    public void startAndStopSomeActivityTest() {
-        android.getActivityManagerProvider().getActivityManager().startActivity("io.selendroid.testapp.HomeScreenActivity");
-        android.getActivityManagerProvider().getActivityManager().stopActivity("io.selendroid.testapp.HomeScreenActivity");
+    @InSequence(1)
+    @OperateOnDeployment("jbossas")
+    public void test01() {
+        Assert.assertTrue(true);
     }
 
 }

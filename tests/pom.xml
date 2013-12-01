@@ -39,6 +39,8 @@
     <!-- Modules -->
     <modules>
         <module>droidium-multiple-containers-01</module>
+        <module>droidium-multiple-containers-02</module>
+        <module>droidium-multiple-containers-03</module>
         <module>droidium-native-01</module>
         <module>droidium-native-02</module>
         <module>droidium-web-01</module>
@@ -48,6 +50,7 @@
         <module>droidium-multiple-deployments-01</module>
     </modules>
 
+    <!-- Build -->
     <build>
         <plugins>
             <plugin>

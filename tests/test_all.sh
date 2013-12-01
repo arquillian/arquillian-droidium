@@ -5,6 +5,9 @@ ADB_CMD=$ANDROID_HOME/platform-tools/adb
 EMULATOR_CMD=$ANDROID_HOME/tools/emulator
 EMULATOR_RAM=343
 
+SELENDROID_SERVER_APK=selendroid-server-0.6.0.apk
+SELENDROID_TEST_APP=selendroid-test-app-0.6.0.apk
+
 function help
 {
     echo "help: "
@@ -23,6 +26,21 @@ if [ "x$2" == "x" ]; then
     exit
 fi
 
+function copy_server
+{
+    cp ../$SELENDROID_SERVER_APK $1
+}
+
+function copy_test_app
+{
+    cp ../$SELENDROID_TEST_APP $1
+}
+
+function copy_all
+{
+    copy_server $1
+    copy_test_app $1
+}
 
 #
 # Starts emulator
@@ -72,7 +90,7 @@ function droidium-hybrid-01
 {
     cd $ROOT
     cd droidium-hybrid-01
-    cp ../selendroid-* .
+    copy_all .
     mvn clean test -Dandroid.avd.name=$1
     check_status $0 $?
     clean_env
@@ -82,7 +100,7 @@ function droidium-multiple-containers-01
 {
     cd $ROOT
     cd droidium-multiple-containers-01
-    cp ../selendroid-* .
+    copy_test_app .
     mvn clean test -Dandroid.avd.name=$1
     check_status $0 $?
     clean_env
@@ -108,7 +126,7 @@ function droidium-multiple-deployments-01
 {
     cd $ROOT
     cd droidium-multiple-deployments-01
-    cp ../selendroid-* .
+    copy_all .
     mvn clean test -Dandroid.avd.name=$1
     check_status $0 $?
     clean_env
@@ -118,7 +136,7 @@ function droidium-native-01
 {
     cd $ROOT
     cd droidium-native-01
-    cp ../selendroid-* .
+    copy_all .
     mvn clean test -Dandroid.avd.name=$1
     check_status $0 $?
     clean_env
@@ -128,7 +146,7 @@ function droidium-native-01-scala
 {
     cd $ROOT
     cd droidium-native-01-scala
-    cp ../selendroid-* .
+    copy_all .
     mvn clean test -Dandroid.avd.name=$1
     check_status $0 $?
     clean_env
@@ -138,7 +156,7 @@ function droidium-native-02
 {
     cd $ROOT
     cd droidium-native-02
-    cp ../selendroid-test-app-0.5.1.apk .
+    copy_test_app .
     mvn clean test -Dandroid.avd.name=$1
     check_status $0 $?
     clean_env
@@ -148,7 +166,7 @@ function droidium-screenshooter-01
 {
     cd $ROOT
     cd droidium-screenshooter-01
-    cp ../selendroid* .
+    copy_all .
     mvn clean test -Dandroid.avd.name=$1
     check_status $0 $?
     clean_env
@@ -182,6 +200,6 @@ droidium-native-02 $1
 droidium-screenshooter-01 $1
 droidium-web-01 $1 $2
 
-#clean_all
+clean_all
 
 stop_emulator
