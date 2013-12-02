@@ -162,6 +162,8 @@ public class AndroidApplicationHelper {
 
                 if (activityName.startsWith(".")) {
                     activities.add(packageName + activityName);
+                } else if (!activityName.startsWith(".") && !activityName.contains(".")) {
+                    activities.add(packageName + "." + activityName);
                 } else {
                     activities.add(activityName);
                 }
