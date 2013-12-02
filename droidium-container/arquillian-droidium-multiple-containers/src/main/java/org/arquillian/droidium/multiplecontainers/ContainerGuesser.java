@@ -68,6 +68,14 @@ public class ContainerGuesser {
         return isContainerOfType(ContainerType.JBOSS, containerDef);
     }
 
+    public static boolean isEAPContainer(ContainerDef containerDef) {
+        return isContainerOfType(ContainerType.EAP, containerDef);
+    }
+
+    public static boolean isWildFlyContainer(ContainerDef containerDef) {
+        return isContainerOfType(ContainerType.WILDFLY, containerDef);
+    }
+
     public static boolean isGlassFishContainer(ContainerDef containerDef) {
         return isContainerOfType(ContainerType.GLASSFISH, containerDef);
     }

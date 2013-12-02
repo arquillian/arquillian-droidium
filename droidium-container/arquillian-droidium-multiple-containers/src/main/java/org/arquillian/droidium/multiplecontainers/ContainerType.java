@@ -40,6 +40,18 @@ public enum ContainerType {
             return "jboss";
         }
     },
+    EAP { // alias to jboss
+        @Override
+        public String toString() {
+            return "eap";
+        }
+    },
+    WILDFLY { // alias to jboss
+        @Override
+        public String toString() {
+            return "wildfly";
+        }
+    },
     TOMEE {
         @Override
         public String toString() {
@@ -68,6 +80,10 @@ public enum ContainerType {
             case GLASSFISH:
                 return "org.jboss.arquillian.container.glassfish";
             case JBOSS:
+                return "org.jboss.as.arquillian.container";
+            case EAP:
+                return "org.jboss.as.arquillian.container";
+            case WILDFLY:
                 return "org.jboss.as.arquillian.container";
             case OPENSHIFT:
                 return "org.jboss.arquillian.container.openshift";
