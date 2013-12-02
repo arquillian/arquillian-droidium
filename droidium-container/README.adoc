@@ -8,43 +8,41 @@ be able to start some Android container successfuly.
 
 The significant difference between ordinary container adapter for Arquillian and Android container is that while
 using the ordinary one, you have to use only that one type of the container you are deploying the archives to. 
-There is not the support for multiple container implementations in 1.0.x version of Arquillian out of the box 
+There is not the support for multiple container implementations in 1.x versions of Arquillian out of the box 
 so you are normaly forced not to mix two different container adapter implementations together. This restriction is 
 overriden by module _arquillian-droidium-multiple-containers_ via which it is possible to use ordinary 
 container adapter e.g. JBoss AS with Android container adapter itself. Because of this, you can then deploy 
-your web application int JBoss AS container and you test it on you mobile phone (emulator or physical device).
-
-The container is event driven. When some event is fired, all registered observers which listens to such kind of event 
-executes appropriate method. This model is tree-like. The control is not returned to the initial point of fire until all 
-subsequent logic is executed as well. Events can be chained, meaning when one event is fired and some method listens to it 
-(via `@Observes` annotation), that method can fire another event to which some other method of some observer is listening 
-as well.
-
-Observers are registered in `DroidiumContainerExtension` in `arquillian-droidium-container-impl` module.
-
-While inspecting the code, it is handy to have https://raw.github.com/smiklosovic/arquillian-thesis/master/resources/container-startup-droidium.png[container startup] and 
-https://raw.github.com/smiklosovic/arquillian-thesis/master/resources/container-shutdown-droidium.png[container shutdown] charts in mind.
+your web application into JBoss AS container and you test it on your mobile phone (emulator or physical device).
 
 == Setup
 
-When you want to try Droidium, you have to basically put into `pom.xml` just this dependency:
+When you want to use Droidium, you have to basically put into `pom.xml` just this dependency:
 
 ----
 <dependency>
     <groupId>org.arquillian.container</groupId>
-    <artifactId>arquillian-droidium-container-depchain</artifactId>
+    <artifactId>arquillian-droidium-container</artifactId>
     <type>pom</type>
     <scope>test</scope>
     <version>${droidium.version}</version>
 </dependency>
 ----
 
+== Multiple containers extension
+
 Arquillian Droidium container uses _arquillian-droidium-multiple-containers_ module in this repository. That module, while on the 
 classpath, is able to register containers of various types, so you can mix two (three, four ...) different 
-container implementations. This module has to know what container implementation stands for what container adapter 
-so in order to make the difference there is property `adapterImplClass` in the container configuration, the examples 
-will be given. Adapter implementation class for Droidium container is `org.arquillian.droidium.container.AndroidDeployableContainer`.
-Regretfully, at time of writing this document, you have to find out the implementation class of other container manually.
+container implementations. This module has to know what container implementation stands for what container adapter.
+
+In order to make the difference, Droidium tries to "guess" what container adapters are on the classpath.
+
+=== Container selection
+
+First of all, Droidium just tries to "guess" which configuration stands for which container adapter.
+
+While guessing can be unsuccessful in the end, there is the ultimate solution how you can specify which container adapter 
+stands for which container configuration in arquillian.xml. There is a property `adapterImplClass` which tells Droidium 
+that container configuration is backed by container adapter which is implemented by that class. Let's see the example:
 
 ----
 <group qualifier="containers" default="true">
@@ -65,6 +63,39 @@ Regretfully, at time of writing this document, you have to find out the implemen
 </group>
 ----
 
+When there are multiple containers specified and no `adapterImplClass` set, guessing in this sense means that Droidium sets 
+container configuration to container adapter based on the container qualifier in the `container` element. It is sufficient that 
+container qualifier just contains this string. For example:
+
+[cols="2*", options="header"]
+|===
+|container qualifier |adapter class
+
+|android
+|org.arquillian.droidium.container.AndroidDeployableContainer
+
+|droidium
+|org.arquillian.droidium.container.AndroidDeployableContainer
+
+|glassfish
+|org.jboss.arquillian.container.glassfish.*
+
+|jboss
+|org.jboss.as.arquillian.container.*
+
+|wildfly
+|org.jboss.as.arquillian.container.*
+
+|eap
+|org.jboss.as.arquillian.container.*
+
+|openshift
+|org.jboss.arquillian.container.openshift.*
+
+|tomee
+|org.apache.openejb.arquillian.*
+|===
+
 You have to provide `adapterImplClass` property per container configuration only when you are using more then one 
 container adapter implementation on your classpath - as in given example above. When you are using Android container 
 alone, you do not have to specify that property since it is the only class on the classpath which implements Arquillian container API.
@@ -79,40 +110,12 @@ Put it all together, you can use just Android container itself as:
 </container>
 ----
 
-When you want to operate upon more then one container, just register them like this:
+While Droidium tries to guess the container, Android container is recognized even it is not named like _android_ or _droidium_. In this case, 
+it is sufficient that container contains some configuration property which is Droidium specific such as avdName, serialId, consolePort or emulatorOptions.
 
-----
-<group qualifier="containers" default="true">
-    <!-- Android container named "android1" -->
-    <container qualifier="android1">
-        <configuration>
-            <properties ...
-        </configuration>
-    </container>
-    <!-- Android container named "android2" -->
-    <container qualifier="android2">
-        <configuration>
-            <properties ...
-        </configuration>
-    </container>
-</group>
-----
+Right now, you can not use more than one Android container simultaneously.
 
 == Basic usage
-
-You have to pay attention while injecting instances of Android container into the tests. 
-`AndroidDevice` is `ContainerScoped`. Classes which are registered in `ContainerScoped` are 
-available in tests only when:
-
-* the test is running on the client side
-* and
-* is running in the context of a deployment that targets the container
-** or
-* you use `@OperatesOnDeployment` as a qualifier on the `ArquillianResource` injection point
-
-`@Deployment` has to be specified.
-
-Valid examples are following:
 
 ----
 @RunWith(Arquillian.class)
@@ -124,7 +127,7 @@ public class ContainerTest {
 
     @Deployment(testable = false)
     public static Archive<?> createArchive() {
-        return ShrinkWrap.create(GenericArchive.class);
+        return // some ShrinkWrapDeployment
     }
 
     @Test
@@ -133,84 +136,6 @@ public class ContainerTest {
     }
 }
 ----
-
-You can use `@OperateOnDeployment` as well:
-
-----
-@RunWith(Arquillian.class)
-@RunAsClient
-public class ContainerTest {
-
-    @ArquillianResource
-    AndroidDevice android;
-
-    @Deployment(name = "android1", testable = false)
-    public static Archive<?> createArchive() {
-       return ShrinkWrap.create(GenericArchive.class);
-    }
-
-    @Test
-    @OperateOnDeployment("android1")
-    public void test01() {
-        assertTrue(android != null);
-    }
-}
-----
-
-When you want to use multiple `AndroidDevice`s you have to specify agains which deployment and containers 
-these tests are supposed to be executed:
-
-----
-@RunWith(Arquillian.class)
-@RunAsClient
-public class ContainerTest {
-
-    @ArquillianResource
-    AndroidDevice android;
-
-    @Deployment(name = "android1", testable = false)
-    @TargetsContainer("android1")
-    public static Archive<?> createArchive() {
-        return ShrinkWrap.create(GenericArchive.class);
-    }
-
-    @Deployment(name = "android2", testable = false)
-    @TargetsContainer("android2")
-    public static Archive<?> createArchive2() {
-        return ShrinkWrap.create(GenericArchive.class);
-    }
-
-    @Test
-    @OperateOnDeployment("android1")
-    public void test01() {
-        assertTrue(android != null);
-    }
-
-    @Test
-    @OperateOnDeployment("android2")
-    public void test02() {
-        assertTrue(android != null);
-    }
-}
-----
-
-As you spotted, we used `@Deployment(testable = false)`. That means our 
-tests run in so called _client mode_. We are looking on the test from  
-outside of the container, we are not modyifying an archive in order to be 
-able to communicate with test which runs in container. We are dealing 
-with container deployoment as it appears to us. It does not repackage 
-our `@Deployment` archive nor it forwards the test execution to a 
-remote server (or our Android device).
-
-The second run mode is called _in container_ mode. It means that we want to 
-repackage our `@Deployment` in a such way that Arquillian classes and infrastructure is added 
-so there is the possibility to communicate with the test and enrich the test class which 
-runs remotely. This mode is used by Arquillian by default.
-
-Since you can be very used to _in container_ concept of testing, e.g when you 
-test your EJBs or CDI beans, there will never be a need to test _in container_ 
-while using Android container. We will handle tests only in client mode - 
-perfectly suitable for functional testing of web as well as native Android applications.
 
 == Android container is testing agnostic
 
@@ -222,9 +147,8 @@ and it treats creation of AVD from scratch as well as management of Android SD c
 connection with Android emulator.
 
 === Web testing
-When you want to test your application, it depends what kind of application you want to test. If it is 
-just normal web application (bundled as war/ear and deployed into application container as JBoss AS), you 
-need to use plugin into Android container called *droidium-web* in this repository. Please consult README
+When you want to test web application (bundled as war/ear and deployed into application container as JBoss AS), 
+you need to use plugin into Android container called *droidium-web* in this repository. Please consult README
 there in order to know more. By this plugin, you can functionaly test your web application via WebDriver 
 API from Selenium.
 
@@ -232,7 +156,7 @@ The basic workflow is very easy. You configure two containers in `arquillian.xml
 normal application container as JBoss AS, the second one is Android container. After that, you specify 
 `@Deployment` for application container. That application is deployed there and finally you use 
 WebDriver from Arquillian Graphene in order to do functional tests on your application but that application 
-is view not from your desktop browser but from browser in you Android device!
+is viewed not from your desktop browser but from browser in you Android device.
 
 Please consult README in *droidium-web* directory in order to get more information how to bootstrap your 
 functional testing on Android platform.
@@ -242,33 +166,53 @@ On the other hand, you can test your native Android application by writing some 
 You have to use *droidium-native* plugin in this repository. Details how to test functionally your native 
 Android application will be given in the README located in that plugin.
 
-
 == Android container configuration
 
-After seeing how to put Android containers in `arquillian.xml`, the configuration of the Android container itself is 
-following. The list of all properties and its meaning is following, accompanied with examples. The division 
+After seeing how to put Android container in `arquillian.xml`, the configuration of the Android container itself is 
+following. The list of all properties and its meaning is described, accompanied with examples. The division 
 between physical Android Device and emulator is done.
 
 === General properties
 
-==== home
+System properties overrides environment properties.
+
+==== androidHome
 ===== default: $ANDROID_HOME
 
-`home` property holds the directory where your Android SDK is installed. It is not necessary to specify it 
+`androidHome` property holds the directory where your Android SDK is installed. It is not necessary to specify it 
 since it is automatically read from the system environment property `$ANDROID_HOME` which can be easily exported 
 as `export $ANDROID_HOME=/path/to/your/sdk` for the current shell or it can be put into `~/.bash_profile` to be 
-persisted.
+persisted. It can be specified in rutime via `android.home` System property.
 
 ----
 <configuration>
-    <property name="home">/path/to/your/android/sdk</property>
+    <property name="androidHome">/path/to/your/android/sdk</property>
+</configuration>
+----
+
+or from e.g. Maven point of view:
+
+----
+-Dandroid.home=/path/to/your/android/sdk
+----
+
+=== androidSdkHome
+==== default: $ANDROID_SDK_HOME
+
+This property tells where are e.g. your AVDs stored. By default. When this property is not set, it defaults to `$HOME` in 
+`.android` directory. When you set this property e.g. to `target`, your AVDs will be created in `target` directory so 
+after you clean your test, there is not any sign there was some Android used. You can use system property `android.sdk.home` as well.
+
+----
+<configuration>
+    <property name="androidSdkHome">target</property>
 </configuration>
 ----
 
 ==== javaHome
 ===== default: $JAVA_HOME
 
-`javaHome` property sets the directory where your JDK installation is placed. It can be set similarly as `home` property via
+`javaHome` property sets the directory where your JDK installation is placed. It can be set similarly as `androidHome` property via
 shell infrastructure. After setting this, it uses commands as `jarsigner` or `keytool` from there.
 
 ----
@@ -347,9 +291,10 @@ creating some AVD, you have to enter its name. This property is that name.
 ----
 
 ==== abi
-===== default: as `android` uses
+===== default: `x86`
 
-Pretty straightforward. Which ABI your container should use.
+Pretty straightforward. Which ABI your container should use. When you are going to create some AVD dynamically for some 
+`apiLevel` and there is not such ABI available for that level, whatever comes first among x86, armeabi or mips is used.
 
 ----
 <configuration>
@@ -358,9 +303,9 @@ Pretty straightforward. Which ABI your container should use.
 ----
 
 ==== apiLevel
-===== default: 10
+===== default: the highest available
 
-Sets your API level you want to use with your emulator.
+Sets your API level you want to use when you are going to create emulator from scratch.
 
 ----
 <configuration>
@@ -411,7 +356,7 @@ well but its number has to be even. (They have to logically enclose some string)
 ===== default: not specified, selected by `emulator` automatically
 
 Specifies which console port an emulator should use. It has to be even number in range 5554 - 5584. When this 
-property is used and `adbPort` property is not, `adb` automatically selects as `adbPort` number `consolePort + 1`. 
+property is used and `adbPort` property is not, `adb` automatically selects as `adbPort` number `consolePort` + 1. 
 
 ----
 <configuration>
@@ -430,19 +375,8 @@ Specifies which adb port should emulator connect to. It has to be odd number in 
 </configuration>
 ----
 
-==== generatedAvdPath
-===== default: `java.io.tmpdir` plus `avdName`
-
-This property instructs Android container adapter that the newly generated AVD should be saved in this directory.
-Directory has to exist and user has to have write and read permissions. Newly created AVD is placed under this 
-directory. The directory files are saved in has the name of `avdName`. By default, all newly created AVDs are 
-saved in `java.io.tmpdir` plus `avdName` as well.
-
-----
-<configuration>
-    <property name="generatedAvdPath">/tmp/generated_avds/</property>
-</configuration>
-----
+_Be sure that console port differs from adb port only by one and both ports are in that range otherwise 
+adb can have difficulties to find the emulator._
 
 ==== droneHostPort
 ===== default: 14444
@@ -615,7 +549,7 @@ before the extension (e.g. target/logcat.log will change to target/logcat.serial
 === All following paramaters regarding debug keystore and its generation are subject of `keytool` command.
 
 ==== keystore
-===== default: $HOME/.android/debug.keystore
+===== default: $ANDROID_SDK_HOME/.android/debug.keystore
 
 Sets keystore to use for resigning packages after they are modified dynamically. Not resigning them 
 would result into impossibility to install them to Android device since certificates would be different.
@@ -693,33 +627,15 @@ space. For every test run, other working directory is created every time.
 
 == Connection logic of Android container
 
-When the container you want to use, of some particular `avdName`, is not started, it is automatically started 
-for you. You can look on this feature as the _managed_ container adapted does. The emulator is started upon 
-every Arquillian test and it is also automatically shutted down after your tests are finished. Just as any 
-managed container adapter.
-
-If your Android emulator is already started, just use its `avdName`. Android container adapter is
-automatically connected to it. This container is not shutted down afterwards. You can look at this as the
-_remote_ version of the ordinary container adapter.
-
-In general, we could sum up the logic which is used while trying to connect to an emulator instance or to 
-create the new one as follows.
-
-* If `serialId` was specified, we try to connect to that running physical device.
-* If `consolePort` was specified but `avdName` name was not, we try to connect to running emulator which listens to specified `consolePort`. If we fail to connect, exception is thrown.
-* If `avdName` was specified but `consolePort` was not, we try to connect to the first running emulator of such `avdName`.
-* If both `avdName` and `consolePort` were specified, we try to connect to this combination or to start such emulator.
-
-If we fail to get the device in the all above steps:
-
-* If `avdName` was not specified, random AVD indentifier is generated.
-* If there is not such `avdName` in the system, (generated from the step 1) the AVD of name `avdName` is automatically created.
-* Emulator of AVD (possibly just created from scratch) is started.
-
-After the test run, when `avdName` was generated randomly, this AVD is going to be deleted automatically.
-
-Identifies are simple UUID strings. SD card identifiers are UUID strings as well. UUID identifiers are generated 
-only when there is a need for them. 
+* If console port was specified but AVD name was not, we try to connect to running emulator which listens to specified port.
+* If we fail to connect, {@link AndroidExecutionException} is thrown.
+* If AVD name was specified but console port was not, we try to connect to the first running emulator of such AVD name.
+* If both AVD name and console port were specified, we try to connect to this combination.
+* If we fail to get device in all above steps:
+** If AVD name was not specified, random AVD identifier is generated.
+** If AVD is among erroneous AVDs, it will be deleted, created from scratch, started and deleted after test.
+** If AVD is among non-erroneous AVDs, it will be started.
+** If AVD is not present, it will be created and started and deleted after test
 
 == SD card usage logic
 
