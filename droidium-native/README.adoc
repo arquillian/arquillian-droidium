@@ -1,4 +1,4 @@
-= Arquillian Droidium Native
+== Arquillian Droidium Native
 
 Arquillian Droidium Native plugin for Arquillian Droidium container provides necessary infrastructure 
 for container implementation needed for testing of native application on Android device via 

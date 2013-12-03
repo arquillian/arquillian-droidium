@@ -29,6 +29,13 @@ but some container adapter is missing on the classpath for that container defini
 added into container registry so it will not be started. There is internal matcher between 
 container definitions in arquillian.xml and adapter classes present on class path.
 
+=== droidium-multiple-containers-03
+
+This project tests scenario when you have JBoss container on class path and Android container on classpath
+and both are specified in arquillian.xml and there is Drone on classpath as well with
+webdriver extensions in arquillian.xml but no extension is asking for "android" browser
+so it is not necessary to start Android container at all.
+
 === droidium-multiple-deployments-01
 
 This project shows how to deploy more than one `@Deployment` into your mobile device. Only 

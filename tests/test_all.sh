@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Tests all demos in this directory in one run
+# You do not have to start emulator, it will be started automatically
+# Execute this script as:
+# ./test_all.sh <name of avd you wan to run tests on> <your external ip address>
+
+# Tips:
+#   1) Be sure port 8080 is free.
+
 ROOT=$(pwd)
 ADB_CMD=$ANDROID_HOME/platform-tools/adb
 EMULATOR_CMD=$ANDROID_HOME/tools/emulator

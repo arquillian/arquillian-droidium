@@ -6,11 +6,15 @@ This is the home of the following extensions for Arquillian testing platform:
 
 Implementation of Arquillian container abstraction for Android devices.
 
+https://github.com/arquillian/arquillian-droidium/blob/master/droidium-container/README.adoc[Droidium container documentation]
+
 === Arquillian Droidium Web
 
 Extension for supporting web testing for Droidium container. You need this 
 when you want to functionaly test your application on mobile devices.
 Web extension relies on Selenium project from where it takes Android server APK.
+
+https://github.com/arquillian/arquillian-droidium/blob/master/droidium-web/README.adoc[Droidium web plugin documentation]
 
 === Arquillian Droidium Native
 
@@ -19,13 +23,23 @@ need this extension when you want to functionally test your native Android appli
 Native extension relies on http://dominikdary.github.io/selendroid/[Selendroid] project 
 from where it takes Selendroid server APK.
 
-*Every extension has its own very detailed and deep README and configuration documentation in its respective directory.*
+https://github.com/arquillian/arquillian-droidium/blob/master/droidium-native/README.adoc[Droidium native plugin documentation]
+
+=== Example projects
+
+Example project which show various usecases of Droidium are the part of this project and can be found here:
+
+https://github.com/arquillian/arquillian-droidium/tree/master/tests[Droidium demos]
+
+You can generate your own project via archetypes both for native and web testing. They can be found here
+
+https://github.com/arquillian/arquillian-droidium/tree/master/archetypes[Droidium archetypes]
 
 === How to install Arquillian Droidium
 
 `mvn clean install`
 
-=== How to use Android containre and web and native plugins?
+=== How to use Android container and web and native plugins?
 
 Every extension has its own README and configuration documentation in its respective directory.
 You can find archetypes for native and web testing in archetype directory so you can boostrap your 
@@ -35,3 +49,9 @@ example projects how to use it with very deep documentation.
 === How to generate Javadoc?
 
 `mvn javadoc:aggregate`
+
+=== JIRA & Issue tracker
+
+You are welcome to raise your issues at JBoss JIRA for Droidium component:
+
+https://issues.jboss.org/browse/ARQ/component/12314143[JBoss JIRA - Droidium component]
