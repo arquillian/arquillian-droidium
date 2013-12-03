@@ -399,21 +399,21 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
         String JAVA_HOME_ENV = System.getenv("JAVA_HOME");
         String JAVA_HOME_PROPERTY = System.getProperty("java.home");
 
-        return checkSlash(JAVA_HOME_PROPERTY == null ? (JAVA_HOME_ENV == null ? null : JAVA_HOME_ENV) : JAVA_HOME_PROPERTY);
+        return checkSlash(JAVA_HOME_PROPERTY == null ? JAVA_HOME_ENV : JAVA_HOME_PROPERTY);
     }
 
     public String resolveAndroidHome() {
         String ANDROID_HOME_ENV = System.getenv("ANDROID_HOME");
         String ANDROID_HOME_PROPERTY = System.getProperty("android.home");
 
-        return checkSlash(ANDROID_HOME_PROPERTY == null ? (ANDROID_HOME_ENV == null ? null : ANDROID_HOME_ENV) : ANDROID_HOME_PROPERTY);
+        return checkSlash(ANDROID_HOME_PROPERTY == null ? ANDROID_HOME_ENV : ANDROID_HOME_PROPERTY);
     }
 
     public String resolveUserHome() {
         String USER_HOME_ENV = System.getenv("HOME");
         String USER_HOME_PROPERTY = System.getProperty("user.home");
 
-        return checkSlash(USER_HOME_PROPERTY == null ? (USER_HOME_ENV == null ? null : USER_HOME_ENV) : USER_HOME_PROPERTY);
+        return checkSlash(USER_HOME_PROPERTY == null ? USER_HOME_ENV : USER_HOME_PROPERTY);
     }
 
     public String resolveAndroidSdkHome() {
@@ -436,7 +436,7 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
 
         String TMP_DIR_PROPERTY = System.getProperty("java.io.tmpdir");
 
-        return checkSlash(TMP_DIR_PROPERTY == null ? (TMP_DIR_ENV == null ? null : TMP_DIR_ENV) : TMP_DIR_PROPERTY);
+        return checkSlash(TMP_DIR_PROPERTY == null ? TMP_DIR_ENV : TMP_DIR_PROPERTY);
     }
 
     @Override
@@ -600,6 +600,11 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
     }
 
     private String checkSlash(String path) {
+
+        if (path == null || path.isEmpty()) {
+            return null;
+        }
+
         return path.endsWith(fileSeparator) ? path : path + fileSeparator;
     }
 
