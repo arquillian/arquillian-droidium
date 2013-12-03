@@ -168,7 +168,6 @@
                     <groupId>org.arquillian.extension</groupId>
                     <artifactId>arquillian-droidium-native</artifactId>
                     <version>${version.droidium}</version>
-                    <type>pom</type>
                     <scope>test</scope>
                 </dependency>
             </dependencies>

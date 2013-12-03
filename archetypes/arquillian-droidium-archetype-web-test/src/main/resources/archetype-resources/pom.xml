@@ -41,7 +41,7 @@
         <version.jboss.maven.plugin>7.3.Final</version.jboss.maven.plugin>
 
         <!-- Droidium container -->
-        <version.droidium>1.0.0.Alpha2</version.droidium>
+        <version.droidium>1.0.0.Alpha3</version.droidium>
 
         <!-- other plugin versions -->
         <version.compiler.plugin>2.3.1</version.compiler.plugin>
@@ -259,8 +259,8 @@
                 <dependency>
                     <groupId>org.arquillian.container</groupId>
                     <artifactId>arquillian-droidium-container</artifactId>
-                    <scope>test</scope>
                     <version>${version.droidium}</version>
+                    <scope>test</scope>
                 </dependency>
 
                 <!-- Arquillian Droidium for web testing -->
@@ -268,6 +268,7 @@
                     <groupId>org.arquillian.extension</groupId>
                     <artifactId>arquillian-droidium-web</artifactId>
                     <version>${version.droidium}</version>
+                    <scope>test</scope>
                 </dependency>
             </dependencies>
 
