@@ -72,7 +72,6 @@
                 <groupId>org.arquillian.extension</groupId>
                 <artifactId>arquillian-droidium-native</artifactId>
                 <version>${project.version}</version>
-                <type>pom</type>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -94,7 +93,6 @@
         <dependency>
             <groupId>org.arquillian.extension</groupId>
             <artifactId>arquillian-droidium-native</artifactId>
-            <type>pom</type>
             <scope>test</scope>
         </dependency>
         <dependency>

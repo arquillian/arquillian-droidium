@@ -92,7 +92,7 @@
             <artifactId>arquillian-drone-webdriver-depchain</artifactId>
             <type>pom</type>
             <scope>test</scope>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>org.jboss.as</groupId>
             <artifactId>jboss-as-arquillian-container-managed</artifactId>

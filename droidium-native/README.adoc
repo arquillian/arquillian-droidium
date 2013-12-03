@@ -25,7 +25,6 @@ while testing:
     <artifactId>arquillian-droidium-native</artifactId>
     <version>${droidium.version}</version>
     <scope>test</scope>
-    <type>pom</type>
 </dependency>
 ----
 
