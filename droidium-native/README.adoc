@@ -61,6 +61,20 @@ you are good to place server APK just beside your `pom.xml`.
 <property name="serverApk">/path/to/your/selendroid/server/apk</property>
 ----
 
+== Prerequisites
+
+There is only one needed action you have to take regarding to application you want to test. Be very sure you have 
+set these permissions in its `AndroidManifest.xml`.
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INJECT_EVENTS" />
+
+When these permissions are not set, Droidium can not instrument activities so WebDriver will not be able to 
+instantiate itself. If you do not want to release your application with these permissions, you are free to do so 
+however when it comes to functional testing, they have to be present.
+
+Be sure that ports you are trying to use are free and they are not bound to anything prior to test.
+
 == Usage
 
 Using of native plugin is tightly coupled with webdriver extension from Arquillian Drone since in the end 
