@@ -18,7 +18,7 @@
     <!-- Arfitact configuration -->
     <groupId>org.arquillian.droidium.tests</groupId>
     <artifactId>arquillian-droidium-hybrid-test-01</artifactId>
-    <version>1.0.0.Alpha3-SNAPSHOT</version>
+    <version>1.0.0.Alpha3</version>
 
     <description>
         Proof-of-concept Arquillian Droidium tests with Selendroid showing hybrid testing - web and native application together
