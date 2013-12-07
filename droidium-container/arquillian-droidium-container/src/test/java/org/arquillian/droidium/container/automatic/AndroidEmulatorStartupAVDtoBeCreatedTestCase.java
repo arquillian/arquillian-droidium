@@ -62,8 +62,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 /**
- * Tests creating of AVD name from scratch and staring of emulator
- * of newly created AVD.
+ * Tests creating of AVD name from scratch and staring of emulator of newly created AVD.
  *
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *
@@ -137,12 +136,12 @@ public class AndroidEmulatorStartupAVDtoBeCreatedTestCase extends AbstractContai
         bind(ContainerScoped.class, AndroidBridge.class, bridge);
 
         AndroidDevice runningDevice = getManager().getContext(ContainerContext.class)
-                .getObjectStore().get(AndroidDevice.class);
+            .getObjectStore().get(AndroidDevice.class);
         assertNotNull("Android device is null!", runningDevice);
         bind(ContainerScoped.class, AndroidDevice.class, runningDevice);
 
         AndroidEmulator emulator = getManager().getContext(ContainerContext.class)
-                .getObjectStore().get(AndroidEmulator.class);
+            .getObjectStore().get(AndroidEmulator.class);
         assertNotNull("Android emulator is null!", emulator);
         bind(ContainerScoped.class, AndroidEmulator.class, emulator);
 

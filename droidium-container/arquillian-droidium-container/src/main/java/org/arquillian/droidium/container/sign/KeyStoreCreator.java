@@ -66,7 +66,7 @@ public final class KeyStoreCreator {
     public boolean keyStoreExists(File keyStore) {
         try {
             Validate.isReadable(keyStore,
-                    "You must provide a valid path to keystore for signing of APK files: '" + keyStore.getAbsolutePath() + ".");
+                "You must provide a valid path to keystore for signing of APK files: '" + keyStore.getAbsolutePath() + ".");
             return true;
         } catch (IllegalArgumentException ex) {
             return false;
@@ -85,24 +85,24 @@ public final class KeyStoreCreator {
         Command createKeyStoreCommand = new Command();
 
         createKeyStoreCommand.add(sdk.getPathForJavaTool("keytool"))
-                .add("-genkey")
-                .add("-v")
-                .add("-keystore")
-                .add(keyStoreToCreate.getAbsolutePath())
-                .add("-storepass")
-                .add(configuration.getStorepass())
-                .add("-alias")
-                .add(configuration.getAlias())
-                .add("-keypass")
-                .add(configuration.getKeypass())
-                .add("-dname")
-                .addAsString("CN=Android,O=Android,C=US")
-                .add("-storetype")
-                .add("JKS")
-                .add("-sigalg")
-                .add(configuration.getSigalg())
-                .add("-keyalg")
-                .add(configuration.getKeyalg());
+            .add("-genkey")
+            .add("-v")
+            .add("-keystore")
+            .add(keyStoreToCreate.getAbsolutePath())
+            .add("-storepass")
+            .add(configuration.getStorepass())
+            .add("-alias")
+            .add(configuration.getAlias())
+            .add("-keypass")
+            .add(configuration.getKeypass())
+            .add("-dname")
+            .addAsString("CN=Android,O=Android,C=US")
+            .add("-storetype")
+            .add("JKS")
+            .add("-sigalg")
+            .add(configuration.getSigalg())
+            .add("-keyalg")
+            .add(configuration.getKeyalg());
 
         logger.log(Level.INFO, createKeyStoreCommand.toString());
 

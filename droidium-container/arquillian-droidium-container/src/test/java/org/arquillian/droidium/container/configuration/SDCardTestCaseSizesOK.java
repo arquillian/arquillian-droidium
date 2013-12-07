@@ -49,13 +49,13 @@ public class SDCardTestCaseSizesOK {
     @Parameters
     public static Collection<Object[]> data() {
         Object[][] data = new Object[][] {
-                { "9126K" },
-                { "9M" },
-                { "9437184" },
-                { "1099511627264" },
-                { "1073741823K" },
-                { "1048575M" },
-                { "1023G" }
+            { "9126K" },
+            { "9M" },
+            { "9437184" },
+            { "1099511627264" },
+            { "1073741823K" },
+            { "1048575M" },
+            { "1023G" }
         };
         return Arrays.asList(data);
     }

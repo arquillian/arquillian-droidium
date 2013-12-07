@@ -27,5 +27,5 @@ public class LogType {
     public static final String FILE = "file";
     public static final String DISABLE = "disable";
 
-    public static String DEFAULT = OUTPUT;
+    public static final String DEFAULT = OUTPUT;
 }

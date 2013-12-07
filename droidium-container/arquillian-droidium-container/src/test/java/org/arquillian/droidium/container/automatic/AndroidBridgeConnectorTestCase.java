@@ -64,7 +64,7 @@ public class AndroidBridgeConnectorTestCase extends AbstractAndroidTestTestBase 
 
     @Test
     public void testConnectTwoContainersToAndroidBridge() throws AndroidExecutionException, SecurityException,
-            NoSuchMethodException {
+        NoSuchMethodException {
         // container 1
         getManager().getContext(ContainerContext.class).activate("container1");
 

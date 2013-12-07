@@ -79,11 +79,11 @@ public class AndroidApplicationManager {
         Validate.notNull(deployment.getApplicationBasePackage(), "Application base package name is a null object!");
 
         Command installCommand = new Command()
-                .add(sdk.getAdbPath())
-                .add("-s")
-                .add(device.getSerialNumber())
-                .add("install")
-                .add(deployment.getResignedApk().getAbsolutePath());
+            .add(sdk.getAdbPath())
+            .add("-s")
+            .add(device.getSerialNumber())
+            .add("install")
+            .add(deployment.getResignedApk().getAbsolutePath());
 
         logger.fine("AUT installation command: " + installCommand.toString());
 
@@ -98,12 +98,12 @@ public class AndroidApplicationManager {
         } catch (AndroidExecutionException e) {
             // rewrap exception to have better stacktrace
             throw new AndroidExecutionException(e, "Unable to execute installation command {0} for the application {1}",
-                    installCommand, applicationBasePackage);
+                installCommand, applicationBasePackage);
         }
 
         if (!device.isPackageInstalled(applicationBasePackage)) {
             throw new AndroidExecutionException("Application " + applicationBasePackage + " was not installed on device "
-                    + device.getSerialNumber() + ".");
+                + device.getSerialNumber() + ".");
         }
     }
 
@@ -123,12 +123,12 @@ public class AndroidApplicationManager {
 
         try {
             Monkey monkey = new Monkey(DroidiumFileUtils.createRandomEmptyFile(DroidiumFileUtils.getTmpDir()),
-                    command.getLast(), false);
+                command.getLast(), false);
             device.executeShellCommand(command.getAsString(), monkey);
             Monkey.wait(device, monkey, PACKAGES_LIST_CMD);
         } catch (IOException ex) {
             throw new AndroidExecutionException("Unable to uninstall application " + deployment.getApplicationBasePackage()
-                    + " from Android device.");
+                + " from Android device.");
         }
     }
 
@@ -148,12 +148,12 @@ public class AndroidApplicationManager {
 
         try {
             Monkey monkey = new Monkey(DroidiumFileUtils.createRandomEmptyFile(DroidiumFileUtils.getTmpDir()),
-                    command.getLast(), false);
+                command.getLast(), false);
             device.executeShellCommand(command.getAsString(), monkey);
             Monkey.wait(device, monkey, TOP_CMD);
         } catch (IOException e) {
             throw new AndroidExecutionException("Unable to disable running application "
-                    + deployment.getApplicationBasePackage());
+                + deployment.getApplicationBasePackage());
         }
     }
 }

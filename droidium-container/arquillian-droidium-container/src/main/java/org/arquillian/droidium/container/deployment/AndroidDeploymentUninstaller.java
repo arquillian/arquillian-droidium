@@ -71,8 +71,8 @@ public class AndroidDeploymentUninstaller {
      * We have to uninstall packages after all Drones are destroyed (so after all Selendroid servers are uninstalled since
      * undeployment of Selendroid server is triggered after Drone destruction). If we uninstalled it in the proper undeployment
      * lifecycle, it would automatically stop Selendroid servers so subsequent destroying of Drone instances would fail since
-     * they can not communicate with Selendroid servers anymore.
-     * <br><br>
+     * they can not communicate with Selendroid servers anymore. <br>
+     * <br>
      * This behavior is preserved even native plugin is not on class path.
      *
      * @param event

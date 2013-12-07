@@ -33,10 +33,10 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-        SDCardTestCaseSizesOK.class,
-        SDCardTestCaseSizesBad.class,
-        SDCardTestCaseSizesBadFormat.class,
-        SDCardTestCaseValidNames.class
+    SDCardTestCaseSizesOK.class,
+    SDCardTestCaseSizesBad.class,
+    SDCardTestCaseSizesBadFormat.class,
+    SDCardTestCaseValidNames.class
 })
 public class SDCardTestSuiteBase {
 

@@ -21,34 +21,22 @@ package org.arquillian.droidium.container.api;
  *
  */
 public enum ScreenshotType implements IdentifierType {
-    JPEG {
-        @Override
-        public String toString() {
-            return "jpeg";
-        }
-    },
-    PNG {
-        @Override
-        public String toString() {
-            return "png";
-        }
-    },
-    BMP {
-        @Override
-        public String toString() {
-            return "bmp";
-        }
-    },
-    WBMP {
-        @Override
-        public String toString() {
-            return "wbmp";
-        }
-    },
-    GIF {
-        @Override
-        public String toString() {
-            return "gif";
-        }
-    };
+
+    JPEG("jpeg"),
+    PNG("PNG"),
+    BMP("bmp"),
+    WBMP("wbmp"),
+    GIF("gif");
+
+    private String name;
+
+    private ScreenshotType(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
+
 }

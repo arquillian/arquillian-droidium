@@ -1,3 +1,20 @@
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2012 Red Hat Inc. and/or its affiliates and other contributors
+ * as indicated by the @authors tag. All rights reserved.
+ * See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.arquillian.droidium.container.log;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
@@ -27,21 +44,21 @@ public class LogcatHelper {
     }
 
     public Writer prepareWriter() { // TODO implement log4j support
-        if(configuration.getLogType().equals(LogType.OUTPUT)) {
+        if (configuration.getLogType().equals(LogType.OUTPUT)) {
             String prefix = configuration.isLogSerialId() ? "LOGCAT (" + androidDevice.getSerialNumber() + "): " : "LOGCAT: ";
             return new LogcatToConsoleWriter(prefix);
-        } else if(configuration.getLogType().equals(LogType.LOGGER)) {
+        } else if (configuration.getLogType().equals(LogType.LOGGER)) {
             String name = configuration.isLogSerialId() ? "LOGCAT (" + androidDevice.getSerialNumber() + ")" : "LOGCAT";
             return new LogcatToLoggerWriter(Logger.getLogger(name));
-        } else if(configuration.getLogType().equals(LogType.FILE)) {
+        } else if (configuration.getLogType().equals(LogType.FILE)) {
             String logPath = configuration.getLogFilePath();
 
-            if(configuration.isLogSerialId()) {
-                String[] logPathParts = logPath.split(".");
+            if (configuration.isLogSerialId()) {
+                String[] logPathParts = logPath.split("\\.");
 
-                if(logPathParts.length > 1) {
+                if (logPathParts.length > 1) {
                     logPath = "";
-                    for(int i = 0; i < logPathParts.length - 1; i++) {
+                    for (int i = 0; i < logPathParts.length - 1; i++) {
                         logPath += logPathParts[i];
                     }
 
@@ -79,7 +96,7 @@ public class LogcatHelper {
         this.androidDevice = androidDevice;
     }
 
-    public class LogcatToConsoleWriter extends Writer {
+    private static class LogcatToConsoleWriter extends Writer {
 
         private String prefix;
 
@@ -116,7 +133,7 @@ public class LogcatHelper {
         }
     }
 
-    public class LogcatToLoggerWriter extends Writer {
+    private static class LogcatToLoggerWriter extends Writer {
 
         private Logger logger;
 
@@ -127,15 +144,15 @@ public class LogcatHelper {
         @Override
         public void write(char[] cbuf, int off, int len) throws IOException {
             String line = String.copyValueOf(cbuf, off, len);
-            if(line.startsWith(LogLevel.ERROR)) {
+            if (line.startsWith(LogLevel.ERROR)) {
                 logger.severe(line);
-            } else if(line.startsWith(LogLevel.WARN)) {
+            } else if (line.startsWith(LogLevel.WARN)) {
                 logger.warning(line);
-            } else if(line.startsWith(LogLevel.INFO)) {
+            } else if (line.startsWith(LogLevel.INFO)) {
                 logger.info(line);
-            } else if(line.startsWith(LogLevel.DEBUG)) {
+            } else if (line.startsWith(LogLevel.DEBUG)) {
                 logger.config(line);
-            } else if(line.startsWith(LogLevel.VERBOSE)) {
+            } else if (line.startsWith(LogLevel.VERBOSE)) {
                 logger.fine(line);
             } else {
                 logger.finer(line);
@@ -143,13 +160,15 @@ public class LogcatHelper {
         }
 
         @Override
-        public void flush() throws IOException { }
+        public void flush() throws IOException {
+        }
 
         @Override
-        public void close() throws IOException { }
+        public void close() throws IOException {
+        }
     }
 
-    public class LogcatToFileWriter extends FileWriter {
+    private static class LogcatToFileWriter extends FileWriter {
         public LogcatToFileWriter(String fileName) throws IOException {
             super(fileName);
         }

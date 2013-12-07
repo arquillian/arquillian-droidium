@@ -84,7 +84,10 @@ public class DroidiumFileUtils {
     public static void createTmpDir(File parent) {
         try {
             DroidiumFileUtils.tmpDir = parent;
-            DroidiumFileUtils.tmpDir.mkdirs();
+            boolean created = DroidiumFileUtils.tmpDir.mkdirs();
+            if (!created) {
+                throw new RuntimeException("Unable to create temporary directory " + DroidiumFileUtils.tmpDir.getAbsolutePath());
+            }
         } catch (SecurityException ex) {
             logger.severe("Security manager denies to create the working dir in " + parent.getAbsolutePath());
             throw new RuntimeException("Unable to create working directory in " + parent.getAbsolutePath());

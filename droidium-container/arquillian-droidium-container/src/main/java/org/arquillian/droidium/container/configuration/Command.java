@@ -174,8 +174,8 @@ public class Command {
         }
 
         return text.replaceAll("^ +| +$|( )+", "$1")
-                .replaceAll("\" ([^\"])", "\"$1")
-                .replaceAll("\"([^ \"]) \"", "\"$1\"");
+            .replaceAll("\" ([^\"])", "\"$1")
+            .replaceAll("\"([^ \"]) \"", "\"$1\"");
     }
 
     /**
@@ -223,7 +223,7 @@ public class Command {
     }
 
     public String[] getAsArray() {
-        return getAsList().toArray(new String[0]);
+        return command.toArray(new String[command.size()]);
     }
 
     public String getAsString() {

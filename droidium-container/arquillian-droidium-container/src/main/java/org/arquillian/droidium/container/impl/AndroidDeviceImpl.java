@@ -65,7 +65,8 @@ public class AndroidDeviceImpl implements AndroidDevice {
 
     @Override
     public void setActivityManagerProvider(ActivityManagerProvider activityManagerProvider) {
-        Validate.notNull(activityManagerProvider, "Activity manager provider to set for Android device can not be a null object!");
+        Validate.notNull(activityManagerProvider,
+            "Activity manager provider to set for Android device can not be a null object!");
         this.activityManagerProvider = activityManagerProvider;
         if (activityManagerProvider instanceof DefaultActivityManagerProvider) {
             activityManagerProvider.setActivityManager(new DefaultActivityManager(this));
@@ -267,7 +268,7 @@ public class AndroidDeviceImpl implements AndroidDevice {
         try {
             rawImage = delegate.getScreenshot();
         } catch (IOException ex) {
-            log.severe("Unable to take a screenshot of device " + getAvdName() == null ? getSerialNumber() : getAvdName());
+            log.severe("Unable to take a screenshot of device " + (getAvdName() == null ? getSerialNumber() : getAvdName()));
             ex.printStackTrace();
         } catch (TimeoutException ex) {
             log.severe("Taking of screenshot timeouted.");

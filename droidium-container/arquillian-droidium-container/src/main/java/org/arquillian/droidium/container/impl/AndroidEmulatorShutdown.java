@@ -108,7 +108,7 @@ public class AndroidEmulatorShutdown {
             final Process p = emulator.getProcess().getProcess();
             CountDownWatch countdown = new CountDownWatch(configuration.getEmulatorShutdownTimeoutInSeconds(), TimeUnit.SECONDS);
             logger.info("Waiting " + countdown.timeout() + " seconds for emulator " + device.getAvdName()
-                    + " to be disconnected and shutdown.");
+                + " to be disconnected and shutdown.");
             try {
                 final DeviceDisconnectDiscovery listener = new DeviceDisconnectDiscovery(device);
                 AndroidDebugBridge.addDeviceChangeListener(listener);
@@ -137,7 +137,7 @@ public class AndroidEmulatorShutdown {
      * @throws AndroidExecutionException
      */
     private void waitUntilShutDownIsComplete(final AndroidDevice device, final DeviceDisconnectDiscovery listener,
-            ProcessExecutor executor, CountDownWatch countdown) throws AndroidExecutionException {
+        ProcessExecutor executor, CountDownWatch countdown) throws AndroidExecutionException {
 
         try {
             // wait until device is disconnected from bridge
@@ -150,11 +150,11 @@ public class AndroidEmulatorShutdown {
 
             if (isOffline == false) {
                 throw new AndroidExecutionException("Unable to disconnect AVD device {0} in given timeout {1} seconds",
-                        device.getAvdName(), countdown.timeout());
+                    device.getAvdName(), countdown.timeout());
             }
 
             logger.info("Device " + device.getAvdName() + " on port " + device.getConsolePort() + " was disconnected in "
-                    + countdown.timeElapsed() + " seconds.");
+                + countdown.timeElapsed() + " seconds.");
         } catch (InterruptedException e) {
             throw new AndroidExecutionException(e, "Unable to disconnect AVD device {0}", device.getAvdName());
         } catch (ExecutionException e) {
@@ -170,7 +170,7 @@ public class AndroidEmulatorShutdown {
      * @param device The device to stop
      */
     private Boolean stopEmulator(final Process p, final ProcessExecutor executor, final AndroidDevice device,
-            final CountDownWatch countdown) throws AndroidExecutionException {
+        final CountDownWatch countdown) throws AndroidExecutionException {
 
         int devicePort = extractPortFromDevice(device);
         if (devicePort == -1) {
@@ -181,7 +181,7 @@ public class AndroidEmulatorShutdown {
 
             try {
                 Boolean stopped = executor.submit(sendEmulatorCommand(devicePort, "kill")).get(countdown.timeLeft(),
-                        countdown.getTimeUnit());
+                    countdown.getTimeUnit());
 
                 // wait to retrieve finished process of emulator
                 int retval = executor.submit(new Callable<Integer>() {
@@ -195,7 +195,7 @@ public class AndroidEmulatorShutdown {
             } catch (TimeoutException e) {
                 p.destroy();
                 logger.warning("Emulator process was forcibly destroyed, " + countdown.timeLeft()
-                        + " seconds remaining to dispose the device");
+                    + " seconds remaining to dispose the device");
                 return false;
             } catch (InterruptedException e) {
                 p.destroy();

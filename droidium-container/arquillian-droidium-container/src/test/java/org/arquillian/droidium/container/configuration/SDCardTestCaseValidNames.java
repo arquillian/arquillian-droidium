@@ -35,9 +35,9 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Tests various file name of SD card againts it's validity.
- *
+ * 
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
- *
+ * 
  */
 @RunWith(Parameterized.class)
 public class SDCardTestCaseValidNames {
@@ -51,25 +51,20 @@ public class SDCardTestCaseValidNames {
     @Parameters
     public static Collection<Object[]> data() {
         Object[][] data = new Object[][] {
-                { "/" },            // slash itself
-                { "" },             // empty string
-                { null },           // null
-                { "/tmp/" },        // ends with slash
-                { "/tmp/foo/bar" }, // without img
-                { "/tmp/foo/bar/withoutdotimg" }, // does not end with .img
-                { "/tmp/.img" },    // file name is null
-                { "//" },           // double slash
-                { "/tmp/foo/bar/" } // does not exist and ends with slash
+            { "/" }, // slash itself
+            { "/tmp/" }, // ends with slash
+            { "/tmp/foo/bar" }, // without img
+            { "/tmp/foo/bar/withoutdotimg" }, // does not end with .img
+            { "/tmp/.img" }, // file name is null
+            { "//" }, // double slash
+            { "/tmp/foo/bar/" } // does not exist and ends with slash
         };
         return Arrays.asList(data);
     }
 
-    @Test
+    @Test(expected = AndroidContainerConfigurationException.class)
     public void testInvalidFileNames() {
-        try {
-            Validate.sdCardFileName(sdName, "invalidity message");
-            fail("Fail! This filename is considered to be valid but is not: " + sdName);
-        } catch (Exception e) {
-        }
+        Validate.sdCardFileName(sdName, "invalidity message");
+        fail("Fail! This filename is considered to be valid but is not: " + sdName);
     }
 }

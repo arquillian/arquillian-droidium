@@ -130,16 +130,14 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
         if (isConnectingToPhysicalDevice()) {
             try {
                 device = getPhysicalDevice();
-                if (device != null) {
-                    setDronePorts(device);
-                    androidDevice.set(device);
-                    screenshooter.set(new AndroidScreenshooter(device));
-                    androidDeviceReady.fire(new AndroidDeviceReady(device));
-                    return;
-                }
+                setDronePorts(device);
+                androidDevice.set(device);
+                screenshooter.set(new AndroidScreenshooter(device));
+                androidDeviceReady.fire(new AndroidDeviceReady(device));
+                return;
             } catch (AndroidExecutionException ex) {
                 logger.log(Level.INFO, "Unable to connect to physical device with serial ID {0}. ",
-                        new Object[] { configuration.getSerialId() });
+                    new Object[] { configuration.getSerialId() });
             }
         }
 
@@ -281,7 +279,7 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
             try {
                 if (device.getConsolePort().equals(consolePort) && device.getAvdName().equals(avdName)) {
                     logger.log(Level.INFO, "Connecting to virtual device running on console port {0} with AVD name {1}.",
-                            new Object[] { consolePort, avdName });
+                        new Object[] { consolePort, avdName });
                     return device;
                 }
             } catch (NullPointerException ex) {

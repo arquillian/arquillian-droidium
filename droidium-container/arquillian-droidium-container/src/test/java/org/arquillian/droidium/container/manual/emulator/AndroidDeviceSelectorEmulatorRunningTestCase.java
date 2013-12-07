@@ -51,12 +51,16 @@ import org.mockito.runners.MockitoJUnitRunner;
  * Tests connecting to the running emulator of specific avd and console port.
  *
  * You set the name of running AVD by specifying of</br>
- * <p>{@code -Demulator.running.avd.name=avd_name}</p>
+ * <p>
+ * {@code -Demulator.running.avd.name=avd_name}
+ * </p>
  *
- * <p>{@code -Demulator.running.console.port=port_number}</p>
+ * <p>
+ * {@code -Demulator.running.console.port=port_number}
+ * </p>
  *
- * at the Maven command line in connection with -Pmanual-test profile.
- * Default AVD name is "test01", default port number is 5554.
+ * at the Maven command line in connection with -Pmanual-test profile. Default AVD name is "test01", default port number is
+ * 5554.
  *
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *
@@ -112,7 +116,7 @@ public class AndroidDeviceSelectorEmulatorRunningTestCase extends AbstractContai
         bind(ContainerScoped.class, AndroidBridge.class, bridge);
 
         AndroidDevice runningDevice = getManager().getContext(ContainerContext.class)
-                .getObjectStore().get(AndroidDevice.class);
+            .getObjectStore().get(AndroidDevice.class);
 
         assertNotNull("Android device is null object!", runningDevice);
 

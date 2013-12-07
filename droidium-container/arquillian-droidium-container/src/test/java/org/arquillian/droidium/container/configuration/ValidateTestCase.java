@@ -129,7 +129,7 @@ public class ValidateTestCase {
     public void testNotAllNullsOrEmptyAllObjectNull() {
         try {
             Validate.notAllNullsOrEmpty(new String[] { null, "", "  " },
-                    "All objects are null objects or are empty");
+                "All objects are null objects or are empty");
             fail();
         } catch (IllegalStateException ex) {
             String expected = "All objects are null objects or are empty";
@@ -183,8 +183,8 @@ public class ValidateTestCase {
             fail();
         } catch (AndroidContainerConfigurationException ex) {
             String expected = "Console port is not in the right range or it is not an even number. It has to be in the range "
-                    + Validate.CONSOLE_PORT_MIN
-                    + "-" + Validate.CONSOLE_PORT_MAX + ".";
+                + Validate.CONSOLE_PORT_MIN
+                + "-" + Validate.CONSOLE_PORT_MAX + ".";
             assertEquals(expected, ex.getMessage());
         }
     }
@@ -196,8 +196,8 @@ public class ValidateTestCase {
             fail();
         } catch (AndroidContainerConfigurationException ex) {
             String expected = "Console port is not in the right range or it is not an even number. It has to be in the range "
-                    + Validate.CONSOLE_PORT_MIN
-                    + "-" + Validate.CONSOLE_PORT_MAX + ".";
+                + Validate.CONSOLE_PORT_MIN
+                + "-" + Validate.CONSOLE_PORT_MAX + ".";
             assertEquals(expected, ex.getMessage());
         }
     }

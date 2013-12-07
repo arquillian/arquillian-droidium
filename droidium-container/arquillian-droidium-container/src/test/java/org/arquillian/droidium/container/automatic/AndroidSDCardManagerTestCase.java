@@ -100,7 +100,10 @@ public class AndroidSDCardManagerTestCase extends AbstractAndroidTestTestBase {
     public void deleteFiles() {
         File f = new File(SD_PATH);
         if (f.exists()) {
-            f.delete();
+            boolean deleted = f.delete();
+            if (!deleted) {
+                throw new RuntimeException("Unable to delete files after test!");
+            }
         }
     }
 
@@ -108,7 +111,10 @@ public class AndroidSDCardManagerTestCase extends AbstractAndroidTestTestBase {
     public static void cleanUp() {
         File f = new File(SD_PATH);
         if (f.exists()) {
-            f.delete();
+            boolean deleted = f.delete();
+            if (!deleted) {
+                throw new RuntimeException("Unable to delete files after test!");
+            }
         }
     }
 

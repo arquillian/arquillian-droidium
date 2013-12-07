@@ -32,7 +32,7 @@ import org.jboss.arquillian.core.spi.Validate;
  */
 public class DeploymentWebDriverMapper {
 
-    private static Map<String, String> map = new ConcurrentHashMap<String, String>();
+    private Map<String, String> map = new ConcurrentHashMap<String, String>();
 
     /**
      *

@@ -18,7 +18,7 @@
     <!-- Artifact configuraton -->
     <groupId>org.arquillian.droidium.tests</groupId>
     <artifactId>arquillian-droidium-native-test-01-scala</artifactId>
-    <version>1.0.0.Alpha3</version>
+    <version>1.0.0.Beta1-SNAPSHOT</version>
 
     <description>Proof-of-concept Arquillian Droidium tests with Selendroid integration written in Scala</description>
 

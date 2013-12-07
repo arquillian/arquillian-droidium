@@ -52,11 +52,11 @@ public class SDCardTestCaseSizesBadFormat {
     @Parameters
     public static Collection<Object[]> data() {
         Object[][] data = new Object[][] {
-                { "3" },
-                { "abc" },
-                { "abcM" },
-                { "GG" },
-                { "1x" }
+            { "3" },
+            { "abc" },
+            { "abcM" },
+            { "GG" },
+            { "1x" }
         };
         return Arrays.asList(data);
     }
@@ -65,7 +65,7 @@ public class SDCardTestCaseSizesBadFormat {
     public void testBadFormat() {
         try {
             Validate.sdSize(sdSizeBadFormat,
-                    "Size of SD card is not in the propper format. Consult mksdcard command for the help!");
+                "Size of SD card is not in the propper format. Consult mksdcard command for the help!");
             fail();
         } catch (AndroidContainerConfigurationException ex) {
             String expected = "Size of SD card is not in the propper format. Consult mksdcard command for the help!";

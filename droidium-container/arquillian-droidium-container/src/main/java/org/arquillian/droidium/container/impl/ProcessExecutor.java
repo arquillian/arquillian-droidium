@@ -47,7 +47,7 @@ import org.arquillian.droidium.container.configuration.Validate;
  */
 public class ProcessExecutor {
 
-    public static Map<String, String> ENVIRONMENT_PROPERTIES = null;
+    private static Map<String, String> ENVIRONMENT_PROPERTIES = null;
     private final ShutDownThreadHolder shutdownThreads;
     private final ExecutorService service;
     private final ScheduledExecutorService scheduledService;
@@ -60,7 +60,7 @@ public class ProcessExecutor {
         this.shutdownThreads = new ShutDownThreadHolder();
         this.service = Executors.newCachedThreadPool();
         this.scheduledService = Executors.newScheduledThreadPool(1);
-        ENVIRONMENT_PROPERTIES = environmentProperies;
+        ProcessExecutor.ENVIRONMENT_PROPERTIES = environmentProperies;
     }
 
     public ProcessExecutor() {
@@ -89,7 +89,7 @@ public class ProcessExecutor {
      * @throws ExecutionException
      */
     public Boolean scheduleUntilTrue(Callable<Boolean> callable, long timeout, long step, TimeUnit unit)
-            throws InterruptedException, ExecutionException {
+        throws InterruptedException, ExecutionException {
 
         CountDownWatch countdown = new CountDownWatch(timeout, unit);
         while (countdown.timeLeft() > 0) {
@@ -159,7 +159,7 @@ public class ProcessExecutor {
             Future<Process> processFuture = service.submit(new SpawnedProcess(true, command));
             Process process = processFuture.get();
             ProcessExecution execution = service.submit(
-                    new ProcessOutputConsumer(new ProcessExecution(process, command.get(0)), interaction)).get();
+                new ProcessOutputConsumer(new ProcessExecution(process, command.get(0)), interaction)).get();
             process.waitFor();
             if (execution.executionFailed()) {
                 throw new AndroidExecutionException("Invocation of {0} failed with {1}", command, execution.getExitCode());
@@ -279,7 +279,7 @@ public class ProcessExecutor {
                     String answer = interaction.repliesTo(question);
                     if (answer != null) {
                         log.log(Level.FINEST, "{0} outputs: {1}, responded with: ", new Object[] { execution.getProcessId(),
-                                question, answer });
+                            question, answer });
                         execution.replyWith(answer);
                     }
 

@@ -35,7 +35,7 @@ public class DeploymentInstrumentationMapper {
 
     private static final Logger logger = Logger.getLogger(DeploymentInstrumentationMapper.class.getName());
 
-    private static Map<String, InstrumentationConfiguration> map = new ConcurrentHashMap<String, InstrumentationConfiguration>();
+    private Map<String, InstrumentationConfiguration> map = new ConcurrentHashMap<String, InstrumentationConfiguration>();
 
     /**
      *

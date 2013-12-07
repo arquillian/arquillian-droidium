@@ -96,7 +96,7 @@ public class AndroidDeviceSelectorRealDeviceTestCase extends AbstractContainerTe
         bind(ContainerScoped.class, AndroidBridge.class, bridge);
 
         AndroidDevice runningDevice = getManager().getContext(ContainerContext.class)
-                .getObjectStore().get(AndroidDevice.class);
+            .getObjectStore().get(AndroidDevice.class);
 
         assertNotNull("Android device is null object!", runningDevice);
 

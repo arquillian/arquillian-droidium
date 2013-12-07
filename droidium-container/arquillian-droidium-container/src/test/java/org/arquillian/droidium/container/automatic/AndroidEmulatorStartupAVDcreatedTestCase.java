@@ -57,12 +57,16 @@ import org.mockito.runners.MockitoJUnitRunner;
  * Tests starting of an emulator when AVD is offline.
  *
  * You set the name of AVD you want to start by specifying of</br>
- * <p>{@code -Demulator.to.run.avd.name=avd_name}</p>
+ * <p>
+ * {@code -Demulator.to.run.avd.name=avd_name}
+ * </p>
  *
- * <p>{@code -Demulator.to.run.console.port=port_number}</p>
+ * <p>
+ * {@code -Demulator.to.run.console.port=port_number}
+ * </p>
  *
- * at the Maven command line in connection with android-manual-emulator profile.
- * Default AVD name is "test01", default port number is 5556.
+ * at the Maven command line in connection with android-manual-emulator profile. Default AVD name is "test01", default port
+ * number is 5556.
  *
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *

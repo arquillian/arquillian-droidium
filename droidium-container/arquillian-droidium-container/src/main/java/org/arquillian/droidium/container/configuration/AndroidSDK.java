@@ -193,24 +193,20 @@ public class AndroidSDK {
      */
     private enum SystemImage {
 
-        X86 {
-            @Override
-            public String toString() {
-                return "x86";
-            }
-        },
-        ARMEABIV7A {
-            @Override
-            public String toString() {
-                return "armeabi-v7a";
-            }
-        },
-        MIPS {
-            @Override
-            public String toString() {
-                return "mips";
-            }
-        };
+        X86("x86"),
+        ARMEABIV7A("armeabi-v7a"),
+        MIPS("mips");
+
+        private String name;
+
+        private SystemImage(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
 
         /**
          * @return all system images concatenated to one string separated only by one space from each other
@@ -277,14 +273,14 @@ public class AndroidSDK {
         if (foundPlatform.systemImages.size() == 0) {
             logger.log(Level.INFO, "There are not any system images found for your API level. You can use Droidium "
                 + "only with physical devices connected until you specify such API level which has system images "
-                + "available to use. Your current API level is: {0}", new Object[] { configuration.getApiLevel() } );
+                + "available to use. Your current API level is: {0}", new Object[] { configuration.getApiLevel() });
         } else {
             if (configuration.getAbi() == null) {
                 configuration.setAbi(foundPlatform.systemImages.get(0));
             } else {
                 if (!foundPlatform.hasSystemImage(configuration.getAbi())) {
                     logger.log(Level.INFO, "ABI you want to use ({1}), is not present in the system for API level {0}. "
-                        + "Droidium uses whatever comes first among {2} and it is available for your API level." ,
+                        + "Droidium uses whatever comes first among {2} and it is available for your API level.",
                         new Object[] { configuration.getApiLevel(), configuration.getAbi(), SystemImage.getAll() });
                     configuration.setAbi(foundPlatform.systemImages.get(0));
                 }

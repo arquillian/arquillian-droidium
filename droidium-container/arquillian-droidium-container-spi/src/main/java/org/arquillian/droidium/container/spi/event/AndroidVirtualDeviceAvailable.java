@@ -24,9 +24,13 @@ package org.arquillian.droidium.container.spi.event;
  */
 public class AndroidVirtualDeviceAvailable {
 
-    String name;
+    private String name;
 
     public AndroidVirtualDeviceAvailable(String name) {
         this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 }

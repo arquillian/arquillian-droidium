@@ -461,13 +461,14 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
             "You must provide Android SDK home directory. The value you've provided is not valid. "
                 + "You can either set it via an environment variable ANDROID_SDK_HOME or via "
                 + "property called \"androidSdkHome\" in Arquillian configuration or you can set it as system property "
-                + "\"android.sdk.home\". When this property is not specified anywhere, it defaults to \"" + resolveUserHome() + "\"");
+                + "\"android.sdk.home\". When this property is not specified anywhere, it defaults to \"" + resolveUserHome()
+                + "\"");
 
         Validate.isReadableDirectory(androidHome,
             "You must provide Android home directory. The value you have provided is not valid. "
-            + "You can either set it via environment variable ANDROID_HOME or via "
-            + "property called \"androidHome\" in Arquillian configuration or you can set it as system property "
-            + "\"android.home\".");
+                + "You can either set it via environment variable ANDROID_HOME or via "
+                + "property called \"androidHome\" in Arquillian configuration or you can set it as system property "
+                + "\"android.home\".");
 
         if (avdName != null && serialId != null) {
             logger.warning("Both \"avdName\" and \"serialId\" properties are defined, the device "

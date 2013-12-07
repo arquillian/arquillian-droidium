@@ -83,7 +83,7 @@ public class MultipleContainersTestCase extends AbstractContainerTestBase {
 
         // adapterImplClass is not required since it is only the adapter on the classpath
         registry.create(Descriptors.create(ArquillianDescriptor.class)
-                .group("containers").container("android1").setDefault(), serviceLoader);
+            .group("containers").container("android1").setDefault(), serviceLoader);
 
         Container android1 = registry.getContainer("android1");
         assertNotNull(android1);
@@ -103,22 +103,22 @@ public class MultipleContainersTestCase extends AbstractContainerTestBase {
         ContainerRegistry registry = new MultipleLocalContainersRegistry(injector.get());
 
         registry.create(
-                Descriptors
-                        .create(ArquillianDescriptor.class)
-                        .group("containers")
-                        .container("android1")
-                        .setDefault()
-                        .property("adapterImplClass",
-                                "org.arquillian.droidium.container.AndroidDeployableContainer"),
-                serviceLoader);
+            Descriptors
+                .create(ArquillianDescriptor.class)
+                .group("containers")
+                .container("android1")
+                .setDefault()
+                .property("adapterImplClass",
+                    "org.arquillian.droidium.container.AndroidDeployableContainer"),
+            serviceLoader);
 
         registry.create(
-                Descriptors
-                        .create(ArquillianDescriptor.class)
-                        .group("containers")
-                        .container("jbossas")
-                        .property("adapterImplClass", "org.jboss.as.arquillian.container.managed.ManagedDeployableContainer"),
-                serviceLoader);
+            Descriptors
+                .create(ArquillianDescriptor.class)
+                .group("containers")
+                .container("jbossas")
+                .property("adapterImplClass", "org.jboss.as.arquillian.container.managed.ManagedDeployableContainer"),
+            serviceLoader);
 
         Container android1 = registry.getContainer("android1");
         Container jboss = registry.getContainer("jbossas");
@@ -146,19 +146,19 @@ public class MultipleContainersTestCase extends AbstractContainerTestBase {
         ContainerRegistry registry = new MultipleLocalContainersRegistry(injector.get());
 
         registry.create(
-                Descriptors
-                        .create(ArquillianDescriptor.class)
-                        .container("android1")
-                        .setDefault()
-                        .property("adapterImplClass",
-                                "org.arquillian.droidium.container.AndroidDeployableContainer"),
-                serviceLoader);
+            Descriptors
+                .create(ArquillianDescriptor.class)
+                .container("android1")
+                .setDefault()
+                .property("adapterImplClass",
+                    "org.arquillian.droidium.container.AndroidDeployableContainer"),
+            serviceLoader);
 
         registry.create(
-                Descriptors.create(ArquillianDescriptor.class)
-                        .container("jbossas")
-                        .property("adapterImplClass", "org.jboss.as.arquillian.container.managed.ManagedDeployableContainer"),
-                serviceLoader);
+            Descriptors.create(ArquillianDescriptor.class)
+                .container("jbossas")
+                .property("adapterImplClass", "org.jboss.as.arquillian.container.managed.ManagedDeployableContainer"),
+            serviceLoader);
 
         Container android1 = registry.getContainer("android1");
         Container jboss = registry.getContainer("jbossas");

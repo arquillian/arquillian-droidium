@@ -1,3 +1,20 @@
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2012 Red Hat Inc. and/or its affiliates and other contributors
+ * as indicated by the @authors tag. All rights reserved.
+ * See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.arquillian.droidium.container.log;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
@@ -63,7 +80,7 @@ public class AndroidLogInitializer {
 
         ProcessExecutor executor = this.executor.get();
 
-        if(logcatHelper.get() == null) {
+        if (logcatHelper.get() == null) {
             logcatHelper.set(new LogcatHelper(configuration.get(), androidDevice.get()));
         }
 
@@ -85,7 +102,7 @@ public class AndroidLogInitializer {
         }
     }
 
-    public class LogcatReader implements Callable<Void> {
+    private static class LogcatReader implements Callable<Void> {
         private AndroidContainerConfiguration configuration;
         private AndroidSDK androidSDK;
         private AndroidDevice androidDevice;
@@ -103,16 +120,16 @@ public class AndroidLogInitializer {
             this.androidSDK = androidSDK;
             this.androidDevice = androidDevice;
 
-            if(configuration.getLogPackageWhitelist() != null) {
+            if (configuration.getLogPackageWhitelist() != null) {
                 String[] whiteList = configuration.getLogPackageWhitelist().split(",");
-                for(String packageName : whiteList) {
+                for (String packageName : whiteList) {
                     this.whiteList.add(escapePackageName(packageName));
                 }
             }
 
-            if(configuration.getLogPackageBlacklist() != null) {
+            if (configuration.getLogPackageBlacklist() != null) {
                 String[] blackList = configuration.getLogPackageBlacklist().split(",");
-                for(String packageName : blackList) {
+                for (String packageName : blackList) {
                     this.blackList.add(escapePackageName(packageName));
                 }
             }
@@ -120,18 +137,18 @@ public class AndroidLogInitializer {
 
         @Override
         public Void call() throws Exception {
-            if(writer == null) {
+            if (writer == null) {
                 return null;
             }
 
             try {
                 Command command = new Command();
                 command
-                        .add(androidSDK.getAdbPath())
-                        .add("-s")
-                        .add(androidDevice.getSerialNumber())
-                        .add("logcat")
-                        .add("-c");
+                    .add(androidSDK.getAdbPath())
+                    .add("-s")
+                    .add(androidDevice.getSerialNumber())
+                    .add("logcat")
+                    .add("-c");
 
                 ProcessBuilder builder = new ProcessBuilder(command.getAsList());
                 Process process = builder.start();
@@ -139,26 +156,25 @@ public class AndroidLogInitializer {
                 command.clear();
 
                 command
-                        .add(androidSDK.getAdbPath())
-                        .add("-s")
-                        .add(androidDevice.getSerialNumber())
-                        .add("logcat")
-                        .add("*:" + configuration.getLogLevel());
-
+                    .add(androidSDK.getAdbPath())
+                    .add("-s")
+                    .add(androidDevice.getSerialNumber())
+                    .add("logcat")
+                    .add("*:" + configuration.getLogLevel());
 
                 builder = new ProcessBuilder(command.getAsList());
                 process = builder.start();
 
                 BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                 String line = null;
-                while((line = reader.readLine()) != null) {
-                    if(shouldWrite(line)) {
+                while ((line = reader.readLine()) != null) {
+                    if (shouldWrite(line)) {
                         writer.write(line);
                         writer.flush();
                     }
                 }
                 writer.close();
-
+                reader.close();
             } catch (IOException e) {
                 logger.log(Level.SEVERE, "Error with logcat logging!", e);
             }
@@ -168,52 +184,52 @@ public class AndroidLogInitializer {
 
         private String escapePackageName(String packageName) {
             return packageName
-                    .replace("\\", "\\\\")
-                    .replace(".", "\\.")
-                    .replace("[", "\\[")
-                    .replace("]", "\\]")
-                    .replace("(", "\\(")
-                    .replace(")", "\\)")
-                    .replace("?", "\\?")
-                    .replace("+", "\\+")
-                    .replace("*", ".*?");
+                .replace("\\", "\\\\")
+                .replace(".", "\\.")
+                .replace("[", "\\[")
+                .replace("]", "\\]")
+                .replace("(", "\\(")
+                .replace(")", "\\)")
+                .replace("?", "\\?")
+                .replace("+", "\\+")
+                .replace("*", ".*?");
         }
 
         private boolean shouldWrite(String line) {
-            if(!configuration.isLogFilteringEnabled()) {
+            if (!configuration.isLogFilteringEnabled()) {
                 return true;
             }
 
-            if(pattern == null) {
+            if (pattern == null) {
                 // This pattern will fetch us process id from logcat line
                 pattern = Pattern.compile("./.+?\\(([\\s0-9]+?)\\):.*");
             }
 
             Matcher matcher = pattern.matcher(line);
-            if(!matcher.matches()) {
+            if (!matcher.matches()) {
                 return false;
             }
 
             String processIdString = matcher.group(1).trim();
             Integer processId = Integer.valueOf(processIdString);
 
-            if(!processMap.containsKey(processId)) {
+            if (!processMap.containsKey(processId)) {
                 loadProcessMap();
             }
 
             String processName = processMap.get(processId);
-            if(processName == null) {
+            if (processName == null) {
                 processName = "";
             }
 
-            for(String regex : whiteList) {
-                if(processName.matches(regex)) {
+            for (String regex : whiteList) {
+                if (processName.matches(regex)) {
                     return true;
                 }
             }
 
-            for(String regex : blackList) {
-                if(processName.matches(regex)) {
+            for (String regex : blackList) {
+                if (processName.matches(regex)) {
                     return false;
                 }
             }
@@ -227,23 +243,24 @@ public class AndroidLogInitializer {
 
                 Command command = new Command();
                 command
-                        .add(androidSDK.getAdbPath())
-                        .add("-s")
-                        .add(androidDevice.getSerialNumber())
-                        .add("shell")
-                        .add("ps");
+                    .add(androidSDK.getAdbPath())
+                    .add("-s")
+                    .add(androidDevice.getSerialNumber())
+                    .add("shell")
+                    .add("ps");
 
                 ProcessBuilder processBuilder = new ProcessBuilder(command.getAsList());
                 Process process = processBuilder.start();
 
                 // Ugly pattern, which helps us parse PS table
-                Pattern pattern  = Pattern.compile(".*?\\s+([0-9]+)\\s+[0-9]+\\s+[0-9]+\\s+[0-9]+\\s+[0-9a-f]+\\s+[0-9a-f]+\\s.?\\s(.*)");
+                Pattern pattern = Pattern
+                    .compile(".*?\\s+([0-9]+)\\s+[0-9]+\\s+[0-9]+\\s+[0-9]+\\s+[0-9a-f]+\\s+[0-9a-f]+\\s.?\\s(.*)");
                 BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                 String line = null;
-                while((line = reader.readLine()) != null) {
+                while ((line = reader.readLine()) != null) {
                     Matcher matcher = pattern.matcher(line);
 
-                    if(!matcher.matches()) {
+                    if (!matcher.matches()) {
                         continue;
                     }
 
@@ -254,31 +271,8 @@ public class AndroidLogInitializer {
                 }
             } catch (IOException e) {
                 logger.log(Level.SEVERE, "Couldn't load process map!", e);
+
             }
-        }
-
-        public AndroidContainerConfiguration getConfiguration() {
-            return configuration;
-        }
-
-        public void setConfiguration(AndroidContainerConfiguration configuration) {
-            this.configuration = configuration;
-        }
-
-        public AndroidSDK getAndroidSDK() {
-            return androidSDK;
-        }
-
-        public void setAndroidSDK(AndroidSDK androidSDK) {
-            this.androidSDK = androidSDK;
-        }
-
-        public AndroidDevice getAndroidDevice() {
-            return androidDevice;
-        }
-
-        public void setAndroidDevice(AndroidDevice androidDevice) {
-            this.androidDevice = androidDevice;
         }
 
         public Writer getWriter() {

@@ -22,77 +22,50 @@ package org.arquillian.droidium.multiplecontainers;
  */
 public enum ContainerType {
 
-    ANDROID {
-        @Override
-        public String toString() {
-            return "android";
-        }
-    },
-    DROIDIUM { // alias to android
-        @Override
-        public String toString() {
-            return "droidium";
-        }
-    },
-    JBOSS {
-        @Override
-        public String toString() {
-            return "jboss";
-        }
-    },
-    EAP { // alias to jboss
-        @Override
-        public String toString() {
-            return "eap";
-        }
-    },
-    WILDFLY { // alias to jboss
-        @Override
-        public String toString() {
-            return "wildfly";
-        }
-    },
-    TOMEE {
-        @Override
-        public String toString() {
-            return "tomee";
-        }
-    },
-    GLASSFISH {
-        @Override
-        public String toString() {
-            return "glassfish";
-        }
-    },
-    OPENSHIFT {
-        @Override
-        public String toString() {
-            return "openshift";
-        }
-    };
+    ANDROID("android", "org.arquillian.droidium.container.AndroidDeployableContainer"),
+    DROIDIUM("droidium", "org.arquillian.droidium.container.AndroidDeployableContainer"),
+    JBOSS("jboss", "org.jboss.as.arquillian.container"),
+    EAP("eap", "org.jboss.as.arquillian.container"),
+    WILDFLY("wildfly", "org.jboss.as.arquillian.container"),
+    TOMEE("tomee", "org.apache.openejb.arquillian"),
+    GLASSFISH("glassfish", "org.jboss.arquillian.container.glassfish"),
+    OPENSHIFT("openshift", "org.jboss.arquillian.container.openshift");
+
+    private String qualifier;
+    private String adapterImplClassPrefix;
+
+    private ContainerType(String qualifier, String adapterImplClassPrefix) {
+        this.qualifier = qualifier;
+        this.adapterImplClassPrefix = adapterImplClassPrefix;
+    }
 
     public static String getAdapterClassNamePrefix(ContainerType type) {
         switch (type) {
             case ANDROID:
-                return "org.arquillian.droidium.container.AndroidDeployableContainer";
+                return ANDROID.adapterImplClassPrefix;
             case DROIDIUM:
-                return "org.arquillian.droidium.container.AndroidDeployableContainer";
+                return DROIDIUM.adapterImplClassPrefix;
             case GLASSFISH:
-                return "org.jboss.arquillian.container.glassfish";
+                return GLASSFISH.adapterImplClassPrefix;
             case JBOSS:
-                return "org.jboss.as.arquillian.container";
+                return JBOSS.adapterImplClassPrefix;
             case EAP:
-                return "org.jboss.as.arquillian.container";
+                return EAP.adapterImplClassPrefix;
             case WILDFLY:
-                return "org.jboss.as.arquillian.container";
+                return WILDFLY.adapterImplClassPrefix;
             case OPENSHIFT:
-                return "org.jboss.arquillian.container.openshift";
+                return OPENSHIFT.adapterImplClassPrefix;
             case TOMEE:
-                return "org.apache.openejb.arquillian";
+                return TOMEE.adapterImplClassPrefix;
             default:
                 break;
         }
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return qualifier;
     }
 
     /**
@@ -102,7 +75,7 @@ public enum ContainerType {
         StringBuilder sb = new StringBuilder();
 
         for (ContainerType type : ContainerType.values()) {
-            sb.append(type.toString());
+            sb.append(type.qualifier);
             sb.append(" ");
         }
 

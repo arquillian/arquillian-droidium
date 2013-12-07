@@ -38,7 +38,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 @Ignore("not stable test")
 public class AndroidLogInitializerTestCase extends AbstractAndroidTestTestBase {
 
-
     private AndroidContainerConfiguration configuration;
 
     private AndroidSDK androidSDK;
@@ -95,7 +94,7 @@ public class AndroidLogInitializerTestCase extends AbstractAndroidTestTestBase {
 
         assertEventFired(AndroidDeviceReady.class, 1);
 
-        while(!testWriter.success) {
+        while (!testWriter.success) {
 
         }
     }
@@ -105,22 +104,24 @@ public class AndroidLogInitializerTestCase extends AbstractAndroidTestTestBase {
 
         @Override
         public void write(char[] cbuf, int off, int len) throws IOException {
-            if(success) {
+            if (success) {
                 return;
             }
 
             String line = String.copyValueOf(cbuf, off, len);
-            if(line.matches("./.+?\\([\\s0-9]+?\\):.*")) {
+            if (line.matches("./.+?\\([\\s0-9]+?\\):.*")) {
                 success = true;
             }
 
         }
 
         @Override
-        public void flush() throws IOException { }
+        public void flush() throws IOException {
+        }
 
         @Override
-        public void close() throws IOException { }
+        public void close() throws IOException {
+        }
     }
 
 }

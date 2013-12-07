@@ -33,9 +33,8 @@ import org.jboss.arquillian.test.spi.event.suite.BeforeSuite;
 /**
  * Removes Android container from container registry iff
  *
- * 1) Drone is on the class path
- * 2) There are webdriver extensions in arquillian.xml
- * 3) No webdriver extension asks for "android" browser
+ * 1) Drone is on the class path 2) There are webdriver extensions in arquillian.xml 3) No webdriver extension asks for
+ * "android" browser
  *
  * https://issues.jboss.org/browse/ARQ-1577
  *

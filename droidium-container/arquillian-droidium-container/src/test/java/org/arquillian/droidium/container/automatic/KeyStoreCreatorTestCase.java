@@ -60,14 +60,16 @@ public class KeyStoreCreatorTestCase {
 
         IdentifierGenerator<FileType> aig = new AndroidIdentifierGenerator();
         keyStoreToCreate = new File(
-            System.getProperty("java.io.tmpdir") + System.getProperty("file.separator")
-                + aig.getIdentifier(FileType.FILE));
+            System.getProperty("java.io.tmpdir") + System.getProperty("file.separator") + aig.getIdentifier(FileType.FILE));
     }
 
     @After
     public void tearDown() {
         if (keyStoreToCreate.exists()) {
-            keyStoreToCreate.delete();
+            boolean deleted = keyStoreToCreate.delete();
+            if (!deleted) {
+                throw new RuntimeException("Unable to delete files after test!");
+            }
         }
     }
 

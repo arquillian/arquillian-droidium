@@ -53,11 +53,11 @@ public class SDCardTestCaseSizesBad {
     @Parameters
     public static Collection<Object[]> data() {
         Object[][] data = new Object[][] {
-                { "1024G" },
-                { "1048576M" },
-                { "1073741824K" },
-                { "8M" },
-                { "9125K" }
+            { "1024G" },
+            { "1048576M" },
+            { "1073741824K" },
+            { "8M" },
+            { "9125K" }
         };
         return Arrays.asList(data);
     }
@@ -69,7 +69,7 @@ public class SDCardTestCaseSizesBad {
             fail();
         } catch (AndroidContainerConfigurationException ex) {
             String expected = "Maximum size is 1099511627264 bytes, 1073741823K, 1048575M or 1023G. Minimum size is 9M. " +
-                    "The Android emulator cannot use smaller images.";
+                "The Android emulator cannot use smaller images.";
             assertEquals(expected, ex.getMessage());
         }
     }
