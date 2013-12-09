@@ -149,7 +149,9 @@ public class AndroidEmulatorStartup {
         AndroidContainerConfiguration configuration = this.configuration.get();
 
         Command command = new Command();
-        command.add(sdk.getEmulatorPath()).add("-avd").add(configuration.getAvdName());
+        command.add(sdk.getEmulatorPath())
+            .add("-avd")
+            .add(configuration.getAvdName());
 
         if (configuration.getSdCard() != null) {
             command.add("-sdcard");
@@ -220,7 +222,8 @@ public class AndroidEmulatorStartup {
                 @Override
                 public Boolean call() throws Exception {
                     // ARQ-1583 check status of emulator
-                    if (emulatorExecution.isFinished()) {
+                    // ARQ-1602 on windows, emulator process might return. In such case we need to check also the exit value
+                    if (emulatorExecution.isFinished() && emulatorExecution.executionFailed()) {
                         throw new IllegalStateException("Emulator device startup exited prematurely with exit code "
                             + emulatorExecution.getExitCode());
                     }
@@ -250,7 +253,8 @@ public class AndroidEmulatorStartup {
                 @Override
                 public Boolean call() throws Exception {
                     // ARQ-1583 check status of emulator
-                    if (emulatorExecution.isFinished()) {
+                    // ARQ-1602 on windows, emulator process might return. In such case we need to check also the exit value
+                    if (emulatorExecution.isFinished() && emulatorExecution.executionFailed()) {
                         throw new IllegalStateException("Emulator device startup exited prematurely with exit code "
                             + emulatorExecution.getExitCode());
                     }
