@@ -107,7 +107,7 @@ public class AndroidServerInstaller {
         command.add(configuration.get().getOptions());
 
         // if debug is not already set via "options" and we specified we want to use debugging via debug option
-        if (!command.getAsString().contains("-e debug") && configuration.get().getDebug()) {
+        if (!command.toString().contains("-e debug") && configuration.get().getDebug()) {
             command.add("-e debug true");
         }
 

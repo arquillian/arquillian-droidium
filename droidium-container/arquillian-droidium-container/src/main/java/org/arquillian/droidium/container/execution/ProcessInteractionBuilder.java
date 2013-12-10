@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.container.impl;
+package org.arquillian.droidium.container.execution;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -36,7 +36,7 @@ public class ProcessInteractionBuilder {
      */
     public static final ProcessInteraction NO_INTERACTION = new ProcessInteractionBuilder().build();
 
-    private Map<String, String> replyMap;
+    private Map<Pattern, Answer> replyMap;
 
     private List<Pattern> allowedOutput;
 
@@ -48,7 +48,7 @@ public class ProcessInteractionBuilder {
      * Creates empty interaction builder
      */
     public ProcessInteractionBuilder() {
-        this.replyMap = new LinkedHashMap<String, String>();
+        this.replyMap = new LinkedHashMap<Pattern, Answer>();
         this.allowedOutput = new ArrayList<Pattern>();
         this.errorOutput = new ArrayList<Pattern>();
         this.tuple = new Tuple();
@@ -62,10 +62,10 @@ public class ProcessInteractionBuilder {
      * @return current instance to allow chaining
      */
     public ProcessInteractionBuilder replyTo(String outputLine) {
-        if (tuple.first != null) {
+        if (tuple.question != null) {
             throw new IllegalStateException("Unfinished replyTo().with() sequence, please append with(String) call");
         }
-        tuple.first = outputLine;
+        tuple.question = Pattern.compile(outputLine);
 
         return this;
     }
@@ -78,16 +78,35 @@ public class ProcessInteractionBuilder {
      * @see ProcessInteractionBuilder#replyTo(String)
      */
     public ProcessInteractionBuilder with(String response) {
-        if (tuple.first == null) {
+        if (tuple.question == null) {
             throw new IllegalStateException("Unfinished replyTo().with() sequence, please prepend replyTo(String) call");
         }
+        tuple.answer = Answer.text(response);
 
-        tuple.last = response;
-
-        replyMap.put(tuple.first, tuple.last);
+        replyMap.put(tuple.question, tuple.answer);
         tuple = new Tuple();
 
         return this;
+    }
+
+    /**
+     * Stores an answer for question defined by {@code replyTo} call
+     *
+     * @param response the answer
+     * @return current instance to allow chaining
+     * @see ProcessInteractionBuilder#replyTo(String)
+     */
+    public ProcessInteractionBuilder with(Answer response) {
+        if (tuple.question == null) {
+            throw new IllegalStateException("Unfinished replyTo().with() sequence, please prepend replyTo(String) call");
+        }
+        tuple.answer = response;
+
+        replyMap.put(tuple.question, tuple.answer);
+        tuple = new Tuple();
+
+        return this;
+
     }
 
     /**
@@ -98,7 +117,7 @@ public class ProcessInteractionBuilder {
      */
     public ProcessInteractionBuilder outputs(String pattern) {
 
-        Pattern p = Pattern.compile(pattern, Pattern.DOTALL);
+        Pattern p = Pattern.compile(pattern);
         allowedOutput.add(p);
         return this;
     }
@@ -110,7 +129,7 @@ public class ProcessInteractionBuilder {
      * @return current instance to allow chaining
      */
     public ProcessInteractionBuilder errors(String pattern) {
-        Pattern p = Pattern.compile(pattern, Pattern.DOTALL);
+        Pattern p = Pattern.compile(pattern);
         errorOutput.add(p);
         return this;
     }
@@ -121,7 +140,7 @@ public class ProcessInteractionBuilder {
      * @return {@link ProcessInteraction}
      */
     public ProcessInteraction build() {
-        if (tuple.first != null) {
+        if (tuple.question != null) {
             throw new IllegalStateException("Unfinished replyTo().with() sequence, please append with(String) call");
         }
 
@@ -129,33 +148,49 @@ public class ProcessInteractionBuilder {
     }
 
     private static class Tuple {
-        String first;
-        String last;
+        Pattern question;
+        Answer answer;
     }
 
     private static class ProcessInteractionImpl implements ProcessInteraction {
 
-        private final Map<String, String> replyMap;
+        private final Map<Pattern, Answer> replyMap;
 
         private final List<Pattern> allowedOutput;
 
         private final List<Pattern> errorOutput;
 
-        public ProcessInteractionImpl(Map<String, String> replyMap, List<Pattern> allowedOutput, List<Pattern> errorOutput) {
+        public ProcessInteractionImpl(Map<Pattern, Answer> replyMap, List<Pattern> allowedOutput, List<Pattern> errorOutput) {
             this.replyMap = replyMap;
             this.allowedOutput = allowedOutput;
             this.errorOutput = errorOutput;
         }
 
         @Override
-        public String repliesTo(String outputLine) {
-            return replyMap.get(outputLine);
+        public Answer repliesTo(Sentence sentence) {
+            for (Map.Entry<Pattern, Answer> entry : replyMap.entrySet()) {
+                if (entry.getKey().matcher(sentence).matches()) {
+                    return entry.getValue();
+                }
+            }
+            return Answer.none();
         }
 
         @Override
-        public boolean shouldOutput(String outputLine) {
+        public boolean shouldOutput(Sentence sentence) {
             for (Pattern p : allowedOutput) {
-                if (p.matcher(outputLine).matches()) {
+                if (p.matcher(sentence).matches()) {
+                    return true;
+                }
+            }
+            return false;
+
+        }
+
+        @Override
+        public boolean shouldOutputToErr(Sentence sentence) {
+            for (Pattern p : errorOutput) {
+                if (p.matcher(sentence).matches()) {
                     return true;
                 }
             }
@@ -163,14 +198,8 @@ public class ProcessInteractionBuilder {
         }
 
         @Override
-        public boolean shouldOutputToErr(String outputLine) {
-            for (Pattern p : errorOutput) {
-                if (p.matcher(outputLine).matches()) {
-                    return true;
-                }
-            }
-            return false;
-
+        public boolean requiresInputInteraction() {
+            return !replyMap.isEmpty();
         }
 
     }

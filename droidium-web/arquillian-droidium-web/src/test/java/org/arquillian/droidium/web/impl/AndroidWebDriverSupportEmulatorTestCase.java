@@ -32,11 +32,11 @@ import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
+import org.arquillian.droidium.container.execution.ProcessExecutor;
 import org.arquillian.droidium.container.impl.AndroidBridgeConnector;
 import org.arquillian.droidium.container.impl.AndroidDeviceSelectorImpl;
 import org.arquillian.droidium.container.impl.AndroidEmulatorShutdown;
 import org.arquillian.droidium.container.impl.AndroidEmulatorStartup;
-import org.arquillian.droidium.container.impl.ProcessExecutor;
 import org.arquillian.droidium.container.spi.event.AndroidBridgeInitialized;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStart;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStop;
@@ -97,7 +97,7 @@ public class AndroidWebDriverSupportEmulatorTestCase extends AbstractAndroidTest
     private static final String EMULATOR_CONSOLE_PORT = System.getProperty("emulator.avd.port", "5554");
 
     private static final String EMULATOR_OPTIONS = "-no-audio -no-window -memory 343 -no-snapshot-save -no-snapstorage";
-    
+
     private static final String ANDROID_SERVER_APK_PATH = System.getProperty("android.server.path",
         "src/test/resources/android-server-2.6.0.apk");
 
@@ -124,7 +124,7 @@ public class AndroidWebDriverSupportEmulatorTestCase extends AbstractAndroidTest
         configuration.setConsolePort(EMULATOR_CONSOLE_PORT);
         configuration.setEmulatorOptions(EMULATOR_OPTIONS);
         configuration.validate();
-        
+
         androidSDK = new AndroidSDK(configuration);
         processExecutor = new ProcessExecutor();
 

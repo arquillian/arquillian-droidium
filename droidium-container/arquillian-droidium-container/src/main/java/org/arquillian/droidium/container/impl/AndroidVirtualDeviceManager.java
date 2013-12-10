@@ -30,6 +30,8 @@ import org.arquillian.droidium.container.configuration.AndroidContainerConfigura
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Command;
 import org.arquillian.droidium.container.configuration.Validate;
+import org.arquillian.droidium.container.execution.ProcessExecutor;
+import org.arquillian.droidium.container.execution.ProcessInteractionBuilder;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardCreate;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardDelete;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceAvailable;
@@ -99,7 +101,7 @@ public class AndroidVirtualDeviceManager {
                 .add("avd")
                 .add("-n")
                 .add(avdName);
-            executor.execute(command);
+            executor.execute(command.getAsArray());
 
             logger.log(Level.INFO, "Android Virtual Device {0} deleted.", avdName);
 
@@ -148,7 +150,7 @@ public class AndroidVirtualDeviceManager {
                 .replyTo("Do you wish to create a custom hardware profile [no]")
                 .with("no" + System.getProperty("line.separator"));
 
-            executor.execute(interaction.build(), command);
+            executor.execute(interaction.build(), command.getAsArray());
 
             configuration.setAvdGenerated(true);
 

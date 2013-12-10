@@ -19,7 +19,7 @@ package org.arquillian.droidium.native_.configuration;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
-import org.arquillian.droidium.container.impl.ProcessExecutor;
+import org.arquillian.droidium.container.execution.ProcessExecutor;
 import org.arquillian.droidium.native_.activity.ActivityWebDriverMapper;
 import org.arquillian.droidium.native_.activity.NativeActivityManager;
 import org.arquillian.droidium.native_.deployment.ActivityDeploymentMapper;

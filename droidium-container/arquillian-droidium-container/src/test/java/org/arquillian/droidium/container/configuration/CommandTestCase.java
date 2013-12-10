@@ -26,8 +26,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.arquillian.droidium.container.configuration.Command;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -38,25 +36,22 @@ import org.junit.Test;
  */
 public class CommandTestCase {
 
-    Command command;
-
-    @Before
-    public void init() {
-        command = new Command();
-    }
-
     @Test
     public void testDeleteTrailingSpaces() {
+
+        Command command = new Command();
+
         String testString = " abcd   \"  a   \"  \"    c    d\" \"${HOME}\"";
         List<String> list = new ArrayList<String>();
         list.add("abcd");
-        list.add("\"a\"");
-        list.add("\"c d\"");
-        list.add("\"${HOME}\"");
-        assertTrue(listsAreSame(list, command.addAsString(testString).getAsList()));
+        list.add("a");
+        list.add("c    d");
+        list.add("${HOME}");
+        assertTrue(listsAreSame(list, command.addTokenized(testString).getAsList()));
     }
 
     private boolean listsAreSame(List<String> list1, List<String> list2) {
+
         if (list1 == null && list2 == null) {
             return true;
         }

@@ -33,7 +33,7 @@ import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Command;
 import org.arquillian.droidium.container.configuration.Validate;
-import org.arquillian.droidium.container.impl.ProcessExecutor;
+import org.arquillian.droidium.container.execution.ProcessExecutor;
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -163,7 +163,7 @@ public class SelendroidRebuilder {
                 .add("-F").add(dummyAPK.getAbsolutePath());
 
         try {
-            processExecutor.execute(createDummyPackage);
+            processExecutor.execute(createDummyPackage.getAsArray());
         } catch (AndroidExecutionException e) {
             throw new SelendroidRebuilderException("Command failed to execute: " + createDummyPackage.toString(), e);
         }

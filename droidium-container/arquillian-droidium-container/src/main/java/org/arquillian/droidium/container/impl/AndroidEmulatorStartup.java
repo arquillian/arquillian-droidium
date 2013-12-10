@@ -29,6 +29,10 @@ import org.arquillian.droidium.container.api.Screenshooter;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Command;
+import org.arquillian.droidium.container.execution.CountDownWatch;
+import org.arquillian.droidium.container.execution.ProcessExecution;
+import org.arquillian.droidium.container.execution.ProcessExecutor;
+import org.arquillian.droidium.container.execution.ProcessInteractionBuilder;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceAvailable;
 import org.arquillian.droidium.container.utils.NetUtils;
@@ -173,12 +177,13 @@ public class AndroidEmulatorStartup {
         }
 
         if (configuration.getConsolePort() != null && configuration.getAdbPort() != null) {
-            command.add("-ports").addAsString(configuration.getConsolePort() + "," + configuration.getAdbPort());
+            command.add("-ports")
+                .add(configuration.getConsolePort() + "," + configuration.getAdbPort());
         } else if (configuration.getConsolePort() != null) {
             command.add("-port").add(configuration.getConsolePort());
         }
 
-        command.addAsString(configuration.getEmulatorOptions());
+        command.addTokenized(configuration.getEmulatorOptions());
 
         logger.log(Level.INFO, "Starting emulator \"{0}\", using {1}", new Object[] { configuration.getAvdName(), command });
 
@@ -190,7 +195,7 @@ public class AndroidEmulatorStartup {
 
         // execute emulator
         try {
-            return executor.spawn(interactions.build(), command);
+            return executor.spawn(interactions.build(), command.getAsArray());
         } catch (AndroidExecutionException e) {
             throw new AndroidExecutionException(e, "Unable to start emulator \"{0}\", using {1}", configuration.getAvdName(),
                 command);
@@ -205,8 +210,8 @@ public class AndroidEmulatorStartup {
         Command unlockPart2 = new Command(androidSDK.get().getAdbPath(), "-s", serialNumber, "shell", "input", "keyevent", "4");
 
         try {
-            executor.execute(ProcessInteractionBuilder.NO_INTERACTION, unlockPart1);
-            executor.execute(ProcessInteractionBuilder.NO_INTERACTION, unlockPart2);
+            executor.execute(ProcessInteractionBuilder.NO_INTERACTION, unlockPart1.getAsArray());
+            executor.execute(ProcessInteractionBuilder.NO_INTERACTION, unlockPart2.getAsArray());
         } catch (final AndroidExecutionException e) {
             logger.log(Level.WARNING, "Unlocking device failed", e);
             // exception is ignored, logged only
@@ -261,7 +266,7 @@ public class AndroidEmulatorStartup {
 
                     // check properties of underlying process
                     Command propertiesCheck = new Command(adbPath, "-s", serialNumber, "shell", "getprop");
-                    ProcessExecution properties = executor.execute(ProcessInteractionBuilder.NO_INTERACTION, propertiesCheck);
+                    ProcessExecution properties = executor.execute(ProcessInteractionBuilder.NO_INTERACTION, propertiesCheck.getAsArray());
                     for (String line : properties.getOutput()) {
                         if (line.contains("[ro.runtime.firstboot]")) {
                             // boot is completed

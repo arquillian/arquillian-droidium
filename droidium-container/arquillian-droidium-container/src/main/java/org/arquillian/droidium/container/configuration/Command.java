@@ -19,7 +19,8 @@ package org.arquillian.droidium.container.configuration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.StringTokenizer;
+
+import org.arquillian.droidium.container.utils.StringUtils;
 
 /**
  * Represents emulator command we are creating in order to execute some command on the command line.
@@ -29,7 +30,7 @@ import java.util.StringTokenizer;
  */
 public class Command {
 
-    private List<String> command;
+    private final List<String> command;
 
     public Command() {
         command = new ArrayList<String>();
@@ -68,6 +69,10 @@ public class Command {
         return this;
     }
 
+    public Command addTokenized(String stringToBeParsed) {
+        return add(StringUtils.tokenize(stringToBeParsed));
+    }
+
     /**
      * Add list of tokens to already existing list we are constructing, ignoring null and empty ones.
      *
@@ -79,103 +84,6 @@ public class Command {
             add(token);
         }
         return this;
-    }
-
-    /**
-     * Adds tokens written in the simple string, parsing tokens when delimiter is a space.
-     *
-     * @param tokens tokens to add, saved in the string and delimited by space(s)
-     *
-     * @return instance of this {@code Command}
-     */
-    public Command addAsString(String tokens) {
-        if (tokens == null || tokens.trim().equals("")) {
-            return this;
-        }
-
-        tokens = deleteTrailingSpaces(tokens);
-
-        // we tokenize string so every word delimited by spaces will be one token
-        List<String> tokenized = new ArrayList<String>();
-        StringTokenizer tokenizer = new StringTokenizer(deleteTrailingSpaces(tokens), " ");
-        while (tokenizer.hasMoreTokens()) {
-            tokenized.add(tokenizer.nextToken().trim());
-        }
-
-        int quotesOnEnds = 0;
-        int quotesTotal = 0;
-
-        // we count number of quotes on the beginning and end of the every word
-        for (int i = 0; i < tokenized.size(); i++) {
-            if (tokenized.get(i).startsWith("\"")) {
-                quotesOnEnds++;
-            }
-            if (tokenized.get(i).endsWith("\"")) {
-                quotesOnEnds++;
-            }
-            // and we count number of quotes in the word as such
-            for (int j = 0; j < tokenized.get(i).length(); j++) {
-                if (tokenized.get(i).charAt(j) == '\"') {
-                    quotesTotal++;
-                }
-            }
-        }
-
-        // if these two do not equal, it means there is quote somewhere in the
-        // middle of a word which is not acceptable input
-        if (quotesOnEnds != quotesTotal) {
-            return this;
-        }
-
-        // if it is not divisible by two, it means there are unbalanced quotes
-        // which is not acceptable input
-        if (quotesOnEnds % 2 != 0) {
-            return this;
-        }
-
-        // if some token starts and ends with quotes, add it to the list
-        // otherwise take the next one until we have a word which ends with quotes
-        for (int i = 0; i < tokenized.size(); i++) {
-            if (tokenized.get(i).startsWith("\"")) {
-                if (tokenized.get(i).endsWith("\"")) {
-                    command.add(tokenized.get(i));
-                } else {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(tokenized.get(i));
-                    int j = i;
-                    while (true) {
-                        if (tokenized.get(++j).endsWith("\"")) {
-                            sb.append(" ").append(tokenized.get(j));
-                            break;
-                        } else {
-                            sb.append(" ").append(tokenized.get(j)).append(" ");
-                        }
-                    }
-                    command.add(sb.toString());
-                    i++;
-                }
-            } else {
-                command.add(tokenized.get(i));
-            }
-        }
-
-        return this;
-    }
-
-    /**
-     * Deletes all multiple spaces and preserve original sense of the text input.
-     *
-     * @param text
-     * @return {@code text} without multiple spaces
-     */
-    private String deleteTrailingSpaces(String text) {
-        if (text == null) {
-            return null;
-        }
-
-        return text.replaceAll("^ +| +$|( )+", "$1")
-            .replaceAll("\" ([^\"])", "\"$1")
-            .replaceAll("\"([^ \"]) \"", "\"$1\"");
     }
 
     /**
@@ -226,15 +134,6 @@ public class Command {
         return command.toArray(new String[command.size()]);
     }
 
-    public String getAsString() {
-        StringBuilder sb = new StringBuilder();
-        for (String s : command) {
-            sb.append(s);
-            sb.append(" ");
-        }
-        return sb.toString().trim();
-    }
-
     /**
      * Returns token on i-th position
      *
@@ -273,6 +172,11 @@ public class Command {
 
     @Override
     public String toString() {
-        return getAsString();
+        StringBuilder sb = new StringBuilder();
+        for (String s : command) {
+            sb.append(s);
+            sb.append(" ");
+        }
+        return sb.toString().trim();
     }
 }

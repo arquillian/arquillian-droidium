@@ -16,6 +16,8 @@
  */
 package org.arquillian.droidium.container.impl;
 
+import org.arquillian.droidium.container.execution.ProcessExecution;
+
 /**
  * An Android emulator process.
  *

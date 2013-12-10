@@ -18,11 +18,11 @@ package org.arquillian.droidium.container.automatic;
 
 import java.io.File;
 
-import org.arquillian.droidium.container.api.IdentifierGenerator;
 import org.arquillian.droidium.container.api.FileType;
+import org.arquillian.droidium.container.api.IdentifierGenerator;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
-import org.arquillian.droidium.container.impl.ProcessExecutor;
+import org.arquillian.droidium.container.execution.ProcessExecutor;
 import org.arquillian.droidium.container.sign.KeyStoreCreator;
 import org.arquillian.droidium.container.utils.AndroidIdentifierGenerator;
 import org.junit.After;

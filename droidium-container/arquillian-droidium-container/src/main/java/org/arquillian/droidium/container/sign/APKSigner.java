@@ -25,7 +25,7 @@ import org.arquillian.droidium.container.configuration.AndroidContainerConfigura
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Command;
 import org.arquillian.droidium.container.configuration.Validate;
-import org.arquillian.droidium.container.impl.ProcessExecutor;
+import org.arquillian.droidium.container.execution.ProcessExecutor;
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -87,7 +87,7 @@ public class APKSigner {
         logger.log(Level.FINE, jarSignerCommand.toString());
 
         try {
-            executor.execute(jarSignerCommand);
+            executor.execute(jarSignerCommand.getAsArray());
         } catch (AndroidExecutionException e) {
             throw new APKSignerException("Unable to sign package, signing process failed.", e);
         }

@@ -17,19 +17,6 @@
  */
 package org.arquillian.droidium.container.log;
 
-import org.arquillian.droidium.container.api.AndroidDevice;
-import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
-import org.arquillian.droidium.container.configuration.AndroidSDK;
-import org.arquillian.droidium.container.configuration.Command;
-import org.arquillian.droidium.container.impl.ProcessExecutor;
-import org.arquillian.droidium.container.spi.event.AndroidBridgeTerminated;
-import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
-import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
-import org.jboss.arquillian.core.api.Instance;
-import org.jboss.arquillian.core.api.InstanceProducer;
-import org.jboss.arquillian.core.api.annotation.Inject;
-import org.jboss.arquillian.core.api.annotation.Observes;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -44,6 +31,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.arquillian.droidium.container.api.AndroidDevice;
+import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
+import org.arquillian.droidium.container.configuration.AndroidSDK;
+import org.arquillian.droidium.container.configuration.Command;
+import org.arquillian.droidium.container.execution.ProcessExecutor;
+import org.arquillian.droidium.container.spi.event.AndroidBridgeTerminated;
+import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
+import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
+import org.jboss.arquillian.core.api.Instance;
+import org.jboss.arquillian.core.api.InstanceProducer;
+import org.jboss.arquillian.core.api.annotation.Inject;
+import org.jboss.arquillian.core.api.annotation.Observes;
 
 /**
  *

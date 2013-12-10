@@ -29,6 +29,7 @@ import org.arquillian.droidium.container.api.SDCard;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Command;
+import org.arquillian.droidium.container.execution.ProcessExecutor;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardCreate;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardCreated;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardDelete;
@@ -166,7 +167,7 @@ public class AndroidSDCardManagerImpl implements AndroidSDCardManager {
         command.add(this.androidSDK.get().getMakeSdCardPath()).add("-l").add(androidSDCard.getLabel())
             .add(androidSDCard.getSize()).add(androidSDCard.getFileName());
 
-        executor.get().execute(command);
+        executor.get().execute(command.getAsArray());
 
         logger.log(Level.INFO, "Android SD card labelled {0} located at {1} with size of {2} was created.", new Object[] {
             androidSDCard.getLabel(), androidSDCard.getFileName(), androidSDCard.getSize() });
