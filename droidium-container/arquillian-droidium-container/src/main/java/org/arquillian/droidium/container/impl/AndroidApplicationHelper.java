@@ -28,6 +28,8 @@ import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Command;
 import org.arquillian.droidium.container.configuration.Validate;
+import org.arquillian.droidium.container.execution.ProcessExecution;
+import org.arquillian.droidium.container.execution.ProcessExecutor;
 
 /**
  * Provides various helper methods for Android packages.
@@ -63,7 +65,7 @@ public class AndroidApplicationHelper {
      */
     public String getApplicationMainActivity(File apk) {
         try {
-            ProcessExecution execution = executor.execute(getAAPTBadgingCommand(apk));
+            ProcessExecution execution = executor.execute(getAAPTBadgingCommand(apk).getAsArray());
             return parseProperty(execution.getOutput(), "launchable-activity");
         } catch (AndroidExecutionException e) {
             logger.log(Level.SEVERE, "Execution exception while getting name of main application activity occured.", e);
@@ -88,7 +90,7 @@ public class AndroidApplicationHelper {
     public String getApplicationBasePackage(File apk) {
 
         try {
-            ProcessExecution execution = executor.execute(getAAPTBadgingCommand(apk));
+            ProcessExecution execution = executor.execute(getAAPTBadgingCommand(apk).getAsArray());
             return parseProperty(execution.getOutput(), "package");
         } catch (AndroidExecutionException e) {
             logger.log(Level.SEVERE, "Execution exception while getting name of main application package occured.", e);
@@ -105,7 +107,7 @@ public class AndroidApplicationHelper {
         List<String> activities = new ArrayList<String>();
 
         try {
-            ProcessExecution execution = executor.execute(getAAPTXmlTreeCommand(apkFile));
+            ProcessExecution execution = executor.execute(getAAPTXmlTreeCommand(apkFile).getAsArray());
             activities = filterActivities(execution.getOutput());
         } catch (AndroidExecutionException e) {
             logger.log(Level.SEVERE, "Unable to get list of activities for file: " + apkFile.getAbsolutePath(), e);

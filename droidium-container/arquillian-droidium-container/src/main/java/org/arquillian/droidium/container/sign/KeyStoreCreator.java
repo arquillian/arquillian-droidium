@@ -24,7 +24,7 @@ import org.arquillian.droidium.container.configuration.AndroidContainerConfigura
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Command;
 import org.arquillian.droidium.container.configuration.Validate;
-import org.arquillian.droidium.container.impl.ProcessExecutor;
+import org.arquillian.droidium.container.execution.ProcessExecutor;
 
 /**
  * Creates keystore and checks if some keystore already exists in the system.
@@ -96,7 +96,7 @@ public final class KeyStoreCreator {
             .add("-keypass")
             .add(configuration.getKeypass())
             .add("-dname")
-            .addAsString("CN=Android,O=Android,C=US")
+            .add("CN=Android,O=Android,C=US")
             .add("-storetype")
             .add("JKS")
             .add("-sigalg")
@@ -106,6 +106,6 @@ public final class KeyStoreCreator {
 
         logger.log(Level.INFO, createKeyStoreCommand.toString());
 
-        executor.execute(createKeyStoreCommand);
+        executor.execute(createKeyStoreCommand.getAsArray());
     }
 }

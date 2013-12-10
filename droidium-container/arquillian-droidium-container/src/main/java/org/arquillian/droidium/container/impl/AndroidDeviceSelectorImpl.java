@@ -19,6 +19,7 @@ package org.arquillian.droidium.container.impl;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.arquillian.droidium.container.api.AndroidBridge;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidDeviceSelector;
@@ -30,6 +31,8 @@ import org.arquillian.droidium.container.configuration.AndroidContainerConfigura
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Command;
 import org.arquillian.droidium.container.configuration.Validate;
+import org.arquillian.droidium.container.execution.ProcessExecution;
+import org.arquillian.droidium.container.execution.ProcessExecutor;
 import org.arquillian.droidium.container.spi.event.AndroidBridgeInitialized;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceAvailable;
@@ -358,7 +361,7 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
                 command.add("-c");
             }
 
-            ProcessExecution execution = this.executor.get().execute(command);
+            ProcessExecution execution = this.executor.get().execute(command.getAsArray());
             return execution.getOutput();
         } catch (AndroidExecutionException e) {
             throw new AndroidExecutionException(e, "Unable to get list of AVDs");

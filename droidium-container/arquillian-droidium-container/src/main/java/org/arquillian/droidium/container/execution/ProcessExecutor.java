@@ -14,12 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.container.impl;
+package org.arquillian.droidium.container.execution;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,10 +36,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.arquillian.droidium.container.api.AndroidExecutionException;
-import org.arquillian.droidium.container.configuration.Command;
-import org.arquillian.droidium.container.configuration.Validate;
-
 /**
  * Executor service which is able to execute external process as well as callables
  *
@@ -47,20 +44,31 @@ import org.arquillian.droidium.container.configuration.Validate;
  */
 public class ProcessExecutor {
 
-    private static Map<String, String> ENVIRONMENT_PROPERTIES = null;
+    private final Map<String, String> environment;
     private final ShutDownThreadHolder shutdownThreads;
     private final ExecutorService service;
     private final ScheduledExecutorService scheduledService;
 
+    // create a singleton instance
+    private static final ProcessExecutor INSTANCE;
+    static {
+        INSTANCE = new ProcessExecutor(System.getenv());
+    }
+
+    public static ProcessExecutor getInstance() {
+        return INSTANCE;
+    }
+
     public ProcessExecutor(Map<String, String> environmentProperies) {
-        Validate.notNull(environmentProperies, "Environment properties to set for ProcessExecutor is backed by null object!");
-        Validate.notAllNullsOrEmpty(environmentProperies.values().toArray(new String[0]), "All entries in "
-            + "environment properies map have to have values which are not null objects nor empty strings!");
+        if (environmentProperies == null || environmentProperies.containsValue("")) {
+            throw new IllegalStateException(
+                    "All entries in environment properies map have to have values which are not null objects nor empty strings!");
+        }
 
         this.shutdownThreads = new ShutDownThreadHolder();
         this.service = Executors.newCachedThreadPool();
         this.scheduledService = Executors.newScheduledThreadPool(1);
-        ProcessExecutor.ENVIRONMENT_PROPERTIES = environmentProperies;
+        this.environment = environmentProperies;
     }
 
     public ProcessExecutor() {
@@ -89,7 +97,7 @@ public class ProcessExecutor {
      * @throws ExecutionException
      */
     public Boolean scheduleUntilTrue(Callable<Boolean> callable, long timeout, long step, TimeUnit unit)
-        throws InterruptedException, ExecutionException {
+            throws InterruptedException, ExecutionException {
 
         CountDownWatch countdown = new CountDownWatch(timeout, unit);
         while (countdown.timeLeft() > 0) {
@@ -117,20 +125,19 @@ public class ProcessExecutor {
      * @param interaction command interaction
      * @param command command to be execution
      * @return spawned process execution
-     * @throws AndroidExecutionException if anything goes wrong
      */
-    public ProcessExecution spawn(ProcessInteraction interaction, Command command) throws AndroidExecutionException {
+    public ProcessExecution spawn(ProcessInteraction interaction, String[] command) throws ProcessExecutionException {
         try {
-            Future<Process> processFuture = service.submit(new SpawnedProcess(true, command));
+            Future<Process> processFuture = service.submit(new SpawnedProcess(environment, true, command));
             Process process = processFuture.get();
-            ProcessExecution execution = new ProcessExecution(process, command.get(0));
+            ProcessExecution execution = new ProcessExecution(process, command[0], System.out, System.err);
             service.submit(new ProcessOutputConsumer(execution, interaction));
             shutdownThreads.addHookFor(process);
             return execution;
         } catch (InterruptedException e) {
-            throw new AndroidExecutionException(e, "Unable to spawn {0}, interrupted", command);
+            throw new ProcessExecutionException(e, "Unable to spawn {0}, interrupted", new Object[] { command });
         } catch (ExecutionException e) {
-            throw new AndroidExecutionException(e, "Unable to spawn {0}, failed", command);
+            throw new ProcessExecutionException(e, "Unable to spawn {0}, failed", new Object[] { command });
         }
     }
 
@@ -139,9 +146,9 @@ public class ProcessExecutor {
      *
      * @param command command to be execution
      * @return spawned process execution
-     * @throws AndroidExecutionException if anything goes wrong
+     * @throws ProcessExecutionException if anything goes wrong
      */
-    public ProcessExecution spawn(Command command) throws AndroidExecutionException {
+    public ProcessExecution spawn(String... command) throws ProcessExecutionException {
         return spawn(ProcessInteractionBuilder.NO_INTERACTION, command);
     }
 
@@ -152,23 +159,59 @@ public class ProcessExecutor {
      * @param interaction command interaction
      * @param command command to be execution
      * @return spawned process execution
-     * @throws AndroidExecutionException if anything goes wrong
+     * @throws ProcessExecutionException if anything goes wrong
      */
-    public ProcessExecution execute(ProcessInteraction interaction, Command command) throws AndroidExecutionException {
+    public ProcessExecution execute(ProcessInteraction interaction, String[] command) throws ProcessExecutionException {
+        Process process = null;
         try {
-            Future<Process> processFuture = service.submit(new SpawnedProcess(true, command));
-            Process process = processFuture.get();
-            ProcessExecution execution = service.submit(
-                new ProcessOutputConsumer(new ProcessExecution(process, command.get(0)), interaction)).get();
+            Future<Process> processFuture = service.submit(new SpawnedProcess(environment, true, command));
+            process = processFuture.get();
+            Future<ProcessExecution> executionFuture = service.submit(new ProcessOutputConsumer(new ProcessExecution(process,
+                    command[0], System.out, System.err), interaction));
+            // wait for process to finish
             process.waitFor();
+            // wait for process to finish IO
+            ProcessExecution execution = executionFuture.get();
             if (execution.executionFailed()) {
-                throw new AndroidExecutionException("Invocation of {0} failed with {1}", command, execution.getExitCode());
+                throw new ProcessExecutionException("Invocation of {0} failed with {1}", new Object[] { command,
+                        execution.getExitCode() });
             }
             return execution;
         } catch (InterruptedException e) {
-            throw new AndroidExecutionException(e, "Unable to execute {0}, interrupted", command);
+            throw new ProcessExecutionException(e, "Unable to execute {0}, interrupted", new Object[] { command });
         } catch (ExecutionException e) {
-            throw new AndroidExecutionException(e, "Unable to execute {0}, failed", command);
+            throw new ProcessExecutionException(e, "Unable to execute {0}, failed", new Object[] { command });
+        } finally {
+            // cleanup
+            if (process != null) {
+                InputStream in = process.getInputStream();
+                InputStream err = process.getErrorStream();
+                OutputStream out = process.getOutputStream();
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException ignore) {
+
+                    }
+                }
+                if (out != null) {
+                    try {
+                        out.close();
+                    } catch (IOException ignore) {
+
+                    }
+                }
+                if (err != null) {
+                    try {
+                        err.close();
+                    } catch (IOException ignore) {
+
+                    }
+                }
+                // just in case, something went wrong
+                process.destroy();
+            }
+
         }
     }
 
@@ -178,9 +221,9 @@ public class ProcessExecutor {
      *
      * @param command command to be execution
      * @return spawned process execution
-     * @throws AndroidExecutionException if anything goes wrong
+     * @throws ProcessExecutionException if anything goes wrong
      */
-    public ProcessExecution execute(Command command) throws AndroidExecutionException {
+    public ProcessExecution execute(String... command) throws ProcessExecutionException {
         return execute(ProcessInteractionBuilder.NO_INTERACTION, command);
     }
 
@@ -222,18 +265,20 @@ public class ProcessExecutor {
 
     private static class SpawnedProcess implements Callable<Process> {
 
-        private final Command command;
+        private final String[] command;
         private boolean redirectErrorStream;
+        private Map<String, String> env;
 
-        public SpawnedProcess(boolean redirectErrorStream, Command command) {
+        public SpawnedProcess(Map<String, String> env, boolean redirectErrorStream, String[] command) {
+            this.env = env;
             this.redirectErrorStream = redirectErrorStream;
             this.command = command;
         }
 
         @Override
         public Process call() throws Exception {
-            ProcessBuilder builder = new ProcessBuilder(command.getAsArray());
-            builder.environment().putAll(ENVIRONMENT_PROPERTIES);
+            ProcessBuilder builder = new ProcessBuilder(command);
+            builder.environment().putAll(env);
             builder.redirectErrorStream(redirectErrorStream);
             return builder.start();
         }
@@ -246,10 +291,9 @@ public class ProcessExecutor {
      * @author Stuart Douglas
      * @author Karel Piwko
      */
-    private static class ProcessOutputConsumer implements Callable<ProcessExecution> {
+    static class ProcessOutputConsumer implements Callable<ProcessExecution> {
 
         private static final Logger log = Logger.getLogger(ProcessOutputConsumer.class.getName());
-        private static final String NL = System.getProperty("line.separator");
 
         private final ProcessExecution execution;
         private final ProcessInteraction interaction;
@@ -264,64 +308,86 @@ public class ProcessExecutor {
             final InputStream stream = execution.getProcess().getInputStream();
             final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 
+            // close process input stream if we don't need it
+            // closed input stream is a requirement for process not to hang on windows
+            if (!interaction.requiresInputInteraction()) {
+                try {
+                    execution.getProcess().getOutputStream().close();
+                } catch (IOException ignore) {
+                }
+            }
+
             try {
                 // read character by character
                 int i;
-                StringBuilder line = new StringBuilder();
-                while ((i = reader.read()) != -1) {
-                    char c = (char) i;
-
+                boolean reachedEOF = false;
+                Sentence sentence = new Sentence();
+                // we have an extra check to figure out whether EOF was reached - using last expected response
+                while (!reachedEOF && (i = reader.read()) != -1) {
                     // add the character
-                    line.append(c);
+                    sentence.append((char) i);
 
-                    // check if we are have to respond with an input
-                    String question = line.toString();
-                    String answer = interaction.repliesTo(question);
-                    if (answer != null) {
-                        log.log(Level.FINEST, "{0} outputs: {1}, responded with: ", new Object[] { execution.getProcessId(),
-                            question, answer });
-                        execution.replyWith(answer);
+                    Answer answer = interaction.repliesTo(sentence);
+                    switch (answer.getType()) {
+                        case NONE:
+                            break;
+                        case EOF:
+                            // some processes does not correctly close
+                            // for instance, android.bat on windows does exactly that
+                            reachedEOF = true;
+                        case TEXT:
+                            log.log(Level.FINEST, "({0}): {1} <= {2}", new Object[] { execution.getProcessId(), sentence,
+                                    answer });
+                            sentence.append(answer);
+                            execution.replyWith(answer);
+                            break;
                     }
 
-                    // save output
-                    // adb command writes its output with ends of lines as "\\n"
-                    // ignoring Windows conventions which recognize "\r\n" as the
-                    // end of the line
-                    if (line.indexOf("\n") != -1 || line.indexOf(NL) != -1) {
-                        String wholeLine = line.toString();
-                        log.log(Level.FINEST, "{0} outputs: {1}", new Object[] { execution.getProcessId(), wholeLine });
+                    // save and print output
+                    if (sentence.isFinished()) {
+                        sentence.trim();
+                        log.log(Level.FINEST, "({0}): {1}", new Object[] { execution.getProcessId(), sentence });
 
                         // propagate output/error to user
-                        if (interaction.shouldOutput(wholeLine)) {
-                            System.out.print(wholeLine);
+                        if (interaction.shouldOutput(sentence)) {
+                            execution.getStdout().println("(" + execution.getProcessId() + "):" + sentence);
                         }
-                        if (interaction.shouldOutputToErr(wholeLine)) {
-                            System.err.print("ERROR (" + execution.getProcessId() + "):" + wholeLine);
+                        if (interaction.shouldOutputToErr(sentence)) {
+                            execution.getStderr().println("ERROR (" + execution.getProcessId() + "):" + sentence);
                         }
 
-                        execution.appendOutput(wholeLine);
-                        line = new StringBuilder();
+                        execution.appendOutput(sentence);
+                        sentence.reset();
                     }
                 }
+
                 // handle last line
-                if (line.length() > 1) {
-                    String wholeLine = line.toString();
-                    log.log(Level.FINEST, "{0} outputs: {1}", new Object[] { execution.getProcessId(), wholeLine });
+                if (!sentence.isEmpty()) {
+                    log.log(Level.FINEST, "{0} outputs: {1}", new Object[] { execution.getProcessId(), sentence });
 
                     // propagate output/error to user
-                    if (interaction.shouldOutput(wholeLine)) {
-                        System.out.println(wholeLine);
+                    if (interaction.shouldOutput(sentence)) {
+                        execution.getStdout().println("(" + execution.getProcessId() + "):" + sentence);
                     }
-                    if (interaction.shouldOutputToErr(wholeLine)) {
-                        System.err.println("ERROR (" + execution.getProcessId() + "):" + wholeLine);
+                    if (interaction.shouldOutputToErr(sentence)) {
+                        execution.getStderr().println("ERROR (" + execution.getProcessId() + "):" + sentence);
                     }
 
-                    execution.appendOutput(wholeLine);
+                    execution.appendOutput(sentence);
                 }
-            } catch (IOException e) {
+            } catch (IOException ignore) {
+            }
+
+            try {
+                OutputStream os = execution.getProcess().getOutputStream();
+                if (os != null) {
+                    os.close();
+                }
+            } catch (IOException ignore) {
             }
 
             return execution;
         }
     }
+
 }

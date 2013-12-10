@@ -33,6 +33,7 @@ package org.arquillian.droidium.container.configuration;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -124,7 +125,7 @@ public class AndroidSDK {
                 return current.compareTo(other);
             } catch (NumberFormatException e) {
                 logger.log(Level.INFO, "Unable to compare platforms taking their api level as Integers, "
-                    + "comparison as Strings follows");
+                        + "comparison as Strings follows");
             }
 
             // failed, try to compare as strings
@@ -193,9 +194,7 @@ public class AndroidSDK {
      */
     private enum SystemImage {
 
-        X86("x86"),
-        ARMEABIV7A("armeabi-v7a"),
-        MIPS("mips");
+        X86("x86"), ARMEABIV7A("armeabi-v7a"), MIPS("mips");
 
         private String name;
 
@@ -239,7 +238,7 @@ public class AndroidSDK {
 
         Validate.notNull(configuration, "AndroidSDK configuration must be provided");
         Validate.isReadableDirectory(configuration.getAndroidHome(), "Unable to read Android SDK from directory "
-            + configuration.getAndroidHome());
+                + configuration.getAndroidHome());
         Validate.isReadableDirectory(configuration.getJavaHome(), "Unable to determine JAVA_HOME");
 
         this.sdkPath = new File(configuration.getAndroidHome());
@@ -261,27 +260,27 @@ public class AndroidSDK {
 
         if (foundPlatform == null) {
             logger.log(Level.INFO, "API level {0} you specified in configuration via 'apiLevel' property "
-                + "is not present on your system. In such case, Droidium tries to find the highest API level "
-                + "available and sets it as the default one. When your emulator of some AVD name is not present "
-                + "in the system, Droidium will create it dynamically and this API level will be used when emulator "
-                + "will be created. All available platforms are: {1}",
-                new Object[] { configuration.getApiLevel(), getAllPlatforms() });
+                    + "is not present on your system. In such case, Droidium tries to find the highest API level "
+                    + "available and sets it as the default one. When your emulator of some AVD name is not present "
+                    + "in the system, Droidium will create it dynamically and this API level will be used when emulator "
+                    + "will be created. All available platforms are: {1}", new Object[] { configuration.getApiLevel(),
+                    getAllPlatforms() });
             foundPlatform = availablePlatforms.get(availablePlatforms.size() - 1);
             configuration.setApiLevel(foundPlatform.apiLevel);
         }
 
         if (foundPlatform.systemImages.size() == 0) {
             logger.log(Level.INFO, "There are not any system images found for your API level. You can use Droidium "
-                + "only with physical devices connected until you specify such API level which has system images "
-                + "available to use. Your current API level is: {0}", new Object[] { configuration.getApiLevel() });
+                    + "only with physical devices connected until you specify such API level which has system images "
+                    + "available to use. Your current API level is: {0}", new Object[] { configuration.getApiLevel() });
         } else {
             if (configuration.getAbi() == null) {
                 configuration.setAbi(foundPlatform.systemImages.get(0));
             } else {
                 if (!foundPlatform.hasSystemImage(configuration.getAbi())) {
                     logger.log(Level.INFO, "ABI you want to use ({1}), is not present in the system for API level {0}. "
-                        + "Droidium uses whatever comes first among {2} and it is available for your API level.",
-                        new Object[] { configuration.getApiLevel(), configuration.getAbi(), SystemImage.getAll() });
+                            + "Droidium uses whatever comes first among {2} and it is available for your API level.",
+                            new Object[] { configuration.getApiLevel(), configuration.getAbi(), SystemImage.getAll() });
                     configuration.setAbi(foundPlatform.systemImages.get(0));
                 }
             }
@@ -338,26 +337,34 @@ public class AndroidSDK {
             return Layout.LAYOUT_1_5;
         }
 
-        throw new AndroidContainerConfigurationException("Android SDK could not be identified from path \"" + sdkPath
-            + "\". ");
+        throw new AndroidContainerConfigurationException("Android SDK could not be identified from path \"" + sdkPath + "\". ");
     }
 
     public String getPathForJavaTool(String tool) {
-        String[] possiblePaths = {
-            javaPath + "/bin/" + tool,
-            javaPath + "/../bin/" + tool,
-            javaPath + "/bin/" + tool + ".exe",
-            javaPath + "/../bin/" + tool + ".exe" };
 
-        for (String possiblePath : possiblePaths) {
-            File file = new File(possiblePath);
-            if (file.exists() && !file.isDirectory()) {
-                return file.getAbsolutePath();
+        File[] possiblePaths = { new File(javaPath, MessageFormat.format("bin/{0}", tool)),
+                new File(javaPath, MessageFormat.format("bin/{0}.exe", tool)),
+                new File(javaPath, MessageFormat.format("../bin/{0}", tool)),
+                new File(javaPath, MessageFormat.format("../bin/{0}.exe", tool)), };
+
+        for (File candidate : possiblePaths) {
+            if (candidate.exists() && candidate.isFile() && candidate.canExecute()) {
+                return candidate.getAbsolutePath();
             }
         }
 
-        throw new RuntimeException("Could not find tool '" + tool + "'. Please ensure you've set JAVA_HOME environment " +
-            "property properly and that it points to your Java installation directory.");
+        // construct error message
+        StringBuilder exception = new StringBuilder("Could not find tool '")
+                .append(tool)
+                .append("'. Please ensure you've set JAVA_HOME environment property properly and that it points to your Java installation directory. ")
+                .append("Searching at locations: ");
+        String delimiter = "";
+        for (File candidate : possiblePaths) {
+            exception.append(delimiter).append(candidate.getAbsolutePath());
+            delimiter = ", ";
+        }
+
+        throw new RuntimeException(exception.toString());
     }
 
     /**
@@ -368,48 +375,77 @@ public class AndroidSDK {
      */
     public String getPathForTool(String tool) {
 
-        String[] possiblePaths = { sdkPath + "/" + PLATFORMS_FOLDER_NAME + "/" + tool,
-            sdkPath + "/" + PLATFORMS_FOLDER_NAME + "/" + tool + ".exe",
-            sdkPath + "/" + PLATFORMS_FOLDER_NAME + "/" + tool + ".bat",
-            sdkPath + "/" + PLATFORMS_FOLDER_NAME + "/lib/" + tool, getPlatform() + "/tools/" + tool,
-            getPlatform() + "/tools/" + tool + ".exe", getPlatform() + "/tools/" + tool + ".bat",
-            getPlatform() + "/tools/lib/" + tool, sdkPath + "/tools/" + tool, sdkPath + "/tools/" + tool + ".exe",
-            sdkPath + "/tools/" + tool + ".bat", sdkPath + "/tools/lib/" + tool,
-            sdkPath + "/" + PLATFORM_TOOLS_FOLDER_NAME + "/" + tool };
+        File[] possiblePaths = { new File(sdkPath, MessageFormat.format("tools/{0}", tool)),
+                new File(sdkPath, MessageFormat.format("tools/{0}.exe", tool)),
+                new File(sdkPath, MessageFormat.format("tools/{0}.bat", tool)),
+                new File(sdkPath, MessageFormat.format("{0}/{1}", PLATFORMS_FOLDER_NAME, tool)),
+                new File(sdkPath, MessageFormat.format("{0}/{1}.exe", PLATFORMS_FOLDER_NAME, tool)),
+                new File(sdkPath, MessageFormat.format("{0}/{1}.bat", PLATFORMS_FOLDER_NAME, tool)),
+                new File(sdkPath, MessageFormat.format("{0}/lib/{1}", PLATFORMS_FOLDER_NAME, tool)),
+                new File(sdkPath, MessageFormat.format("{0}/lib/{1}.exe", PLATFORMS_FOLDER_NAME, tool)),
+                new File(sdkPath, MessageFormat.format("{0}/lib/{1}.bat", PLATFORMS_FOLDER_NAME, tool)),
+                new File(sdkPath, MessageFormat.format("{0}/tools/{1}", PLATFORMS_FOLDER_NAME, tool)),
+                new File(sdkPath, MessageFormat.format("{0}/tools/{1}.exe", PLATFORMS_FOLDER_NAME, tool)),
+                new File(sdkPath, MessageFormat.format("{0}/tools/{1}.bat", PLATFORMS_FOLDER_NAME, tool)),
+                new File(sdkPath, MessageFormat.format("{0}/tools/{1}", getPlatform().getName(), tool)),
+                new File(sdkPath, MessageFormat.format("{0}/tools/{1}.exe", getPlatform().getName(), tool)),
+                new File(sdkPath, MessageFormat.format("{0}/tools/{1}.bat", getPlatform().getName(), tool)),
+                new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}", PLATFORMS_FOLDER_NAME, tool)),
+                new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}.exe", PLATFORMS_FOLDER_NAME, tool)),
+                new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}.bat", PLATFORMS_FOLDER_NAME, tool)),
+                new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}", getPlatform().getName(), tool)),
+                new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}.exe", getPlatform().getName(), tool)),
+                new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}.bat", getPlatform().getName(), tool)),
+                new File(sdkPath, MessageFormat.format("{0}/{1}", PLATFORM_TOOLS_FOLDER_NAME, tool)),
+                new File(sdkPath, MessageFormat.format("{0}/{1}.exe", PLATFORM_TOOLS_FOLDER_NAME, tool)),
+                new File(sdkPath, MessageFormat.format("{0}/{1}.bat", PLATFORM_TOOLS_FOLDER_NAME, tool)), };
 
-        for (String possiblePath : possiblePaths) {
-            File file = new File(possiblePath);
-            if (file.exists() && !file.isDirectory()) {
-                return file.getAbsolutePath();
+        for (File candidate : possiblePaths) {
+            if (candidate.exists() && candidate.isFile() && candidate.canExecute()) {
+                return candidate.getAbsolutePath();
             }
         }
 
-        throw new RuntimeException("Could not find tool '" + tool
-            + "'. Please ensure you've set it properly in Arquillian configuration");
+        // construct error message
+        StringBuilder exception = new StringBuilder("Could not find tool '")
+                .append(tool)
+                .append("'. Please ensure you've set ANDROID_HOME environment property or androidHome property in arquillian.xml and this location contains all required packages")
+                .append("Searching at locations: ");
+        String delimiter = "";
+        for (File candidate : possiblePaths) {
+            exception.append(delimiter).append(candidate.getAbsolutePath());
+            delimiter = ", ";
+        }
+
+        throw new RuntimeException(exception.toString());
     }
 
     private String getBuildTool(String tool) {
 
         // look only into android-sdks/platforms/android-{number}/tools/aapt
+        File[] possiblePlatformPaths = {
+                new File(sdkPath, MessageFormat.format("{0}/{1}/tools/{2}", PLATFORMS_FOLDER_NAME, getPlatform(), tool)),
+                new File(sdkPath, MessageFormat.format("{0}/{1}/tools/{2}.exe", PLATFORMS_FOLDER_NAME, getPlatform(), tool)),
+                new File(sdkPath, MessageFormat.format("{0}/{1}/tools/{2}.bat", PLATFORMS_FOLDER_NAME, getPlatform(), tool)) };
 
-        File possiblePlatformPath =
-            new File(sdkPath + "/" + PLATFORMS_FOLDER_NAME + getPlatform() + "/tools/" + tool);
-
-        if (possiblePlatformPath.exists() && !possiblePlatformPath.isDirectory()) {
-            return possiblePlatformPath.getAbsolutePath();
+        for (File candidate : possiblePlatformPaths) {
+            if (candidate.exists() && candidate.isFile() && candidate.canExecute()) {
+                return candidate.getAbsolutePath();
+            }
         }
 
         // go into android-sdks/build-tools/
-
-        File possibleBuildPath = new File(sdkPath + "/" + BUILD_TOOLS_FOLDER_NAME);
+        File possibleBuildPath = new File(sdkPath, BUILD_TOOLS_FOLDER_NAME);
 
         File[] dirs = possibleBuildPath.listFiles();
         Arrays.sort(dirs);
 
         for (File dir : dirs) {
-            File tmpTool = new File(dir, tool);
-            if (tmpTool.exists() && !tmpTool.isDirectory())
-                return tmpTool.getAbsolutePath();
+            for (File candidate : new File[] { new File(dir, tool), new File(dir, tool + ".exe"), new File(dir, tool + ".bat") }) {
+                if (candidate.exists() && candidate.isFile() && candidate.canExecute()) {
+                    return candidate.getAbsolutePath();
+                }
+            }
         }
 
         throw new RuntimeException("Could not find tool '" + tool + ".");
@@ -471,8 +507,8 @@ public class AndroidSDK {
         Validate.isReadableDirectory(sdkPath, "Unable to read Android SDK from directory " + sdkPath);
 
         final File platformsDirectory = new File(sdkPath, PLATFORMS_FOLDER_NAME);
-        Validate.isReadableDirectory(platformsDirectory,
-            "Unable to read Android SDK Platforms directory from directory " + platformsDirectory);
+        Validate.isReadableDirectory(platformsDirectory, "Unable to read Android SDK Platforms directory from directory "
+                + platformsDirectory);
 
         if (platform == null) {
             final File[] platformDirectories = platformsDirectory.listFiles();
@@ -480,8 +516,8 @@ public class AndroidSDK {
             return platformDirectories[platformDirectories.length - 1];
         } else {
             final File platformDirectory = new File(platform.path);
-            Validate.isReadableDirectory(platformsDirectory,
-                "Unable to read Android SDK Platforms directory from directory " + platformsDirectory);
+            Validate.isReadableDirectory(platformsDirectory, "Unable to read Android SDK Platforms directory from directory "
+                    + platformsDirectory);
             return platformDirectory;
         }
     }
@@ -503,8 +539,7 @@ public class AndroidSDK {
                 properties.load(new FileInputStream(propFile));
             } catch (IOException e) {
                 throw new AndroidContainerConfigurationException(
-                    "Unable to read platform directory details from its configuration file "
-                        + propFile.getAbsoluteFile());
+                        "Unable to read platform directory details from its configuration file " + propFile.getAbsoluteFile());
             }
             if (properties.containsKey(PLATFORM_VERSION_PROPERTY) && properties.containsKey(API_LEVEL_PROPERTY)) {
                 String platform = properties.getProperty(PLATFORM_VERSION_PROPERTY);
@@ -532,8 +567,8 @@ public class AndroidSDK {
         List<File> sourcePropertyFiles = new ArrayList<File>();
 
         final File platformsDirectory = new File(sdkPath, PLATFORMS_FOLDER_NAME);
-        Validate.isReadableDirectory(platformsDirectory,
-            "Unable to read Android SDK Platforms directory from directory " + platformsDirectory);
+        Validate.isReadableDirectory(platformsDirectory, "Unable to read Android SDK Platforms directory from directory "
+                + platformsDirectory);
 
         final File[] platformDirectories = platformsDirectory.listFiles();
         for (File file : platformDirectories) {

@@ -24,6 +24,7 @@ import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Command;
 import org.arquillian.droidium.container.configuration.Validate;
+import org.arquillian.droidium.container.execution.ProcessExecutor;
 import org.arquillian.droidium.container.spi.AndroidDeployment;
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.arquillian.droidium.container.utils.Monkey;
@@ -94,7 +95,7 @@ public class AndroidApplicationManager {
         }
 
         try {
-            executor.execute(installCommand);
+            executor.execute(installCommand.getAsArray());
         } catch (AndroidExecutionException e) {
             // rewrap exception to have better stacktrace
             throw new AndroidExecutionException(e, "Unable to execute installation command {0} for the application {1}",
@@ -119,12 +120,15 @@ public class AndroidApplicationManager {
         Validate.notNull(deployment, "Android deployment you are trying to uninstall can not be a null object!");
         Validate.notNull(deployment.getApplicationBasePackage(), "Application base package can not be a null object!");
 
-        Command command = new Command().addAsString("pm uninstall " + deployment.getApplicationBasePackage());
+        Command command = new Command()
+            .add("pm")
+            .add("uninstall")
+            .add(deployment.getApplicationBasePackage());
 
         try {
             Monkey monkey = new Monkey(DroidiumFileUtils.createRandomEmptyFile(DroidiumFileUtils.getTmpDir()),
                 command.getLast(), false);
-            device.executeShellCommand(command.getAsString(), monkey);
+            device.executeShellCommand(command.toString(), monkey);
             Monkey.wait(device, monkey, PACKAGES_LIST_CMD);
         } catch (IOException ex) {
             throw new AndroidExecutionException("Unable to uninstall application " + deployment.getApplicationBasePackage()
@@ -144,12 +148,15 @@ public class AndroidApplicationManager {
         Validate.notNull(deployment, "Android deployment you are trying to kill can not be a null object!");
         Validate.notNull(deployment.getApplicationBasePackage(), "Application base package name can not be a null object!");
 
-        Command command = new Command().addAsString("pm disable " + deployment.getApplicationBasePackage());
+        Command command = new Command()
+            .add("pm")
+            .add("disable")
+            .add(deployment.getApplicationBasePackage());
 
         try {
             Monkey monkey = new Monkey(DroidiumFileUtils.createRandomEmptyFile(DroidiumFileUtils.getTmpDir()),
                 command.getLast(), false);
-            device.executeShellCommand(command.getAsString(), monkey);
+            device.executeShellCommand(command.toString(), monkey);
             Monkey.wait(device, monkey, TOP_CMD);
         } catch (IOException e) {
             throw new AndroidExecutionException("Unable to disable running application "

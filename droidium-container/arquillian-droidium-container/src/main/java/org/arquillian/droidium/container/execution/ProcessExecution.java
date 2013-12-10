@@ -14,10 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.container.impl;
+package org.arquillian.droidium.container.execution;
 
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,16 +37,25 @@ public class ProcessExecution {
 
     private final List<String> output;
 
+    private final OutputStream ostream;
+
+    private final PrintStream stdout;
+
+    private final PrintStream stderr;
+
     /**
      * Creates a process execution, add an id to the process
      *
      * @param process
      * @param processId
      */
-    public ProcessExecution(Process process, String processId) {
+    public ProcessExecution(Process process, String processId, PrintStream stdout, PrintStream stderr) {
         this.process = process;
         this.processId = processId;
         this.output = new ArrayList<String>();
+        this.ostream = new BufferedOutputStream(process.getOutputStream());
+        this.stdout = stdout;
+        this.stderr = stderr;
     }
 
     /**
@@ -69,8 +80,8 @@ public class ProcessExecution {
      * @param line
      * @return this
      */
-    public ProcessExecution appendOutput(String line) {
-        output.add(line);
+    public ProcessExecution appendOutput(CharSequence line) {
+        output.add(line.toString());
         return this;
     }
 
@@ -83,16 +94,27 @@ public class ProcessExecution {
     }
 
     /**
-     * Writes {@code reply} into process input stream
+     * Writes {@code reply} into process input stream. Type of answer might result into closing the stream itself
      *
      * @param reply
      * @return this
      * @throws IOException
      */
-    public ProcessExecution replyWith(String reply) throws IOException {
-        OutputStream ostream = process.getOutputStream();
-        ostream.write(reply.getBytes());
-        ostream.flush();
+    public ProcessExecution replyWith(Answer reply) throws IOException {
+
+        switch (reply.getType()) {
+            case NONE:
+                return this;
+            case TEXT:
+                ostream.flush();
+                ostream.write(reply.getBytes());
+                ostream.flush();
+                break;
+            case EOF:
+                ostream.flush();
+                ostream.close();
+                break;
+        }
 
         return this;
     }
@@ -133,6 +155,14 @@ public class ProcessExecution {
      */
     public boolean executionFailed() {
         return getExitCode() != 0;
+    }
+
+    public PrintStream getStderr() {
+        return stderr;
+    }
+
+    public PrintStream getStdout() {
+        return stdout;
     }
 
 }
