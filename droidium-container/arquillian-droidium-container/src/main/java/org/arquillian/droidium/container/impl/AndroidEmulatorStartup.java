@@ -58,7 +58,6 @@ import com.android.ddmlib.IDevice;
  * <ul>
  * <li>{@link AndroidEmulator}</li>
  * <li>{@link AndroidDevice}</li>
- * <li>{@link Screenshooter}</li>
  * </ul>
  *
  * Fires:

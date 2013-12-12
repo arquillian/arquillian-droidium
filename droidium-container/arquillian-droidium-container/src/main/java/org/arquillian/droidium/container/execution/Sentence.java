@@ -57,7 +57,7 @@ public class Sentence implements CharSequence {
     /**
      * Checks whether sentence is finished by newline character(s)
      *
-     * @return
+     * @return true if newline char ends this sentence, false otherwise
      */
     // adb command writes its output with ends of lines as "\\n"
     // ignoring Windows conventions which recognize "\r\n" as the end of the line
@@ -95,7 +95,7 @@ public class Sentence implements CharSequence {
     /**
      * Clears the sentence
      *
-     * @return
+     * @return this
      */
     public Sentence reset() {
         sb.setLength(0);

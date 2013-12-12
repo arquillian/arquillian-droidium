@@ -66,7 +66,7 @@ public class Answer implements CharSequence {
      * Creates a line answer. Automatically adds Platform dependent line separator
      *
      * @param text
-     * @return
+     * @return answer
      */
     public static Answer text(String text) {
         return new Answer(AnswerType.TEXT, text + LINE_SEPARATOR);

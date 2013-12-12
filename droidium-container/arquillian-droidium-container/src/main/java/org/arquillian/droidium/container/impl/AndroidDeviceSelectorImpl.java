@@ -70,7 +70,6 @@ import org.jboss.arquillian.core.api.annotation.Observes;
  * Creates:
  * <ul>
  * <li>{@link AndroidDevice}</li>
- * <li>{@link Screenshooter}</li>
  * </ul>
  *
  * Fires:
