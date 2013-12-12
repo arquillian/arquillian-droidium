@@ -69,10 +69,10 @@ public class Sentence implements CharSequence {
     /**
      * Checks whether sentence is empty, that is does not contain any characters
      *
-     * @return
+     * @return true if sentence is empty, false otherwise
      */
     public boolean isEmpty() {
-        return sb.length() > 0;
+        return sb.length() == 0;
     }
 
     /**
