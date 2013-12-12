@@ -147,7 +147,7 @@ public class AndroidVirtualDeviceManager {
 
             ProcessInteractionBuilder interaction = new ProcessInteractionBuilder();
             interaction
-                .replyTo("Do you wish to create a custom hardware profile [no]")
+                .replyTo("Do you wish to create a custom hardware profile \\[no\\]")
                 .with("no" + System.getProperty("line.separator"));
 
             executor.execute(interaction.build(), command.getAsArray());
