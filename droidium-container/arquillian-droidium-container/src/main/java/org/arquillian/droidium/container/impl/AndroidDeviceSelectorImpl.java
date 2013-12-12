@@ -150,7 +150,7 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
         if (logger.isLoggable(Level.INFO)) {
             StringBuilder sb = new StringBuilder();
             for (String line : androidListAVDOutput) {
-                sb.append(line);
+                sb.append(line).append("\n");
             }
             System.out.print(sb.toString());
         }
