@@ -49,16 +49,6 @@ public class ProcessExecutor {
     private final ExecutorService service;
     private final ScheduledExecutorService scheduledService;
 
-    // create a singleton instance
-    private static final ProcessExecutor INSTANCE;
-    static {
-        INSTANCE = new ProcessExecutor(System.getenv());
-    }
-
-    public static ProcessExecutor getInstance() {
-        return INSTANCE;
-    }
-
     public ProcessExecutor(Map<String, String> environmentProperies) {
         if (environmentProperies == null || environmentProperies.containsValue("")) {
             throw new IllegalStateException(
