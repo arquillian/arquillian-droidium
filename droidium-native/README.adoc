@@ -54,7 +54,7 @@ Sets path to Selendroid server APK from Selendroid project which is dynamically 
 translating WebDriver calls to Android browser and back. Selendroid server is repacked according to application 
 under test (_AUT_) to reflect its base package for instrumentation needs.
 
-The path to Selendroid server can be set absolutely or relatively in a way project see it. In almost every case, 
+The path to Selendroid server can be set absolutely or relatively in a way project sees it. In almost every case, 
 you are good to place server APK just beside your `pom.xml`.
 
 ----
@@ -125,12 +125,12 @@ You just have to configure webdriver extension in `arquillian.xml` accordingly, 
 </extension>
 ----
 
-Firstly, you have to set `browser` to `android`, secondly, you have to provide `removeAddress` property with that address. 
-The port in that address, `8081` _has to_ match the port in `@Instrumentable` annotation in out test case. By this you can 
+Firstly, you have to set `browser` to `android`, secondly, you have to provide `remoteAddress` property with that address. 
+The port in that address, `8081` _has to_ match the port in `@Instrumentable` annotation in our test case. By this you can 
 internally match injected webdriver instances to deployments. When you omit `viaPort` in `@Instrumentable`, 8080 is default.
 
 In the background, every time you inject some WebDriver which is supposed to instrument some application by way above, 
-there is Selendroid server installed on your Android device (container) along with @Deployment.
+there is Selendroid server installed on your Android device (container) along with `@Deployment`.
 
 You can inject `WebDriver` also into a method instead into a class like this:
 
@@ -149,7 +149,7 @@ want because it is just slower.
 
 == How to start activities?
 
-So, you have `WebDriver` in your test injected which instruments `@Deployment` (via @Instrumentable where its port matches 
+So, you have `WebDriver` in your test injected which instruments `@Deployment` (via `@Instrumentable` where its port matches 
 the port in arquillian.xml in webdriver extension in remoteAddress property). However, when you enter the test method, even 
 your application from `@Deployment` is fully installed along with Selendroid server, you have to start activity from APK 
 you want to really control.
@@ -171,7 +171,7 @@ public void test(@ArquillianResource AndroidDevice device) {
 }
 ----
 
-https://github.com/arquillian/arquillian-droidium/blob/master/droidium-container/arquillian-droidium-container-api/src/main/java/org/arquillian/droidium/container/api/AndroidDevice.java[AndroidDevice] injection represents raws access to your Android device. You can _totally_ control your Android device, you can install and uninstall packages, call commands ... whatever. By calling above, you start your activity. When activity is started, it appears on display and WebDriver can use it. You do not have to do anything in order to get `AndroidDevice` injected into the test. That resource is automatically present when you are using Droidium and it will be present everytime you use Android Container. As you know, you do not have to use any plugins, native nor web. But you have that resource available anyway.
+https://github.com/arquillian/arquillian-droidium/blob/master/droidium-container/arquillian-droidium-container-api/src/main/java/org/arquillian/droidium/container/api/AndroidDevice.java[AndroidDevice] injection represents raw access to your Android device. You can _totally_ control your Android device, you can install and uninstall packages, call commands ... whatever. By calling above command, you start your activity. When activity is started, it appears on display and WebDriver can use it. You do not have to do anything in order to get `AndroidDevice` injected into the test. That resource is automatically present when you are using Droidium and it will be present everytime you use Android container. As you know, you do not have to use any plugins, native nor web. But you have that resource available anyway.
 
 The stopping of activities is not supported yet but when you think about it, you can not really _stop_ an activity. When you want to stop it, you just have to kill the app. When you want to call another activity, just execute the same command but with different FQDN.
 
@@ -283,7 +283,7 @@ As you see, you actually use WebDriver API on native Android activities.
 What happens if I put arquillian-droidium-container artifact into pom.xml and I set Android container in arquillian.xml and additionally I do the same for regular web container as JBoss AS / Wildfly and there is Drone on classpath as well but no extension in arquillian.xml has "browser" property set to "android"?::
   Your Android container will not be started at all.
 Do I have to somehow modify my application I want to test?::
-  No.
+  No but be sure you put permissions into AndroidManifest.xml as described above.
 When I have two deployments which are instrumented, how many Selendroid servers are installed on the device?::
   Two. There is one Selendroid server per instrumented application. The package name of Selendroid server is modified on-the-fly so you can install multiple Selendroid servers into one Android device. These package names do not clash.
 What version of Selendroid server I should use?::
