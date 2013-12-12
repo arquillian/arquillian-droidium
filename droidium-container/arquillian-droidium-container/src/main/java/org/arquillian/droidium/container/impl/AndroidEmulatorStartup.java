@@ -247,12 +247,10 @@ public class AndroidEmulatorStartup {
             // device is connected to ADB
             final AndroidDevice connectedDevice = deviceDiscovery.getDiscoveredDevice();
 
-            logger.log(Level.INFO, "Serial number: " + connectedDevice.getSerialNumber());
-
             final String adbPath = androidSDK.get().getAdbPath();
-            logger.log(Level.INFO, "adbPath: " + adbPath);
+            logger.log(Level.INFO, "ADB path: " + adbPath);
             final String serialNumber = connectedDevice.getSerialNumber();
-            logger.log(Level.INFO, "serial number: " + serialNumber);
+            logger.log(Level.INFO, "Serial number: " + serialNumber);
 
             isOnline = executor.scheduleUntilTrue(new Callable<Boolean>() {
                 @Override

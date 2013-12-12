@@ -337,14 +337,14 @@ public class AndroidDeviceImpl implements AndroidDevice {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\navdName\t\t:").append(this.getAvdName()).append("\n");
-        sb.append("consolePort\t:").append(this.getConsolePort()).append("\n");
-        sb.append("serialNumber\t:").append(this.getSerialNumber()).append("\n");
-        sb.append("isEmulator\t:").append(this.isEmulator()).append("\n");
-        sb.append("isOffline\t:").append(this.isOffline()).append("\n");
-        sb.append("isOnline\t:").append(this.isOnline()).append("\n");
-        sb.append("hostPort\t:").append(this.getDroneHostPort()).append("\n");
-        sb.append("guestPort:\t").append(this.getDroneGuestPort()).append("\n");
+        sb.append(String.format("%-40s %s\n", "avdName", getAvdName()));
+        sb.append(String.format("%-40s %s\n", "consolePort", getConsolePort()));
+        sb.append(String.format("%-40s %s\n", "serialNumber", getSerialNumber()));
+        sb.append(String.format("%-40s %s\n", "isEmulator", isEmulator()));
+        sb.append(String.format("%-40s %s\n", "isOffline", isOffline()));
+        sb.append(String.format("%-40s %s\n", "isOnline", isOnline()));
+        sb.append(String.format("%-40s %s\n", "droneHostPort", getDroneHostPort()));
+        sb.append(String.format("%-40s %s", "droneGuestPort", getDroneGuestPort()));
         return sb.toString();
     }
 
