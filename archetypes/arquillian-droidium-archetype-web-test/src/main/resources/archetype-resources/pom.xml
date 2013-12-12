@@ -46,7 +46,7 @@
         <!-- other plugin versions -->
         <version.compiler.plugin>2.3.1</version.compiler.plugin>
         <version.war.plugin>2.1.1</version.war.plugin>
-        <version.org.jboss.arquillian.drone>1.2.0.Final</version.org.jboss.arquillian.drone>
+        <version.org.jboss.arquillian.drone>1.2.1.Final</version.org.jboss.arquillian.drone>
         <version.org.jboss.arquillian.graphene>2.0.0.Final</version.org.jboss.arquillian.graphene>
 
         <!-- maven-compiler-plugin -->
