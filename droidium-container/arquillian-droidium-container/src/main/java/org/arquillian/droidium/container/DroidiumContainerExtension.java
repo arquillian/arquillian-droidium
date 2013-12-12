@@ -23,7 +23,6 @@ import org.arquillian.droidium.container.configuration.DroidiumExtensionsValidat
 import org.arquillian.droidium.container.deployment.AndroidDeploymentInstaller;
 import org.arquillian.droidium.container.deployment.AndroidDeploymentUninstaller;
 import org.arquillian.droidium.container.enricher.AndroidDeviceResourceProvider;
-import org.arquillian.droidium.container.enricher.AndroidScreenshooterResourceProvider;
 import org.arquillian.droidium.container.impl.AndroidBridgeConnector;
 import org.arquillian.droidium.container.impl.AndroidDeviceSelectorImpl;
 import org.arquillian.droidium.container.impl.AndroidEmulatorShutdown;
@@ -50,7 +49,6 @@ public class DroidiumContainerExtension implements LoadableExtension {
     public void register(ExtensionBuilder builder) {
         builder.service(DeployableContainer.class, AndroidDeployableContainer.class);
         builder.service(ResourceProvider.class, AndroidDeviceResourceProvider.class);
-        builder.service(ResourceProvider.class, AndroidScreenshooterResourceProvider.class);
         builder.service(AndroidDeviceSelector.class, AndroidDeviceSelectorImpl.class);
         builder.observer(AndroidDeployableContainer.class);
         builder.observer(AndroidBridgeConnector.class);

@@ -174,13 +174,6 @@ public interface AndroidDevice {
     void setDroneGuestPort(int droneGuestPort);
 
     /**
-     * Gets a screenshot of underlying Android device.
-     *
-     * @return raw screenshot for further processing
-     */
-    Screenshot getScreenshot();
-
-    /**
      *
      * @param activityManagerProvider
      */

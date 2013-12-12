@@ -26,7 +26,6 @@ import org.arquillian.droidium.container.api.AndroidDeviceSelector;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.api.FileType;
 import org.arquillian.droidium.container.api.IdentifierGenerator;
-import org.arquillian.droidium.container.api.Screenshooter;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Command;
@@ -94,10 +93,6 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
     private InstanceProducer<AndroidDevice> androidDevice;
 
     @Inject
-    @ContainerScoped
-    private InstanceProducer<Screenshooter> screenshooter;
-
-    @Inject
     private Instance<AndroidBridge> androidBridge;
 
     @Inject
@@ -135,7 +130,6 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
                 device = getPhysicalDevice();
                 setDronePorts(device);
                 androidDevice.set(device);
-                screenshooter.set(new AndroidScreenshooter(device));
                 androidDeviceReady.fire(new AndroidDeviceReady(device));
                 return;
             } catch (AndroidExecutionException ex) {
@@ -160,7 +154,6 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
             if (device != null) {
                 setDronePorts(device);
                 androidDevice.set(device);
-                screenshooter.set(new AndroidScreenshooter(device));
                 androidDeviceReady.fire(new AndroidDeviceReady(device));
                 return;
             }

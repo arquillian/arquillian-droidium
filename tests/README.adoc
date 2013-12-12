@@ -86,6 +86,8 @@ Shows Arquillian Droidium integration with Scala.
 
 === droidium-screenshooter-01
 
+Not supported out-of-box from 1.0.0.Alpha3
+
 Screenshooter project shows how to take screenshots with Droidium while you are doing your 
 testing logic. Being able to take screenshots can be handy. You have plenty of options where 
 and how to take screenshots, check that project and read documentation to know more! Happy 

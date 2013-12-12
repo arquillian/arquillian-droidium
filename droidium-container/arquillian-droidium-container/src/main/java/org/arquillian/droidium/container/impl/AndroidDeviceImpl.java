@@ -28,14 +28,12 @@ import org.arquillian.droidium.container.api.ActivityManagerProvider;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidDeviceOutputReciever;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
-import org.arquillian.droidium.container.api.Screenshot;
 import org.arquillian.droidium.container.configuration.Validate;
 
 import com.android.ddmlib.AdbCommandRejectedException;
 import com.android.ddmlib.IDevice;
 import com.android.ddmlib.InstallException;
 import com.android.ddmlib.MultiLineReceiver;
-import com.android.ddmlib.RawImage;
 import com.android.ddmlib.ShellCommandUnresponsiveException;
 import com.android.ddmlib.TimeoutException;
 
@@ -259,29 +257,6 @@ public class AndroidDeviceImpl implements AndroidDevice {
     @Override
     public void setDroneGuestPort(int droneGuestPort) {
         this.droneGuestPort = droneGuestPort;
-    }
-
-    @Override
-    public Screenshot getScreenshot() {
-        RawImage rawImage = null;
-
-        try {
-            rawImage = delegate.getScreenshot();
-        } catch (IOException ex) {
-            log.severe("Unable to take a screenshot of device " + (getAvdName() == null ? getSerialNumber() : getAvdName()));
-            ex.printStackTrace();
-        } catch (TimeoutException ex) {
-            log.severe("Taking of screenshot timeouted.");
-            ex.printStackTrace();
-        } catch (AdbCommandRejectedException ex) {
-            log.severe("Command which takes screenshot was rejected.");
-            ex.printStackTrace();
-        }
-
-        AndroidScreenshot screenshot = new AndroidScreenshot();
-        screenshot.setRawImage(rawImage);
-
-        return screenshot;
     }
 
     private static class PackageInstalledMonkey implements AndroidDeviceOutputReciever {

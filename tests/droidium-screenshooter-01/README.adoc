@@ -1,5 +1,7 @@
 == Arquillian Droidium screenshooter test - WebDriver
 
+This feature is not supported by Droidium itself from version 1.0.0.Alpha3.
+
 This demo projects shows how to take screenshots of your devices while you are doing tests.
 
 Screenshots are taken via injected `Screenshooter` into test method (test class). 

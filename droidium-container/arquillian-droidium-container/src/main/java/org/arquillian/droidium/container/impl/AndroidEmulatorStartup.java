@@ -25,7 +25,6 @@ import java.util.logging.Logger;
 import org.arquillian.droidium.container.api.AndroidBridge;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
-import org.arquillian.droidium.container.api.Screenshooter;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Command;
@@ -84,10 +83,6 @@ public class AndroidEmulatorStartup {
     private InstanceProducer<AndroidDevice> androidDevice;
 
     @Inject
-    @ContainerScoped
-    private InstanceProducer<Screenshooter> screenshooter;
-
-    @Inject
     private Instance<AndroidBridge> androidBridge;
 
     @Inject
@@ -137,7 +132,6 @@ public class AndroidEmulatorStartup {
         AndroidDebugBridge.removeDeviceChangeListener(deviceDiscovery);
 
         androidDevice.set(emulator);
-        screenshooter.set(new AndroidScreenshooter(emulator));
 
         androidDeviceReady.fire(new AndroidDeviceReady(emulator));
     }
