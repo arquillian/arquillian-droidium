@@ -98,6 +98,8 @@ public class AndroidWebDriverSupportEmulatorTestCase extends AbstractAndroidTest
 
     private static final String EMULATOR_OPTIONS = "-no-audio -no-window -memory 343 -no-snapshot-save -no-snapstorage";
 
+    private static final int EMULATOR_BOOTUP_IN_SECONDS = 600;
+
     private static final String ANDROID_SERVER_APK_PATH = System.getProperty("android.server.path",
         "src/test/resources/android-server-2.6.0.apk");
 
@@ -123,6 +125,7 @@ public class AndroidWebDriverSupportEmulatorTestCase extends AbstractAndroidTest
         configuration.setAvdName(EMULATOR_AVD_NAME);
         configuration.setConsolePort(EMULATOR_CONSOLE_PORT);
         configuration.setEmulatorOptions(EMULATOR_OPTIONS);
+        configuration.setEmulatorBootupTimeoutInSeconds(EMULATOR_BOOTUP_IN_SECONDS);
         configuration.validate();
 
         androidSDK = new AndroidSDK(configuration);

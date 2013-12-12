@@ -205,7 +205,7 @@ droidium-multiple-deployments-01 $1
 droidium-native-01 $1
 droidium-native-01-scala $1
 droidium-native-02 $1
-droidium-screenshooter-01 $1
+#droidium-screenshooter-01 $1
 droidium-web-01 $1 $2
 
 clean_all
