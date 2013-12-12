@@ -522,7 +522,7 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
                 "Emulator shutdown timeout has to be bigger then 0.");
         }
 
-        File tmpDir = new File(getTmpDir() + (new AndroidIdentifierGenerator()).getIdentifier(FileType.FILE));
+        File tmpDir = new File(new File(getTmpDir()), (new AndroidIdentifierGenerator()).getIdentifier(FileType.FILE));
         setTmpDir(tmpDir.getAbsolutePath());
 
         if (!tmpDir.exists()) {
