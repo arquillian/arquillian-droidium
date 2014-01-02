@@ -98,14 +98,15 @@ public class APKSigner {
     /**
      *
      * @param toResign file to resign
-     * @param resigned
-     * @return {@code resigned} file
+     * @return resigned file
      */
-    public File resign(File toResign, File resigned) {
+    public File resign(File toResign) {
+        Validate.notNull(toResign, "File to resign can not be a null object!");
         Archive<?> apk = ShrinkWrap.createFromZipFile(JavaArchive.class, toResign);
         apk.delete("META-INF");
-        DroidiumFileUtils.export(apk, toResign);
-        return sign(toResign, resigned);
+        File toSign = new File(DroidiumFileUtils.getTmpDir(), DroidiumFileUtils.getRandomAPKFileName());
+        DroidiumFileUtils.export(apk, toSign);
+        return sign(toSign, new File(DroidiumFileUtils.getTmpDir(), DroidiumFileUtils.getRandomAPKFileName()));
     }
 
     /**

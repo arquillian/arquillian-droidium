@@ -16,13 +16,8 @@
  */
 package org.arquillian.droidium.container.utils;
 
-import java.io.Closeable;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -136,59 +131,41 @@ public class DroidiumFileUtils {
     }
 
     /**
-     * Exports archive to file
+     * Exports archive to file. If {@code toFile} exists, it will be deleted. If deletion fails, we try to overwrite it during
+     * exporting on behalf of ShrinkWrap.
      *
      * @param fromArchive archive to export its content from
      * @param toFile file to export the content from archive to
-     * @return {@code toFile} or null if exporting fails
+     * @return {@code toFile}
      */
     public static File export(Archive<?> fromArchive, File toFile) {
+        Validate.notNull(fromArchive, "Archive to export from can not be a null object!");
+        Validate.notNull(toFile, "File to export archive to can not be a null object!");
         if (toFile.exists() && toFile.isFile()) {
             if (!toFile.delete()) {
                 logger.fine("File to export the archive to exists and it can not be removed.");
             }
         }
 
-        final OutputStream out;
-        final InputStream in;
-
-        try {
-            out = new FileOutputStream(toFile);
-            in = fromArchive.as(ZipExporter.class).exportAsInputStream();
-            write(in, out);
-            closeStream(in);
-            closeStream(out);
-            return toFile;
-        } catch (final FileNotFoundException ex) {
-        } catch (final IOException ex) {
-        }
-        return null;
+        fromArchive.as(ZipExporter.class).exportTo(toFile, true);
+        return toFile;
     }
 
-    private static void write(InputStream input, OutputStream output) throws IOException {
-        Validate.notNull(input, "InputStream to read from can not be null object!");
-        Validate.notNull(output, "OutputStream to write to can not be null object!");
-
-        int read = 0;
-        byte[] bytes = new byte[1024];
-
-        while ((read = input.read(bytes)) != -1) {
-            output.write(bytes, 0, read);
+    /**
+     * Exports archive to file. Archive will be exported to file placed in temporary directory. This method has
+     * to be called after {@link #createTmpDir(File)}.
+     *
+     * @param fromArchive archive to export
+     * @return exported archive as file
+     * @throws IllegalStateException if temporary directory to export archive by default is null (not set)
+     */
+    public static File export(Archive<?> fromArchive) {
+        Validate.notNull(fromArchive, "Archive to export from can not be a null object!");
+        if (DroidiumFileUtils.getTmpDir() == null) {
+            throw new IllegalStateException("Please call DroidiumFileUtils.createTmpDir(File) before calling this method.");
         }
-
-        output.flush();
+        File toFile = new File(DroidiumFileUtils.getTmpDir(), DroidiumFileUtils.getRandomAPKFileName());
+        return export(fromArchive, toFile);
     }
 
-    private static void closeStream(Closeable stream) {
-        if (stream == null) {
-            return;
-        }
-        try {
-            stream.close();
-        } catch (final IOException ignore) {
-            // ignore
-        } finally {
-            stream = null;
-        }
-    }
 }

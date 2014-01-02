@@ -124,8 +124,7 @@ public class InstrumentationPerformer {
     }
 
     private File getSelendroidResigned(File selendroidRebuilt) {
-        return signer.get().resign(selendroidRebuilt,
-            new File(DroidiumFileUtils.getTmpDir(), DroidiumFileUtils.getRandomAPKFileName()));
+        return signer.get().resign(selendroidRebuilt);
     }
 
     private File getSelendroidWorkingCopy() {

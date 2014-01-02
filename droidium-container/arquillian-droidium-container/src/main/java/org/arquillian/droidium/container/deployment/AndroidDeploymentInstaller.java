@@ -75,11 +75,9 @@ public class AndroidDeploymentInstaller {
 
         Archive<?> archive = event.getArchive();
 
-        File deployApk = DroidiumFileUtils.export(archive,
-            new File(DroidiumFileUtils.getTmpDir(), DroidiumFileUtils.getRandomAPKFileName()));
-
-        File resignedApk = signer.get().resign(deployApk,
-            new File(DroidiumFileUtils.getTmpDir(), DroidiumFileUtils.getRandomAPKFileName()));
+        File deployApk = new File(DroidiumFileUtils.getTmpDir(), DroidiumFileUtils.getRandomAPKFileName());
+        DroidiumFileUtils.export(archive, deployApk);
+        File resignedApk = signer.get().resign(deployApk);
 
         AndroidDeployment deployment = new AndroidDeployment();
 
