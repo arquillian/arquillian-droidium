@@ -68,7 +68,7 @@
         <version.arquillian.drone>1.2.1.Final</version.arquillian.drone>
 
         <!-- ShrinkWrap -->
-        <version.shrinkwrap_shrinkwrap>1.1.3</version.shrinkwrap_shrinkwrap>
+        <version.shrinkwrap_shrinkwrap>1.2.0</version.shrinkwrap_shrinkwrap>
 
         <!-- Testing AS7 container -->
         <version.org.jboss.as>7.1.1.Final</version.org.jboss.as>
