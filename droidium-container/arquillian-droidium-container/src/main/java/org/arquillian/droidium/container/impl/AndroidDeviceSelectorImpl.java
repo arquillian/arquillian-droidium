@@ -28,15 +28,16 @@ import org.arquillian.droidium.container.api.FileType;
 import org.arquillian.droidium.container.api.IdentifierGenerator;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
-import org.arquillian.droidium.container.configuration.Command;
 import org.arquillian.droidium.container.configuration.Validate;
-import org.arquillian.droidium.container.execution.ProcessExecution;
-import org.arquillian.droidium.container.execution.ProcessExecutor;
 import org.arquillian.droidium.container.spi.event.AndroidBridgeInitialized;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceAvailable;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceCreate;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceDelete;
+import org.arquillian.spacelift.process.Command;
+import org.arquillian.spacelift.process.CommandBuilder;
+import org.arquillian.spacelift.process.ProcessExecution;
+import org.arquillian.spacelift.process.ProcessExecutor;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Instance;
@@ -347,13 +348,15 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
 
     private List<String> getAndroidListAVDOutput(boolean compact) {
         try {
-            Command command = new Command(androidSDK.get().getAndroidPath(), "list", "avd");
+            CommandBuilder cb = new CommandBuilder().add(androidSDK.get().getAndroidPath(), "list", "avd");
 
             if (compact) {
-                command.add("-c");
+                cb.add("-c");
             }
 
-            ProcessExecution execution = this.executor.get().execute(command.getAsArray());
+            Command command = cb.build();
+
+            ProcessExecution execution = this.executor.get().execute(command);
             return execution.getOutput();
         } catch (AndroidExecutionException e) {
             throw new AndroidExecutionException(e, "Unable to get list of AVDs");

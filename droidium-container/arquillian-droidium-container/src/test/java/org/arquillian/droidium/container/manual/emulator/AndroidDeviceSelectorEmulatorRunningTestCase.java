@@ -31,12 +31,13 @@ import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
-import org.arquillian.droidium.container.execution.ProcessExecutor;
 import org.arquillian.droidium.container.impl.AndroidBridgeConnector;
 import org.arquillian.droidium.container.impl.AndroidDeviceSelectorImpl;
 import org.arquillian.droidium.container.spi.event.AndroidBridgeInitialized;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStart;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
+import org.arquillian.spacelift.process.ProcessExecutor;
+import org.arquillian.spacelift.process.impl.DefaultProcessExecutorFactory;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.container.test.AbstractContainerTestBase;
@@ -93,7 +94,7 @@ public class AndroidDeviceSelectorEmulatorRunningTestCase extends AbstractContai
         configuration.validate();
 
         androidSDK = new AndroidSDK(configuration);
-        processExecutor = new ProcessExecutor();
+        processExecutor = new DefaultProcessExecutorFactory().getProcessExecutorInstance();
 
         getManager().getContext(ContainerContext.class).activate("doesnotmatter");
 

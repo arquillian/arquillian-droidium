@@ -17,7 +17,7 @@
 
     <groupId>org.arquillian.droidium.tests</groupId>
     <artifactId>arquillian-droidium-multiple-deployments-test-01</artifactId>
-    <version>1.0.0.Alpha4</version>
+    <version>1.0.0.Beta1-SNAPSHOT</version>
 
     <description>Proof-of-concept Arquillian Droidium multiple deployment test</description>
 

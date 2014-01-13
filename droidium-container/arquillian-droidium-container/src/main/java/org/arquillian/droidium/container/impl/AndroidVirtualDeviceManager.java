@@ -28,16 +28,17 @@ import java.util.logging.Logger;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
-import org.arquillian.droidium.container.configuration.Command;
 import org.arquillian.droidium.container.configuration.Validate;
-import org.arquillian.droidium.container.execution.ProcessExecutor;
-import org.arquillian.droidium.container.execution.ProcessInteractionBuilder;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardCreate;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardDelete;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceAvailable;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceCreate;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceDelete;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceDeleted;
+import org.arquillian.spacelift.process.Command;
+import org.arquillian.spacelift.process.CommandBuilder;
+import org.arquillian.spacelift.process.ProcessExecutor;
+import org.arquillian.spacelift.process.ProcessInteractionBuilder;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;
@@ -95,13 +96,15 @@ public class AndroidVirtualDeviceManager {
         try {
             ProcessExecutor executor = this.executor.get();
             String avdName = configuration.getAvdName();
-            Command command = new Command();
-            command.add(androidSDK.get().getAndroidPath())
+            Command command = new CommandBuilder()
+                .add(androidSDK.get().getAndroidPath())
                 .add("delete")
                 .add("avd")
                 .add("-n")
-                .add(avdName);
-            executor.execute(command.getAsArray());
+                .add(avdName)
+                .build();
+
+            executor.execute(command);
 
             logger.log(Level.INFO, "Android Virtual Device {0} deleted.", avdName);
 
@@ -125,8 +128,8 @@ public class AndroidVirtualDeviceManager {
         ProcessExecutor executor = this.executor.get();
 
         try {
-            Command command = new Command();
-            command.add(sdk.getAndroidPath())
+            CommandBuilder cb = new CommandBuilder();
+            cb.add(sdk.getAndroidPath())
                 .add("create")
                 .add("avd")
                 .add("-n")
@@ -138,10 +141,12 @@ public class AndroidVirtualDeviceManager {
                 .add("-f");
 
             if (configuration.getSdCard() != null && new File(configuration.getSdCard()).exists()) {
-                command.add("-c").add(configuration.getSdCard());
+                cb.add("-c").add(configuration.getSdCard());
             } else {
-                command.add("-c").add(configuration.getSdSize());
+                cb.add("-c").add(configuration.getSdSize());
             }
+
+            Command command = cb.build();
 
             logger.log(Level.INFO, "Creating new avd using: {0}", command);
 
@@ -150,7 +155,7 @@ public class AndroidVirtualDeviceManager {
                 .replyTo("Do you wish to create a custom hardware profile \\[no\\]")
                 .with("no" + System.getProperty("line.separator"));
 
-            executor.execute(interaction.build(), command.getAsArray());
+            executor.execute(interaction.build(), command);
 
             configuration.setAvdGenerated(true);
 

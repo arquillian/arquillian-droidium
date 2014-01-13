@@ -22,9 +22,10 @@ import org.arquillian.droidium.container.api.FileType;
 import org.arquillian.droidium.container.api.IdentifierGenerator;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
-import org.arquillian.droidium.container.execution.ProcessExecutor;
 import org.arquillian.droidium.container.sign.KeyStoreCreator;
 import org.arquillian.droidium.container.utils.AndroidIdentifierGenerator;
+import org.arquillian.spacelift.process.ProcessExecutor;
+import org.arquillian.spacelift.process.impl.DefaultProcessExecutorFactory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -55,7 +56,7 @@ public class KeyStoreCreatorTestCase {
     public void setup() {
         configuration = new AndroidContainerConfiguration();
         androidSDK = new AndroidSDK(configuration);
-        executor = new ProcessExecutor();
+        executor = new DefaultProcessExecutorFactory().getProcessExecutorInstance();
         keyStoreCreator = new KeyStoreCreator(executor, androidSDK, configuration);
 
         IdentifierGenerator<FileType> aig = new AndroidIdentifierGenerator();

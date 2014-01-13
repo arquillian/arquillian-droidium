@@ -26,10 +26,11 @@ import java.util.regex.Pattern;
 
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
-import org.arquillian.droidium.container.configuration.Command;
 import org.arquillian.droidium.container.configuration.Validate;
-import org.arquillian.droidium.container.execution.ProcessExecution;
-import org.arquillian.droidium.container.execution.ProcessExecutor;
+import org.arquillian.spacelift.process.Command;
+import org.arquillian.spacelift.process.CommandBuilder;
+import org.arquillian.spacelift.process.ProcessExecution;
+import org.arquillian.spacelift.process.ProcessExecutor;
 
 /**
  * Provides various helper methods for Android packages.
@@ -138,13 +139,15 @@ public class AndroidApplicationHelper {
      * @return command which dumps badging from {@code apk}
      */
     private Command getAAPTBadgingCommand(File apk) {
-        Command command = new Command(sdk.getAaptPath(), "dump", "badging", apk.getAbsolutePath());
+        Command command = new CommandBuilder().add(sdk.getAaptPath(), "dump", "badging", apk.getAbsolutePath()).build();
         logger.log(Level.FINE, command.toString());
         return command;
     }
 
     private Command getAAPTXmlTreeCommand(File apkFile) {
-        Command command = new Command(sdk.getAaptPath(), "dump", "xmltree", apkFile.getAbsolutePath(), "AndroidManifest.xml");
+        Command command = new CommandBuilder()
+            .add(sdk.getAaptPath(), "dump", "xmltree", apkFile.getAbsolutePath(), "AndroidManifest.xml")
+            .build();
         logger.log(Level.FINE, command.toString());
         return command;
     }

@@ -16,7 +16,7 @@
  */
 package org.arquillian.droidium.container.impl;
 
-import org.arquillian.droidium.container.execution.ProcessExecution;
+import org.arquillian.spacelift.process.ProcessExecution;
 
 /**
  * An Android emulator process.
@@ -26,17 +26,17 @@ import org.arquillian.droidium.container.execution.ProcessExecution;
  */
 public class AndroidEmulator {
 
-    private ProcessExecution process;
+    private ProcessExecution processExecution;
 
-    public AndroidEmulator(ProcessExecution process) {
-        this.process = process;
+    public AndroidEmulator(ProcessExecution processExecution) {
+        this.processExecution = processExecution;
     }
 
-    public ProcessExecution getProcess() {
-        return process;
+    public ProcessExecution getProcessExecution() {
+        return processExecution;
     }
 
-    public void setProcess(ProcessExecution process) {
-        this.process = process;
+    public void setProcessExecution(ProcessExecution processExecution) {
+        this.processExecution = processExecution;
     }
 }

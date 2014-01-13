@@ -17,7 +17,6 @@
 package org.arquillian.droidium.container.impl;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,14 +26,15 @@ import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
-import org.arquillian.droidium.container.configuration.Command;
-import org.arquillian.droidium.container.execution.CountDownWatch;
-import org.arquillian.droidium.container.execution.ProcessExecution;
-import org.arquillian.droidium.container.execution.ProcessExecutor;
-import org.arquillian.droidium.container.execution.ProcessInteractionBuilder;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceAvailable;
 import org.arquillian.droidium.container.utils.NetUtils;
+import org.arquillian.spacelift.process.Command;
+import org.arquillian.spacelift.process.CommandBuilder;
+import org.arquillian.spacelift.process.ProcessExecution;
+import org.arquillian.spacelift.process.ProcessExecutor;
+import org.arquillian.spacelift.process.ProcessInteractionBuilder;
+import org.arquillian.spacelift.process.impl.CountDownWatch;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Instance;
@@ -145,14 +145,15 @@ public class AndroidEmulatorStartup {
         AndroidSDK sdk = this.androidSDK.get();
         AndroidContainerConfiguration configuration = this.configuration.get();
 
-        Command command = new Command();
-        command.add(sdk.getEmulatorPath())
+        CommandBuilder cb = new CommandBuilder();
+
+        cb.add(sdk.getEmulatorPath())
             .add("-avd")
             .add(configuration.getAvdName());
 
         if (configuration.getSdCard() != null) {
-            command.add("-sdcard");
-            command.add(configuration.getSdCard());
+            cb.add("-sdcard");
+            cb.add(configuration.getSdCard());
         }
 
         if (configuration.getConsolePort() != null) {
@@ -170,13 +171,15 @@ public class AndroidEmulatorStartup {
         }
 
         if (configuration.getConsolePort() != null && configuration.getAdbPort() != null) {
-            command.add("-ports")
+            cb.add("-ports")
                 .add(configuration.getConsolePort() + "," + configuration.getAdbPort());
         } else if (configuration.getConsolePort() != null) {
-            command.add("-port").add(configuration.getConsolePort());
+            cb.add("-port").add(configuration.getConsolePort());
         }
 
-        command.addTokenized(configuration.getEmulatorOptions());
+        cb.addTokenized(configuration.getEmulatorOptions());
+
+        Command command = cb.build();
 
         logger.log(Level.INFO, "Starting emulator \"{0}\", using {1}", new Object[] { configuration.getAvdName(), command });
 
@@ -188,7 +191,7 @@ public class AndroidEmulatorStartup {
 
         // execute emulator
         try {
-            return executor.spawn(interactions.build(), command.getAsArray());
+            return executor.spawn(interactions.build(), command);
         } catch (AndroidExecutionException e) {
             throw new AndroidExecutionException(e, "Unable to start emulator \"{0}\", using {1}", configuration.getAvdName(),
                 command);
@@ -199,8 +202,13 @@ public class AndroidEmulatorStartup {
 
         final AndroidDevice connectedDevice = deviceDiscovery.getDiscoveredDevice();
         final String serialNumber = connectedDevice.getSerialNumber();
-        Command unlockPart1 = new Command(androidSDK.get().getAdbPath(), "-s", serialNumber, "shell", "input", "keyevent", "82");
-        Command unlockPart2 = new Command(androidSDK.get().getAdbPath(), "-s", serialNumber, "shell", "input", "keyevent", "4");
+
+        CommandBuilder cb = new CommandBuilder();
+
+        cb.add(androidSDK.get().getAdbPath(), "-s", serialNumber, "shell", "input", "keyevent", "82");
+
+        Command unlockPart1 = cb.add(androidSDK.get().getAdbPath(), "-s", serialNumber, "shell", "input", "keyevent", "82").build();
+        Command unlockPart2 = cb.add(androidSDK.get().getAdbPath(), "-s", serialNumber, "shell", "input", "keyevent", "4").build();
 
         try {
             executor.execute(ProcessInteractionBuilder.NO_INTERACTION, unlockPart1.getAsArray());
@@ -215,73 +223,70 @@ public class AndroidEmulatorStartup {
         final ProcessExecution emulatorExecution, final ProcessExecutor executor, final CountDownWatch countdown)
         throws AndroidExecutionException {
 
-        try {
-            boolean isOnline = executor.scheduleUntilTrue(new Callable<Boolean>() {
-                @Override
-                public Boolean call() throws Exception {
-                    // ARQ-1583 check status of emulator
-                    // ARQ-1602 on windows, emulator process might return. In such case we need to check also the exit value
-                    if (emulatorExecution.isFinished() && emulatorExecution.executionFailed()) {
-                        throw new IllegalStateException("Emulator device startup exited prematurely with exit code "
-                            + emulatorExecution.getExitCode());
-                    }
-
-                    return deviceDiscovery.isOnline();
+        boolean isOnline = executor.scheduleUntilTrue(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                // ARQ-1583 check status of emulator
+                // ARQ-1602 on windows, emulator process might return. In such case we need to check also the exit value
+                if (emulatorExecution.isFinished() && emulatorExecution.executionFailed()) {
+                    throw new IllegalStateException("Emulator device startup exited prematurely with exit code "
+                        + emulatorExecution.getExitCode());
                 }
-            }, countdown.timeLeft(), countdown.getTimeUnit().convert(1, TimeUnit.SECONDS), countdown.getTimeUnit());
 
-            if (isOnline == false) {
-                throw new IllegalStateException(
-                    "No emulator device was brough online during "
-                        + countdown.timeout()
-                        + " seconds to Android Debug Bridge. Please increase the time limit in order to get emulator connected.");
+                return deviceDiscovery.isOnline();
             }
+        }, countdown.timeLeft(), countdown.getTimeUnit().convert(1, TimeUnit.SECONDS), countdown.getTimeUnit());
 
-            // device is connected to ADB
-            final AndroidDevice connectedDevice = deviceDiscovery.getDiscoveredDevice();
+        if (isOnline == false) {
+            throw new IllegalStateException(
+                "No emulator device was brough online during "
+                    + countdown.timeout()
+                    + " seconds to Android Debug Bridge. Please increase the time limit in order to get emulator connected.");
+        }
 
-            final String adbPath = androidSDK.get().getAdbPath();
-            logger.log(Level.INFO, "ADB path: " + adbPath);
-            final String serialNumber = connectedDevice.getSerialNumber();
-            logger.log(Level.INFO, "Serial number: " + serialNumber);
+        // device is connected to ADB
+        final AndroidDevice connectedDevice = deviceDiscovery.getDiscoveredDevice();
 
-            isOnline = executor.scheduleUntilTrue(new Callable<Boolean>() {
-                @Override
-                public Boolean call() throws Exception {
-                    // ARQ-1583 check status of emulator
-                    // ARQ-1602 on windows, emulator process might return. In such case we need to check also the exit value
-                    if (emulatorExecution.isFinished() && emulatorExecution.executionFailed()) {
-                        throw new IllegalStateException("Emulator device startup exited prematurely with exit code "
-                            + emulatorExecution.getExitCode());
-                    }
+        final String adbPath = androidSDK.get().getAdbPath();
+        logger.log(Level.INFO, "ADB path: " + adbPath);
+        final String serialNumber = connectedDevice.getSerialNumber();
+        logger.log(Level.INFO, "Serial number: " + serialNumber);
 
-                    // check properties of underlying process
-                    Command propertiesCheck = new Command(adbPath, "-s", serialNumber, "shell", "getprop");
-                    ProcessExecution properties = executor.execute(ProcessInteractionBuilder.NO_INTERACTION, propertiesCheck.getAsArray());
-                    for (String line : properties.getOutput()) {
-                        if (line.contains("[ro.runtime.firstboot]")) {
-                            // boot is completed
-                            return true;
-                        }
-                    }
-                    return false;
+        isOnline = executor.scheduleUntilTrue(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                // ARQ-1583 check status of emulator
+                // ARQ-1602 on windows, emulator process might return. In such case we need to check also the exit value
+                if (emulatorExecution.isFinished() && emulatorExecution.executionFailed()) {
+                    throw new IllegalStateException("Emulator device startup exited prematurely with exit code "
+                        + emulatorExecution.getExitCode());
                 }
-            }, countdown.timeLeft(), countdown.getTimeUnit().convert(1, TimeUnit.SECONDS), countdown.getTimeUnit());
 
-            if (logger.isLoggable(Level.INFO)) {
-                logger.log(Level.INFO, "Android emulator {0} was started within {1} seconds",
-                    new Object[] { connectedDevice.getAvdName(), countdown.timeElapsed() });
+                // check properties of underlying process
+                Command propertiesCheck = new CommandBuilder().add(adbPath, "-s", serialNumber, "shell", "getprop").build();
+                ProcessExecution properties = executor.execute(ProcessInteractionBuilder.NO_INTERACTION,
+                    propertiesCheck.getAsArray());
+                for (String line : properties.getOutput()) {
+                    if (line.contains("[ro.runtime.firstboot]")) {
+                        // boot is completed
+                        return true;
+                    }
+                }
+                return false;
             }
+        },
+            countdown.timeLeft(),
+            countdown.getTimeUnit().convert(1, TimeUnit.SECONDS),
+            countdown.getTimeUnit());
 
-            if (isOnline == false) {
-                throw new AndroidExecutionException("Emulator device hasn't started properly in " + countdown.timeout()
-                    + " seconds. Please increase the time limit in order to get emulator booted.");
-            }
-        } catch (InterruptedException e) {
-            throw new AndroidExecutionException(e, "Emulator device startup failed.");
-        } catch (ExecutionException e) {
-            logger.log(Level.INFO, e.getCause().toString());
-            throw new AndroidExecutionException(e, "Emulator device startup failed.");
+        if (logger.isLoggable(Level.INFO)) {
+            logger.log(Level.INFO, "Android emulator {0} was started within {1} seconds",
+                new Object[] { connectedDevice.getAvdName(), countdown.timeElapsed() });
+        }
+
+        if (isOnline == false) {
+            throw new AndroidExecutionException("Emulator device hasn't started properly in " + countdown.timeout()
+                + " seconds. Please increase the time limit in order to get emulator booted.");
         }
     }
 

@@ -73,9 +73,10 @@
         <!-- Testing AS7 container -->
         <version.org.jboss.as>7.1.1.Final</version.org.jboss.as>
 
-        <!-- ddmlib version, it has to track your Android SDK tools version -->
         <version.ddmlib>22.4.2</version.ddmlib>
 
+        <version.spacelift>1.0.0.Alpha1</version.spacelift>
+        
         <!-- Other versions -->
         <version.apiviz>1.3.2.GA</version.apiviz>
         <version.maven.animal.sniffer>1.9</version.maven.animal.sniffer>

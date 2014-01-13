@@ -18,7 +18,7 @@
     <!-- Artifact configuration -->
     <groupId>org.arquillian.droidium.tests</groupId>
     <artifactId>arquillian-droidium-screenshooter-test-01</artifactId>
-    <version>1.0.0.Alpha3</version>
+    <version>1.0.0.Beta1-SNAPSHOT</version>
 
     <description>Proof-of-concept Arquillian Droidium screenshooter tests with WebDriver integration.</description>
 

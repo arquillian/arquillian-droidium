@@ -28,12 +28,13 @@ import org.arquillian.droidium.container.api.IdentifierGenerator;
 import org.arquillian.droidium.container.api.SDCard;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
-import org.arquillian.droidium.container.configuration.Command;
-import org.arquillian.droidium.container.execution.ProcessExecutor;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardCreate;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardCreated;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardDelete;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardDeleted;
+import org.arquillian.spacelift.process.Command;
+import org.arquillian.spacelift.process.CommandBuilder;
+import org.arquillian.spacelift.process.ProcessExecutor;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;
@@ -163,11 +164,15 @@ public class AndroidSDCardManagerImpl implements AndroidSDCardManager {
     public void createSDCard(SDCard sdCard) throws AndroidExecutionException {
         AndroidSDCard androidSDCard = (AndroidSDCard) sdCard;
 
-        Command command = new Command();
-        command.add(this.androidSDK.get().getMakeSdCardPath()).add("-l").add(androidSDCard.getLabel())
-            .add(androidSDCard.getSize()).add(androidSDCard.getFileName());
+        Command command = new CommandBuilder()
+            .add(this.androidSDK.get().getMakeSdCardPath())
+            .add("-l")
+            .add(androidSDCard.getLabel())
+            .add(androidSDCard.getSize())
+            .add(androidSDCard.getFileName())
+            .build();
 
-        executor.get().execute(command.getAsArray());
+        executor.get().execute(command);
 
         logger.log(Level.INFO, "Android SD card labelled {0} located at {1} with size of {2} was created.", new Object[] {
             androidSDCard.getLabel(), androidSDCard.getFileName(), androidSDCard.getSize() });

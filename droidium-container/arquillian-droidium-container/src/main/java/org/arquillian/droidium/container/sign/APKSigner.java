@@ -23,10 +23,11 @@ import java.util.logging.Logger;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
-import org.arquillian.droidium.container.configuration.Command;
 import org.arquillian.droidium.container.configuration.Validate;
-import org.arquillian.droidium.container.execution.ProcessExecutor;
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;
+import org.arquillian.spacelift.process.Command;
+import org.arquillian.spacelift.process.CommandBuilder;
+import org.arquillian.spacelift.process.ProcessExecutor;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -74,7 +75,7 @@ public class APKSigner {
 
         checkKeyStore();
 
-        Command jarSignerCommand = new Command()
+        Command jarSignerCommand = new CommandBuilder()
             .add(sdk.getPathForJavaTool("jarsigner"))
             .add("-sigalg").add("MD5withRSA")
             .add("-digestalg").add("SHA1")
@@ -82,12 +83,13 @@ public class APKSigner {
             .add("-storepass").add(configuration.getStorepass())
             .add("-keystore").add(new File(configuration.getKeystore()).getAbsolutePath())
             .add(toSign.getAbsolutePath())
-            .add(configuration.getAlias());
+            .add(configuration.getAlias())
+            .build();
 
         logger.log(Level.FINE, jarSignerCommand.toString());
 
         try {
-            executor.execute(jarSignerCommand.getAsArray());
+            executor.execute(jarSignerCommand);
         } catch (AndroidExecutionException e) {
             throw new APKSignerException("Unable to sign package, signing process failed.", e);
         }

@@ -12,7 +12,6 @@ import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.IdentifierGenerator;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
-import org.arquillian.droidium.container.execution.ProcessExecutor;
 import org.arquillian.droidium.container.impl.AndroidBridgeConnector;
 import org.arquillian.droidium.container.impl.AndroidDeviceSelectorImpl;
 import org.arquillian.droidium.container.log.AndroidLogInitializer;
@@ -21,6 +20,8 @@ import org.arquillian.droidium.container.log.LogcatHelper;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStart;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
 import org.arquillian.droidium.container.utils.AndroidIdentifierGenerator;
+import org.arquillian.spacelift.process.ProcessExecutor;
+import org.arquillian.spacelift.process.impl.DefaultProcessExecutorFactory;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.junit.After;
@@ -65,7 +66,7 @@ public class AndroidLogInitializerTestCase extends AbstractAndroidTestTestBase {
 
         bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration);
         bind(ContainerScoped.class, AndroidSDK.class, androidSDK);
-        bind(ContainerScoped.class, ProcessExecutor.class, new ProcessExecutor());
+        bind(ContainerScoped.class, ProcessExecutor.class, new DefaultProcessExecutorFactory().getProcessExecutorInstance());
         bind(ContainerScoped.class, IdentifierGenerator.class, new AndroidIdentifierGenerator());
     }
 

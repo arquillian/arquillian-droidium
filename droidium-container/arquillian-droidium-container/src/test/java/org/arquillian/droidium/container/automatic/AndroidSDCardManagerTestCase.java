@@ -34,12 +34,13 @@ import org.arquillian.droidium.container.api.FileType;
 import org.arquillian.droidium.container.api.IdentifierGenerator;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
-import org.arquillian.droidium.container.execution.ProcessExecutor;
 import org.arquillian.droidium.container.impl.AndroidSDCardManagerImpl;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardCreate;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardCreated;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardDelete;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardDeleted;
+import org.arquillian.spacelift.process.ProcessExecutor;
+import org.arquillian.spacelift.process.impl.DefaultProcessExecutorFactory;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
@@ -86,7 +87,7 @@ public class AndroidSDCardManagerTestCase extends AbstractAndroidTestTestBase {
     @Before
     public void setup() {
 
-        executor = new ProcessExecutor();
+        executor = new DefaultProcessExecutorFactory().getProcessExecutorInstance();
 
         getManager().getContext(ContainerContext.class).activate("doesnotmatter");
 

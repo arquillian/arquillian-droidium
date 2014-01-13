@@ -35,10 +35,11 @@ import java.util.regex.Pattern;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
-import org.arquillian.droidium.container.configuration.Command;
-import org.arquillian.droidium.container.execution.ProcessExecutor;
 import org.arquillian.droidium.container.spi.event.AndroidBridgeTerminated;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
+import org.arquillian.spacelift.process.Command;
+import org.arquillian.spacelift.process.CommandBuilder;
+import org.arquillian.spacelift.process.ProcessExecutor;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.InstanceProducer;
@@ -142,25 +143,24 @@ public class AndroidLogInitializer {
             }
 
             try {
-                Command command = new Command();
-                command
+                Command command = new CommandBuilder()
                     .add(androidSDK.getAdbPath())
                     .add("-s")
                     .add(androidDevice.getSerialNumber())
                     .add("logcat")
-                    .add("-c");
+                    .add("-c")
+                    .build();
 
                 ProcessBuilder builder = new ProcessBuilder(command.getAsList());
                 Process process = builder.start();
 
-                command.clear();
-
-                command
+                command = new CommandBuilder()
                     .add(androidSDK.getAdbPath())
                     .add("-s")
                     .add(androidDevice.getSerialNumber())
                     .add("logcat")
-                    .add("*:" + configuration.getLogLevel());
+                    .add("*:" + configuration.getLogLevel())
+                    .build();
 
                 builder = new ProcessBuilder(command.getAsList());
                 process = builder.start();
@@ -241,13 +241,13 @@ public class AndroidLogInitializer {
             try {
                 processMap.clear();
 
-                Command command = new Command();
-                command
+                Command command = new CommandBuilder()
                     .add(androidSDK.getAdbPath())
                     .add("-s")
                     .add(androidDevice.getSerialNumber())
                     .add("shell")
-                    .add("ps");
+                    .add("ps")
+                    .build();
 
                 ProcessBuilder processBuilder = new ProcessBuilder(command.getAsList());
                 Process process = processBuilder.start();

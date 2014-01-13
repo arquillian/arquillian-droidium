@@ -32,7 +32,6 @@ import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
-import org.arquillian.droidium.container.execution.ProcessExecutor;
 import org.arquillian.droidium.container.impl.AndroidBridgeConnector;
 import org.arquillian.droidium.container.impl.AndroidDeviceSelectorImpl;
 import org.arquillian.droidium.container.impl.AndroidEmulatorShutdown;
@@ -46,6 +45,8 @@ import org.arquillian.droidium.web.configuration.DroidiumWebConfigurator;
 import org.arquillian.droidium.web.spi.event.AndroidServerInstalled;
 import org.arquillian.droidium.web.spi.event.AndroidServerUninstalled;
 import org.arquillian.droidium.web.spi.event.DroidiumWebConfigured;
+import org.arquillian.spacelift.process.ProcessExecutor;
+import org.arquillian.spacelift.process.impl.DefaultProcessExecutorFactory;
 import org.jboss.arquillian.config.descriptor.api.ArquillianDescriptor;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
@@ -129,7 +130,7 @@ public class AndroidWebDriverSupportEmulatorTestCase extends AbstractAndroidTest
         configuration.validate();
 
         androidSDK = new AndroidSDK(configuration);
-        processExecutor = new ProcessExecutor();
+        processExecutor = new DefaultProcessExecutorFactory().getProcessExecutorInstance();
 
         getManager().getContext(ContainerContext.class).activate("doesnotmatter");
 

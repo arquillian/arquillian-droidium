@@ -9,7 +9,8 @@
     License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
     OF ANY KIND, either express or implied. See the License for the specific 
     language governing permissions and limitations under the License. -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <!-- Model Version -->
     <modelVersion>4.0.0</modelVersion>
@@ -40,6 +41,7 @@
     <properties>
         <!-- Taken from root parent of the project -->
         <version.com.android.tools.ddms>${version.ddmlib}</version.com.android.tools.ddms>
+        <version.arquillian.spacelift>${version.spacelift}</version.arquillian.spacelift>
     </properties>
 
     <!-- Dependency Management -->
@@ -127,6 +129,13 @@
                 <version>${version.org.jboss.as}</version>
             </dependency>
 
+            <!-- Arquillian native platform support -->
+            <dependency>
+                <groupId>org.arquillian.spacelift</groupId>
+                <artifactId>arquillian-spacelift</artifactId>
+                <version>${version.arquillian.spacelift}</version>
+            </dependency>            
+
             <!-- Third party projects -->
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
@@ -199,7 +208,7 @@
                 <artifactId>wagon-webdav-jackrabbit</artifactId>
                 <version>1.0</version>
             </extension>
-        </extensions>        
+        </extensions>
 
         <pluginManagement>
             <plugins>
@@ -238,5 +247,45 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <profiles>
+        <profile>
+            <id>jboss-staging-repository-group</id>
+
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
+            <repositories>
+                <repository>
+                    <id>jboss-staging-repository-group</id>
+                    <name>JBoss Staging Repository Group</name>
+                    <url>https://repository.jboss.org/nexus/content/groups/staging</url>
+                    <layout>default</layout>
+                    <releases>
+                        <enabled>true</enabled>
+                        <updatePolicy>never</updatePolicy>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                        <updatePolicy>never</updatePolicy>
+                    </snapshots>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>jboss-staging-repository-group</id>
+                    <name>JBoss Staging Repository Group</name>
+                    <url>https://repository.jboss.org/nexus/content/groups/staging</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+    </profiles>
 
 </project>

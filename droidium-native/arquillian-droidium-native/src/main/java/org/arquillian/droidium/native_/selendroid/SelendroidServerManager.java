@@ -31,12 +31,13 @@ import org.apache.http.params.CoreConnectionPNames;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
-import org.arquillian.droidium.container.configuration.Command;
 import org.arquillian.droidium.container.configuration.Validate;
-import org.arquillian.droidium.container.execution.ProcessExecutor;
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.arquillian.droidium.container.utils.Monkey;
 import org.arquillian.droidium.native_.spi.SelendroidDeployment;
+import org.arquillian.spacelift.process.Command;
+import org.arquillian.spacelift.process.CommandBuilder;
+import org.arquillian.spacelift.process.ProcessExecutor;
 
 /**
  * Manages deployment and undeployment of Selendroid servers which instrument Android packages. There is strict one-to-one
@@ -90,10 +91,13 @@ public class SelendroidServerManager {
         Validate.notNull(deployment, "Selendroid deployment to deploy can not be a null object!");
         Validate.notNull(deployment.getResigned(), "Resigned Selendroid application to deploy can not be a null object!");
 
-        Command selendroidInstallCommand = new Command()
+        Command selendroidInstallCommand = new CommandBuilder()
             .add(sdk.getAdbPath())
-            .add("-s").add(device.getSerialNumber())
-            .add("install").add(deployment.getResigned().getAbsolutePath());
+            .add("-s")
+            .add(device.getSerialNumber())
+            .add("install")
+            .add(deployment.getResigned().getAbsolutePath())
+            .build();
 
         if (device.isPackageInstalled(deployment.getSelendroidPackageName())) {
             device.uninstallPackage(deployment.getSelendroidPackageName());
@@ -131,7 +135,7 @@ public class SelendroidServerManager {
         int port = Integer.parseInt(deployment.getInstrumentationConfiguration().getPort());
         createPortForwarding(port, port);
 
-        Command startApplicationInstrumentationCommand = new Command()
+        Command startApplicationInstrumentationCommand = new CommandBuilder()
             .add("am").add("instrument")
             .add("-e").add("main_activity")
             // .add("\'" + deployment.getInstrumentedDeployment().getApplicationMainActivity() + "\'")
@@ -139,7 +143,8 @@ public class SelendroidServerManager {
             .add("-e")
             .add("server_port")
             .add(deployment.getInstrumentationConfiguration().getPort())
-            .add(deployment.getServerBasePackage() + "/io.selendroid.ServerInstrumentation");
+            .add(deployment.getServerBasePackage() + "/io.selendroid.ServerInstrumentation")
+            .build();
 
         logger.fine(startApplicationInstrumentationCommand.toString());
 
@@ -163,7 +168,12 @@ public class SelendroidServerManager {
      */
     public void disable(SelendroidDeployment deployment) {
         Validate.notNull(deployment, "Selendroid deployment to disable can not be a null object!");
-        device.executeShellCommand(new Command().add("pm").add("disable").add(deployment.getServerBasePackage()).toString());
+        device.executeShellCommand(new CommandBuilder()
+            .add("pm")
+            .add("disable")
+            .add(deployment.getServerBasePackage())
+            .build()
+            .toString());
     }
 
     /**
@@ -175,9 +185,11 @@ public class SelendroidServerManager {
     public void uninstall(SelendroidDeployment deployment) {
         Validate.notNull(deployment, "Selendroid deployment to uninstall can not be a null object!");
         try {
-            device.executeShellCommand(new Command().add("pm")
+            device.executeShellCommand(new CommandBuilder()
+                .add("pm")
                 .add("uninstall")
                 .add(deployment.getServerBasePackage())
+                .build()
                 .toString());
         } catch (AndroidExecutionException ex) {
             throw new AndroidExecutionException("Unable to uninstall Selendroid server.", ex);

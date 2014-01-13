@@ -18,7 +18,7 @@
     <!-- Arfitact configuration -->
     <groupId>org.arquillian.droidium.tests</groupId>
     <artifactId>arquillian-droidium-multiple-containers-test-01</artifactId>
-    <version>1.0.0.Alpha4</version>
+    <version>1.0.0.Beta1-SNAPSHOT</version>
 
     <description>Shows configuration of multiple container adapters on classpath</description>
 

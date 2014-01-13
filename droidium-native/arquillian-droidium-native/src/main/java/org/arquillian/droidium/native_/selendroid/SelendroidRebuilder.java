@@ -31,10 +31,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
-import org.arquillian.droidium.container.configuration.Command;
 import org.arquillian.droidium.container.configuration.Validate;
-import org.arquillian.droidium.container.execution.ProcessExecutor;
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;
+import org.arquillian.spacelift.process.Command;
+import org.arquillian.spacelift.process.CommandBuilder;
+import org.arquillian.spacelift.process.ProcessExecutor;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -155,15 +156,20 @@ public class SelendroidRebuilder {
      * @throws SelendroidRebuilderException when creating of dummy APK fails
      */
     private void createDummyAPK(File dummyAPK, File androidManifest) {
-        Command createDummyPackage = new Command()
+        Command createDummyPackage = new CommandBuilder()
                 .add(androidSDK.getAaptPath())
-                .add("package").add("-f").add("-M")
+                .add("package")
+                .add("-f")
+                .add("-M")
                 .add(androidManifest.getAbsolutePath())
-                .add("-I").add(androidSDK.getPlatform() + "/android.jar")
-                .add("-F").add(dummyAPK.getAbsolutePath());
+                .add("-I")
+                .add(androidSDK.getPlatform() + "/android.jar")
+                .add("-F")
+                .add(dummyAPK.getAbsolutePath())
+                .build();
 
         try {
-            processExecutor.execute(createDummyPackage.getAsArray());
+            processExecutor.execute(createDummyPackage);
         } catch (AndroidExecutionException e) {
             throw new SelendroidRebuilderException("Command failed to execute: " + createDummyPackage.toString(), e);
         }

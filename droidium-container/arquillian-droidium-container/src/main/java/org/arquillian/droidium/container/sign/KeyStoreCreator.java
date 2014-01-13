@@ -22,9 +22,10 @@ import java.util.logging.Logger;
 
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
-import org.arquillian.droidium.container.configuration.Command;
 import org.arquillian.droidium.container.configuration.Validate;
-import org.arquillian.droidium.container.execution.ProcessExecutor;
+import org.arquillian.spacelift.process.Command;
+import org.arquillian.spacelift.process.CommandBuilder;
+import org.arquillian.spacelift.process.ProcessExecutor;
 
 /**
  * Creates keystore and checks if some keystore already exists in the system.
@@ -82,9 +83,8 @@ public final class KeyStoreCreator {
      */
     public void createKeyStore(File keyStoreToCreate) {
 
-        Command createKeyStoreCommand = new Command();
-
-        createKeyStoreCommand.add(sdk.getPathForJavaTool("keytool"))
+        Command createKeyStoreCommand = new CommandBuilder()
+            .add(sdk.getPathForJavaTool("keytool"))
             .add("-genkey")
             .add("-v")
             .add("-keystore")
@@ -102,10 +102,11 @@ public final class KeyStoreCreator {
             .add("-sigalg")
             .add(configuration.getSigalg())
             .add("-keyalg")
-            .add(configuration.getKeyalg());
+            .add(configuration.getKeyalg())
+            .build();
 
         logger.log(Level.INFO, createKeyStoreCommand.toString());
 
-        executor.execute(createKeyStoreCommand.getAsArray());
+        executor.execute(createKeyStoreCommand);
     }
 }

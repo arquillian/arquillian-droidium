@@ -22,12 +22,13 @@ import java.util.logging.Logger;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
-import org.arquillian.droidium.container.configuration.Command;
 import org.arquillian.droidium.container.configuration.Validate;
-import org.arquillian.droidium.container.execution.ProcessExecutor;
 import org.arquillian.droidium.container.spi.AndroidDeployment;
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.arquillian.droidium.container.utils.Monkey;
+import org.arquillian.spacelift.process.Command;
+import org.arquillian.spacelift.process.CommandBuilder;
+import org.arquillian.spacelift.process.ProcessExecutor;
 
 /**
  * Manages deployment and undeployment of Android applications. It installs, uninstalls and disable running applications on
@@ -79,12 +80,13 @@ public class AndroidApplicationManager {
         Validate.notNull(deployment.getResignedApk(), "Application to install is a null object!");
         Validate.notNull(deployment.getApplicationBasePackage(), "Application base package name is a null object!");
 
-        Command installCommand = new Command()
+        Command installCommand = new CommandBuilder()
             .add(sdk.getAdbPath())
             .add("-s")
             .add(device.getSerialNumber())
             .add("install")
-            .add(deployment.getResignedApk().getAbsolutePath());
+            .add(deployment.getResignedApk().getAbsolutePath())
+            .build();
 
         logger.fine("AUT installation command: " + installCommand.toString());
 
@@ -95,7 +97,7 @@ public class AndroidApplicationManager {
         }
 
         try {
-            executor.execute(installCommand.getAsArray());
+            executor.execute(installCommand);
         } catch (AndroidExecutionException e) {
             // rewrap exception to have better stacktrace
             throw new AndroidExecutionException(e, "Unable to execute installation command {0} for the application {1}",
@@ -120,10 +122,11 @@ public class AndroidApplicationManager {
         Validate.notNull(deployment, "Android deployment you are trying to uninstall can not be a null object!");
         Validate.notNull(deployment.getApplicationBasePackage(), "Application base package can not be a null object!");
 
-        Command command = new Command()
+        Command command = new CommandBuilder()
             .add("pm")
             .add("uninstall")
-            .add(deployment.getApplicationBasePackage());
+            .add(deployment.getApplicationBasePackage())
+            .build();
 
         try {
             Monkey monkey = new Monkey(DroidiumFileUtils.createRandomEmptyFile(DroidiumFileUtils.getTmpDir()),
@@ -148,10 +151,11 @@ public class AndroidApplicationManager {
         Validate.notNull(deployment, "Android deployment you are trying to kill can not be a null object!");
         Validate.notNull(deployment.getApplicationBasePackage(), "Application base package name can not be a null object!");
 
-        Command command = new Command()
+        Command command = new CommandBuilder()
             .add("pm")
             .add("disable")
-            .add(deployment.getApplicationBasePackage());
+            .add(deployment.getApplicationBasePackage())
+            .build();
 
         try {
             Monkey monkey = new Monkey(DroidiumFileUtils.createRandomEmptyFile(DroidiumFileUtils.getTmpDir()),

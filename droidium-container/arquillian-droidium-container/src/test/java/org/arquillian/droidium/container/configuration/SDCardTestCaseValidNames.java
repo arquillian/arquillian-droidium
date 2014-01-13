@@ -35,9 +35,9 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Tests various file name of SD card againts it's validity.
- * 
+ *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
- * 
+ *
  */
 @RunWith(Parameterized.class)
 public class SDCardTestCaseValidNames {

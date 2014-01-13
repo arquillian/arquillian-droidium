@@ -26,10 +26,11 @@ import java.util.logging.Logger;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidDeviceOutputReciever;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
-import org.arquillian.droidium.container.configuration.Command;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
 import org.arquillian.droidium.web.configuration.DroidiumWebConfiguration;
 import org.arquillian.droidium.web.spi.event.AndroidServerInstalled;
+import org.arquillian.spacelift.process.Command;
+import org.arquillian.spacelift.process.CommandBuilder;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;
@@ -95,23 +96,20 @@ public class AndroidServerInstaller {
     }
 
     private Command getTopCommand() {
-        Command command = new Command();
-        command.add("top -n 1");
-        return command;
+        return new CommandBuilder().addTokenized("top -n 1").build();
     }
 
     private Command getWebDriverHubCommand() {
-        Command command = new Command();
-        command.add("am start -a android.intent.action.MAIN -n org.openqa.selenium.android.app/.MainActivity");
-
-        command.add(configuration.get().getOptions());
+        CommandBuilder cb = new CommandBuilder()
+            .addTokenized("am start -a android.intent.action.MAIN -n org.openqa.selenium.android.app/.MainActivity")
+            .addTokenized(configuration.get().getOptions());
 
         // if debug is not already set via "options" and we specified we want to use debugging via debug option
-        if (!command.toString().contains("-e debug") && configuration.get().getDebug()) {
-            command.add("-e debug true");
+        if (!configuration.get().getOptions().contains("-e debug") && configuration.get().getDebug()) {
+            cb.add("-e debug true");
         }
 
-        return command;
+        return cb.build();
     }
 
     private void waitUntilStarted(AndroidDevice device, WebDriverMonkey monkey) throws IOException,

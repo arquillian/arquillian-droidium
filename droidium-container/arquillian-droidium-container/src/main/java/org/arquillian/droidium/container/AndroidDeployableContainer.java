@@ -25,7 +25,6 @@ import org.arquillian.droidium.container.api.IdentifierGenerator;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.deployment.AndroidDeploymentRegister;
-import org.arquillian.droidium.container.execution.ProcessExecutor;
 import org.arquillian.droidium.container.impl.AndroidApplicationHelper;
 import org.arquillian.droidium.container.impl.AndroidApplicationManager;
 import org.arquillian.droidium.container.sign.APKSigner;
@@ -36,6 +35,7 @@ import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
 import org.arquillian.droidium.container.spi.event.AndroidUndeploy;
 import org.arquillian.droidium.container.utils.AndroidIdentifierGenerator;
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;
+import org.arquillian.spacelift.process.ProcessExecutor;
 import org.jboss.arquillian.container.spi.client.container.DeployableContainer;
 import org.jboss.arquillian.container.spi.client.container.DeploymentException;
 import org.jboss.arquillian.container.spi.client.container.LifecycleException;
@@ -71,7 +71,6 @@ import org.jboss.shrinkwrap.descriptor.api.Descriptor;
  * <li>{@link AndroidDeploymentRegister}</li>
  * <li>{@link AndroidSDK}</li>
  * <li>{@link IdentifierGenerator}</li>
- * <li>{@link ProcessExecutor}</li>
  * <li>{@link AndroidContainerConfiguration}</li>
  * </ul>
  * Fires:
@@ -97,10 +96,6 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidCo
     @Inject
     @SuiteScoped
     private InstanceProducer<IdentifierGenerator<FileType>> idGenerator;
-
-    @Inject
-    @SuiteScoped
-    private InstanceProducer<ProcessExecutor> executor;
 
     @Inject
     @SuiteScoped
@@ -136,6 +131,9 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidCo
     @Inject
     private Instance<ServiceLoader> serviceLoader;
 
+    @Inject
+    private Instance<ProcessExecutor> executor;
+
     @Override
     public Class<AndroidContainerConfiguration> getConfigurationClass() {
         return AndroidContainerConfiguration.class;
@@ -152,10 +150,10 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidCo
 
         AndroidContainerConfiguration conf = this.configuration.get();
 
+        executor.get().setEnvironment(conf.getAndroidSystemEnvironmentProperties());
+
         this.androidSDK.set(new AndroidSDK(conf));
         this.idGenerator.set(new AndroidIdentifierGenerator());
-        this.executor.set(new ProcessExecutor(conf.getAndroidSystemEnvironmentProperties()));
-
         this.signer.set(new APKSigner(this.executor.get(), this.androidSDK.get(), conf));
         this.androidApplicationHelper.set(new AndroidApplicationHelper(executor.get(), androidSDK.get()));
         this.androidDeploymentRegister.set(new AndroidDeploymentRegister());
