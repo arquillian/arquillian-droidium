@@ -46,5 +46,9 @@
             <groupId>org.jboss.shrinkwrap</groupId>
             <artifactId>shrinkwrap-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.android.tools.ddms</groupId>
+            <artifactId>ddmlib</artifactId>
+        </dependency>
     </dependencies>
 </project>

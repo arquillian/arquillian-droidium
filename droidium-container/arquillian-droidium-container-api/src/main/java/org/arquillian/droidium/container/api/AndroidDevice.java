@@ -184,4 +184,11 @@ public interface AndroidDevice {
      * @return gets activity manager provider for this Android device
      */
     ActivityManagerProvider getActivityManagerProvider();
+
+    /**
+     *
+     * @return screenshot of Android device
+     * @throws Exception
+     */
+    Screenshot getScreenshot() throws Exception;
 }

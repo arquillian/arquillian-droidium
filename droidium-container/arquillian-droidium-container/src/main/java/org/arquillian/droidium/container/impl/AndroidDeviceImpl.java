@@ -28,12 +28,14 @@ import org.arquillian.droidium.container.api.ActivityManagerProvider;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidDeviceOutputReciever;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
+import org.arquillian.droidium.container.api.Screenshot;
 import org.arquillian.droidium.container.configuration.Validate;
 
 import com.android.ddmlib.AdbCommandRejectedException;
 import com.android.ddmlib.IDevice;
 import com.android.ddmlib.InstallException;
 import com.android.ddmlib.MultiLineReceiver;
+import com.android.ddmlib.RawImage;
 import com.android.ddmlib.ShellCommandUnresponsiveException;
 import com.android.ddmlib.TimeoutException;
 
@@ -257,6 +259,29 @@ public class AndroidDeviceImpl implements AndroidDevice {
     @Override
     public void setDroneGuestPort(int droneGuestPort) {
         this.droneGuestPort = droneGuestPort;
+    }
+
+    @Override
+    public Screenshot getScreenshot() throws Exception {
+        Screenshot screenshot = new ScreenshotImpl();
+        screenshot.setRawImage(delegate.getScreenshot());
+        return screenshot;
+    }
+
+    private static class ScreenshotImpl implements Screenshot {
+
+        RawImage screenshot;
+
+        @Override
+        public RawImage getRawImage() {
+            return screenshot;
+        }
+
+        @Override
+        public void setRawImage(RawImage screenshot) {
+            this.screenshot = screenshot;
+        }
+
     }
 
     private static class PackageInstalledMonkey implements AndroidDeviceOutputReciever {
