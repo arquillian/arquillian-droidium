@@ -233,6 +233,19 @@ already is. It can have only `true` or `false` value. When not used, it is set t
 </configuration>
 ----
 
+==== ddmlibCommandTimeout
+===== default: 20000
+
+`ddmlibCommandTimeout` property says what is the timeout for ddmlib library which executes commands for your device. When 
+it is low, in emulated or CI environment, default timeout (5000 milliseconds) can be not enough due to its slowness. In that 
+case, try to raise the value of this property. It is measured in milliseconds. You can not set the timeout lower then 5000 ms.
+
+----
+<configuration>
+    <property name="ddmlibCommandTimeout">60000</property>
+</configuration>
+----
+
 ==== adapterImplClass
 ===== default: org.arquillian.droidium.container.AndroidDeployableContainer
 

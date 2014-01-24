@@ -90,6 +90,8 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
 
     private String logPackageBlacklist;
 
+    private int ddmlibCommandTimeout = 20000;
+
     // by default null since its default value depends on androidSdkHome which
     // can be changed by user, when not set by user, it will be resolved in validate() in this class
     private String keystore = null;
@@ -395,6 +397,14 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
         this.tmpDir = tmpDir;
     }
 
+    public int getDdmlibCommandTimeout() {
+        return ddmlibCommandTimeout;
+    }
+
+    public void setDdmlibCommandTimeout(int ddmlibCommandTimeout) {
+        this.ddmlibCommandTimeout = ddmlibCommandTimeout;
+    }
+
     public String resolveJavaHome() {
         String JAVA_HOME_ENV = System.getenv("JAVA_HOME");
         String JAVA_HOME_PROPERTY = System.getProperty("java.home");
@@ -587,6 +597,7 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
         sb.append(String.format("%-40s %s\n", "logPackageBlacklist", logPackageBlacklist));
         sb.append(String.format("%-40s %s\n", "removeTmpDir", removeTmpDir));
         sb.append(String.format("%-40s %s\n", "tmpDir", tmpDir));
+        sb.append(String.format("%-40s %s\n", "ddmlibCommandTimeout", ddmlibCommandTimeout));
         sb.append(String.format("%-40s %s", "forceNewBridge", forceNewBridge));
         return sb.toString();
     }

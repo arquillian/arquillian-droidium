@@ -20,6 +20,7 @@ package org.arquillian.droidium.container.impl;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.arquillian.droidium.container.api.AndroidBridge;
@@ -28,6 +29,7 @@ import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.configuration.Validate;
 
 import com.android.ddmlib.AndroidDebugBridge;
+import com.android.ddmlib.DdmPreferences;
 import com.android.ddmlib.IDevice;
 
 /**
@@ -43,16 +45,44 @@ public class AndroidBridgeImpl implements AndroidBridge {
 
     private AndroidDebugBridge delegate;
 
-    private static final long ADB_TIMEOUT_MS = 60L * 1000;
+    public static final int ADB_TIMEOUT = 60 * 1000; // in milliseconds
+
+    public static final int DDM_MINIMAL_TIMEOUT = 5 * 1000; // in milliseconds
 
     private File adbLocation;
 
     private boolean forceNewBridge;
 
-    AndroidBridgeImpl(File adbLocation, boolean forceNewBridge) throws IllegalArgumentException {
+    private static int ddmsTimeOut = 60 * 1000;
+
+    /**
+     *
+     * @param adbLocation location of adb binary
+     * @param forceNewBridge set to true if new bridge is created or to false if already existing one is reused
+     * @param ddmsTimeOut timeout for shell commands, it is not possible to set it lower then {@link #DDM_MINIMAL_TIMEOUT}.
+     * @throws IllegalArgumentException when {@code adbLocation} does not resent readable and existing adb binary
+     *
+     */
+    AndroidBridgeImpl(File adbLocation, boolean forceNewBridge, int ddmsTimeOut) throws IllegalArgumentException {
         Validate.isReadable(adbLocation, "ADB location does not represent a readable file: " + adbLocation);
+
+        if (ddmsTimeOut < DDM_MINIMAL_TIMEOUT) {
+            logger.log(Level.INFO, "It is not allowed to set timeout for ddms shell commands lower then {0} miliseconds.",
+                DDM_MINIMAL_TIMEOUT);
+        } else {
+            AndroidBridgeImpl.ddmsTimeOut = ddmsTimeOut;
+        }
+
         this.adbLocation = adbLocation;
         this.forceNewBridge = forceNewBridge;
+    }
+
+    /**
+     * @param adbLocation location of adb binary
+     * @param forceNewBridge set to true if new bridge is created or to false if already existing one is reused
+     */
+    AndroidBridgeImpl(File adbLocation, boolean forceNewBridge) {
+        this(adbLocation, forceNewBridge, ddmsTimeOut);
     }
 
     @Override
@@ -60,6 +90,7 @@ public class AndroidBridgeImpl implements AndroidBridge {
         logger.info("Connecting to the Android Debug Bridge at " + adbLocation.getAbsolutePath() + " forceNewBridge = "
             + forceNewBridge);
 
+        DdmPreferences.setTimeOut(ddmsTimeOut);
         AndroidDebugBridge.initIfNeeded(false);
 
         this.delegate = AndroidDebugBridge.createBridge(adbLocation.getAbsolutePath(), forceNewBridge);
@@ -159,7 +190,7 @@ public class AndroidBridgeImpl implements AndroidBridge {
     private void waitForInitialDeviceList() {
         if (!delegate.hasInitialDeviceList()) {
             logger.info("Waiting for initial device list from the Android Debug Bridge");
-            long limitTime = System.currentTimeMillis() + ADB_TIMEOUT_MS;
+            long limitTime = System.currentTimeMillis() + ADB_TIMEOUT;
             while (!delegate.hasInitialDeviceList() && (System.currentTimeMillis() < limitTime)) {
                 try {
                     Thread.sleep(1000);
