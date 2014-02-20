@@ -13,13 +13,26 @@ ADB_CMD=$ANDROID_HOME/platform-tools/adb
 EMULATOR_CMD=$ANDROID_HOME/tools/emulator
 EMULATOR_RAM=343
 
-SELENDROID_SERVER_APK=selendroid-server-0.6.0.apk
-SELENDROID_TEST_APP=selendroid-test-app-0.6.0.apk
+SELENDROID_VERSION=0.8.0
+SELENDROID_SERVER_APK=selendroid-server-$SELENDROID_VERSION.apk
+SELENDROID_TEST_APP=selendroid-test-app-$SELENDROID_VERSION.apk
+
+function prepare_selendroid
+{
+    echo "Preparing Selendroid server of version $1"
+    mkdir selendroid
+    cd selendroid    
+    wget https://github.com/selendroid/selendroid/releases/download/$1/selendroid-standalone-$1-with-dependencies.jar
+    unzip selendroid-standalone-$1-with-dependencies.jar
+    cp prebuild/selendroid-server-$1.apk ..
+    cd ..
+    rm -r selendroid
+}
 
 function help
 {
     echo "help: "
-    echo "    $1 _avd_name _ip_address_"
+    echo "    $1 _avd_name _ip_address_ [selendroid version]"
 }
 
 if [ "x$1" == "x" ]; then
@@ -32,6 +45,10 @@ if [ "x$2" == "x" ]; then
     echo "You have not set your external IP address."
     help $0
     exit
+fi
+
+if [ ! "x$3" == "x" ]; then
+    SELENDROID_VERSION=$3
 fi
 
 function copy_server
@@ -99,7 +116,7 @@ function droidium-hybrid-01
     cd $ROOT
     cd droidium-hybrid-01
     copy_all .
-    mvn clean test -Dandroid.avd.name=$1
+    mvn clean test -Dandroid.avd.name=$1 -Dselendroid.version=$2
     check_status $0 $?
     clean_env
 }
@@ -135,7 +152,7 @@ function droidium-multiple-deployments-01
     cd $ROOT
     cd droidium-multiple-deployments-01
     copy_all .
-    mvn clean test -Dandroid.avd.name=$1
+    mvn clean test -Dandroid.avd.name=$1 -Dselendroid.version=$2
     check_status $0 $?
     clean_env
 }
@@ -145,7 +162,7 @@ function droidium-native-01
     cd $ROOT
     cd droidium-native-01
     copy_all .
-    mvn clean test -Dandroid.avd.name=$1
+    mvn clean test -Dandroid.avd.name=$1 -Dselendroid.version=$2
     check_status $0 $?
     clean_env
 }
@@ -155,7 +172,7 @@ function droidium-native-01-scala
     cd $ROOT
     cd droidium-native-01-scala
     copy_all .
-    mvn clean test -Dandroid.avd.name=$1
+    mvn clean test -Dandroid.avd.name=$1 -Dselendroid.version=$2
     check_status $0 $?
     clean_env
 }
@@ -194,16 +211,18 @@ function clean_all
     mvn clean
 }
 
+#prepare_selendroid $SELENDROID_VERSION
+
 start_emulator $1 $EMULATOR_RAM
 wait_until_started
 
-droidium-hybrid-01 $1
+droidium-hybrid-01 $1 $SELENDROID_VERSION
 droidium-multiple-containers-01 $1
 droidium-multiple-containers-02
 droidium-multiple-containers-03
-droidium-multiple-deployments-01 $1
-droidium-native-01 $1
-droidium-native-01-scala $1
+droidium-multiple-deployments-01 $1 $SELENDROID_VERSION
+droidium-native-01 $1 $SELENDROID_VERSION
+droidium-native-01-scala $1 $SELENDROID_VERSION
 droidium-native-02 $1
 #droidium-screenshooter-01 $1
 droidium-web-01 $1 $2

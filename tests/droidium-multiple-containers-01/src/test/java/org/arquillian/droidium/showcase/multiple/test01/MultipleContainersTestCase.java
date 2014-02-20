@@ -22,6 +22,7 @@ import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.showcase.classes.Foo;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.container.test.api.TargetsContainer;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
@@ -32,15 +33,14 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 
 /**
  * Proof of concept test for showing multiple containers on classpath.
- *
+ * 
  * While testing web application, you can omit deployment for Android completely.
- *
+ * 
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
- *
+ * 
  */
 @RunWith(Arquillian.class)
 @RunAsClient
@@ -49,7 +49,8 @@ public class MultipleContainersTestCase {
     @Deployment(name = "android")
     @TargetsContainer("android")
     public static Archive<?> createAndroidDeployment() {
-        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.6.0.apk"));
+        return ShrinkWrap.createFromZipFile(JavaArchive.class,
+            new File("selendroid-test-app-" + System.getProperty("selendroid.version", "0.8.0") + ".apk"));
     }
 
     @Deployment(name = "jbossas")

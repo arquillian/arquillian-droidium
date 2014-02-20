@@ -62,7 +62,8 @@ public class SelendroidTestAppTestCase {
     @Instrumentable // by default, port is 8080, it has to match the extension's remoteAddress port
     @TargetsContainer("android") // does not have to be here since we have just one container
     public static Archive<?> SelendroidDeployment() {
-        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.6.0.apk"));
+        return ShrinkWrap.createFromZipFile(JavaArchive.class,
+            new File("selendroid-test-app-" + System.getProperty("selendroid.version", "0.8.0") + ".apk"));
     }
 
     // port put here matches the one in arquillian.xml

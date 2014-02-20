@@ -65,7 +65,7 @@
         <version.arquillian.core>1.1.2.Final</version.arquillian.core>
 
         <!-- Arquillian Drone -->
-        <version.arquillian.drone>1.2.1.Final</version.arquillian.drone>
+        <version.arquillian.drone>1.2.3.Final</version.arquillian.drone>
 
         <!-- ShrinkWrap -->
         <version.shrinkwrap_shrinkwrap>1.2.0</version.shrinkwrap_shrinkwrap>
@@ -73,8 +73,10 @@
         <!-- Testing AS7 container -->
         <version.org.jboss.as>7.1.1.Final</version.org.jboss.as>
 
-        <version.ddmlib>22.4.2</version.ddmlib>
+        <!-- ddmlib -->
+        <version.ddmlib>22.5.3</version.ddmlib>
 
+        <!-- Spacelift -->
         <version.spacelift>1.0.0.Alpha1</version.spacelift>
         
         <!-- Other versions -->

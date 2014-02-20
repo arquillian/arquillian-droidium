@@ -20,20 +20,20 @@ import org.arquillian.droidium.showcase.hybrid.test01.utils.Language;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.graphene.Graphene;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.android.AndroidDriver;
 import org.openqa.selenium.support.FindBy;
 
 /**
  * Abstraction of registration activity to register a user.
- *
+ * 
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
- *
+ * 
  */
 public class RegistrationFragment {
 
     @Drone
-    private AndroidDriver driver;
+    private WebDriver driver;
 
     @FindBy(id = "inputUserName")
     private WebElement inputUserName;
@@ -57,22 +57,15 @@ public class RegistrationFragment {
     private WebElement registerButton;
 
     public void registerUser(String username, String email, String password, String name, Language language, boolean acceptAdds) {
-        inputUserName.click();
+
         inputUserName.sendKeys(username);
-
-        inputEmail.click();
         inputEmail.sendKeys(email);
-
-        inputPassword.click();
         inputPassword.sendKeys(password);
-
-        inputName.click();
         inputName.clear();
         inputName.sendKeys(name);
 
         this.language.click();
-        WebElement lang = driver.findElement(By.linkText(language.toString()));
-        lang.click();
+        driver.findElement(By.linkText(language.toString())).click();
 
         if (acceptAdds) {
             adds.click();

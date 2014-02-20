@@ -34,19 +34,20 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.android.AndroidDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
 
 /**
  * Android Droidium hybrid testing with {@code WebDriver} - proof of concept.
- *
+ * 
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
- *
+ * 
  */
 @RunWith(Arquillian.class)
 @RunAsClient
@@ -56,12 +57,13 @@ public class SelendroidHybridTestAppTestCase {
     private AndroidDevice android;
 
     @Drone
-    private AndroidDriver driver;
+    private WebDriver driver;
 
     @Deployment
     @Instrumentable
     public static Archive<?> createDeployment() {
-        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.6.0.apk"));
+        return ShrinkWrap.createFromZipFile(JavaArchive.class,
+            new File("selendroid-test-app-" + System.getProperty("selendroid.version", "0.8.0") + ".apk"));
     }
 
     private static final String USER_NAME = "john";
@@ -106,6 +108,7 @@ public class SelendroidHybridTestAppTestCase {
 
     @Test
     @InSequence(2)
+    @Ignore
     public void webViewTest() {
         homeFragment.startWebView();
 

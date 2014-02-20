@@ -69,7 +69,8 @@ public class SelendroidTestAppTestCase {
     @TargetsContainer("android")
     // does not have to be here since we have just one container present
     public static Archive<?> createSelendroidDeployment() {
-        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.6.0.apk"));
+        return ShrinkWrap.createFromZipFile(JavaArchive.class,
+            new File("selendroid-test-app-" + System.getProperty("selendroid.version", "0.8.0") + ".apk"));
     }
 
     // second deployment, it does not matter which one it is, shown here just for completeness, this apk is not used in the test

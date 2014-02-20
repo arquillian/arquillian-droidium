@@ -31,9 +31,9 @@ import org.junit.runner.RunWith;
 
 /**
  * Android Droidium - controlling of activities without native plugin.
- *
+ * 
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
- *
+ * 
  */
 @RunWith(Arquillian.class)
 @RunAsClient
@@ -44,7 +44,8 @@ public class AndroidActivityManagerTestCase {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.6.0.apk"));
+        return ShrinkWrap.createFromZipFile(JavaArchive.class,
+            new File("selendroid-test-app-" + System.getProperty("selendroid.version", "0.8.0") + ".apk"));
     }
 
     @Test
