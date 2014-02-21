@@ -26,7 +26,7 @@ public enum ContainerType {
     DROIDIUM("droidium", "org.arquillian.droidium.container.AndroidDeployableContainer"),
     JBOSS("jboss", "org.jboss.as.arquillian.container"),
     EAP("eap", "org.jboss.as.arquillian.container"),
-    WILDFLY("wildfly", "org.jboss.as.arquillian.container"),
+    WILDFLY("wildfly", "org.wildfly.arquillian.container"),
     TOMEE("tomee", "org.apache.openejb.arquillian"),
     GLASSFISH("glassfish", "org.jboss.arquillian.container.glassfish"),
     OPENSHIFT("openshift", "org.jboss.arquillian.container.openshift");

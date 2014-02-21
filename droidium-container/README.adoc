@@ -84,7 +84,7 @@ container qualifier just contains this string. For example:
 |org.jboss.as.arquillian.container.*
 
 |wildfly
-|org.jboss.as.arquillian.container.*
+|org.wildfly.arquillian.container.*
 
 |eap
 |org.jboss.as.arquillian.container.*
