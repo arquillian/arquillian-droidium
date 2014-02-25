@@ -151,7 +151,7 @@ public class ContainerGuesser {
     }
 
     public static String getAdapterImplClassValue(ContainerDef containerDef) {
-        return containerDef.getContainerProperties().get(ADAPTER_IMPL_CONFIG_STRING);
+        return containerDef.getContainerProperties().get(ADAPTER_IMPL_CONFIG_STRING).trim();
     }
 
 }

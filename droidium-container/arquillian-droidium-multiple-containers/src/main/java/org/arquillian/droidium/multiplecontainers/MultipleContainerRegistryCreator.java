@@ -138,8 +138,8 @@ public class MultipleContainerRegistryCreator {
         // and we check that the class is an instance of DeployableContainer
         if (ContainerGuesser.hasAdapterImplClassProperty(containerDef)) {
             if (SecurityActions.isClassPresent(ContainerGuesser.getAdapterImplClassValue(containerDef))) {
-                return SecurityActions.loadClass(ContainerGuesser.getAdapterImplClassValue(containerDef)).isInstance(
-                    DeployableContainer.class);
+                return DeployableContainer.class.isAssignableFrom(
+                    SecurityActions.loadClass(ContainerGuesser.getAdapterImplClassValue(containerDef)));
             }
         }
 
@@ -150,10 +150,10 @@ public class MultipleContainerRegistryCreator {
             + "It is expected that when you name your container like that, you put Arquillian container adapter for that "
             + "container on classpath in order to start it afterwards.",
             new Object[] {
-                    containerDef.getContainerName(),
-                    ContainerGuesser.ADAPTER_IMPL_CONFIG_STRING,
-                    ContainerType.getAll()
-                });
+                containerDef.getContainerName(),
+                ContainerGuesser.ADAPTER_IMPL_CONFIG_STRING,
+                ContainerType.getAll()
+            });
 
         return false;
     }
