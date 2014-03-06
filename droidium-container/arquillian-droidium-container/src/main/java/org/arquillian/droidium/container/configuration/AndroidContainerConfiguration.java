@@ -76,6 +76,8 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
 
     private String adbPort;
 
+    private String adbServerPort = "5037";
+
     private int droneHostPort = 14444;
 
     private int droneGuestPort = 8080;
@@ -261,6 +263,14 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
 
     public void setAdbPort(String adbPort) {
         this.adbPort = adbPort;
+    }
+
+    public String getAdbServerPort() {
+        return this.adbServerPort;
+    }
+
+    public void setAdbServerPort(String adbServerPort) {
+        this.adbServerPort = adbServerPort;
     }
 
     public int getDroneHostPort() {
@@ -495,6 +505,10 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
             Validate.isAdbPortValid(adbPort);
         }
 
+        if (adbServerPort != null) {
+            Validate.isPortValid(adbServerPort);
+        }
+
         if (sdCard != null) {
             Validate.sdCardFileName(sdCard, "File name (or path) of SD card to use '" + sdCard
                 + "' is not valid. Check it is under existing and writable directory does have '.img' suffix.");
@@ -578,6 +592,7 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
         sb.append(String.format("%-40s %s\n", "abi", abi));
         sb.append(String.format("%-40s %s\n", "consolePort", consolePort));
         sb.append(String.format("%-40s %s\n", "adbPort", adbPort));
+        sb.append(String.format("%-40s %s\n", "adbServerPort", adbServerPort));
         sb.append(String.format("%-40s %s\n", "emulatorBootupTimeoutInSeconds", emulatorBootupTimeoutInSeconds));
         sb.append(String.format("%-40s %s\n", "emulatorShutdownTimeoutInSeconds", emulatorShutdownTimeoutInSeconds));
         sb.append(String.format("%-40s %s\n", "emulatorOptions", emulatorOptions));
@@ -607,6 +622,7 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
 
         androidEnvironmentProperties.put("ANDROID_HOME", androidHome);
         androidEnvironmentProperties.put("ANDROID_SDK_HOME", androidSdkHome);
+        androidEnvironmentProperties.put("ANDROID_ADB_SERVER_PORT", adbServerPort);
 
         return androidEnvironmentProperties;
     }

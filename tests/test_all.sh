@@ -12,6 +12,7 @@ ROOT=$(pwd)
 ADB_CMD=$ANDROID_HOME/platform-tools/adb
 EMULATOR_CMD=$ANDROID_HOME/tools/emulator
 EMULATOR_RAM=343
+SERVER_PORT=5037
 
 SELENDROID_VERSION=0.8.0
 SELENDROID_SERVER_APK=selendroid-server-$SELENDROID_VERSION.apk
@@ -212,6 +213,8 @@ function clean_all
 }
 
 #prepare_selendroid $SELENDROID_VERSION
+
+export ANDROID_ADB_SERVER_PORT=$SERVER_PORT
 
 start_emulator $1 $EMULATOR_RAM
 wait_until_started
