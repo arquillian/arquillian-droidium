@@ -32,7 +32,7 @@
     <!-- Properties -->
     <properties>
         <!-- Arquillian Core -->
-        <version.arquillian.core>1.1.2.Final</version.arquillian.core>
+        <version.arquillian.core>1.1.3.Final</version.arquillian.core>
 
         <!-- ShrinkWrap -->
         <version.shrinkwrap_shrinkwrap>1.2.0</version.shrinkwrap_shrinkwrap>
@@ -41,13 +41,13 @@
         <version.jboss.maven.plugin>7.3.Final</version.jboss.maven.plugin>
 
         <!-- Droidium container -->
-        <version.droidium>1.0.0.Alpha4</version.droidium>
+        <version.droidium>1.0.0.Alpha5</version.droidium>
 
         <!-- other plugin versions -->
         <version.compiler.plugin>2.3.1</version.compiler.plugin>
         <version.war.plugin>2.1.1</version.war.plugin>
-        <version.org.jboss.arquillian.drone>1.2.1.Final</version.org.jboss.arquillian.drone>
-        <version.org.jboss.arquillian.graphene>2.0.0.Final</version.org.jboss.arquillian.graphene>
+        <version.org.jboss.arquillian.drone>1.2.4.Final</version.org.jboss.arquillian.drone>
+        <version.org.jboss.arquillian.graphene>2.0.1.Final</version.org.jboss.arquillian.graphene>
 
         <!-- maven-compiler-plugin -->
         <maven.compiler.target>1.6</maven.compiler.target>
