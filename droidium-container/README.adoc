@@ -382,6 +382,12 @@ property is used and `adbPort` property is not, `adb` automatically selects as `
 
 Specifies which adb port should emulator connect to. It has to be odd number in range 5555 - 5585.
 
+----
+<configuration>
+    <property name="adbPort">5559</property>
+</configuration>
+----
+
 ==== adbServerPort
 ===== default: 5037
 
@@ -392,15 +398,6 @@ Specifies ADB server port against which should Droidium connect in order to pars
     <property name="adbServerPort">5038</property>
 </configuration>
 ----
-
-----
-<configuration>
-    <property name="consolePort">5559</property>
-</configuration>
-----
-
-_Be sure that console port differs from adb port only by one and both ports are in that range otherwise 
-adb can have difficulties to find the emulator._
 
 ==== droneHostPort
 ===== default: 14444
