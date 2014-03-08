@@ -382,6 +382,17 @@ property is used and `adbPort` property is not, `adb` automatically selects as `
 
 Specifies which adb port should emulator connect to. It has to be odd number in range 5555 - 5585.
 
+==== adbServerPort
+===== default: 5037
+
+Specifies ADB server port against which should Droidium connect in order to parse emulators. It is +ANDROID_ADB_SERVER_PORT+ property from Droidium point of view.
+
+----
+<configuration>
+    <property name="adbServerPort">5038</property>
+</configuration>
+----
+
 ----
 <configuration>
     <property name="consolePort">5559</property>
