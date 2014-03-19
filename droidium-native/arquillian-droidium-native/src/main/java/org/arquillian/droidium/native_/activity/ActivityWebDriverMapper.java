@@ -52,8 +52,8 @@ public class ActivityWebDriverMapper {
      * Gets WebDriver instance via which a user can control activity. Activity name can be specified as FQDN or its simple name.
      * {@code getInstance("foo.bar.Baz")} is the same as {@code getInstance("Baz")}. In case there are classes which FQDN does
      * not equal but their simple name does, e.g. {@code foo.bar.Baz} and {@code joe.doe.Baz}, when executing
-     * {@code getInstance("Baz")}, {@code NotUniqueWebDriverInstanceException} is thrown since we are not sure
-     * what WebDriver instance a user wants to get.
+     * {@code getInstance("Baz")}, {@code NotUniqueWebDriverInstanceException} is thrown since we are not sure what WebDriver
+     * instance a user wants to get.
      *
      * You do not have to use simple name nor FQDN, it is sufficient to use shortest suffix of {@code activity} which is unique
      * across all suffixes of all activity classes.
@@ -61,11 +61,11 @@ public class ActivityWebDriverMapper {
      *
      * @param activity activity you want to get WebDriver instance for which this driver controls
      * @return WebDriver instance which acts on this activity
-     * @throws WebDriverInstanceNotFoundException thrown in case WebDriver instance for such {@code activity} is not found.
+     * @throws ActivityNotFoundException thrown in case {@code activity} you have requested WebDriver for is not found.
      * @throws NotUniqueWebDriverInstanceException thrown in case there is more than one WebDriver instance for given
      *         {@code activity}.
      */
-    public WebDriver getInstance(String activity) throws WebDriverInstanceNotFoundException,
+    public WebDriver getInstance(String activity) throws ActivityNotFoundException,
         NotUniqueWebDriverInstanceException {
         Validate.notNullOrEmpty(activity, "Activity you want to get an instance of Drone can not be a null object "
             + "nor an empty string!");
@@ -83,15 +83,17 @@ public class ActivityWebDriverMapper {
 
         List<WebDriver> foundDrivers = new ArrayList<WebDriver>();
 
+        boolean activityFound = false;
+
         for (Map.Entry<String, WebDriver> entry : map.entrySet()) {
             if (entry.getKey().endsWith(activity)) {
                 foundDrivers.add(entry.getValue());
+                activityFound = true;
             }
         }
 
-        if (foundDrivers.size() == 0) {
-            throw new WebDriverInstanceNotFoundException("There is not any WebDriver instance found for "
-                + "activity of name '" + activity + "'.");
+        if (!activityFound) {
+            throw new ActivityNotFoundException(String.format("Activity '%s' was not found.", activity));
         }
 
         if (foundDrivers.size() > 1) {

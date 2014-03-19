@@ -93,8 +93,8 @@ public class ActivityWebDriverMapperTestCase {
         mapper.getInstance("Hi");
     }
 
-    @Test(expected = WebDriverInstanceNotFoundException.class)
-    public void webdriverInstanceNotFound() {
+    @Test(expected = ActivityNotFoundException.class)
+    public void activtyNotFound() {
         mapper.getInstance("SomeActivity");
     }
 

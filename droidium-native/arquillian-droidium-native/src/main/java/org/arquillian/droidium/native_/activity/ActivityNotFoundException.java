@@ -17,29 +17,29 @@
 package org.arquillian.droidium.native_.activity;
 
 /**
- * Thrown in case there is not any WebDriver instance found for some Android activity through which it will be controlled.
+ * Thrown in case activity to operate upon was not found.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
-public class WebDriverInstanceNotFoundException extends RuntimeException {
+public class ActivityNotFoundException extends RuntimeException {
 
     private static final long serialVersionUID = 4260016538030217837L;
 
-    public WebDriverInstanceNotFoundException() {
+    public ActivityNotFoundException() {
     }
 
     /**
      * @param message
      */
-    public WebDriverInstanceNotFoundException(String message) {
+    public ActivityNotFoundException(String message) {
         super(message);
     }
 
     /**
      * @param cause
      */
-    public WebDriverInstanceNotFoundException(Throwable cause) {
+    public ActivityNotFoundException(Throwable cause) {
         super(cause);
     }
 
@@ -47,7 +47,7 @@ public class WebDriverInstanceNotFoundException extends RuntimeException {
      * @param message
      * @param cause
      */
-    public WebDriverInstanceNotFoundException(String message, Throwable cause) {
+    public ActivityNotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
 
