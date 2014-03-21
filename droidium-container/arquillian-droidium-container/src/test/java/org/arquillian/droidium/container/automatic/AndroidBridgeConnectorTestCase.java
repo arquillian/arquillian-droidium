@@ -35,6 +35,8 @@ import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.impl.AndroidBridgeConnector;
 import org.arquillian.droidium.container.spi.event.AndroidBridgeInitialized;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStart;
+import org.arquillian.spacelift.process.ProcessExecutor;
+import org.arquillian.spacelift.process.impl.DefaultProcessExecutorFactory;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.test.spi.context.TestContext;
@@ -57,9 +59,23 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class AndroidBridgeConnectorTestCase extends AbstractAndroidTestTestBase {
 
+    private AndroidContainerConfiguration configuration;
+
+    private ProcessExecutor processExecutor;
+
+    private AndroidSDK androidSDK;
+
     @Override
     protected void addExtensions(List<Class<?>> extensions) {
         extensions.add(AndroidBridgeConnector.class);
+    }
+
+    @org.junit.Before
+    public void setup() {
+        configuration = new AndroidContainerConfiguration();
+        processExecutor = new DefaultProcessExecutorFactory().getProcessExecutorInstance();
+        androidSDK = new AndroidSDK(configuration, processExecutor);
+
     }
 
     @Test
@@ -73,9 +89,7 @@ public class AndroidBridgeConnectorTestCase extends AbstractAndroidTestTestBase 
 
         getManager().getContext(TestContext.class).activate(instance);
 
-        AndroidContainerConfiguration configuration = new AndroidContainerConfiguration();
-        AndroidSDK androidSDK = new AndroidSDK(configuration);
-
+        bind(ContainerScoped.class, ProcessExecutor.class, processExecutor);
         bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration);
         bind(ContainerScoped.class, AndroidSDK.class, androidSDK);
 
@@ -99,11 +113,9 @@ public class AndroidBridgeConnectorTestCase extends AbstractAndroidTestTestBase 
         // container 2
         getManager().getContext(ContainerContext.class).activate("container2");
 
-        AndroidContainerConfiguration configuration2 = new AndroidContainerConfiguration();
-        AndroidSDK androidSDK2 = new AndroidSDK(configuration2);
-
-        bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration2);
-        bind(ContainerScoped.class, AndroidSDK.class, androidSDK2);
+        bind(ContainerScoped.class, ProcessExecutor.class, processExecutor);
+        bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration);
+        bind(ContainerScoped.class, AndroidSDK.class, androidSDK);
 
         fire(new AndroidContainerStart());
 

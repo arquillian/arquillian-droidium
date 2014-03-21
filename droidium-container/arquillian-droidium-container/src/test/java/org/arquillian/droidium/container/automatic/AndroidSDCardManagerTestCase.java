@@ -124,7 +124,7 @@ public class AndroidSDCardManagerTestCase extends AbstractAndroidTestTestBase {
         configuration = new AndroidContainerConfiguration();
         setupSDCardConfiguration(configuration, null, SD_SIZE, SD_CARD_LABEL, true);
 
-        androidSDK = new AndroidSDK(configuration);
+        androidSDK = new AndroidSDK(configuration, executor);
 
         bind(ApplicationScoped.class, AndroidContainerConfiguration.class, configuration);
         bind(ApplicationScoped.class, AndroidSDK.class, androidSDK);
@@ -142,7 +142,7 @@ public class AndroidSDCardManagerTestCase extends AbstractAndroidTestTestBase {
         configuration = new AndroidContainerConfiguration();
         setupSDCardConfiguration(configuration, SD_PATH, SD_SIZE, SD_CARD_LABEL, true);
 
-        androidSDK = new AndroidSDK(configuration);
+        androidSDK = new AndroidSDK(configuration, executor);
 
         bind(ApplicationScoped.class, AndroidContainerConfiguration.class, configuration);
         bind(ApplicationScoped.class, AndroidSDK.class, androidSDK);
@@ -163,7 +163,7 @@ public class AndroidSDCardManagerTestCase extends AbstractAndroidTestTestBase {
         configuration = new AndroidContainerConfiguration();
         setupSDCardConfiguration(configuration, SD_PATH, SD_SIZE, SD_CARD_LABEL, true);
 
-        androidSDK = new AndroidSDK(configuration);
+        androidSDK = new AndroidSDK(configuration, executor);
 
         bind(ApplicationScoped.class, AndroidContainerConfiguration.class, configuration);
         bind(ApplicationScoped.class, AndroidSDK.class, androidSDK);
@@ -186,7 +186,7 @@ public class AndroidSDCardManagerTestCase extends AbstractAndroidTestTestBase {
         configuration = new AndroidContainerConfiguration();
         setupSDCardConfiguration(configuration, SD_PATH, SD_SIZE, SD_CARD_LABEL, true);
 
-        androidSDK = new AndroidSDK(configuration);
+        androidSDK = new AndroidSDK(configuration, executor);
 
         bind(ApplicationScoped.class, AndroidContainerConfiguration.class, configuration);
         bind(ApplicationScoped.class, AndroidSDK.class, androidSDK);
@@ -204,7 +204,7 @@ public class AndroidSDCardManagerTestCase extends AbstractAndroidTestTestBase {
         configuration = new AndroidContainerConfiguration();
         setupSDCardConfiguration(configuration, null, SD_SIZE, SD_CARD_LABEL, false);
 
-        androidSDK = new AndroidSDK(configuration);
+        androidSDK = new AndroidSDK(configuration, executor);
 
         bind(ApplicationScoped.class, AndroidContainerConfiguration.class, configuration);
         bind(ApplicationScoped.class, AndroidSDK.class, androidSDK);
@@ -223,7 +223,7 @@ public class AndroidSDCardManagerTestCase extends AbstractAndroidTestTestBase {
         configuration = new AndroidContainerConfiguration();
         setupSDCardConfiguration(configuration, SD_PATH, SD_SIZE, SD_CARD_LABEL, false);
 
-        androidSDK = new AndroidSDK(configuration);
+        androidSDK = new AndroidSDK(configuration, executor);
 
         bind(ApplicationScoped.class, AndroidContainerConfiguration.class, configuration);
         bind(ApplicationScoped.class, AndroidSDK.class, androidSDK);
@@ -242,7 +242,7 @@ public class AndroidSDCardManagerTestCase extends AbstractAndroidTestTestBase {
         configuration = new AndroidContainerConfiguration();
         setupSDCardConfiguration(configuration, SD_PATH, SD_SIZE, SD_CARD_LABEL, false);
 
-        androidSDK = new AndroidSDK(configuration);
+        androidSDK = new AndroidSDK(configuration, executor);
 
         bind(ApplicationScoped.class, AndroidContainerConfiguration.class, configuration);
         bind(ApplicationScoped.class, AndroidSDK.class, androidSDK);

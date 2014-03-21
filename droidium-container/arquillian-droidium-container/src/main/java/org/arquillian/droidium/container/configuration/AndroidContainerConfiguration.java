@@ -115,7 +115,7 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
     // useful when more containers are being used, also affects log filename!
     private boolean logSerialId;
 
-    private String apiLevel;
+    private String target;
 
     public String getAndroidSdkHome() {
         return androidSdkHome;
@@ -181,12 +181,12 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
         this.emulatorBootupTimeoutInSeconds = emulatorBootupTimeoutInSeconds;
     }
 
-    public String getApiLevel() {
-        return apiLevel;
+    public String getTarget() {
+        return target;
     }
 
-    public void setApiLevel(String apiLevel) {
-        this.apiLevel = apiLevel;
+    public void setTarget(String target) {
+        this.target = target;
     }
 
     public String getSdSize() {
@@ -575,8 +575,6 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
             + getKeyalg() + "'.");
         Validate.notNullOrEmpty(getSigalg(), "You must provide valid key algoritm for signing packages. You entered '" +
             getSigalg() + "'.");
-
-        System.out.println(this.toString());
     }
 
     @Override
@@ -588,7 +586,7 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
         sb.append(String.format("%-40s %s\n", "ANDROID_SDK_HOME", androidSdkHome));
         sb.append(String.format("%-40s %s\n", "avdName", avdName));
         sb.append(String.format("%-40s %s\n", "serialId", serialId));
-        sb.append(String.format("%-40s %s\n", "apiLevel", apiLevel));
+        sb.append(String.format("%-40s %s\n", "target", target));
         sb.append(String.format("%-40s %s\n", "abi", abi));
         sb.append(String.format("%-40s %s\n", "consolePort", consolePort));
         sb.append(String.format("%-40s %s\n", "adbPort", adbPort));

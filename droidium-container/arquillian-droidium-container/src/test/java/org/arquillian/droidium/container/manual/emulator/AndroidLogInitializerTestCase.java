@@ -43,6 +43,8 @@ public class AndroidLogInitializerTestCase extends AbstractAndroidTestTestBase {
 
     private AndroidSDK androidSDK;
 
+    private ProcessExecutor processExecutor;
+
     private static final String RUNNING_EMULATOR_AVD_NAME = System.getProperty("emulator.running.avd.name", "test01");
 
     private static final String RUNNING_EMULATOR_CONSOLE_PORT = System.getProperty("emulator.running.console.port", "5554");
@@ -60,13 +62,16 @@ public class AndroidLogInitializerTestCase extends AbstractAndroidTestTestBase {
         configuration.setAvdName(RUNNING_EMULATOR_AVD_NAME);
         configuration.setConsolePort(RUNNING_EMULATOR_CONSOLE_PORT);
         configuration.setLogLevel(LogLevel.VERBOSE);
-        androidSDK = new AndroidSDK(configuration);
+
+        processExecutor = new DefaultProcessExecutorFactory().getProcessExecutorInstance();
+
+        androidSDK = new AndroidSDK(configuration, processExecutor);
 
         getManager().getContext(ContainerContext.class).activate("doesnotmatter");
 
         bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration);
         bind(ContainerScoped.class, AndroidSDK.class, androidSDK);
-        bind(ContainerScoped.class, ProcessExecutor.class, new DefaultProcessExecutorFactory().getProcessExecutorInstance());
+        bind(ContainerScoped.class, ProcessExecutor.class, processExecutor);
         bind(ContainerScoped.class, IdentifierGenerator.class, new AndroidIdentifierGenerator());
     }
 
