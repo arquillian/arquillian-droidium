@@ -135,7 +135,7 @@ public class AndroidVirtualDeviceManager {
                 .add("-n")
                 .add(configuration.getAvdName())
                 .add("-t")
-                .add("android-" + configuration.getApiLevel())
+                .add(configuration.getTarget())
                 .add("-b")
                 .add(configuration.getAbi())
                 .add("-f");

@@ -36,6 +36,8 @@ import org.arquillian.droidium.container.impl.AndroidDeviceSelectorImpl;
 import org.arquillian.droidium.container.spi.event.AndroidBridgeInitialized;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStart;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
+import org.arquillian.spacelift.process.ProcessExecutor;
+import org.arquillian.spacelift.process.impl.DefaultProcessExecutorFactory;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.container.test.AbstractContainerTestBase;
@@ -56,6 +58,8 @@ public class AndroidDeviceSelectorRealDeviceTestCase extends AbstractContainerTe
 
     private AndroidContainerConfiguration configuration;
 
+    private ProcessExecutor processExecutor;
+
     private static final String PHYSICAL_DEVICE_SERIAL_ID = System.getProperty("device.serial.id");
 
     private AndroidSDK androidSDK;
@@ -73,12 +77,15 @@ public class AndroidDeviceSelectorRealDeviceTestCase extends AbstractContainerTe
         configuration.setSerialId(PHYSICAL_DEVICE_SERIAL_ID);
         configuration.validate();
 
-        androidSDK = new AndroidSDK(configuration);
+        processExecutor = new DefaultProcessExecutorFactory().getProcessExecutorInstance();
+
+        androidSDK = new AndroidSDK(configuration, processExecutor);
 
         getManager().getContext(ContainerContext.class).activate("doesnotmatter");
 
         bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration);
         bind(ContainerScoped.class, AndroidSDK.class, androidSDK);
+        bind(ContainerScoped.class, ProcessExecutor.class, processExecutor);
     }
 
     @After

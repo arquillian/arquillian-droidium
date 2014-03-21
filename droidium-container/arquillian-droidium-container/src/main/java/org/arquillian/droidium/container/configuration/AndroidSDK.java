@@ -42,6 +42,9 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.arquillian.spacelift.process.CommandBuilder;
+import org.arquillian.spacelift.process.ProcessExecutor;
+
 /**
  * Represents an Android SDK.
  *
@@ -53,6 +56,8 @@ import java.util.logging.Logger;
 public class AndroidSDK {
 
     private AndroidContainerConfiguration configuration;
+
+    private ProcessExecutor executor;
 
     private static final Logger logger = Logger.getLogger(AndroidSDK.class.getName());
 
@@ -125,7 +130,7 @@ public class AndroidSDK {
                 return current.compareTo(other);
             } catch (NumberFormatException e) {
                 logger.log(Level.INFO, "Unable to compare platforms taking their api level as Integers, "
-                        + "comparison as Strings follows");
+                    + "comparison as Strings follows");
             }
 
             // failed, try to compare as strings
@@ -194,7 +199,9 @@ public class AndroidSDK {
      */
     private enum SystemImage {
 
-        X86("x86"), ARMEABIV7A("armeabi-v7a"), MIPS("mips");
+        X86("x86"),
+        ARMEABIV7A("armeabi-v7a"),
+        MIPS("mips");
 
         private String name;
 
@@ -223,83 +230,198 @@ public class AndroidSDK {
 
     }
 
+    private static final class Target {
+
+        private final SystemImage[] abis = SystemImage.values();
+
+        private String name;
+
+        private String apiLevel;
+
+        private String fullName;
+
+        private String abi;
+
+        public Target(String name, String apiLevel, String fullName) {
+            this.name = name;
+            this.apiLevel = apiLevel;
+            this.fullName = fullName;
+            abi = parseAbi();
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getApiLevel() {
+            return apiLevel;
+        }
+
+        public String getAbi() {
+            return abi;
+        }
+
+        public void setAbi(String abi) {
+            this.abi = abi;
+        }
+
+        @Override
+        public String toString() {
+            return fullName;
+        }
+
+        public boolean matches(String targetLabel) {
+            return toString().equals(targetLabel) || getName().equals(targetLabel) || getApiLevel().equals(targetLabel);
+        }
+
+        private String parseAbi() {
+            // Google Inc.:Google APIs x86:19
+            for (SystemImage abi : abis) {
+                if (fullName.contains(abi.name)) {
+                    return abi.name;
+                }
+            }
+
+            // Google Inc.:Google APIs:18
+            if (fullName.contains("Google Inc.")) {
+                return SystemImage.ARMEABIV7A.name;
+            }
+
+            // android-x
+            return SystemImage.X86.name;
+        }
+
+    }
+
+    private List<Target> getTargets() {
+
+        List<String> targetsOutput = executor.execute(
+            new CommandBuilder()
+                .add(getAndroidPath())
+                .add("list")
+                .add("target")
+                .add("-c")
+                .build()).getOutput();
+
+        Collections.sort(targetsOutput);
+        Collections.reverse(targetsOutput);
+
+        List<Target> targets = new ArrayList<AndroidSDK.Target>();
+
+        for (String target : targetsOutput) {
+            if (!target.trim().isEmpty()) {
+                targets.add(parseTarget(target.trim()));
+            }
+        }
+
+        return targets;
+    }
+
+    private Target parseTarget(String target) {
+        String name = null;
+        String apiLevel = null;
+
+        // form Google Inc.:Google APIs:15
+        if (target.contains(":")) {
+            name = target.substring(0, target.lastIndexOf(":"));
+            apiLevel = target.substring(target.lastIndexOf(":") + 1);
+        } else {
+            // form android-15
+            name = target.substring(0, target.lastIndexOf("-"));
+            apiLevel = target.substring(target.lastIndexOf("-") + 1);
+        }
+
+        return new Target(name, apiLevel, target);
+    }
+
     private final File sdkPath;
     private final File javaPath;
-    private final Platform platform;
+    private Platform platform;
+    private Target target;
 
     private List<Platform> availablePlatforms;
+    private List<Target> availableTargets;
 
     /**
      *
      * @param configuration
      * @throws AndroidContainerConfigurationException
      */
-    public AndroidSDK(AndroidContainerConfiguration configuration) throws AndroidContainerConfigurationException {
+    public AndroidSDK(AndroidContainerConfiguration configuration, ProcessExecutor executor) throws AndroidContainerConfigurationException {
 
         Validate.notNull(configuration, "AndroidSDK configuration must be provided");
+        Validate.notNull(executor, "Process executor for AndroidSDK can no be null object.");
         Validate.isReadableDirectory(configuration.getAndroidHome(), "Unable to read Android SDK from directory "
-                + configuration.getAndroidHome());
+            + configuration.getAndroidHome());
         Validate.isReadableDirectory(configuration.getJavaHome(), "Unable to determine JAVA_HOME");
 
+        this.executor = executor;
         this.sdkPath = new File(configuration.getAndroidHome());
         this.javaPath = new File(configuration.getJavaHome());
-        availablePlatforms = findAvailablePlatforms();
+        availablePlatforms = getPlatforms();
+        availableTargets = getTargets();
 
-        if (availablePlatforms.size() == 0) {
+        if (availableTargets.size() == 0 && configuration.getSerialId() == null) {
+            throw new AndroidContainerConfigurationException("There are not any available targets found on your system!");
+        }
+
+        if (availablePlatforms.size() == 0 && configuration.getSerialId() == null) {
             throw new AndroidContainerConfigurationException("There are not any available platforms found on your system!");
         }
 
-        Platform foundPlatform = null;
+        if (configuration.getSerialId() == null) {
 
-        if (configuration.getApiLevel() == null) {
-            foundPlatform = availablePlatforms.get(availablePlatforms.size() - 1); // the latest one
-            configuration.setApiLevel(foundPlatform.apiLevel);
-        } else {
-            foundPlatform = findPlatformByApiLevel(configuration.getApiLevel());
-        }
+            Platform platform = null;
+            Target target = null;
 
-        if (foundPlatform == null) {
-            logger.log(Level.INFO, "API level {0} you specified in configuration via 'apiLevel' property "
-                    + "is not present on your system. In such case, Droidium tries to find the highest API level "
-                    + "available and sets it as the default one. When your emulator of some AVD name is not present "
-                    + "in the system, Droidium will create it dynamically and this API level will be used when emulator "
-                    + "will be created. All available platforms are: {1}", new Object[] { configuration.getApiLevel(),
-                    getAllPlatforms() });
-            foundPlatform = availablePlatforms.get(availablePlatforms.size() - 1);
-            configuration.setApiLevel(foundPlatform.apiLevel);
-        }
-
-        if (foundPlatform.systemImages.size() == 0) {
-            logger.log(Level.INFO, "There are not any system images found for your API level. You can use Droidium "
-                    + "only with physical devices connected until you specify such API level which has system images "
-                    + "available to use. Your current API level is: {0}", new Object[] { configuration.getApiLevel() });
-        } else {
-            if (configuration.getAbi() == null) {
-                configuration.setAbi(foundPlatform.systemImages.get(0));
+            if (configuration.getTarget() == null) {
+                platform = availablePlatforms.get(availablePlatforms.size() - 1); // the latest one
+                String targetLabel = new StringBuilder().append("android-").append(platform.apiLevel).toString();
+                target = findMatchingTarget(targetLabel);
+                configuration.setTarget(target.fullName);
             } else {
-                if (!foundPlatform.hasSystemImage(configuration.getAbi())) {
-                    logger.log(Level.INFO, "ABI you want to use ({1}), is not present in the system for API level {0}. "
-                            + "Droidium uses whatever comes first among {2} and it is available for your API level.",
-                            new Object[] { configuration.getApiLevel(), configuration.getAbi(), SystemImage.getAll() });
-                    configuration.setAbi(foundPlatform.systemImages.get(0));
-                }
+                target = findMatchingTarget(configuration.getTarget());
+                platform = findPlatformByTarget(target);
+                configuration.setTarget(target.fullName);
             }
+
+            if (platform.systemImages.size() != 0) {
+                if (configuration.getAbi() == null) {
+                    if (platform.hasSystemImage(target.getAbi())) {
+                        configuration.setAbi(target.getAbi());
+                    } else {
+                        logger.log(Level.INFO, "ABI property in configuration was not specified and parsed ABI from target "
+                            + "({0}) property is not present for specified platform", new Object[] { target.getAbi() });
+                    }
+                } else {
+                    if (platform.hasSystemImage(configuration.getAbi())) {
+                        if (!target.getAbi().equals(configuration.getAbi())) {
+                            logger.log(Level.INFO, "ABI property from configuration ({0}) does not match parsed abi from "
+                                + "parsed target ({1}). ABI of target will be the same as ABI from configuration",
+                                new Object[] { configuration.getAbi(), target.getAbi() });
+                            target.setAbi(configuration.getAbi());
+                        }
+                    } else if (platform.hasSystemImage(target.getAbi())) {
+                        logger.log(Level.WARNING, "There is not ABI of name {0}. Setting ABI to {1}.",
+                            new Object[] { configuration.getAbi(), target.getAbi() });
+                        configuration.setAbi(target.getAbi());
+                    } else {
+                        throw new AndroidContainerConfigurationException("Selected platform does not have system images for "
+                            + configuration.getAbi() + " nor " + target.getAbi());
+                    }
+                }
+            } else {
+                throw new AndroidContainerConfigurationException("There are not any available system images for platform " +
+                    platform.toString());
+            }
+
+            this.platform = platform;
+            this.target = target;
         }
 
-        platform = foundPlatform;
         this.configuration = configuration;
-    }
-
-    private String getAllPlatforms() {
-        StringBuilder sb = new StringBuilder();
-        for (Platform p : availablePlatforms) {
-            sb.append("API level: ").append(p.apiLevel).append("(").append(p.name).append("), ");
-        }
-        if (sb.length() > 0) {
-            sb.delete(sb.lastIndexOf(","), sb.length());
-        }
-
-        return sb.toString();
+        System.out.println("Droidium runtime configuration:");
+        System.out.println(this.configuration.toString());
     }
 
     public AndroidContainerConfiguration getConfiguration() {
@@ -310,17 +432,9 @@ public class AndroidSDK {
         this.configuration = configuration;
     }
 
-    private Platform findPlatformByApiLevel(String apiLevel) {
-        for (Platform p : availablePlatforms) {
-            if (p.apiLevel.equals(apiLevel)) {
-                return p;
-            }
-        }
-        return null;
-    }
-
     public enum Layout {
-        LAYOUT_1_5, LAYOUT_2_3
+        LAYOUT_1_5,
+        LAYOUT_2_3
     }
 
     public Layout getLayout() throws AndroidContainerConfigurationException {
@@ -343,9 +457,9 @@ public class AndroidSDK {
     public String getPathForJavaTool(String tool) {
 
         File[] possiblePaths = { new File(javaPath, MessageFormat.format("bin/{0}", tool)),
-                new File(javaPath, MessageFormat.format("bin/{0}.exe", tool)),
-                new File(javaPath, MessageFormat.format("../bin/{0}", tool)),
-                new File(javaPath, MessageFormat.format("../bin/{0}.exe", tool)), };
+            new File(javaPath, MessageFormat.format("bin/{0}.exe", tool)),
+            new File(javaPath, MessageFormat.format("../bin/{0}", tool)),
+            new File(javaPath, MessageFormat.format("../bin/{0}.exe", tool)), };
 
         for (File candidate : possiblePaths) {
             if (candidate.exists() && candidate.isFile() && candidate.canExecute()) {
@@ -355,9 +469,9 @@ public class AndroidSDK {
 
         // construct error message
         StringBuilder exception = new StringBuilder("Could not find tool '")
-                .append(tool)
-                .append("'. Please ensure you've set JAVA_HOME environment property properly and that it points to your Java installation directory. ")
-                .append("Searching at locations: ");
+            .append(tool)
+            .append("'. Please ensure you've set JAVA_HOME environment property properly and that it points to your Java installation directory. ")
+            .append("Searching at locations: ");
         String delimiter = "";
         for (File candidate : possiblePaths) {
             exception.append(delimiter).append(candidate.getAbsolutePath());
@@ -376,29 +490,29 @@ public class AndroidSDK {
     public String getPathForTool(String tool) {
 
         File[] possiblePaths = { new File(sdkPath, MessageFormat.format("tools/{0}", tool)),
-                new File(sdkPath, MessageFormat.format("tools/{0}.exe", tool)),
-                new File(sdkPath, MessageFormat.format("tools/{0}.bat", tool)),
-                new File(sdkPath, MessageFormat.format("{0}/{1}", PLATFORMS_FOLDER_NAME, tool)),
-                new File(sdkPath, MessageFormat.format("{0}/{1}.exe", PLATFORMS_FOLDER_NAME, tool)),
-                new File(sdkPath, MessageFormat.format("{0}/{1}.bat", PLATFORMS_FOLDER_NAME, tool)),
-                new File(sdkPath, MessageFormat.format("{0}/lib/{1}", PLATFORMS_FOLDER_NAME, tool)),
-                new File(sdkPath, MessageFormat.format("{0}/lib/{1}.exe", PLATFORMS_FOLDER_NAME, tool)),
-                new File(sdkPath, MessageFormat.format("{0}/lib/{1}.bat", PLATFORMS_FOLDER_NAME, tool)),
-                new File(sdkPath, MessageFormat.format("{0}/tools/{1}", PLATFORMS_FOLDER_NAME, tool)),
-                new File(sdkPath, MessageFormat.format("{0}/tools/{1}.exe", PLATFORMS_FOLDER_NAME, tool)),
-                new File(sdkPath, MessageFormat.format("{0}/tools/{1}.bat", PLATFORMS_FOLDER_NAME, tool)),
-                new File(sdkPath, MessageFormat.format("{0}/tools/{1}", getPlatform().getName(), tool)),
-                new File(sdkPath, MessageFormat.format("{0}/tools/{1}.exe", getPlatform().getName(), tool)),
-                new File(sdkPath, MessageFormat.format("{0}/tools/{1}.bat", getPlatform().getName(), tool)),
-                new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}", PLATFORMS_FOLDER_NAME, tool)),
-                new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}.exe", PLATFORMS_FOLDER_NAME, tool)),
-                new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}.bat", PLATFORMS_FOLDER_NAME, tool)),
-                new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}", getPlatform().getName(), tool)),
-                new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}.exe", getPlatform().getName(), tool)),
-                new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}.bat", getPlatform().getName(), tool)),
-                new File(sdkPath, MessageFormat.format("{0}/{1}", PLATFORM_TOOLS_FOLDER_NAME, tool)),
-                new File(sdkPath, MessageFormat.format("{0}/{1}.exe", PLATFORM_TOOLS_FOLDER_NAME, tool)),
-                new File(sdkPath, MessageFormat.format("{0}/{1}.bat", PLATFORM_TOOLS_FOLDER_NAME, tool)), };
+            new File(sdkPath, MessageFormat.format("tools/{0}.exe", tool)),
+            new File(sdkPath, MessageFormat.format("tools/{0}.bat", tool)),
+            new File(sdkPath, MessageFormat.format("{0}/{1}", PLATFORMS_FOLDER_NAME, tool)),
+            new File(sdkPath, MessageFormat.format("{0}/{1}.exe", PLATFORMS_FOLDER_NAME, tool)),
+            new File(sdkPath, MessageFormat.format("{0}/{1}.bat", PLATFORMS_FOLDER_NAME, tool)),
+            new File(sdkPath, MessageFormat.format("{0}/lib/{1}", PLATFORMS_FOLDER_NAME, tool)),
+            new File(sdkPath, MessageFormat.format("{0}/lib/{1}.exe", PLATFORMS_FOLDER_NAME, tool)),
+            new File(sdkPath, MessageFormat.format("{0}/lib/{1}.bat", PLATFORMS_FOLDER_NAME, tool)),
+            new File(sdkPath, MessageFormat.format("{0}/tools/{1}", PLATFORMS_FOLDER_NAME, tool)),
+            new File(sdkPath, MessageFormat.format("{0}/tools/{1}.exe", PLATFORMS_FOLDER_NAME, tool)),
+            new File(sdkPath, MessageFormat.format("{0}/tools/{1}.bat", PLATFORMS_FOLDER_NAME, tool)),
+            new File(sdkPath, MessageFormat.format("{0}/tools/{1}", getPlatform().getName(), tool)),
+            new File(sdkPath, MessageFormat.format("{0}/tools/{1}.exe", getPlatform().getName(), tool)),
+            new File(sdkPath, MessageFormat.format("{0}/tools/{1}.bat", getPlatform().getName(), tool)),
+            new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}", PLATFORMS_FOLDER_NAME, tool)),
+            new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}.exe", PLATFORMS_FOLDER_NAME, tool)),
+            new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}.bat", PLATFORMS_FOLDER_NAME, tool)),
+            new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}", getPlatform().getName(), tool)),
+            new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}.exe", getPlatform().getName(), tool)),
+            new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}.bat", getPlatform().getName(), tool)),
+            new File(sdkPath, MessageFormat.format("{0}/{1}", PLATFORM_TOOLS_FOLDER_NAME, tool)),
+            new File(sdkPath, MessageFormat.format("{0}/{1}.exe", PLATFORM_TOOLS_FOLDER_NAME, tool)),
+            new File(sdkPath, MessageFormat.format("{0}/{1}.bat", PLATFORM_TOOLS_FOLDER_NAME, tool)), };
 
         for (File candidate : possiblePaths) {
             if (candidate.exists() && candidate.isFile() && candidate.canExecute()) {
@@ -408,9 +522,9 @@ public class AndroidSDK {
 
         // construct error message
         StringBuilder exception = new StringBuilder("Could not find tool '")
-                .append(tool)
-                .append("'. Please ensure you've set ANDROID_HOME environment property or androidHome property in arquillian.xml and this location contains all required packages")
-                .append("Searching at locations: ");
+            .append(tool)
+            .append("'. Please ensure you've set ANDROID_HOME environment property or androidHome property in arquillian.xml and this location contains all required packages")
+            .append("Searching at locations: ");
         String delimiter = "";
         for (File candidate : possiblePaths) {
             exception.append(delimiter).append(candidate.getAbsolutePath());
@@ -424,9 +538,9 @@ public class AndroidSDK {
 
         // look only into android-sdks/platforms/android-{number}/tools/aapt
         File[] possiblePlatformPaths = {
-                new File(sdkPath, MessageFormat.format("{0}/{1}/tools/{2}", PLATFORMS_FOLDER_NAME, getPlatform(), tool)),
-                new File(sdkPath, MessageFormat.format("{0}/{1}/tools/{2}.exe", PLATFORMS_FOLDER_NAME, getPlatform(), tool)),
-                new File(sdkPath, MessageFormat.format("{0}/{1}/tools/{2}.bat", PLATFORMS_FOLDER_NAME, getPlatform(), tool)) };
+            new File(sdkPath, MessageFormat.format("{0}/{1}/tools/{2}", PLATFORMS_FOLDER_NAME, getPlatform(), tool)),
+            new File(sdkPath, MessageFormat.format("{0}/{1}/tools/{2}.exe", PLATFORMS_FOLDER_NAME, getPlatform(), tool)),
+            new File(sdkPath, MessageFormat.format("{0}/{1}/tools/{2}.bat", PLATFORMS_FOLDER_NAME, getPlatform(), tool)) };
 
         for (File candidate : possiblePlatformPaths) {
             if (candidate.exists() && candidate.isFile() && candidate.canExecute()) {
@@ -508,7 +622,7 @@ public class AndroidSDK {
 
         final File platformsDirectory = new File(sdkPath, PLATFORMS_FOLDER_NAME);
         Validate.isReadableDirectory(platformsDirectory, "Unable to read Android SDK Platforms directory from directory "
-                + platformsDirectory);
+            + platformsDirectory);
 
         if (platform == null) {
             final File[] platformDirectories = platformsDirectory.listFiles();
@@ -517,7 +631,7 @@ public class AndroidSDK {
         } else {
             final File platformDirectory = new File(platform.path);
             Validate.isReadableDirectory(platformsDirectory, "Unable to read Android SDK Platforms directory from directory "
-                    + platformsDirectory);
+                + platformsDirectory);
             return platformDirectory;
         }
     }
@@ -528,8 +642,8 @@ public class AndroidSDK {
      * @throws AndroidConfigurationException
      *
      */
-    private List<Platform> findAvailablePlatforms() throws AndroidContainerConfigurationException {
-        List<Platform> availablePlatforms = new ArrayList<Platform>();
+    private List<Platform> getPlatforms() throws AndroidContainerConfigurationException {
+        List<Platform> platforms = new ArrayList<Platform>();
 
         List<File> platformDirectories = getPlatformDirectories();
         for (File pDir : platformDirectories) {
@@ -539,7 +653,7 @@ public class AndroidSDK {
                 properties.load(new FileInputStream(propFile));
             } catch (IOException e) {
                 throw new AndroidContainerConfigurationException(
-                        "Unable to read platform directory details from its configuration file " + propFile.getAbsoluteFile());
+                    "Unable to read platform directory details from its configuration file " + propFile.getAbsoluteFile());
             }
             if (properties.containsKey(PLATFORM_VERSION_PROPERTY) && properties.containsKey(API_LEVEL_PROPERTY)) {
                 String platform = properties.getProperty(PLATFORM_VERSION_PROPERTY);
@@ -547,15 +661,15 @@ public class AndroidSDK {
                 List<String> systemImages = getSystemImages("android-" + apiLevel);
 
                 Platform p = new Platform(platform, apiLevel, pDir.getAbsolutePath(), systemImages);
-                availablePlatforms.add(p);
+                platforms.add(p);
                 if (logger.isLoggable(Level.FINE)) {
                     logger.fine("Found available platform: " + p.toString());
                 }
             }
         }
 
-        Collections.sort(availablePlatforms);
-        return availablePlatforms;
+        Collections.sort(platforms);
+        return platforms;
     }
 
     /**
@@ -564,21 +678,21 @@ public class AndroidSDK {
      * @return list of platform directories
      */
     private List<File> getPlatformDirectories() {
-        List<File> sourcePropertyFiles = new ArrayList<File>();
+        List<File> foundPlatformDirs = new ArrayList<File>();
 
         final File platformsDirectory = new File(sdkPath, PLATFORMS_FOLDER_NAME);
         Validate.isReadableDirectory(platformsDirectory, "Unable to read Android SDK Platforms directory from directory "
-                + platformsDirectory);
+            + platformsDirectory);
 
         final File[] platformDirectories = platformsDirectory.listFiles();
         for (File file : platformDirectories) {
             // only looking in android- folder so only works on reasonably new
             // sdk revisions..
             if (file.isDirectory() && file.getName().startsWith("android-")) {
-                sourcePropertyFiles.add(file);
+                foundPlatformDirs.add(file);
             }
         }
-        return sourcePropertyFiles;
+        return foundPlatformDirs;
     }
 
     private List<File> getSystemImageDirectories(String systemImageDirName) {
@@ -614,6 +728,31 @@ public class AndroidSDK {
         Collections.reverse(images); // to have x86 as the first one
 
         return images;
+    }
+
+    private Target findMatchingTarget(String targetLabel) throws AndroidContainerConfigurationException {
+        // target from config can be like "19", "android-19",
+        // "Google Inc.:Google APIs:19" or "Google Inc.:Google APIs x86:19"
+
+        for (Target target : availableTargets) {
+            if (target.matches(targetLabel)) {
+                return target;
+            }
+        }
+
+        throw new AndroidContainerConfigurationException(String.format("There is not any target with target name '%s'", targetLabel));
+    }
+
+    private Platform findPlatformByTarget(Target target) {
+
+        for (Platform platform : availablePlatforms) {
+            if (platform.apiLevel.equals(target.apiLevel)) {
+                return platform;
+            }
+        }
+
+        throw new AndroidContainerConfigurationException(
+            String.format("Platform you are trying to find for target '%s' is unknown.", target));
     }
 
 }
