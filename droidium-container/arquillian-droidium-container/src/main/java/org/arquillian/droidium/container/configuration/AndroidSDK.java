@@ -402,7 +402,7 @@ public class AndroidSDK {
                             target.setAbi(configuration.getAbi());
                         }
                     } else if (platform.hasSystemImage(target.getAbi())) {
-                        logger.log(Level.INFO, "There is not ABI of name {0}. Setting ABI to {1}.",
+                        logger.log(Level.WARNING, "There is not ABI of name {0}. Setting ABI to {1}.",
                             new Object[] { configuration.getAbi(), target.getAbi() });
                         configuration.setAbi(target.getAbi());
                     } else {
@@ -733,30 +733,26 @@ public class AndroidSDK {
     private Target findMatchingTarget(String targetLabel) throws AndroidContainerConfigurationException {
         // target from config can be like "19", "android-19",
         // "Google Inc.:Google APIs:19" or "Google Inc.:Google APIs x86:19"
-        Target target = null;
 
-        for (Target t : availableTargets) {
-            if (t.matches(targetLabel)) {
-                target = t;
-                break;
+        for (Target target : availableTargets) {
+            if (target.matches(targetLabel)) {
+                return target;
             }
         }
 
-        if (target == null) {
-            throw new AndroidContainerConfigurationException(String.format("There is not any target with target name '%s'", targetLabel));
-        }
-
-        return target;
+        throw new AndroidContainerConfigurationException(String.format("There is not any target with target name '%s'", targetLabel));
     }
 
     private Platform findPlatformByTarget(Target target) {
 
-        for (Platform p : availablePlatforms) {
-            if (p.apiLevel.equals(target.apiLevel)) {
-                return p;
+        for (Platform platform : availablePlatforms) {
+            if (platform.apiLevel.equals(target.apiLevel)) {
+                return platform;
             }
         }
-        return null;
+
+        throw new AndroidContainerConfigurationException(
+            String.format("Platform you are trying to find for target '%s' is unknown.", target));
     }
 
 }
