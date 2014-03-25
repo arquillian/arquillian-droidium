@@ -38,7 +38,7 @@
     <!-- Configuration of Droidium extension for web testing -->
     <extension qualifier="droidium-web">
         <!-- Path of Android server APK -->
-        <property name="serverApk">android-server-2.32.0.apk</property>
+        <property name="serverApk">android-server-2.38.0.apk</property>
         <!-- This will enable debug output on Android device -->
         <!-- You can alternatively use property "options" where you write it explicitly like -e debug true -->
         <!-- property name="debug">true</property-->

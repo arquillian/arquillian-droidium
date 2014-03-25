@@ -28,7 +28,7 @@
 
         <version.shrinkwrap_shrinkwrap>1.2.0</version.shrinkwrap_shrinkwrap>
         <version.arquillian.core>1.1.2.Final</version.arquillian.core>
-        <version.arquillian.drone>1.2.3.Final</version.arquillian.drone>
+        <version.arquillian.drone>1.2.4.Final</version.arquillian.drone>
 
         <version.junit>4.11</version.junit>
         <version.org.jboss.as>7.1.1.Final</version.org.jboss.as>

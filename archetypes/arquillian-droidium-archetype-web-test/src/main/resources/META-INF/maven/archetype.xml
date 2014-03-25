@@ -23,6 +23,6 @@
     </testResources>
     <resources>
         <resource>README.adoc</resource>
-        <resource>android-server-2.32.0.apk</resource>
+        <resource>android-server-2.38.0.apk</resource>
     </resources>
 </archetype>

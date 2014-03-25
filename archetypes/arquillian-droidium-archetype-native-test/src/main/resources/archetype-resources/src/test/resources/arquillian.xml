@@ -21,7 +21,7 @@
         for testing native Android applications via Selendroid -->
     <extension qualifier="droidium-native">
         <!-- path you your selendroid-server.apk -->
-        <property name="serverApk">selendroid-server-0.5.1.apk</property>
+        <property name="serverApk">selendroid-server-0.9.0.apk</property>
     </extension>
 
     <!-- Support for Graphene WebDriver which is injected into test while using Selendroid -->

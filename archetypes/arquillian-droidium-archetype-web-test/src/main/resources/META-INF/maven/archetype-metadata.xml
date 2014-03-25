@@ -37,7 +37,7 @@
             <directory></directory>
             <includes>
                 <include>README.adoc</include>
-                <include>android-server-2.32.0.apk</include>
+                <include>android-server-2.38.0.apk</include>
             </includes>
         </fileSet>
     </fileSets>

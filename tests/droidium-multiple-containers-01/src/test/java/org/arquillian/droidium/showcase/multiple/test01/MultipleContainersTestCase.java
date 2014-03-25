@@ -50,7 +50,7 @@ public class MultipleContainersTestCase {
     @TargetsContainer("android")
     public static Archive<?> createAndroidDeployment() {
         return ShrinkWrap.createFromZipFile(JavaArchive.class,
-            new File("selendroid-test-app-" + System.getProperty("selendroid.version", "0.8.0") + ".apk"));
+            new File("selendroid-test-app-" + System.getProperty("selendroid.version", "0.9.0") + ".apk"));
     }
 
     @Deployment(name = "jbossas")

@@ -30,7 +30,7 @@
         for testing native Android applications via Selendroid -->
     <extension qualifier="droidium-native">
         <!-- path to your selendroid-server.apk -->
-        <property name="serverApk">selendroid-server-0.8.0.apk</property>
+        <property name="serverApk">selendroid-server-${selendroid.version}.apk</property>
     </extension>
 
     <extension qualifier="webdriver">

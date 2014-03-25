@@ -30,7 +30,7 @@
             <directory></directory>
             <includes>
                 <include>README.adoc</include>
-                <include>selendroid-server-0.5.0.apk</include>
+                <include>selendroid-server-0.9.0.apk</include>
             </includes>
         </fileSet>
     </fileSets>

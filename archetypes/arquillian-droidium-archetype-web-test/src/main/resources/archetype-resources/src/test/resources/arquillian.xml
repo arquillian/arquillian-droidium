@@ -45,7 +45,7 @@
     <!-- Configuration of Droidium extension for web testing -->
     <extension qualifier="droidium-web">
         <!-- Path of Android server APK -->
-        <property name="serverApk">android-server-2.32.0.apk</property>
+        <property name="serverApk">android-server-2.38.0.apk</property>
     </extension>
 
     <!-- Configuration of webdriver extension -->

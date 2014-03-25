@@ -49,7 +49,7 @@ object SelendroidTestAppScalaTestCase {
     @Deployment
     @Instrumentable
     def deployment() : JavaArchive =
-        ShrinkWrap createFromZipFile (classOf[JavaArchive], new File("selendroid-test-app-" + System.getProperty("selendroid.version", "0.8.0") + ".apk"))
+        ShrinkWrap createFromZipFile (classOf[JavaArchive], new File("selendroid-test-app-" + System.getProperty("selendroid.version", "0.9.0") + ".apk"))
 
 }
 
