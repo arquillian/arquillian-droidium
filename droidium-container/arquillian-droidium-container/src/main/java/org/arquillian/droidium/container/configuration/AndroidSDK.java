@@ -1,5 +1,5 @@
 /*
-s * JBoss, Home of Professional Open Source
+ * JBoss, Home of Professional Open Source
  * Copyright 2012, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
@@ -234,11 +234,11 @@ public class AndroidSDK {
 
         private final SystemImage[] abis = SystemImage.values();
 
-        private String name;
+        private final String name;
 
-        private String apiLevel;
+        private final String apiLevel;
 
-        private String fullName;
+        private final String fullName;
 
         private String abi;
 
@@ -246,7 +246,7 @@ public class AndroidSDK {
             this.name = name;
             this.apiLevel = apiLevel;
             this.fullName = fullName;
-            abi = parseAbi();
+            this.abi = parseAbi();
         }
 
         public String getName() {
@@ -275,6 +275,7 @@ public class AndroidSDK {
         }
 
         private String parseAbi() {
+            // Starting with Android 4.4, there is x86 in image name
             // Google Inc.:Google APIs x86:19
             for (SystemImage abi : abis) {
                 if (fullName.contains(abi.name)) {
@@ -282,9 +283,22 @@ public class AndroidSDK {
                 }
             }
 
+            int apiLevelInt = -1;
+            try {
+                apiLevelInt = Integer.parseInt(apiLevel);
+            } catch (NumberFormatException e) {
+                throw new AndroidContainerConfigurationException("Android API Level is not a number (" + apiLevel + ")");
+            }
+
             // Google Inc.:Google APIs:18
-            if (fullName.contains("Google Inc.")) {
+            // Starting with Android 4.0, there is ARMv7a by default
+            if (fullName.contains("Google Inc.") && apiLevelInt > 14) {
                 return SystemImage.ARMEABIV7A.name;
+            }
+            // we do not support Android 3.x
+            // Android 2.3, however contains X86 only
+            else if (fullName.contains("Google Inc.") && apiLevelInt == 10) {
+                return SystemImage.X86.name;
             }
 
             // android-x
@@ -390,8 +404,8 @@ public class AndroidSDK {
                     if (platform.hasSystemImage(target.getAbi())) {
                         configuration.setAbi(target.getAbi());
                     } else {
-                        logger.log(Level.INFO, "ABI property in configuration was not specified and parsed ABI from target "
-                            + "({0}) property is not present for specified platform", new Object[] { target.getAbi() });
+                        logger.log(Level.WARNING, "ABI property in configuration was not specified and parsed ABI from target "
+                            + "({0}) property is not present for specified platform.", new Object[] { target.getAbi() });
                     }
                 } else {
                     if (platform.hasSystemImage(configuration.getAbi())) {
