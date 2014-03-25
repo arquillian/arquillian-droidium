@@ -136,9 +136,14 @@ public class AndroidVirtualDeviceManager {
                 .add(configuration.getAvdName())
                 .add("-t")
                 .add(configuration.getTarget())
-                .add("-b")
-                .add(configuration.getAbi())
                 .add("-f");
+            // add ABI only if it was specified, append it to the command
+            // Droidium might not be correctly autodiscovering ABI based on Target
+            if(configuration.getAbi() != null && !"".equals(configuration.getAbi())) {
+                cb.add("-b")
+                .add(configuration.getAbi());
+            }
+
 
             if (configuration.getSdCard() != null && new File(configuration.getSdCard()).exists()) {
                 cb.add("-c").add(configuration.getSdCard());
