@@ -79,7 +79,10 @@
 
         <!-- Spacelift -->
         <version.spacelift>1.0.0.Alpha1</version.spacelift>
-        
+
+        <!-- Screenshooter -->
+        <version.recorder.screenshooter>1.0.0.Alpha1</version.recorder.screenshooter>
+
         <!-- Other versions -->
         <version.apiviz>1.3.2.GA</version.apiviz>
         <version.maven.animal.sniffer>1.9</version.maven.animal.sniffer>
@@ -100,6 +103,7 @@
         <module>droidium-native</module>
         <module>droidium-web</module>
         <module>archetypes</module>
+        <module>droidium-screenshooter</module>
     </modules>
 
     <!-- Build -->

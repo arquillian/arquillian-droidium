@@ -20,12 +20,10 @@ import java.io.File;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.native_.api.Instrumentable;
-import org.arquillian.droidium.container.api.Screenshooter;
-import org.arquillian.droidium.container.api.ScreenshotType;
+import org.arquillian.extension.recorder.screenshooter.Screenshooter;
+import org.arquillian.extension.recorder.screenshooter.ScreenshotType;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.container.test.api.TargetsContainer;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
@@ -41,28 +39,25 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 /**
- * Android Droidium testing with WebDriver and Selendroid server - showing of taking screenshots.
- *
- * Screenshots are taken with an injected instance of {@link Screenshooter}. {@link AndroidDevice} itself does not take
- * screenshots, we shifted responsibility of taking screenshots to {@link Screenshooter} in order to be more flexible.
- *
+ * 
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
- *
+ * 
  */
 @RunWith(Arquillian.class)
 @RunAsClient
 public class SelendroidTestAppTestCase {
 
-    /**
-     * @return deployment for Android device, the whole test application from Selendroid test is deployed without any change. We
-     *         can deploy APK archive in spite of Shrinkwrap's disability to deal with such format since APK is internally just
-     *         ZIP file anyway.
-     */
-    @Deployment(name = "android")
+    @ArquillianResource
+    Screenshooter screenshooter;
+
+    @Drone
+    WebDriver driver;
+
+    @Deployment
     @Instrumentable
-    @TargetsContainer("android")
     public static Archive<?> createDeployment() {
-        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.6.0.apk"));
+        return ShrinkWrap.createFromZipFile(JavaArchive.class,
+            new File("selendroid-test-app-" + System.getProperty("selendroid.version", "0.9.0") + ".apk"));
     }
 
     private static final String USER_NAME = "john";
@@ -79,26 +74,19 @@ public class SelendroidTestAppTestCase {
 
     /**
      * Simple test which tries to register some user.
-     *
+     * 
      * @param screenshooter takes screenshots of {@code device}
-     * @param device Android device itself, it is not needed in tests as such since we interact only with
-     *        {@code WebDriver} injection.
+     * @param device Android device itself, it is not needed in tests as such since we interact only with {@code WebDriver}
+     *        injection.
      * @param driver {@code WebDriver} injection which sends commands to Selendroid server installed on the Android device.
      */
     @Test
     @InSequence(1)
-    @OperateOnDeployment("android")
-    public void test01(@ArquillianResource Screenshooter screenshooter,
-        @ArquillianResource AndroidDevice device, @Drone WebDriver driver) {
+    public void test01(@ArquillianResource AndroidDevice device) {
 
         device.getActivityManagerProvider().getActivityManager().startActivity("io.selendroid.testapp.HomeScreenActivity");
 
-        // to check we are good
-        Assert.assertNotNull(screenshooter);
-        Assert.assertNotNull(device);
-        Assert.assertNotNull(driver);
-
-        // where to save taken screenshots, by default to target/
+        // where to save taken screenshots, by default to target/screenshots
         screenshooter.setScreenshotTargetDir("target/screenshots-1");
 
         // take it!
@@ -145,7 +133,7 @@ public class SelendroidTestAppTestCase {
         screenshooter.setScreenshotTargetDir("target/screenshots-2");
 
         // from now on, take all images as BMP if not specified otherwise
-        screenshooter.setScreensthotImageFormat(ScreenshotType.BMP);
+        screenshooter.setScreensthotType(ScreenshotType.BMP);
 
         // you can name it, it will be PNG image by default
         screenshooter.takeScreenshot("myscreenshot1");

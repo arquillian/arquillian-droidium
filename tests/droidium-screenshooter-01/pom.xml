@@ -20,23 +20,24 @@
     <artifactId>arquillian-droidium-screenshooter-test-01</artifactId>
     <version>1.0.0.Beta1-SNAPSHOT</version>
 
-    <description>Proof-of-concept Arquillian Droidium screenshooter tests with WebDriver integration.</description>
+    <description>Proof-of-concept Arquillian Droidium test with Droidium screenshooter</description>
 
     <!-- Properties -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <version.shrinkwrap_shrinkwrap>1.2.0</version.shrinkwrap_shrinkwrap>
-        <version.org.jboss.arquillian.drone>1.2.0.Final</version.org.jboss.arquillian.drone>
-        <version.arquillian.core>1.1.2.Final</version.arquillian.core>
+        <version.org.jboss.arquillian.drone>1.2.4.Final</version.org.jboss.arquillian.drone>
+        <version.arquillian.core>1.1.3.Final</version.arquillian.core>
 
-        <version.junit>4.8.1</version.junit>
+        <version.junit>4.11</version.junit>
 
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
 
         <android.avd.name>testingEmulator</android.avd.name>
         <android.emulator.options></android.emulator.options>
+        <selendroid.version>0.9.0</selendroid.version>
     </properties>
 
     <!-- Dependency Management -->
@@ -81,6 +82,12 @@
                 <version>${project.version}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>org.arquillian.extension</groupId>
+                <artifactId>arquillian-droidium-screenshooter</artifactId>
+                <version>${project.version}</version>
+                <scope>test</scope>
+            </dependency>            
         </dependencies>
     </dependencyManagement>
 
@@ -102,6 +109,11 @@
             <type>pom</type>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.arquillian.extension</groupId>
+            <artifactId>arquillian-droidium-screenshooter</artifactId>
+            <scope>test</scope>
+        </dependency>  
         <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
             <artifactId>arquillian-junit-container</artifactId>

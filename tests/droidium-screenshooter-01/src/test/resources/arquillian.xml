@@ -17,10 +17,8 @@
     <group qualifier="containers" default="true">
         <container qualifier="android" default="true">
             <configuration>
-                <!-- Name of Android container to start or use during tests. This property is filtered 
-                    meaning it is set in profile in pom.xml under the same name of the property. -->
+                <!-- Name of Android container to start or use during tests. -->
                 <property name="avdName">${android.avd.name}</property>
-                <property name="consolePort">5554</property>
                 <property name="emulatorOptions">${android.emulator.options}</property>
                 <property name="emulatorBootupTimeoutInSeconds">600</property>
                 <property name="logType">disable</property>
@@ -28,14 +26,26 @@
         </container>
     </group>
 
+    <!-- Arquillian Reporter and screenshooter setup -->
+    <!-- https://github.com/arquillian/arquillian-recorder -->
+    <!-- https://github.com/arquillian/arquillian-droidium/tree/master/droidium-screenshooter -->
+
+    <extension qualifier="reporter">
+        <property name="report">html</property>
+    </extension>
+
+    <extension qualifier="screenshooter">
+        <property name="takeBeforeTest">true</property>
+        <property name="takeAfterTest">true</property>
+    </extension>
+
     <!-- Support for Arquillian Droidium Native extension 
         for testing native Android applications via Selendroid -->
     <extension qualifier="droidium-native">
-        <!-- path you your selendroid-server.apk -->
-        <property name="serverApk">selendroid-server-0.6.0.apk</property>
+        <!-- path to your selendroid-server.apk -->
+        <property name="serverApk">selendroid-server-${selendroid.version}.apk</property>
     </extension>
 
-    <!-- Support for Graphene WebDriver which is injected into test while using Selendroid -->
     <extension qualifier="webdriver">
         <property name="browser">android</property>
         <property name="remoteAddress">http://localhost:8080/wd/hub</property>

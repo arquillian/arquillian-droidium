@@ -1,12 +1,16 @@
-== Arquillian Droidium screenshooter test - WebDriver
-
-This feature is not supported by Droidium itself from version 1.0.0.Alpha3.
+== Arquillian Droidium screenshooter test
 
 This demo projects shows how to take screenshots of your devices while you are doing tests.
 
-Screenshots are taken via injected `Screenshooter` into test method (test class). 
-`Screenshooter` is container scoped so when injected, it will be covered by the instance 
-of `AndroidDevice`. You take screenshots like
+It uses https://github.com/arquillian/arquillian-recorder[Arquillian Reporter extension].
+
+Screenshots can be taken automatically depending on how you setup 
+https://github.com/arquillian/arquillian-droidium/tree/master/resources/droidium-screenshooter[Arquillian Droidium screenshooter].
+
+Screenshots can be taken also manually as this test manifests. Screenshots are taken via 
+injected `Screenshooter` into test method (test class). `Screenshooter` is container 
+scoped so when injected, it will be covered by the instance of `AndroidDevice`. 
+You take screenshots like follows:
 
 ----
 @ArqullianResource Screenshooter screenshooter;
@@ -40,7 +44,7 @@ You can set the format of screenshots you want to take explicitly. From that poi
 all screenshots will be of that format when not specified otherwise.
 
 ----
-screenshooter.setScreensthotImageFormat(ScreenshotType.BMP);
+screenshooter.setScreensthotType(ScreenshotType.BMP);
 // all screenshots will be by default BMP images from now on
 ----
 

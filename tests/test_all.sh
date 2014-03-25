@@ -193,7 +193,7 @@ function droidium-screenshooter-01
     cd $ROOT
     cd droidium-screenshooter-01
     copy_all .
-    mvn clean test -Dandroid.avd.name=$1
+    mvn clean test -Dandroid.avd.name=$1 -Dselendroid.version=$2
     check_status $0 $?
     clean_env
 }
@@ -227,7 +227,7 @@ droidium-multiple-deployments-01 $1 $SELENDROID_VERSION
 droidium-native-01 $1 $SELENDROID_VERSION
 droidium-native-01-scala $1 $SELENDROID_VERSION
 droidium-native-02 $1
-#droidium-screenshooter-01 $1
+droidium-screenshooter-01 $1 $SELENDROID_VERSION
 droidium-web-01 $1 $2
 
 clean_all
