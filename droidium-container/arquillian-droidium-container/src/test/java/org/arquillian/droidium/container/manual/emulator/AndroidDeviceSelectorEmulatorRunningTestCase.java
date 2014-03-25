@@ -93,8 +93,8 @@ public class AndroidDeviceSelectorEmulatorRunningTestCase extends AbstractContai
         configuration.setConsolePort(RUNNING_EMULATOR_CONSOLE_PORT);
         configuration.validate();
 
-        androidSDK = new AndroidSDK(configuration);
         processExecutor = new DefaultProcessExecutorFactory().getProcessExecutorInstance();
+        androidSDK = new AndroidSDK(configuration, processExecutor);
 
         getManager().getContext(ContainerContext.class).activate("doesnotmatter");
 

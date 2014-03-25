@@ -65,18 +65,16 @@ import org.mockito.runners.MockitoJUnitRunner;
 /**
  * Tests installing of Android server APK file for web-related testing.
  *
- * This test expects that AVD is started and no Android server APK is installed on it.
- * You can specify name and console port of already started emulator by system properties
- * placed on the command line while testing with Maven like this:
+ * This test expects that AVD is started and no Android server APK is installed on it. You can specify name and console port of
+ * already started emulator by system properties placed on the command line while testing with Maven like this:
  *
  * <p>
  * {@code mvn clean package -Pandroid-web -Demulator.name=nameOfAVD -Demulator.port=5554 -Dandroid.server.path=path_to_server}
  * </p>
  *
  * <p>
- * The default value of {@code emulator.avd.name} is "test01".</br>
- * The default value of {@code emulator.avd.port} is "5554".</br>
- * The default value of {@code android.server.path} is "android-server-2.6.0.apk".
+ * The default value of {@code emulator.avd.name} is "test01".</br> The default value of {@code emulator.avd.port} is
+ * "5554".</br> The default value of {@code android.server.path} is "android-server-2.6.0.apk".
  * </p>
  *
  * Please use Android 2.3.3 emulator since APK of version 2.6.0 is going to be installed.
@@ -129,8 +127,8 @@ public class AndroidWebDriverSupportEmulatorTestCase extends AbstractAndroidTest
         configuration.setEmulatorBootupTimeoutInSeconds(EMULATOR_BOOTUP_IN_SECONDS);
         configuration.validate();
 
-        androidSDK = new AndroidSDK(configuration);
         processExecutor = new DefaultProcessExecutorFactory().getProcessExecutorInstance();
+        androidSDK = new AndroidSDK(configuration, processExecutor);
 
         getManager().getContext(ContainerContext.class).activate("doesnotmatter");
 

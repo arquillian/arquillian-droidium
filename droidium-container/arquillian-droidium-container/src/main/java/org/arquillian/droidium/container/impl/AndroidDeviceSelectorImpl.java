@@ -133,8 +133,8 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
                 androidDeviceReady.fire(new AndroidDeviceReady(device));
                 return;
             } catch (AndroidExecutionException ex) {
-                logger.log(Level.INFO, "Unable to connect to physical device with serial ID {0}. ",
-                    new Object[] { configuration.getSerialId() });
+                throw new AndroidExecutionException(String.format("Unable to connect to physical device with serial ID '%s'. ",
+                    configuration.getSerialId()), ex);
             }
         }
 

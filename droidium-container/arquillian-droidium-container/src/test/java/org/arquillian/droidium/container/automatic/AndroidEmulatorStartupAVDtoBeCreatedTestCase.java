@@ -64,9 +64,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * Tests creating of AVD name from scratch and staring of emulator of newly created AVD.
- *
+ * 
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
- *
+ * 
  */
 @RunWith(MockitoJUnitRunner.class)
 public class AndroidEmulatorStartupAVDtoBeCreatedTestCase extends AbstractContainerTestBase {
@@ -75,7 +75,7 @@ public class AndroidEmulatorStartupAVDtoBeCreatedTestCase extends AbstractContai
 
     private static final String AVD_ABI = System.getProperty("emulator.startup.abi", "x86");
 
-    private static final String API_LEVEL = System.getProperty("emulator.startup.apiLevel", "10");
+    private static final String TARGET = System.getProperty("emulator.startup.target", "10");
 
     private static final String EMULATOR_STARTUP_TIMEOUT = System.getProperty("emulator.startup.timeout", "600");
 
@@ -105,13 +105,13 @@ public class AndroidEmulatorStartupAVDtoBeCreatedTestCase extends AbstractContai
         configuration.setAbi(AVD_ABI);
         configuration.setEmulatorBootupTimeoutInSeconds(Integer.parseInt(EMULATOR_STARTUP_TIMEOUT));
         configuration.setEmulatorOptions(EMULATOR_OPTIONS);
-        configuration.setApiLevel(API_LEVEL);
+        configuration.setTarget(TARGET);
         configuration.setAvdName(AVD_GENERATED_NAME);
 
         configuration.validate();
 
-        androidSDK = new AndroidSDK(configuration);
         processorExecutor = new DefaultProcessExecutorFactory().getProcessExecutorInstance();
+        androidSDK = new AndroidSDK(configuration, processorExecutor);
 
         getManager().getContext(ContainerContext.class).activate("doesnotmatter");
 

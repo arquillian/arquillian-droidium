@@ -152,7 +152,7 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidCo
 
         executor.get().setEnvironment(conf.getAndroidSystemEnvironmentProperties());
 
-        this.androidSDK.set(new AndroidSDK(conf));
+        this.androidSDK.set(new AndroidSDK(conf, executor.get()));
         this.idGenerator.set(new AndroidIdentifierGenerator());
         this.signer.set(new APKSigner(this.executor.get(), this.androidSDK.get(), conf));
         this.androidApplicationHelper.set(new AndroidApplicationHelper(executor.get(), androidSDK.get()));

@@ -106,8 +106,8 @@ public class AndroidEmulatorStartupAVDcreatedTestCase extends AbstractContainerT
         configuration.setEmulatorOptions(EMULATOR_OPTIONS);
         configuration.validate();
 
-        androidSDK = new AndroidSDK(configuration);
         processExecutor = new DefaultProcessExecutorFactory().getProcessExecutorInstance();
+        androidSDK = new AndroidSDK(configuration, processExecutor);
 
         getManager().getContext(ContainerContext.class).activate("doesnotmatter");
 

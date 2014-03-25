@@ -151,7 +151,6 @@
                     <version>true</version>
                     <author>true</author>
                     <keywords>true</keywords>
-                    <additionalparam>-sourceclasspath ${project.build.outputDirectory}</additionalparam>
                     <stylesheetfile>${project.parent.parent.basedir}/javadoc/stylesheet.css</stylesheetfile>
                 </configuration>
                 <executions>
