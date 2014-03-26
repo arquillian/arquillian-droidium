@@ -163,7 +163,7 @@ public class SelendroidRebuilder {
                 .add("-M")
                 .add(androidManifest.getAbsolutePath())
                 .add("-I")
-                .add(androidSDK.getPlatform() + "/android.jar")
+                .add(new File(androidSDK.getPlatformDirectory(), "android.jar").getAbsolutePath())
                 .add("-F")
                 .add(dummyAPK.getAbsolutePath())
                 .build();
