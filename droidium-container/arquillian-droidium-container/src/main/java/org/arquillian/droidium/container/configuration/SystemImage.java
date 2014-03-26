@@ -63,6 +63,14 @@ enum SystemImage {
             }
         }
 
+        // for android-19 up images are in "android-wear" dir or in "default"
+        for (SystemImage imageCandidate : SystemImage.values()) {
+            File pathToImage = new File(new File(dir, "default"), imageCandidate.name);
+            if (pathToImage.exists() && pathToImage.isDirectory()) {
+                availableImages.add(imageCandidate);
+            }
+        }
+
         return availableImages;
     }
 

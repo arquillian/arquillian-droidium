@@ -77,14 +77,13 @@ class Platform {
     }
 
     public boolean hasSystemImage(String systemImageName) {
-
-        try {
-            SystemImage img = SystemImage.valueOf(systemImageName);
-            return systemImages.contains(img);
-        } catch (Exception e) {
-            return false;
+        for (SystemImage systemImage : systemImages) {
+            if (systemImage.getName().equals(systemImageName)) {
+                return true;
+            }
         }
 
+        return false;
     }
 
     public static Platform findPlatformByTarget(File sdkPath, Target target) {

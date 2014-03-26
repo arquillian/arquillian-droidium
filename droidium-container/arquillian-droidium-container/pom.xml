@@ -250,6 +250,27 @@
                 </plugins>
             </build>
         </profile>
+        <!-- Requires to have full android-10 and android-19 platform installed -->
+        <profile>
+            <id>android-manual-configuration</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <skipTests>false</skipTests>
+                            <includes>
+                                <include>org/arquillian/droidium/container/manual/configuration/**</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <!-- Be sure that:
                 1) You have real Android mobile phone connected to PC via USB.

@@ -105,8 +105,8 @@ public class AndroidSDK {
             // check whether there was target defined in configuration
             String targetId = configuration.getTarget();
             if (targetId != null && !"".equals(targetId)) {
-                currentPlatform = Platform.findPlatformByTarget(sdkPath, currentTarget);
                 currentTarget = Target.findMatchingTarget(executor, getAndroidPath(), targetId);
+                currentPlatform = Platform.findPlatformByTarget(sdkPath, currentTarget);
                 // update runtime configuration
                 configuration.setTarget(currentTarget.getFullName());
             }
@@ -292,6 +292,7 @@ public class AndroidSDK {
 
     /**
      * Returns directory for current platform
+     *
      * @return
      */
     public File getPlatformDirectory() {
