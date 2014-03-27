@@ -26,8 +26,6 @@ import org.arquillian.spacelift.process.impl.DefaultProcessExecutorFactory;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  *
@@ -36,7 +34,6 @@ import org.mockito.runners.MockitoJUnitRunner;
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
-@RunWith(MockitoJUnitRunner.class)
 public class AndroidSDKTestCase {
 
     private static final String LOWEST_TARGET = "android-10";
