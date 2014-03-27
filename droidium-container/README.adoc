@@ -294,8 +294,8 @@ That number can be find out by command `adb devices -l` after your Android devic
 ==== avdName
 ===== default: not defined
 
-`avdName` property is about telling Android container which Android Virtual Device it should use. When you are 
-creating some AVD, you have to enter its name. This property is that name.
+Name of Android Virtual Device you want to start. If there is no such device available, it will generate an AVD named by +avdName+ name. 
+If left blank, an unique +avdName+ will be generated.
 
 ----
 <configuration>
@@ -306,21 +306,22 @@ creating some AVD, you have to enter its name. This property is that name.
 ==== abi
 ===== default: `x86`
 
-Pretty straightforward. Which ABI your container should use. When you are going to create some AVD dynamically for some 
-`apiLevel` and there is not such ABI available for that level, whatever comes first among x86, armeabi or mips is used.
+Pretty straightforward. Which ABI your container should use. When you are going to create an AVD dynamically for a
++target+ and there is not such ABI available for that level, whatever comes first among +x86+, +armeabi-v7a+, +android-wear/armeabi-v7a+ or +mips+ is used.
 
 ----
 <configuration>
     <property name="abi">armeabi-v7a</property>
+    <property name="abi">android-wear/armeabi-v7a</property>
 </configuration>
 ----
 
 ==== target
-===== default: the highest available
+===== default: the highest pure Android API Level available
 
 Sets your target you want to use when you are going to create emulator from scratch. Possible values for this property 
-are the same as the output of +android list targets -c+. You can use simple api level string as well. When you 
-do not specify +abi+ property, it tries to match whatever available comes first among x86, armeabi or mips 
+are the same as the output of +android list targets -c+. You can use integer value of API level you want to target as well. When you 
+do not specify +abi+ property, it tries to match whatever available comes first among +x86+, +armeabi-v7a+, +android-wear/armeabi-v7a+  or +mips+ 
 for that target. In case you use Google API target, it has ABI specified in it. When it is not there, it uses arm.
 
 ----
