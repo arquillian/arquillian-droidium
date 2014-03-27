@@ -16,13 +16,13 @@
  */
 package org.arquillian.droidium.container.manual.configuration;
 
-import junit.framework.Assert;
 
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfigurationException;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.spacelift.process.ProcessExecutor;
 import org.arquillian.spacelift.process.impl.DefaultProcessExecutorFactory;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -60,7 +60,7 @@ public class AndroidSDKTestCase {
 
         AndroidSDK sdk = new AndroidSDK(configuration, processExecutor);
 
-        Assert.assertEquals("x86", sdk.getConfiguration().getAbi());
+        Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
         Assert.assertEquals(LATEST_TARGET, sdk.getConfiguration().getTarget());
     }
 
@@ -73,7 +73,7 @@ public class AndroidSDKTestCase {
 
         AndroidSDK sdk = new AndroidSDK(configuration, processExecutor);
 
-        Assert.assertEquals("x86", sdk.getConfiguration().getAbi());
+        Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
         Assert.assertEquals(LATEST_TARGET, sdk.getConfiguration().getTarget());
     }
 
@@ -86,7 +86,7 @@ public class AndroidSDKTestCase {
 
         AndroidSDK sdk = new AndroidSDK(configuration, processExecutor);
 
-        Assert.assertEquals("x86", sdk.getConfiguration().getAbi());
+        Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
         Assert.assertEquals(LATEST_TARGET, sdk.getConfiguration().getTarget());
     }
 
@@ -98,7 +98,7 @@ public class AndroidSDKTestCase {
 
         AndroidSDK sdk = new AndroidSDK(configuration, processExecutor);
 
-        Assert.assertEquals("x86", sdk.getConfiguration().getAbi());
+        Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
         Assert.assertEquals(LATEST_TARGET, sdk.getConfiguration().getTarget());
     }
 
@@ -111,7 +111,7 @@ public class AndroidSDKTestCase {
 
         AndroidSDK sdk = new AndroidSDK(configuration, processExecutor);
 
-        Assert.assertEquals("x86", sdk.getConfiguration().getAbi());
+        Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
         Assert.assertEquals(LATEST_TARGET, sdk.getConfiguration().getTarget());
     }
 
@@ -124,7 +124,7 @@ public class AndroidSDKTestCase {
 
         AndroidSDK sdk = new AndroidSDK(configuration, processExecutor);
 
-        Assert.assertEquals("x86", sdk.getConfiguration().getAbi());
+        Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
         Assert.assertEquals(LATEST_TARGET, sdk.getConfiguration().getTarget());
     }
 
@@ -136,7 +136,7 @@ public class AndroidSDKTestCase {
 
         AndroidSDK sdk = new AndroidSDK(configuration, processExecutor);
 
-        Assert.assertEquals("armeabi-v7a", sdk.getConfiguration().getAbi());
+        Assert.assertEquals("default/armeabi-v7a", sdk.getConfiguration().getAbi());
         Assert.assertEquals(GOOGLE_LATEST_TARGET_ARMEABI_V7A, sdk.getConfiguration().getTarget());
     }
 
@@ -148,7 +148,7 @@ public class AndroidSDKTestCase {
 
         AndroidSDK sdk = new AndroidSDK(configuration, processExecutor);
 
-        Assert.assertEquals("x86", sdk.getConfiguration().getAbi());
+        Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
         Assert.assertEquals(GOOGLE_LATEST_TARGET_X86, sdk.getConfiguration().getTarget());
     }
 
@@ -161,7 +161,7 @@ public class AndroidSDKTestCase {
 
         AndroidSDK sdk = new AndroidSDK(configuration, processExecutor);
 
-        Assert.assertEquals("x86", sdk.getConfiguration().getAbi());
+        Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
         Assert.assertEquals(GOOGLE_LATEST_TARGET_X86, sdk.getConfiguration().getTarget());
     }
 
@@ -187,7 +187,7 @@ public class AndroidSDKTestCase {
 
         AndroidSDK sdk = new AndroidSDK(configuration, processExecutor);
 
-        Assert.assertEquals("x86", sdk.getConfiguration().getAbi());
+        Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
         Assert.assertEquals(LATEST_TARGET, sdk.getConfiguration().getTarget());
     }
 
@@ -204,7 +204,7 @@ public class AndroidSDKTestCase {
 
         AndroidSDK sdk = new AndroidSDK(configuration, processExecutor);
 
-        Assert.assertEquals("x86", sdk.getConfiguration().getAbi());
+        Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
         Assert.assertEquals(LOWEST_TARGET, sdk.getConfiguration().getTarget());
     }
 
@@ -215,7 +215,7 @@ public class AndroidSDKTestCase {
 
         AndroidContainerConfiguration configuration = new AndroidContainerConfiguration();
 
-        configuration.setAbi("x86");
+        configuration.setAbi("default/x86");
         configuration.setTarget("android-100");
 
         new AndroidSDK(configuration, processExecutor);
