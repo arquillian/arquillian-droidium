@@ -19,6 +19,8 @@ package org.arquillian.droidium.container.configuration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,12 +34,13 @@ import org.arquillian.spacelift.process.ProcessExecutor;
  *
  */
 class Target {
+    private static final Logger log = Logger.getLogger(Target.class.getName());
 
     protected static final Pattern ANDROID_LEVEL_PATTERN = Pattern.compile("[0-9]+");
 
     protected static final Pattern ANDROID_PATTERN = Pattern.compile("android-([0-9]+)");
 
-    protected static final Pattern GOOGLE_ADDON_PATTERN = Pattern.compile("Google Inc.:Google APIs( (x86))?:([0-9]+)");
+    protected static final Pattern GOOGLE_ADDON_PATTERN = Pattern.compile("Google Inc.:([\\w ]+):([0-9]+)");
 
     private final String name;
 
@@ -70,20 +73,30 @@ class Target {
         }
         else if ((m = GOOGLE_ADDON_PATTERN.matcher(name)).matches()) {
             this.name = name;
-            this.apiLevel = Integer.parseInt(m.group(3));
+            this.apiLevel = Integer.parseInt(m.group(2));
             this.isGoogleAddon = true;
-            String abiName = m.group(2);
-            if (abiName != null && !"".equals(abiName)) {
-                this.imagesSubdirectory = "addon-google_apis_" + abiName + "-google-" + apiLevel + "/images";
+            String type = m.group(1);
+            // here, we do parsing of type
+            if (type.startsWith("Google APIs") && type.contains("x86")) {
+                this.imagesSubdirectory = "addon-google_apis_x86-google-" + apiLevel + "/images";
+            }
+            else if (type.startsWith("Google APIs")) {
+                this.imagesSubdirectory = "addon-google_apis-google-" + apiLevel + "/images";
+            }
+            else if (type.startsWith("Google TV")) {
+                this.imagesSubdirectory = "addon-google_tv_addon-google-" + apiLevel + "/images";
+            }
+            else if (type.startsWith("Glass")) {
+                throw new AndroidContainerConfigurationException("Glass does not represent a valid Droidium target, no emulator is available: "
+                    + name);
             }
             else {
-                this.imagesSubdirectory = "addon-google_apis-google-" + apiLevel + "/images";
+                throw new AndroidContainerConfigurationException("Invalid Android target name: " + name);
             }
         }
         else {
             throw new AndroidContainerConfigurationException("Invalid Android target name: " + name);
         }
-
     }
 
     public String getName() {
@@ -150,8 +163,12 @@ class Target {
         List<Target> targets = new ArrayList<Target>();
 
         for (String target : targetsOutput) {
-            if (target != null && !"".equals(target.trim())) {
-                targets.add(new Target(target.trim()));
+            try {
+                if (target != null && !"".equals(target.trim())) {
+                    targets.add(new Target(target.trim()));
+                }
+            } catch (AndroidContainerConfigurationException e) {
+                log.log(Level.FINE, "Unknown target \"{0}\", Droidium will ignore it", target);
             }
         }
 

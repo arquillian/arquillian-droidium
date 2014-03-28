@@ -22,7 +22,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
 
 /**
  * Tests parsing of Android Target
@@ -55,10 +54,10 @@ public class TargetRegexTest {
         Matcher m = Target.GOOGLE_ADDON_PATTERN.matcher("Google Inc.:Google APIs:16");
         Assert.assertThat(m.matches(), is(true));
 
-        String x86 = m.group(1);
-        Assert.assertThat(x86, is(nullValue()));
+        String type = m.group(1);
+        Assert.assertThat(type, is("Google APIs"));
 
-        int apiLevel = Integer.parseInt(m.group(3));
+        int apiLevel = Integer.parseInt(m.group(2));
         Assert.assertThat(apiLevel, is(16));
     }
 
@@ -67,10 +66,10 @@ public class TargetRegexTest {
         Matcher m = Target.GOOGLE_ADDON_PATTERN.matcher("Google Inc.:Google APIs x86:19");
         Assert.assertThat(m.matches(), is(true));
 
-        String x86 = m.group(2);
-        Assert.assertThat(x86, is("x86"));
+        String type = m.group(1);
+        Assert.assertThat(type, is("Google APIs x86"));
 
-        int apiLevel = Integer.parseInt(m.group(3));
+        int apiLevel = Integer.parseInt(m.group(2));
         Assert.assertThat(apiLevel, is(19));
     }
 
