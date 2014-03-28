@@ -53,22 +53,24 @@ class Platform {
     private static final String API_LEVEL_PROPERTY = "AndroidVersion.ApiLevel";
 
     private final String name;
-    private final String apiLevel;
+    private final int apiLevel;
     private final File path;
-    private final List<SystemImage> systemImages;
 
-    public Platform(String name, String apiLevel, File path, List<SystemImage> systemImages) {
+    private Platform(String name, String apiLevel, File path) throws AndroidContainerConfigurationException {
         this.name = name;
-        this.apiLevel = apiLevel;
         this.path = path;
-        this.systemImages = systemImages;
+        try {
+            this.apiLevel = Integer.parseInt(apiLevel);
+        } catch (NumberFormatException e) {
+            throw new AndroidContainerConfigurationException("Unable to identify API level of platform, was: " + apiLevel);
+        }
     }
 
     public String getName() {
         return name;
     }
 
-    public String getApiLevel() {
+    public int getApiLevel() {
         return apiLevel;
     }
 
@@ -76,20 +78,10 @@ class Platform {
         return path;
     }
 
-    public boolean hasSystemImage(String systemImageName) {
-        for (SystemImage systemImage : systemImages) {
-            if (systemImage.getName().equals(systemImageName)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public static Platform findPlatformByTarget(File sdkPath, Target target) {
 
         for (Platform platform : getAvailablePlatforms(sdkPath)) {
-            if (platform.getApiLevel().equals(target.getApiLevel())) {
+            if (platform.getApiLevel() == target.getApiLevel()) {
                 return platform;
             }
         }
@@ -99,7 +91,7 @@ class Platform {
     }
 
     /**
-     * Initialize the maps matching platform and api levels form the source properties files.
+     * Initialize the maps matching platform and api levels from the source properties files.
      *
      * @param sdkPath Path to Android SDK
      * @return
@@ -122,7 +114,7 @@ class Platform {
             if (properties.containsKey(PLATFORM_VERSION_PROPERTY) && properties.containsKey(API_LEVEL_PROPERTY)) {
                 String platform = properties.getProperty(PLATFORM_VERSION_PROPERTY);
                 String apiLevel = properties.getProperty(API_LEVEL_PROPERTY);
-                Platform p = new Platform(platform, apiLevel, pDir, SystemImage.getSystemImagesForPlatform(sdkPath, apiLevel));
+                Platform p = new Platform(platform, apiLevel, pDir);
                 platforms.add(p);
                 log.log(Level.FINE, "Found available platform {0}", p);
 
@@ -133,19 +125,9 @@ class Platform {
         Collections.sort(platforms, new Comparator<Platform>() {
             @Override
             public int compare(Platform o1, Platform o2) {
-
-                // try to do a numeric comparison
-                try {
-                    Integer current = Integer.parseInt(o1.apiLevel);
-                    Integer other = Integer.parseInt(o2.apiLevel);
-                    return other.compareTo(current);
-                } catch (NumberFormatException e) {
-                    log.log(Level.INFO,
-                        "Unable to compare platforms taking their api level as Integers, comparison as Strings follows");
-                }
-
-                // failed, try to compare as strings
-                return o2.apiLevel.compareTo(o1.apiLevel);
+                Integer current = Integer.valueOf(o1.apiLevel);
+                Integer other = Integer.valueOf(o2.apiLevel);
+                return other.compareTo(current);
             }
         });
 
@@ -180,10 +162,17 @@ class Platform {
     }
 
     @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Platform: ");
+        sb.append(name).append("/API level ").append(apiLevel).append(" at ").append(path);
+        return sb.toString();
+    }
+
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((apiLevel == null) ? 0 : apiLevel.hashCode());
+        result = prime * result + apiLevel;
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + ((path == null) ? 0 : path.hashCode());
         return result;
@@ -191,44 +180,27 @@ class Platform {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (obj == null) {
+        if (obj == null)
             return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (getClass() != obj.getClass())
             return false;
-        }
         Platform other = (Platform) obj;
-        if (apiLevel == null) {
-            if (other.apiLevel != null) {
-                return false;
-            }
-        } else if (!apiLevel.equals(other.apiLevel)) {
+        if (apiLevel != other.apiLevel)
             return false;
-        }
         if (name == null) {
-            if (other.name != null) {
+            if (other.name != null)
                 return false;
-            }
-        } else if (!name.equals(other.name)) {
+        } else if (!name.equals(other.name))
             return false;
-        }
         if (path == null) {
-            if (other.path != null) {
+            if (other.path != null)
                 return false;
-            }
-        } else if (!path.equals(other.path)) {
+        } else if (!path.equals(other.path))
             return false;
-        }
         return true;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("Platform: ");
-        sb.append(name).append("/API level ").append(apiLevel).append(" at ").append(path);
-        return sb.toString();
-    }
+
 }

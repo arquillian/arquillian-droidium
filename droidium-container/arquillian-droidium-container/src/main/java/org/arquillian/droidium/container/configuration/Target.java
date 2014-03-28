@@ -19,6 +19,10 @@ package org.arquillian.droidium.container.configuration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.arquillian.spacelift.process.CommandBuilder;
 import org.arquillian.spacelift.process.ProcessExecutor;
@@ -30,72 +34,103 @@ import org.arquillian.spacelift.process.ProcessExecutor;
  *
  */
 class Target {
+    private static final Logger log = Logger.getLogger(Target.class.getName());
+
+    protected static final Pattern ANDROID_LEVEL_PATTERN = Pattern.compile("[0-9]+");
+
+    protected static final Pattern ANDROID_PATTERN = Pattern.compile("android-([0-9]+)");
+
+    protected static final Pattern GOOGLE_ADDON_PATTERN = Pattern.compile("Google Inc.:([\\w ]+):([0-9]+)");
 
     private final String name;
 
-    private final String apiLevel;
+    private final boolean isGoogleAddon;
 
-    private final String fullName;
+    private final String imagesSubdirectory;
 
-    private final String abi;
+    private final int apiLevel;
 
-    public Target(String fullName) throws AndroidContainerConfigurationException {
+    protected Target(String name) throws AndroidContainerConfigurationException, IllegalArgumentException {
 
-        // form Google Inc.:Google APIs:15
-        if (fullName.contains(":")) {
-            this.name = fullName.substring(0, fullName.lastIndexOf(":"));
-            this.apiLevel = fullName.substring(fullName.lastIndexOf(":") + 1);
-        } else {
-            // form android-15
-            this.name = fullName.substring(0, fullName.lastIndexOf("-"));
-            this.apiLevel = fullName.substring(fullName.lastIndexOf("-") + 1);
+        if (name == null) {
+            throw new IllegalArgumentException("Android target was null");
         }
 
-        this.fullName = fullName;
-        this.abi = parseAbi();
-    }
+        // get additional information about target
+        Matcher m = null;
+        if ((m = ANDROID_LEVEL_PATTERN.matcher(name)).matches()) {
+            this.name = "android-" + name;
+            this.apiLevel = Integer.parseInt(m.group());
+            this.isGoogleAddon = false;
+            this.imagesSubdirectory = "android-" + apiLevel;
+        }
 
-    public Target(String name, String apiLevel, String fullName) throws AndroidContainerConfigurationException {
-        this.name = name;
-        this.apiLevel = apiLevel;
-        this.fullName = fullName;
-        this.abi = parseAbi();
+        else if ((m = ANDROID_PATTERN.matcher(name)).matches()) {
+            this.name = name;
+            this.apiLevel = Integer.parseInt(m.group(1));
+            this.isGoogleAddon = false;
+            this.imagesSubdirectory = "android-" + apiLevel;
+        }
+        else if ((m = GOOGLE_ADDON_PATTERN.matcher(name)).matches()) {
+            this.name = name;
+            this.apiLevel = Integer.parseInt(m.group(2));
+            this.isGoogleAddon = true;
+            String type = m.group(1);
+            // here, we do parsing of type
+            if (type.startsWith("Google APIs") && type.contains("x86")) {
+                this.imagesSubdirectory = "addon-google_apis_x86-google-" + apiLevel + "/images";
+            }
+            else if (type.startsWith("Google APIs")) {
+                this.imagesSubdirectory = "addon-google_apis-google-" + apiLevel + "/images";
+            }
+            else if (type.startsWith("Google TV")) {
+                this.imagesSubdirectory = "addon-google_tv_addon-google-" + apiLevel + "/images";
+            }
+            else if (type.startsWith("Glass")) {
+                throw new AndroidContainerConfigurationException("Glass does not represent a valid Droidium target, no emulator is available: "
+                    + name);
+            }
+            else {
+                throw new AndroidContainerConfigurationException("Invalid Android target name: " + name);
+            }
+        }
+        else {
+            throw new AndroidContainerConfigurationException("Invalid Android target name: " + name);
+        }
     }
 
     public String getName() {
         return name;
     }
 
-    public String getApiLevel() {
+    public boolean isGoogleAddon() {
+        return isGoogleAddon;
+    }
+
+    public String getImagesSubdirectory() {
+        return imagesSubdirectory;
+    }
+
+    public int getApiLevel() {
         return apiLevel;
-    }
-
-    public String getAbi() {
-        return abi;
-    }
-
-    public String getFullName() {
-        return fullName;
     }
 
     @Override
     public String toString() {
-        return fullName;
+        return name;
     }
 
-    public boolean matches(String targetLabel) {
-        return fullName.equals(targetLabel) || getName().equals(targetLabel) || getApiLevel().equals(targetLabel);
+    public static Target findMatchingTarget(ProcessExecutor executor, String androidToolPath, int apiLevel) {
+        return findMatchingTarget(executor, androidToolPath, String.valueOf(apiLevel));
     }
 
     public static Target findMatchingTarget(ProcessExecutor executor, String androidToolPath, String targetLabel)
         throws AndroidContainerConfigurationException {
 
-        // target from config can be like "19", "android-19",
-        // "Google Inc.:Google APIs:19" or "Google Inc.:Google APIs x86:19"
-        for (Target target : getAvailableTargets(executor, androidToolPath)) {
-            if (target.matches(targetLabel)) {
-                return target;
-            }
+        Target t = new Target(targetLabel);
+        List<Target> availableTargets = getAvailableTargets(executor, androidToolPath);
+        if (availableTargets.contains(t)) {
+            return t;
         }
 
         throw new AndroidContainerConfigurationException(String.format("There is not any target with target name '%s'",
@@ -128,8 +163,12 @@ class Target {
         List<Target> targets = new ArrayList<Target>();
 
         for (String target : targetsOutput) {
-            if (target != null && !"".equals(target.trim())) {
-                targets.add(new Target(target.trim()));
+            try {
+                if (target != null && !"".equals(target.trim())) {
+                    targets.add(new Target(target.trim()));
+                }
+            } catch (AndroidContainerConfigurationException e) {
+                log.log(Level.FINE, "Unknown target \"{0}\", Droidium will ignore it", target);
             }
         }
 
@@ -140,35 +179,41 @@ class Target {
         return targets;
     }
 
-    private String parseAbi() throws AndroidContainerConfigurationException {
-        // Starting with Android 4.4, there is x86 in image name
-        // Google Inc.:Google APIs x86:19
-        for (SystemImage abi : SystemImage.values()) {
-            if (fullName.contains(abi.getName())) {
-                return abi.getName();
-            }
-        }
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + apiLevel;
+        result = prime * result + ((imagesSubdirectory == null) ? 0 : imagesSubdirectory.hashCode());
+        result = prime * result + (isGoogleAddon ? 1231 : 1237);
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        return result;
+    }
 
-        int apiLevelInt = -1;
-        try {
-            apiLevelInt = Integer.parseInt(apiLevel);
-        } catch (NumberFormatException e) {
-            throw new AndroidContainerConfigurationException("Android API Level is not a number (" + apiLevel + ")");
-        }
-
-        // Google Inc.:Google APIs:18
-        // Starting with Android 4.0, there is ARMv7a by default
-        if (fullName.contains("Google Inc.") && apiLevelInt > 14) {
-            return SystemImage.ARMEABIV7A.getName();
-        }
-        // we do not support Android 3.x
-        // Android 2.3, however contains X86 only
-        else if (fullName.contains("Google Inc.") && apiLevelInt == 10) {
-            return SystemImage.X86.getName();
-        }
-
-        // android-x
-        return SystemImage.X86.getName();
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Target other = (Target) obj;
+        if (apiLevel != other.apiLevel)
+            return false;
+        if (imagesSubdirectory == null) {
+            if (other.imagesSubdirectory != null)
+                return false;
+        } else if (!imagesSubdirectory.equals(other.imagesSubdirectory))
+            return false;
+        if (isGoogleAddon != other.isGoogleAddon)
+            return false;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
+            return false;
+        return true;
     }
 
 }

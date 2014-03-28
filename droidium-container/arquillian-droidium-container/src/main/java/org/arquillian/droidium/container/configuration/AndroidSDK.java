@@ -33,8 +33,6 @@ package org.arquillian.droidium.container.configuration;
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.arquillian.spacelift.process.ProcessExecutor;
 
@@ -47,8 +45,6 @@ import org.arquillian.spacelift.process.ProcessExecutor;
  * @author Manfred Moser <manfred@simpligility.com>
  */
 public class AndroidSDK {
-
-    private static final Logger logger = Logger.getLogger(AndroidSDK.class.getName());
 
     /**
      * folder name for the SDK sub folder that contains the different platform versions
@@ -69,6 +65,11 @@ public class AndroidSDK {
      * folder name of system images in SDK
      */
     public static final String SYSTEM_IMAGES_FOLDER_NAME = "system-images";
+
+    /**
+     * folder name of add-ons in SDK
+     */
+    public static final String ADD_ONS_FOLDER_NAME = "add-ons";
 
     private AndroidContainerConfiguration configuration;
 
@@ -108,49 +109,18 @@ public class AndroidSDK {
                 currentTarget = Target.findMatchingTarget(executor, getAndroidPath(), targetId);
                 currentPlatform = Platform.findPlatformByTarget(sdkPath, currentTarget);
                 // update runtime configuration
-                configuration.setTarget(currentTarget.getFullName());
+                configuration.setTarget(currentTarget.getName());
             }
             // get target based on latest platform
             else {
-                currentTarget = Target.findMatchingTarget(executor,
-                    getAndroidPath(),
-                    "android-" + currentPlatform.getApiLevel());
+                currentTarget = Target.findMatchingTarget(executor, getAndroidPath(), currentPlatform.getApiLevel());
                 // update runtime configuration
-                configuration.setTarget(currentTarget.getFullName());
+                configuration.setTarget(currentTarget.getName());
             }
 
             // we have select target and platform, lets try to get system image
-            String abiID = configuration.getAbi();
-            if (abiID != null && !"".equals(abiID)) {
-                // platform has ABI defined by user in configuration
-                if (currentPlatform.hasSystemImage(abiID)) {
-                    if (!abiID.equals(currentTarget.getAbi())) {
-                        logger.log(Level.WARNING, "ABI property from configuration ({0}) does not match parsed abi from "
-                            + "parsed target ({1}). ABI of target will be the same as ABI from configuration",
-                            new Object[] { abiID, currentTarget.getAbi() });
-                    }
-                }
-                // platform has ABI defined by target
-                else if (currentPlatform.hasSystemImage(currentTarget.getAbi())) {
-                    logger.log(Level.WARNING, "There is not ABI of name {0}, specified in configuration. Setting ABI to {1}.",
-                        new Object[] { abiID, currentTarget.getAbi() });
-                    configuration.setAbi(currentTarget.getAbi());
-                }
-                // there is no ABI we can use
-                else {
-                    throw new AndroidContainerConfigurationException("Selected platform does not have system images for "
-                        + configuration.getAbi() + " nor " + currentTarget.getAbi());
-                }
-            }
-            // ABI was not selected, let's try to guess it by target
-            else {
-                if (currentPlatform.hasSystemImage(currentTarget.getAbi())) {
-                    configuration.setAbi(currentTarget.getAbi());
-                } else {
-                    logger.log(Level.WARNING, "ABI property in configuration was not specified and parsed ABI from target "
-                        + "({0}) property is not present for specified platform.", new Object[] { currentTarget.getAbi() });
-                }
-            }
+            SystemImage image = SystemImage.getSystemImageForTarget(sdkPath, currentTarget, configuration.getAbi());
+            configuration.setAbi(image.getAbi());
         }
 
         System.out.println("Droidium runtime configuration: ");
