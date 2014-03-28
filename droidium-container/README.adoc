@@ -14,6 +14,30 @@ overriden by module _arquillian-droidium-multiple-containers_ via which it is po
 container adapter e.g. JBoss AS with Android container adapter itself. Because of this, you can then deploy 
 your web application into JBoss AS container and you test it on your mobile phone (emulator or physical device).
 
+== How to prepare emulator for testing?
+
+In general, you can test against physical device or emulator. Regarding emulator, there are some useful tips how to 
+speed your testing experience.
+
+First of all, try to use emulator which uses x86 as ABI. When you do not need to test particulary against some ABI, consider 
+x86 as ABI of your choice. Emulator can be faster with "Use host GPU" check button enabled upon emulator creation as well. While having 
+GPU enabled gives you some more responsivity, there can be issues when you are taking screenshots with Droidium screenshooter since 
+having GPU enabled may lead to taken screenshots which are just black. This issue is known in upstream and it is not fault of Droidium itself.
+
+Secondly, try to strip all eye-candy effects like transitions. Go to Settings - Developer - Options and turn off all animation-scale-like options.
+You can experiment with other developer options according to your preferencies.
+
+Additionally, try to consider turning off all sound effects in Settings - Sound when you do not need them. There is +-noaudio+ switch for +emulator+ 
+command you can pass to +emulatorOptions+ to Droidium when you have not set that directly in emulator itself.
+
+When emulator is started up dynamically upon test execution, Droidium will automatically unlock it so you do not have to do it 
+manually on your own.
+
+In order to have your emulator ready every time, try to set Settings - Display - Sleep to the maximum of 30 minutes.
+
+When you run on reasonably new target, you can try to use ART as your runtime instead of Dalvik and see if your emulator is faster. 
+You can set that in Settings - Select runtime. Restart emulator after that.
+
 == Setup
 
 When you want to use Droidium, you have to basically put into `pom.xml` just this dependency:
@@ -655,8 +679,9 @@ space. For every test run, other working directory is created every time.
 
 == Connection logic of Android container
 
+* If serialId was specified, Droidium tries to connect to that physical device. When not successful, it fails.
 * If console port was specified but AVD name was not, we try to connect to running emulator which listens to specified port.
-* If we fail to connect, {@link AndroidExecutionException} is thrown.
+** If we fail to connect, AndroidExecutionException is thrown.
 * If AVD name was specified but console port was not, we try to connect to the first running emulator of such AVD name.
 * If both AVD name and console port were specified, we try to connect to this combination.
 * If we fail to get device in all above steps:
