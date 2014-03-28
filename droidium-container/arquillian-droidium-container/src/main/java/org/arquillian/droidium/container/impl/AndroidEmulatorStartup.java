@@ -205,8 +205,6 @@ public class AndroidEmulatorStartup {
 
         CommandBuilder cb = new CommandBuilder();
 
-        cb.add(androidSDK.get().getAdbPath(), "-s", serialNumber, "shell", "input", "keyevent", "82");
-
         Command unlockPart1 = cb.add(androidSDK.get().getAdbPath(), "-s", serialNumber, "shell", "input", "keyevent", "82").build();
         Command unlockPart2 = cb.add(androidSDK.get().getAdbPath(), "-s", serialNumber, "shell", "input", "keyevent", "4").build();
 
