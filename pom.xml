@@ -69,13 +69,13 @@
         <version.arquillian.drone>1.2.4.Final</version.arquillian.drone>
 
         <!-- ShrinkWrap -->
-        <version.shrinkwrap_shrinkwrap>1.2.0</version.shrinkwrap_shrinkwrap>
+        <version.shrinkwrap_shrinkwrap>1.2.2</version.shrinkwrap_shrinkwrap>
 
         <!-- Testing AS7 container -->
         <version.org.jboss.as>7.1.1.Final</version.org.jboss.as>
 
         <!-- ddmlib -->
-        <version.ddmlib>22.7.1</version.ddmlib>
+        <version.ddmlib>22.7.2</version.ddmlib>
 
         <!-- Spacelift -->
         <version.spacelift>1.0.0.Alpha1</version.spacelift>
@@ -84,7 +84,6 @@
         <version.recorder.screenshooter>1.0.0.Alpha1</version.recorder.screenshooter>
 
         <!-- Other versions -->
-        <version.apiviz>1.3.2.GA</version.apiviz>
         <version.maven.animal.sniffer>1.9</version.maven.animal.sniffer>
         <version.httpclient>4.2.5</version.httpclient>
         <version.commons.io>1.3.2</version.commons.io>
