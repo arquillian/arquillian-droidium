@@ -31,6 +31,12 @@ import org.arquillian.droidium.native_.instrumentation.InstrumentationRemoveDeci
 import org.arquillian.droidium.native_.selendroid.SelendroidDeploymentInstaller;
 import org.arquillian.droidium.native_.selendroid.SelendroidDeploymentUninstaller;
 import org.jboss.arquillian.core.spi.LoadableExtension;
+import org.jboss.arquillian.drone.spi.Configurator;
+import org.jboss.arquillian.drone.spi.Destructor;
+import org.jboss.arquillian.drone.spi.Instantiator;
+import org.jboss.arquillian.drone.webdriver.factory.AndroidBrowserCapabilities;
+import org.jboss.arquillian.drone.webdriver.factory.AndroidDriverFactory;
+import org.jboss.arquillian.drone.webdriver.spi.BrowserCapabilities;
 
 /**
  * Arquillian Droidium Native extension
@@ -68,6 +74,12 @@ public class DroidiumNativeExtension implements LoadableExtension {
 
         // services
         builder.service(ActivityManagerProvider.class, DroidiumNativeActivityManagerProvider.class);
+
+        // Android driver
+        builder.service(BrowserCapabilities.class, AndroidBrowserCapabilities.class);
+        builder.service(Configurator.class, AndroidDriverFactory.class);
+        builder.service(Instantiator.class, AndroidDriverFactory.class);
+        builder.service(Destructor.class, AndroidDriverFactory.class);
     }
 
 }

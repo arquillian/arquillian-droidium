@@ -30,6 +30,8 @@
 
     <!-- Properties -->
     <properties>
+        <version.selendroid>0.8.0</version.selendroid>
+
         <!-- Other versions -->
         <version.mockito>1.9.5</version.mockito>
     </properties>
@@ -67,6 +69,17 @@
         <dependency>
             <groupId>org.jboss.arquillian.extension</groupId>
             <artifactId>arquillian-drone-spi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.extension</groupId>
+            <artifactId>arquillian-drone-webdriver</artifactId>
+        </dependency>
+
+        <!-- Selendroid Driver -->
+        <dependency>
+            <groupId>io.selendroid</groupId>
+            <artifactId>selendroid-client</artifactId>
+            <version>${version.selendroid}</version>
         </dependency>
 
         <!-- Arquillian dependencies -->
