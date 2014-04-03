@@ -277,6 +277,23 @@ field.sendKeys("john");
 
 As you see, you actually use WebDriver API on native Android activities.
 
+== How do I interact with Android keyboard?
+
+Since Droidium uses Selendroid, you can interact with Android keyboard like this:
+
+----
+@Drone
+SelendroidDriver driver;
+
+@Test
+public void someTest()
+{
+    // ... some tests
+    driver.getKeyboard().sendKeys(SelendroidKeys.BACK);
+    // ... some tests
+}
+----
+
 == FAQ
 
 [qanda]
