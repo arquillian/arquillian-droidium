@@ -39,9 +39,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 /**
- * 
+ *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
- * 
+ *
  */
 @RunWith(Arquillian.class)
 @RunAsClient
@@ -74,7 +74,7 @@ public class SelendroidTestAppTestCase {
 
     /**
      * Simple test which tries to register some user.
-     * 
+     *
      * @param screenshooter takes screenshots of {@code device}
      * @param device Android device itself, it is not needed in tests as such since we interact only with {@code WebDriver}
      *        injection.
@@ -84,7 +84,7 @@ public class SelendroidTestAppTestCase {
     @InSequence(1)
     public void test01(@ArquillianResource AndroidDevice device) {
 
-        device.getActivityManagerProvider().getActivityManager().startActivity("io.selendroid.testapp.HomeScreenActivity");
+        device.getActivityManager().startActivity("io.selendroid.testapp.HomeScreenActivity");
 
         // where to save taken screenshots, by default to target/screenshots
         screenshooter.setScreenshotTargetDir("target/screenshots-1");

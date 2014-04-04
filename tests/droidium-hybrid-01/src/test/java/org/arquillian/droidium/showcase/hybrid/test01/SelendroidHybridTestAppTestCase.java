@@ -45,9 +45,9 @@ import org.openqa.selenium.support.ui.Select;
 
 /**
  * Android Droidium hybrid testing with {@code WebDriver} - proof of concept.
- * 
+ *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
- * 
+ *
  */
 @RunWith(Arquillian.class)
 @RunAsClient
@@ -96,7 +96,7 @@ public class SelendroidHybridTestAppTestCase {
     @InSequence(1)
     public void nativeViewTest() {
 
-        android.getActivityManagerProvider().getActivityManager().startActivity("io.selendroid.testapp.HomeScreenActivity");
+        android.getActivityManager().startActivity("io.selendroid.testapp.HomeScreenActivity");
 
         driver.switchTo().window("NATIVE_APP");
 

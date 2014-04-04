@@ -17,14 +17,14 @@
  */
 package org.arquillian.droidium.container.log;
 
-import org.arquillian.droidium.container.api.AndroidDevice;
-import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.arquillian.droidium.container.api.AndroidDevice;
+import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 
 /**
  *
@@ -100,10 +100,6 @@ public class LogcatHelper {
 
         private String prefix;
 
-        public LogcatToConsoleWriter() {
-            this("LOGCAT: ");
-        }
-
         public LogcatToConsoleWriter(String prefix) {
             this.prefix = prefix;
         }
@@ -122,14 +118,6 @@ public class LogcatHelper {
         @Override
         public void close() throws IOException {
             System.out.flush();
-        }
-
-        public String getPrefix() {
-            return prefix;
-        }
-
-        public void setPrefix(String prefix) {
-            this.prefix = prefix;
         }
     }
 

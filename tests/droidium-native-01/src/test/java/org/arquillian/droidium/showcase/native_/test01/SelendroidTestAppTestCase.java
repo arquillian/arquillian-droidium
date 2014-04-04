@@ -20,6 +20,7 @@ import java.io.File;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.native_.api.Instrumentable;
+import org.arquillian.droidium.native_.webdriver.AndroidDriver;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -45,30 +46,21 @@ import org.openqa.selenium.WebDriver;
 @RunAsClient
 public class SelendroidTestAppTestCase {
 
-    // injection for switching between activities
     @ArquillianResource
     private AndroidDevice android;
 
-    // class scoped Drone, it will be available to use
-    // during whole test execution
     @Drone
     @Selendroid
-    private WebDriver test_app;
+    private AndroidDriver test_app;
 
-    // port put here matches the one in arquillian.xml
-    // and in turn "selendroid" suffix has to match annotation
-    // put on WebDriver
     @Deployment(name = "selendroid-test-app")
-    @Instrumentable // by default, port is 8080, it has to match the extension's remoteAddress port
-    @TargetsContainer("android") // does not have to be here since we have just one container
+    @Instrumentable
+    @TargetsContainer("android")
     public static Archive<?> SelendroidDeployment() {
         return ShrinkWrap.createFromZipFile(JavaArchive.class,
             new File("selendroid-test-app-" + System.getProperty("selendroid.version", "0.9.0") + ".apk"));
     }
 
-    // port put here matches the one in arquillian.xml
-    // and in turn "aerogear" suffix has to match annotation
-    // put on WebDriver in test02 method
     @Deployment(name = "aerogear-test-app")
     @Instrumentable(viaPort = 8082)
     public static Archive<?> createAerogeadDepoyment() {
@@ -79,36 +71,48 @@ public class SelendroidTestAppTestCase {
     @InSequence(1)
     @OperateOnDeployment("selendroid-test-app")
     public void test01() {
-        // activities are automatically scanned upon deployment installation and Android
-        // activity manager knows on which WebDriver instance it should start that activity up
-        android.getActivityManagerProvider()
-            .getActivityManager().startActivity("io.selendroid.testapp.HomeScreenActivity");
-
-        // ... tests
+        test_app.startActivity("io.selendroid.testapp.HomeScreenActivity");
     }
 
-    // Showing of method scoped Drone, it will be possible to use it only in this method
     @Test
     @InSequence(2)
-    @OperateOnDeployment("aerogear-test-app")
-    public void test02(@Drone @Aerogear WebDriver aerogear) {
-        android.getActivityManagerProvider()
-            .getActivityManager().startActivity("org.jboss.aerogear.pushtest.MainActivity");
-
-        // ... tests
-
-        // you can do something like this after you want to switch to another activity
-        // android.getActivityManagerProvider().getActivityManager().startActivity("another.activity")
-
-        // since you have both Drones available here (class scoped and method scoped as well) you can
-        // choose whatever activity from both deployments you want. After this method ends, you can
-        // start activities only from the selendroid-test-app deployment since the second WebDriver
-        // is destroyed
-        //
-        // Selendroid server for particular WebDriver instance is uninstalled upon every destruction
-        // of that instance. For class scoped Drone, it occurs in the end of the class (AfterClass).
-        // For method scoped Drones, it occurs in the end of the method (After). AfterClass and
-        // After are here mentioned in Arquillian sense.
+    @OperateOnDeployment("selendroid-test-app")
+    public void test02() {
+        test_app.startActivity(".HomeScreenActivity");
     }
 
+    @Test
+    @InSequence(3)
+    @OperateOnDeployment("selendroid-test-app")
+    public void test03() {
+        android.getActivityManager().startActivity("io.selendroid.testapp.HomeScreenActivity");
+    }
+
+    @Test
+    @InSequence(4)
+    @OperateOnDeployment("selendroid-test-app")
+    public void test04(@Drone WebDriver aerogear) {
+        android.getActivityManager().startActivity("org.jboss.aerogear.pushtest.MainActivity");
+    }
+
+    @Test
+    @InSequence(5)
+    @OperateOnDeployment("aerogear-test-app")
+    public void test05(@Drone AndroidDriver driver) {
+        driver.startActivity("org.jboss.aerogear.pushtest.MainActivity");
+    }
+
+    @Test
+    @InSequence(6)
+    @OperateOnDeployment("aerogear-test-app")
+    public void test06(@Drone WebDriver driver) {
+        android.getActivityManager().startActivity("org.jboss.aerogear.pushtest.MainActivity");
+    }
+
+    @Test
+    @InSequence(7)
+    @OperateOnDeployment("aerogear-test-app")
+    public void test07(@Drone WebDriver driver) {
+        android.getActivityManager().startActivity(".MainActivity");
+    }
 }

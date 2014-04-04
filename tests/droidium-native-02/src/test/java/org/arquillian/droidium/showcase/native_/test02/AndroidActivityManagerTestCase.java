@@ -31,9 +31,9 @@ import org.junit.runner.RunWith;
 
 /**
  * Android Droidium - controlling of activities without native plugin.
- * 
+ *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
- * 
+ *
  */
 @RunWith(Arquillian.class)
 @RunAsClient
@@ -50,8 +50,8 @@ public class AndroidActivityManagerTestCase {
 
     @Test
     public void startAndStopSomeActivityTest() {
-        android.getActivityManagerProvider().getActivityManager().startActivity("io.selendroid.testapp.HomeScreenActivity");
-        android.getActivityManagerProvider().getActivityManager().stopActivity("io.selendroid.testapp.HomeScreenActivity");
+        android.getActivityManager().startActivity("io.selendroid.testapp.HomeScreenActivity");
+        android.getActivityManager().stopActivity("io.selendroid.testapp.HomeScreenActivity");
     }
 
 }

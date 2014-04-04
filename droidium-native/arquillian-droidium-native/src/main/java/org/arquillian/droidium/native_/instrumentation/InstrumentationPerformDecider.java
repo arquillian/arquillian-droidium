@@ -16,14 +16,11 @@
  */
 package org.arquillian.droidium.native_.instrumentation;
 
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.arquillian.droidium.container.deployment.AndroidDeploymentRegister;
-import org.arquillian.droidium.native_.configuration.DroneConfigurationHolder;
-import org.arquillian.droidium.native_.deployment.DeploymentWebDriverMapper;
-import org.arquillian.droidium.native_.deployment.ExtensionDroneMapper;
+import org.arquillian.droidium.native_.deployment.DeploymentInstrumentationMapper;
+import org.arquillian.droidium.native_.metadata.DroidiumMetadataKey;
 import org.arquillian.droidium.native_.spi.InstrumentationConfiguration;
 import org.arquillian.droidium.native_.spi.event.AfterInstrumentationPerformed;
 import org.arquillian.droidium.native_.spi.event.BeforeInstrumentationPerformed;
@@ -32,6 +29,8 @@ import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;
+import org.jboss.arquillian.drone.spi.DroneContext;
+import org.jboss.arquillian.drone.spi.DronePointContext;
 import org.jboss.arquillian.drone.spi.event.BeforeDroneInstantiated;
 
 /**
@@ -39,7 +38,7 @@ import org.jboss.arquillian.drone.spi.event.BeforeDroneInstantiated;
  * server which instruments that deployment. Selendroid server is installed on the device afterwards in order to provide just
  * instantiated Drone callable the possibility to initialize itself by some internal HTTP ping-pong between Drone and Android
  * device. It is important to realize that Selendroid server is uninstalled upon Drone destruction so in order to save
- * computational resources and time, it is recommended to use class scoped Drones instead of method ones.<br>
+ * computational resources and time, it is recommended to use class scoped Drones instead of method scoped ones.<br>
  * <br>
  * Observes:
  * <ul>
@@ -63,15 +62,6 @@ public class InstrumentationPerformDecider {
     private Instance<DeploymentInstrumentationMapper> instrumentationMapper;
 
     @Inject
-    private Instance<AndroidDeploymentRegister> androidDeploymentRegister;
-
-    @Inject
-    private Instance<ExtensionDroneMapper> extensionDroneMapper;
-
-    @Inject
-    private Instance<DeploymentWebDriverMapper> deploymentWebDriverMapper;
-
-    @Inject
     private Event<BeforeInstrumentationPerformed> beforeInstrumentationPerformed;
 
     @Inject
@@ -80,32 +70,30 @@ public class InstrumentationPerformDecider {
     @Inject
     private Event<AfterInstrumentationPerformed> afterInstrumentationPerformed;
 
+    @Inject
+    private Instance<DroneContext> droneContext;
+
     public void decidePerformingInstrumentation(@Observes BeforeDroneInstantiated event) {
 
-        String deploymentName = null;
+        final DroneContext droneContext = this.droneContext.get();
 
-        for (Map.Entry<String, DroneConfigurationHolder> entry : extensionDroneMapper.get().get().entrySet()) {
-            if (entry.getValue().getQualifier().equals(event.getQualifier().getSimpleName().toLowerCase())) {
-                deploymentName = deploymentWebDriverMapper.get().getDeploymentName(entry.getKey());
+        final DronePointContext<?> dronePointContext = droneContext.get(event.getDronePoint());
+
+        if (dronePointContext.hasMetadata(DroidiumMetadataKey.DEPLOYMENT.class)) {
+
+            final String deploymentName = dronePointContext.getMetadata(DroidiumMetadataKey.DEPLOYMENT.class);
+
+            final InstrumentationConfiguration instrumentationConfiguration = instrumentationMapper.get().getInstumentationConfiguration(deploymentName);
+
+            if (instrumentationConfiguration != null) {
+                logger.log(Level.FINE, "instrumentation against deployment {0} is going to be performed", new Object[] { deploymentName });
+
+                beforeInstrumentationPerformed.fire(new BeforeInstrumentationPerformed(deploymentName, instrumentationConfiguration));
+
+                performInstumentation.fire(new PerformInstrumentation(event.getDronePoint(), deploymentName, instrumentationConfiguration));
+
+                afterInstrumentationPerformed.fire(new AfterInstrumentationPerformed(deploymentName, instrumentationConfiguration));
             }
-        }
-
-        if (deploymentName == null) {
-            logger.log(Level.FINE, "There is not any matching deployment name to be instrumented. You wanted to "
-                + "instrument some @Deployment with backed WebDriver instance but you have not specified @Instrumentable "
-                + "annotation on that @Deployment. There has to be always at least one @Instrumentable deployment.");
-            return;
-        }
-
-        InstrumentationConfiguration instrumentationConfiguration = instrumentationMapper.get().getDeploymentName(deploymentName);
-
-        if (instrumentationConfiguration != null) {
-
-            logger.log(Level.FINE, "instrumentation against deployment {0}", new Object[] { deploymentName });
-
-            beforeInstrumentationPerformed.fire(new BeforeInstrumentationPerformed(deploymentName, instrumentationConfiguration));
-            performInstumentation.fire(new PerformInstrumentation(deploymentName, instrumentationConfiguration));
-            afterInstrumentationPerformed.fire(new AfterInstrumentationPerformed(deploymentName, instrumentationConfiguration));
         }
     }
 }

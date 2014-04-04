@@ -17,9 +17,11 @@
 package org.arquillian.droidium.native_.spi.event;
 
 import org.arquillian.droidium.native_.spi.InstrumentationConfiguration;
+import org.arquillian.droidium.native_.spi.exception.InvalidInstrumentationConfigurationException;
+import org.jboss.arquillian.drone.spi.DronePoint;
 
 /**
- * Event representing that underlying package should be instrumented, in our case by Selendroid server.
+ * Event representing that underlying package should be instrumented.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
@@ -30,17 +32,25 @@ public class PerformInstrumentation {
 
     private final InstrumentationConfiguration instrumentationConfiguration;
 
+    private final DronePoint<?> dronePoint;
+
     /**
      *
+     * @param dronePoint
      * @param deploymentName
      * @param configuration
      * @throws InvalidInstrumentationConfigurationException if {@code configuration} is invalid
      */
-    public PerformInstrumentation(String deploymentName, InstrumentationConfiguration configuration) {
+    public PerformInstrumentation(DronePoint<?> dronePoint, String deploymentName, InstrumentationConfiguration configuration) {
+        this.dronePoint = dronePoint;
         this.deploymentName = deploymentName;
         this.instrumentationConfiguration = configuration;
 
         this.instrumentationConfiguration.validate();
+    }
+
+    public DronePoint<?> getDronePoint() {
+        return dronePoint;
     }
 
     public String getDeploymentName() {

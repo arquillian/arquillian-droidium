@@ -175,20 +175,20 @@ public interface AndroidDevice {
 
     /**
      *
-     * @param activityManagerProvider
-     */
-    void setActivityManagerProvider(ActivityManagerProvider activityManagerProvider);
-
-    /**
-     *
-     * @return gets activity manager provider for this Android device
-     */
-    ActivityManagerProvider getActivityManagerProvider();
-
-    /**
-     *
      * @return screenshot of Android device
      * @throws Exception
      */
     Screenshot getScreenshot() throws Exception;
+
+    /**
+     *
+     * @param activityManager
+     */
+    void setActivityManager(ActivityManager activityManager);
+
+    /**
+     *
+     * @return activity manager
+     */
+    ActivityManager getActivityManager();
 }

@@ -26,7 +26,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <version.org.jboss.arquillian.drone>1.2.4.Final</version.org.jboss.arquillian.drone>
+        <version.org.jboss.arquillian.drone>2.0.0.Alpha2-SNAPSHOT</version.org.jboss.arquillian.drone>
         <version.arquillian.core>1.1.4.Final</version.arquillian.core>
 
         <version.junit>4.11</version.junit>
@@ -34,7 +34,7 @@
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
 
-        <android.avd.name>testingEmulator</android.avd.name>
+        <android.avd.name>android-4.2.2</android.avd.name>
         <android.emulator.options></android.emulator.options>
         <selendroid.version>0.9.0</selendroid.version>
     </properties>

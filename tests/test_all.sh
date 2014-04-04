@@ -18,6 +18,8 @@ SELENDROID_VERSION=0.9.0
 SELENDROID_SERVER_APK=selendroid-server-$SELENDROID_VERSION.apk
 SELENDROID_TEST_APP=selendroid-test-app-$SELENDROID_VERSION.apk
 
+DEBUG="false"
+
 function prepare_selendroid
 {
     echo "Preparing Selendroid server of version $1"
@@ -33,7 +35,8 @@ function prepare_selendroid
 function help
 {
     echo "help: "
-    echo "    $1 _avd_name _ip_address_ [selendroid version]"
+    echo "    $1 _avd_name _ip_address_ [debug (true|false)] [selendroid version]"
+    echo "    debug is false by default"
 }
 
 if [ "x$1" == "x" ]; then
@@ -48,8 +51,12 @@ if [ "x$2" == "x" ]; then
     exit
 fi
 
-if [ ! "x$3" == "x" ]; then
-    SELENDROID_VERSION=$3
+if [ "$3" == "true" ]; then
+    DEBUG="true"
+fi
+
+if [ ! "x$4" == "x" ]; then
+    SELENDROID_VERSION=$4
 fi
 
 function copy_server
@@ -74,7 +81,7 @@ function copy_all
 # start_emulator avd_name emulator_ram
 function start_emulator
 {
-    $EMULATOR_CMD -avd $1 -memory $2 -wipe-data -no-snapshot-save -no-snapstorage &
+    $EMULATOR_CMD -avd $1 -memory $2 -no-snapshot-save -no-snapstorage &
 }
 
 #
@@ -117,7 +124,7 @@ function droidium-hybrid-01
     cd $ROOT
     cd droidium-hybrid-01
     copy_all .
-    mvn clean test -Dandroid.avd.name=$1 -Dselendroid.version=$2
+    mvn clean test -Dandroid.avd.name=$1 -Dselendroid.version=$2 -Darquillian.debug=$DEBUG
     check_status $0 $?
     clean_env
 }
@@ -127,7 +134,7 @@ function droidium-multiple-containers-01
     cd $ROOT
     cd droidium-multiple-containers-01
     copy_test_app .
-    mvn clean test -Dandroid.avd.name=$1
+    mvn clean test -Dandroid.avd.name=$1 -Darquillian.debug=$DEBUG
     check_status $0 $?
     clean_env
 }
@@ -136,7 +143,7 @@ function droidium-multiple-containers-02
 {
     cd $ROOT
     cd droidium-multiple-containers-02
-    mvn clean test
+    mvn clean test -Darquillian.debug=$DEBUG
     check_status $0 $?
 }
 
@@ -144,7 +151,7 @@ function droidium-multiple-containers-03
 {
     cd $ROOT
     cd droidium-multiple-containers-03
-    mvn clean test
+    mvn clean test -Darquillian.debug=$DEBUG
     check_status $0 $?
 }
 
@@ -153,7 +160,7 @@ function droidium-multiple-deployments-01
     cd $ROOT
     cd droidium-multiple-deployments-01
     copy_all .
-    mvn clean test -Dandroid.avd.name=$1 -Dselendroid.version=$2
+    mvn clean test -Dandroid.avd.name=$1 -Dselendroid.version=$2 -Darquillian.debug=$DEBUG
     check_status $0 $?
     clean_env
 }
@@ -163,7 +170,7 @@ function droidium-native-01
     cd $ROOT
     cd droidium-native-01
     copy_all .
-    mvn clean test -Dandroid.avd.name=$1 -Dselendroid.version=$2
+    mvn clean test -Dandroid.avd.name=$1 -Dselendroid.version=$2 -Darquillian.debug=$DEBUG
     check_status $0 $?
     clean_env
 }
@@ -173,7 +180,7 @@ function droidium-native-01-scala
     cd $ROOT
     cd droidium-native-01-scala
     copy_all .
-    mvn clean test -Dandroid.avd.name=$1 -Dselendroid.version=$2
+    mvn clean test -Dandroid.avd.name=$1 -Dselendroid.version=$2 -Darquillian.debug=$DEBUG
     check_status $0 $?
     clean_env
 }
@@ -183,7 +190,7 @@ function droidium-native-02
     cd $ROOT
     cd droidium-native-02
     copy_test_app .
-    mvn clean test -Dandroid.avd.name=$1
+    mvn clean test -Dandroid.avd.name=$1 -Darquillian.debug=$DEBUG
     check_status $0 $?
     clean_env
 }
@@ -193,7 +200,7 @@ function droidium-screenshooter-01
     cd $ROOT
     cd droidium-screenshooter-01
     copy_all .
-    mvn clean test -Dandroid.avd.name=$1 -Dselendroid.version=$2
+    mvn clean test -Dandroid.avd.name=$1 -Dselendroid.version=$2 -Darquillian.debug=$DEBUG
     check_status $0 $?
     clean_env
 }
@@ -202,7 +209,7 @@ function droidium-web-01
 {
     cd $ROOT
     cd droidium-web-01
-    mvn test -Dip.jboss=$2 -Dandroid.avd.name=$1
+    mvn test -Dip.jboss=$2 -Dandroid.avd.name=$1 -Darquillian.debug=$DEBUG
     check_status $0 $?
 }
 
@@ -228,7 +235,7 @@ droidium-native-01 $1 $SELENDROID_VERSION
 droidium-native-01-scala $1 $SELENDROID_VERSION
 droidium-native-02 $1
 droidium-screenshooter-01 $1 $SELENDROID_VERSION
-droidium-web-01 $1 $2
+#droidium-web-01 $1 $2
 
 clean_all
 

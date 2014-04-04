@@ -16,24 +16,24 @@
  */
 package org.arquillian.droidium.native_.spi.event;
 
-import java.io.File;
+import org.arquillian.droidium.container.spi.AndroidDeployment;
 
 /**
- * This event is fired before Android deployment is scanned for activity classes. By default scanning, you get all activities
- * which are located in APK. The result of scanning is used for matching activities to deployments and to WebDriver instances.
+ * This event is fired before Android deployment is scanned for the presence of activity classes. By default scanning, you get
+ * all activities which are located in APK.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
 public class BeforeAndroidDeploymentScanned {
 
-    private File deployed;
+    private final AndroidDeployment androidDeployment;
 
-    public BeforeAndroidDeploymentScanned(File deployed) {
-        this.deployed = deployed;
+    public BeforeAndroidDeploymentScanned(AndroidDeployment androidDeployment) {
+        this.androidDeployment = androidDeployment;
     }
 
-    public File getDeployed() {
-        return deployed;
+    public AndroidDeployment getDeployment() {
+        return androidDeployment;
     }
 }

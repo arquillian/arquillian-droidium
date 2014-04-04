@@ -17,7 +17,8 @@
  */
 package org.arquillian.droidium.container;
 
-import org.arquillian.droidium.container.activity.DefaultActivityManagerProvider;
+import org.arquillian.droidium.container.activity.DefaultActivityManager;
+import org.arquillian.droidium.container.api.ActivityManager;
 import org.arquillian.droidium.container.api.ActivityManagerProvider;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.FileType;
@@ -32,7 +33,7 @@ import org.arquillian.droidium.container.spi.event.AndroidContainerStart;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStop;
 import org.arquillian.droidium.container.spi.event.AndroidDeploy;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
-import org.arquillian.droidium.container.spi.event.AndroidUndeploy;
+import org.arquillian.droidium.container.spi.event.AndroidUnDeploy;
 import org.arquillian.droidium.container.utils.AndroidIdentifierGenerator;
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.arquillian.spacelift.process.ProcessExecutor;
@@ -78,7 +79,7 @@ import org.jboss.shrinkwrap.descriptor.api.Descriptor;
  * <li>{@link AndroidContainerStart}</li>
  * <li>{@link AndroidContainerStop}</li>
  * <li>{@link AndroidDeploy}</li>
- * <li>{@link AndroidUndeploy}</li>
+ * <li>{@link AndroidUnDeploy}</li>
  * </ul>
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
@@ -120,10 +121,10 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidCo
     private Event<AndroidContainerStop> androidContainerStopEvent;
 
     @Inject
-    private Event<AndroidDeploy> deployArchiveEvent;
+    private Event<AndroidDeploy> androidDeploy;
 
     @Inject
-    private Event<AndroidUndeploy> undeployArchiveEvent;
+    private Event<AndroidUnDeploy> androidUnDeploy;
 
     @Inject
     private Instance<AndroidDevice> androidDevice;
@@ -166,13 +167,13 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidCo
 
     @Override
     public ProtocolMetaData deploy(Archive<?> archive) throws DeploymentException {
-        deployArchiveEvent.fire(new AndroidDeploy(archive));
+        androidDeploy.fire(new AndroidDeploy(archive));
         return new ProtocolMetaData();
     }
 
     @Override
     public void undeploy(Archive<?> archive) throws DeploymentException {
-        undeployArchiveEvent.fire(new AndroidUndeploy(archive));
+        androidUnDeploy.fire(new AndroidUnDeploy(archive));
     }
 
     @Override
@@ -190,11 +191,19 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidCo
         throw new UnsupportedOperationException("Deployment of a descriptor is not supported");
     }
 
+    /**
+     * Sets {@link ActivityManagerProvider} for {@code AndroidDevice} and produces {@link AndroidApplicationManager}.
+     *
+     * @param event
+     */
     public void onAndroidDeviceReady(@Observes AndroidDeviceReady event) {
-        ActivityManagerProvider activityManagerProvider = getActivityManagerProvider();
-        androidDevice.get().setActivityManagerProvider(activityManagerProvider);
-        this.androidApplicationManager
-            .set(new AndroidApplicationManager(androidDevice.get(), executor.get(), androidSDK.get()));
+        ActivityManager activityManager = serviceLoader.get().onlyOne(ActivityManager.class, DefaultActivityManager.class);
+
+        if (activityManager instanceof DefaultActivityManager) {
+            androidDevice.get().setActivityManager(new DefaultActivityManager(androidDevice.get()));
+        }
+
+        this.androidApplicationManager.set(new AndroidApplicationManager(androidDevice.get(), executor.get(), androidSDK.get()));
     }
 
     /**
@@ -209,10 +218,6 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidCo
             && configuration.get().getRemoveTmpDir()) {
             DroidiumFileUtils.removeDir(DroidiumFileUtils.getTmpDir());
         }
-    }
-
-    private ActivityManagerProvider getActivityManagerProvider() {
-        return serviceLoader.get().onlyOne(ActivityManagerProvider.class, DefaultActivityManagerProvider.class);
     }
 
 }

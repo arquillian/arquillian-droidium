@@ -26,9 +26,9 @@ import org.arquillian.droidium.native_.spi.InstrumentationConfiguration;
  */
 public class AfterInstrumentationPerformed {
 
-    private String deploymentName;
+    private final String deploymentName;
 
-    private InstrumentationConfiguration instrumentationConfiguration;
+    private final InstrumentationConfiguration instrumentationConfiguration;
 
     public AfterInstrumentationPerformed(String deploymentName, InstrumentationConfiguration instrumentationConfiguration) {
         this.deploymentName = deploymentName;

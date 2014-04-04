@@ -18,29 +18,23 @@ package org.arquillian.droidium.container.deployment;
 
 import org.arquillian.droidium.container.impl.AndroidApplicationManager;
 import org.arquillian.droidium.container.spi.AndroidDeployment;
-import org.arquillian.droidium.container.spi.event.AfterAllAndroidDeploymentsUndeployed;
-import org.arquillian.droidium.container.spi.event.AfterAndroidDeploymentUndeployed;
-import org.arquillian.droidium.container.spi.event.BeforeAllAndroidDeploymentsUndeployed;
-import org.arquillian.droidium.container.spi.event.BeforeAndroidDeploymentUndeployed;
+import org.arquillian.droidium.container.spi.event.AfterAndroidDeploymentUnDeployed;
+import org.arquillian.droidium.container.spi.event.AndroidUnDeploy;
+import org.arquillian.droidium.container.spi.event.BeforeAndroidDeploymentUnDeployed;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;
-import org.jboss.arquillian.test.spi.event.suite.AfterClass;
 
 /**
- * Uninstalls all packages previously deployed to Android device.<br>
- * <br>
  * Observes:
  * <ul>
- * <li>{@link AfterClass}</li>
+ * <li>{@link AndroidUnDeploy}</li>
  * </ul>
  * Fires:<br>
  * <ul>
- * <li>{@link BeforeAllAndroidDeploymentsUndeployed}</li>
- * <li>{@link BeforeAndroidDeploymentUndeployed}</li>
- * <li>{@link AfterAndroidDeploymentUndeployed}</li>
- * <li>{@link AfterAllAndroidDeploymentsUndeployed}</li>
+ * <li>{@link BeforeAndroidDeploymentUnDeployed}</li>
+ * <li>{@link AfterAndroidDeploymentUnDeployed}</li>
  * </ul>
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
@@ -55,48 +49,24 @@ public class AndroidDeploymentUninstaller {
     private Instance<AndroidDeploymentRegister> androidDeploymentRegister;
 
     @Inject
-    private Event<BeforeAndroidDeploymentUndeployed> beforeUndeploy;
+    private Event<BeforeAndroidDeploymentUnDeployed> beforeUnDeploy;
 
     @Inject
-    private Event<AfterAndroidDeploymentUndeployed> afterUndeploy;
-
-    @Inject
-    private Event<BeforeAllAndroidDeploymentsUndeployed> beforeAllUndeployed;
-
-    @Inject
-    private Event<AfterAllAndroidDeploymentsUndeployed> afterAllUndeployed;
+    private Event<AfterAndroidDeploymentUnDeployed> afterUnDeploy;
 
     /**
-     * Precedence is set to negative value to be sure that this observer will be treated as the last one in AfterClass context.
-     * We have to uninstall packages after all Drones are destroyed (so after all Selendroid servers are uninstalled since
-     * undeployment of Selendroid server is triggered after Drone destruction). If we uninstalled it in the proper undeployment
-     * lifecycle, it would automatically stop Selendroid servers so subsequent destroying of Drone instances would fail since
-     * they can not communicate with Selendroid servers anymore. <br>
-     * <br>
-     * This behavior is preserved even native plugin is not on class path.
      *
      * @param event
      */
-    public void onAndroidDeploymentUninstall(@Observes(precedence = -100) AfterClass event) {
+    public void onAndroidUnDeploy(@Observes AndroidUnDeploy event) {
 
-        // this is in try-catch block since when you put this artifact on class path and even Android container is not started,
-        // observers are registered so this class observes AfterClass but androidDeploymentRegister is null object because
-        // it was not created
-        try {
-            beforeAllUndeployed.fire(new BeforeAllAndroidDeploymentsUndeployed());
+        AndroidDeployment androidDeployment = androidDeploymentRegister.get().get(event.getArchive());
 
-            for (AndroidDeployment androidDeployment : androidDeploymentRegister.get().getAll()) {
-                beforeUndeploy.fire(new BeforeAndroidDeploymentUndeployed(androidDeployment));
+        beforeUnDeploy.fire(new BeforeAndroidDeploymentUnDeployed(androidDeployment));
 
-                androidApplicationManager.get().uninstall(androidDeployment);
+        androidApplicationManager.get().uninstall(androidDeployment);
 
-                afterUndeploy.fire(new AfterAndroidDeploymentUndeployed(androidDeployment));
-            }
-
-            afterAllUndeployed.fire(new AfterAllAndroidDeploymentsUndeployed());
-        } catch (NullPointerException ex) {
-            // intentionally empty
-        }
+        afterUnDeploy.fire(new AfterAndroidDeploymentUnDeployed(androidDeployment));
 
     }
 

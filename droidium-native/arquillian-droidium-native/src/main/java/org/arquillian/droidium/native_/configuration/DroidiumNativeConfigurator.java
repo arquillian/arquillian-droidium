@@ -24,9 +24,9 @@ import org.jboss.arquillian.config.descriptor.api.ArquillianDescriptor;
 import org.jboss.arquillian.config.descriptor.api.ExtensionDef;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.InstanceProducer;
+import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;
-import org.jboss.arquillian.test.spi.annotation.SuiteScoped;
 import org.jboss.arquillian.test.spi.event.suite.BeforeSuite;
 
 /**
@@ -36,7 +36,7 @@ import org.jboss.arquillian.test.spi.event.suite.BeforeSuite;
  * <ul>
  * <li>{@link BeforeSuite}</li>
  * </ul>
- * Produces suite scoped:<br>
+ * Produces application scoped:<br>
  * <ul>
  * <li>{@link DroidiumNativeConfiguration}</li>
  * </ul>
@@ -58,16 +58,13 @@ public class DroidiumNativeConfigurator {
     public static final String DROIDIUM_NATIVE_EXTENSION_NAME = "droidium-native";
 
     @Inject
-    @SuiteScoped
+    @ApplicationScoped
     private InstanceProducer<DroidiumNativeConfiguration> droidiumNativeConfiguration;
 
     @Inject
     private Event<DroidiumNativeConfigured> droidiumNativeConfigured;
 
-    // higher precedence is set here because container is started in the same scope so we need to be sure
-    // it is configured firstly since we are injecting configuration into DroidiumNativeResourceManager and we need that to be
-    // instantiated before AfterStart of the container
-    public void configureDroidiumNative(@Observes(precedence = 10) BeforeSuite event, ArquillianDescriptor descriptor) {
+    public void configureDroidiumNative(@Observes ArquillianDescriptor descriptor) {
 
         logger.info("Configuring " + DROIDIUM_NATIVE_EXTENSION_NAME);
 

@@ -22,9 +22,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.arquillian.droidium.container.activity.DefaultActivityManager;
-import org.arquillian.droidium.container.activity.DefaultActivityManagerProvider;
-import org.arquillian.droidium.container.api.ActivityManagerProvider;
+import org.arquillian.droidium.container.api.ActivityManager;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidDeviceOutputReciever;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
@@ -52,7 +50,7 @@ public class AndroidDeviceImpl implements AndroidDevice {
 
     private IDevice delegate;
 
-    private ActivityManagerProvider activityManagerProvider;
+    private ActivityManager activityManager;
 
     private int droneHostPort = 14444;
 
@@ -64,18 +62,14 @@ public class AndroidDeviceImpl implements AndroidDevice {
     }
 
     @Override
-    public void setActivityManagerProvider(ActivityManagerProvider activityManagerProvider) {
-        Validate.notNull(activityManagerProvider,
-            "Activity manager provider to set for Android device can not be a null object!");
-        this.activityManagerProvider = activityManagerProvider;
-        if (activityManagerProvider instanceof DefaultActivityManagerProvider) {
-            activityManagerProvider.setActivityManager(new DefaultActivityManager(this));
-        }
+    public void setActivityManager(ActivityManager activityManager) {
+        Validate.notNull(activityManager, "Activity manager to set for Android device can not be a null object!");
+        this.activityManager = activityManager;
     }
 
     @Override
-    public ActivityManagerProvider getActivityManagerProvider() {
-        return activityManagerProvider;
+    public ActivityManager getActivityManager() {
+        return activityManager;
     }
 
     @Override

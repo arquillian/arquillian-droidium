@@ -25,17 +25,18 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.arquillian.droidium.container.configuration.Validate;
 import org.arquillian.droidium.native_.api.Instrumentable;
+import org.arquillian.droidium.native_.exception.InstrumentationMapperException;
 import org.arquillian.droidium.native_.spi.InstrumentationConfiguration;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.test.spi.TestClass;
 
 /**
- * Scans test class in order to map deployment names to their instrumentation configurations.
+ * Scans a test class in order to map deployment names from {@code @Deployment} methods to their instrumentation configurations.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
-public final class InstrumentationScanner {
+public class InstrumentationScanner {
 
     /**
      * Scans {@code @Deployment} methods in test case and resolves instrumentation logic.
@@ -48,17 +49,17 @@ public final class InstrumentationScanner {
     public static Map<String, InstrumentationConfiguration> scan(TestClass testClass) throws InstrumentationMapperException {
         Validate.notNull(testClass, "Test class to get the instrumentation mapping from can not be a null object!");
 
-        final Map<String, InstrumentationConfiguration> instrumentation = new ConcurrentHashMap<String, InstrumentationConfiguration>();
+        final Map<String, InstrumentationConfiguration> instrumentationMap = new ConcurrentHashMap<String, InstrumentationConfiguration>();
 
         for (Method method : testClass.getMethods(Deployment.class)) {
             if (method.getAnnotation(Instrumentable.class) != null) {
-                instrumentation.put(getDeploymentName(method), getInstrumentationConfiguration(method));
+                instrumentationMap.put(getDeploymentName(method), getInstrumentationConfiguration(method));
             }
         }
 
-        validate(instrumentation);
+        validate(instrumentationMap);
 
-        return instrumentation;
+        return instrumentationMap;
     }
 
     /**
@@ -70,9 +71,8 @@ public final class InstrumentationScanner {
      * @return true if {@code instrumentation} is valid, false otherwise.
      * @throws InstrumentationMapperException if mapping is invalid
      */
-    public static boolean validate(Map<String, InstrumentationConfiguration> instrumentation)
-        throws InstrumentationMapperException {
-        Set<InstrumentationConfiguration> tempSet = new HashSet<InstrumentationConfiguration>();
+    public static boolean validate(Map<String, InstrumentationConfiguration> instrumentation) throws InstrumentationMapperException {
+        final Set<InstrumentationConfiguration> tempSet = new HashSet<InstrumentationConfiguration>();
         for (Map.Entry<String, InstrumentationConfiguration> item : instrumentation.entrySet()) {
             if (!tempSet.add(item.getValue())) {
                 throw new InstrumentationMapperException("There is a duplicity in the instrumentation configuration. Check "
@@ -90,11 +90,10 @@ public final class InstrumentationScanner {
      * @return name of the deployment from the {@code method} as a string
      * @throws IllegalArgumentException if {@code method} is null or if it is not annotated by {@code @Deployment} or if
      */
-    public static String getDeploymentName(Method method) {
+    private static String getDeploymentName(Method method) {
         Validate.notNull(method, "Method to get the deployment name from can not be a null object!");
 
-        Deployment deploymentAnnotation = null;
-        deploymentAnnotation = method.getAnnotation(Deployment.class);
+        final Deployment deploymentAnnotation = method.getAnnotation(Deployment.class);
 
         if (deploymentAnnotation == null) {
             throw new IllegalArgumentException("You want to know the name of a deployment from a deployment method without "
@@ -111,18 +110,17 @@ public final class InstrumentationScanner {
      * @return instrumentation configuration for the {@code method}
      * @throws IllegalArgumentException if {@code method} is null or if it is not annotated by {@code @Instrumentable}
      */
-    public static InstrumentationConfiguration getInstrumentationConfiguration(Method method) {
+    private static InstrumentationConfiguration getInstrumentationConfiguration(Method method) {
         Validate.notNull(method, "Method to get the instrumentation configuration from can not be a null object!");
 
-        Annotation instrumentationAnnotation = null;
-        instrumentationAnnotation = method.getAnnotation(Instrumentable.class);
+        final Annotation instrumentationAnnotation = method.getAnnotation(Instrumentable.class);
 
         if (instrumentationAnnotation == null) {
             throw new IllegalArgumentException("You want to get the instrumentation configuration from a deployment method "
                 + "without @Instrumentable annotation.");
         }
 
-        InstrumentationConfiguration instrumentationConfiguration = new InstrumentationConfiguration();
+        final InstrumentationConfiguration instrumentationConfiguration = new InstrumentationConfiguration();
         instrumentationConfiguration.setPort(((Instrumentable) instrumentationAnnotation).viaPort());
 
         return instrumentationConfiguration;

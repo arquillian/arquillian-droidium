@@ -72,7 +72,7 @@ class SelendroidTestAppScalaTestCase {
     @Test
     def test01(@ArquillianResource device : AndroidDevice, @Drone driver : WebDriver) {
 
-        device.getActivityManagerProvider().getActivityManager().startActivity("io.selendroid.testapp.HomeScreenActivity")
+        device.getActivityManager().startActivity("io.selendroid.testapp.HomeScreenActivity")
 
         // Go to user registration
         driver findElement (By id "startUserRegistration") click

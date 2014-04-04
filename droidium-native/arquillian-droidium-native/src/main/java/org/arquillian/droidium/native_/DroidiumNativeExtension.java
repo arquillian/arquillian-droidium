@@ -16,30 +16,29 @@
  */
 package org.arquillian.droidium.native_;
 
-import org.arquillian.droidium.container.api.ActivityManagerProvider;
-import org.arquillian.droidium.native_.activity.DroidiumNativeActivityManager;
-import org.arquillian.droidium.native_.activity.DroidiumNativeActivityManagerProvider;
+import org.arquillian.droidium.container.enricher.AndroidDeviceResourceProvider;
+import org.arquillian.droidium.native_.configuration.DroidiumDronePointModifier;
 import org.arquillian.droidium.native_.configuration.DroidiumNativeConfigurator;
-import org.arquillian.droidium.native_.configuration.DroidiumNativeResourceManager;
-import org.arquillian.droidium.native_.configuration.ExtensionDroneResolver;
-import org.arquillian.droidium.native_.deployment.ActivityDeploymentScanner;
-import org.arquillian.droidium.native_.deployment.DeploymentWebDriverResolver;
-import org.arquillian.droidium.native_.instrumentation.DeploymentInstrumentationResolver;
+import org.arquillian.droidium.native_.deployment.DeploymentActivitiesScanner;
+import org.arquillian.droidium.native_.deployment.DeploymentInstrumentationResolver;
+import org.arquillian.droidium.native_.deployment.DroidiumDronePointDestroyer;
+import org.arquillian.droidium.native_.enrichment.DroneAndroidDeviceResourceProvider;
 import org.arquillian.droidium.native_.instrumentation.InstrumentationPerformDecider;
 import org.arquillian.droidium.native_.instrumentation.InstrumentationPerformer;
 import org.arquillian.droidium.native_.instrumentation.InstrumentationRemoveDecider;
 import org.arquillian.droidium.native_.selendroid.SelendroidDeploymentInstaller;
-import org.arquillian.droidium.native_.selendroid.SelendroidDeploymentUninstaller;
-import org.arquillian.droidium.native_.webdriver.SelendroidBrowserCapabilities;
-import org.arquillian.droidium.native_.webdriver.SelendroidDriverFactory;
+import org.arquillian.droidium.native_.selendroid.SelendroidDeploymentUnInstaller;
+import org.arquillian.droidium.native_.webdriver.AndroidBrowserCapabilities;
+import org.arquillian.droidium.native_.webdriver.AndroidDriverFactory;
 import org.jboss.arquillian.core.spi.LoadableExtension;
 import org.jboss.arquillian.drone.spi.Configurator;
 import org.jboss.arquillian.drone.spi.Destructor;
 import org.jboss.arquillian.drone.spi.Instantiator;
 import org.jboss.arquillian.drone.webdriver.spi.BrowserCapabilities;
+import org.jboss.arquillian.test.spi.enricher.resource.ResourceProvider;
 
 /**
- * Arquillian Droidium Native extension
+ * Arquillian Droidium Native extension.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
@@ -53,33 +52,31 @@ public class DroidiumNativeExtension implements LoadableExtension {
         builder.observer(DroidiumNativeConfigurator.class);
         builder.observer(DroidiumNativeResourceManager.class);
 
-        // resolvers
+        // resolvers & enrichers
         builder.observer(DeploymentInstrumentationResolver.class);
-        builder.observer(DeploymentWebDriverResolver.class);
-        builder.observer(ExtensionDroneResolver.class);
+        builder.observer(DroidiumDronePointModifier.class);
 
         // instrumentation
         builder.observer(InstrumentationPerformDecider.class);
         builder.observer(InstrumentationRemoveDecider.class);
         builder.observer(InstrumentationPerformer.class);
 
-        // installers & uninstallers
+        // installers & uninstallers & destoryers
         builder.observer(SelendroidDeploymentInstaller.class);
-        builder.observer(SelendroidDeploymentUninstaller.class);
+        builder.observer(SelendroidDeploymentUnInstaller.class);
+        builder.observer(DroidiumDronePointDestroyer.class);
 
         // activity related
-        builder.observer(DroidiumNativeActivityManagerProvider.class);
-        builder.observer(DroidiumNativeActivityManager.class);
-        builder.observer(ActivityDeploymentScanner.class);
-
-        // services
-        builder.service(ActivityManagerProvider.class, DroidiumNativeActivityManagerProvider.class);
+        builder.observer(DeploymentActivitiesScanner.class);
 
         // Selendroid driver
-        builder.service(BrowserCapabilities.class, SelendroidBrowserCapabilities.class);
-        builder.service(Configurator.class, SelendroidDriverFactory.class);
-        builder.service(Instantiator.class, SelendroidDriverFactory.class);
-        builder.service(Destructor.class, SelendroidDriverFactory.class);
+        builder.service(BrowserCapabilities.class, AndroidBrowserCapabilities.class);
+        builder.service(Configurator.class, AndroidDriverFactory.class);
+        builder.service(Instantiator.class, AndroidDriverFactory.class);
+        builder.service(Destructor.class, AndroidDriverFactory.class);
+
+        // Drone-aware AndroidDevice enricher
+        builder.override(ResourceProvider.class, AndroidDeviceResourceProvider.class, DroneAndroidDeviceResourceProvider.class);
     }
 
 }

@@ -26,13 +26,13 @@ import org.arquillian.droidium.native_.spi.SelendroidDeployment;
  */
 public class BeforeSelendroidDeploymentDeployed {
 
-    private SelendroidDeployment deployed;
+    private final SelendroidDeployment selendroidDeployment;
 
     public BeforeSelendroidDeploymentDeployed(SelendroidDeployment selendroidDeployment) {
-        this.deployed = selendroidDeployment;
+        this.selendroidDeployment = selendroidDeployment;
     }
 
-    public SelendroidDeployment getDeployed() {
-        return this.deployed;
+    public SelendroidDeployment getDeployment() {
+        return this.selendroidDeployment;
     }
 }

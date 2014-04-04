@@ -19,14 +19,14 @@ package org.arquillian.droidium.container.spi.event;
 import org.jboss.shrinkwrap.api.Archive;
 
 /**
- * This event is fired before Android deployment gets undeployed from Android device.
+ * This event is fired before Android deployment gets deployed to Android device.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
 public class BeforeAndroidDeploymentDeployed {
 
-    private Archive<?> archive;
+    private final Archive<?> archive;
 
     public BeforeAndroidDeploymentDeployed(Archive<?> archive) {
         this.archive = archive;

@@ -34,6 +34,7 @@ import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Validate;
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.arquillian.droidium.container.utils.Monkey;
+import org.arquillian.droidium.native_.exception.InvalidSelendroidPortException;
 import org.arquillian.droidium.native_.spi.SelendroidDeployment;
 import org.arquillian.spacelift.process.Command;
 import org.arquillian.spacelift.process.CommandBuilder;

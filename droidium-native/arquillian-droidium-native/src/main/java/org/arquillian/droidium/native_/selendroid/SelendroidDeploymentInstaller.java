@@ -16,6 +16,7 @@
  */
 package org.arquillian.droidium.native_.selendroid;
 
+import org.arquillian.droidium.native_.spi.SelendroidDeployment;
 import org.arquillian.droidium.native_.spi.event.AfterSelendroidDeploymentDeployed;
 import org.arquillian.droidium.native_.spi.event.BeforeSelendroidDeploymentDeployed;
 import org.arquillian.droidium.native_.spi.event.SelendroidDeploy;
@@ -26,8 +27,7 @@ import org.jboss.arquillian.core.api.annotation.Observes;
 
 /**
  * Installs modified Selendroid server to Android device.<br>
- * </br>
- * Observes:
+ * </br> Observes:
  * <ul>
  * <li>{@link SelendroidDeploy}</li>
  * </ul>
@@ -36,6 +36,7 @@ import org.jboss.arquillian.core.api.annotation.Observes;
  * <li>{@link BeforeSelendroidDeploymentDeployed}</li>
  * <li>{@link AfterSelendroidDeploymentDeployed}</li>
  * </ul>
+ *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
@@ -45,16 +46,19 @@ public class SelendroidDeploymentInstaller {
     private Instance<SelendroidServerManager> selendroidServerManager;
 
     @Inject
-    private Event<BeforeSelendroidDeploymentDeployed> beforeSelendroidDeploymentDeployed;
+    private Event<BeforeSelendroidDeploymentDeployed> beforeDeployed;
 
     @Inject
-    private Event<AfterSelendroidDeploymentDeployed> afterSelendroidDeploymentDeployed;
+    private Event<AfterSelendroidDeploymentDeployed> afterDeployed;
 
     public void onSelendroidDeploy(@Observes SelendroidDeploy event) {
-        beforeSelendroidDeploymentDeployed.fire(new BeforeSelendroidDeploymentDeployed(event.getDeployment()));
 
-        selendroidServerManager.get().install(event.getDeployment());
+        final SelendroidDeployment selendroidDeployment = event.getDeployment();
 
-        afterSelendroidDeploymentDeployed.fire(new AfterSelendroidDeploymentDeployed(event.getDeployment()));
+        beforeDeployed.fire(new BeforeSelendroidDeploymentDeployed(selendroidDeployment));
+
+        selendroidServerManager.get().install(selendroidDeployment);
+
+        afterDeployed.fire(new AfterSelendroidDeploymentDeployed(selendroidDeployment));
     }
 }

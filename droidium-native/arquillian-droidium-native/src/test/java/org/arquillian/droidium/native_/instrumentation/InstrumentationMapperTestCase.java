@@ -19,12 +19,10 @@ package org.arquillian.droidium.native_.instrumentation;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.Assert;
-
 import org.arquillian.droidium.native_.AbstractAndroidTestTestBase;
-import org.arquillian.droidium.native_.instrumentation.InstrumentationScanner;
-import org.arquillian.droidium.native_.instrumentation.InstrumentationMapperException;
+import org.arquillian.droidium.native_.exception.InstrumentationMapperException;
 import org.arquillian.droidium.native_.spi.InstrumentationConfiguration;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;

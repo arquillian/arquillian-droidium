@@ -16,7 +16,7 @@
  */
 package org.arquillian.droidium.container.spi.event;
 
-import java.io.File;
+import org.arquillian.droidium.container.spi.AndroidDeployment;
 
 /**
  * This event is fired after Android deployment (APK to be the object of testing or a resource APK package) was installed on
@@ -27,14 +27,14 @@ import java.io.File;
  */
 public class AfterAndroidDeploymentDeployed {
 
-    private File deployed;
+    private final AndroidDeployment deployment;
 
-    public AfterAndroidDeploymentDeployed(File deployed) {
-        this.deployed = deployed;
+    public AfterAndroidDeploymentDeployed(AndroidDeployment deployment) {
+        this.deployment = deployment;
     }
 
-    public File getDeployed() {
-        return deployed;
+    public AndroidDeployment getDeployment() {
+        return deployment;
     }
 
 }

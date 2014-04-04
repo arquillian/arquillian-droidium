@@ -25,21 +25,21 @@ import org.arquillian.droidium.container.spi.AndroidDeployment;
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.arquillian.droidium.native_.configuration.DroidiumNativeConfiguration;
 import org.arquillian.droidium.native_.deployment.SelendroidDeploymentRegister;
+import org.arquillian.droidium.native_.metadata.DroidiumMetadataKey;
 import org.arquillian.droidium.native_.selendroid.SelendroidRebuilder;
 import org.arquillian.droidium.native_.selendroid.SelendroidServerManager;
 import org.arquillian.droidium.native_.spi.SelendroidDeployment;
-import org.arquillian.droidium.native_.spi.event.AfterInstrumentationPerformed;
-import org.arquillian.droidium.native_.spi.event.BeforeInstrumentationPerformed;
 import org.arquillian.droidium.native_.spi.event.PerformInstrumentation;
 import org.arquillian.droidium.native_.spi.event.SelendroidDeploy;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;
+import org.jboss.arquillian.drone.spi.DroneContext;
 
 /**
- * Initializes instrumentation process by processing observing event and matching deployment name to instrumentated package
- * against which Drone instance is created.<br>
+ * Initializes instrumentation process by observing {@link PerformInstrumentation} event and matching deployment name to
+ * instrumentated package against which Drone instance is created.<br>
  * <br>
  * Observes:
  * <ul>
@@ -47,9 +47,7 @@ import org.jboss.arquillian.core.api.annotation.Observes;
  * </ul>
  * Fires:
  * <ul>
- * <li>{@link BeforeInstrumentationPerformed}</li>
  * <li>{@link SelendroidDeploy}</li>
- * <li>{@link AfterInstrumentationPerformed}</li>
  * </ul>
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
@@ -81,18 +79,12 @@ public class InstrumentationPerformer {
     private Instance<SelendroidServerManager> selendroidServerManager;
 
     @Inject
-    private Event<BeforeInstrumentationPerformed> beforeInstrumentationPerformed;
-
-    @Inject
-    private Event<AfterInstrumentationPerformed> afterInstrumentationPerformed;
+    private Instance<DroneContext> droneContext;
 
     @Inject
     private Event<SelendroidDeploy> selendroidDeploy;
 
     public void performInstrumentation(@Observes PerformInstrumentation event) {
-
-        beforeInstrumentationPerformed.fire(new BeforeInstrumentationPerformed(event.getDeploymentName(), event
-            .getConfiguration()));
 
         AndroidDeployment instrumentedDeployment = androidDeploymentRegister.get().get(event.getDeploymentName());
 
@@ -104,8 +96,8 @@ public class InstrumentationPerformer {
 
         File selendroidResigned = getSelendroidResigned(selendroidRebuilt);
 
-        SelendroidDeployment deployment = new SelendroidDeployment();
-        deployment.setWorkingCopy(selendroidWorkingCopy)
+        final SelendroidDeployment selendroidDeployment = new SelendroidDeployment();
+        selendroidDeployment.setWorkingCopy(selendroidWorkingCopy)
             .setRebuilt(selendroidRebuilt)
             .setResigned(selendroidResigned)
             .setServerBasePackage(applicationHelper.get().getApplicationBasePackage(selendroidResigned))
@@ -114,13 +106,18 @@ public class InstrumentationPerformer {
             .setDeploymentName(event.getDeploymentName())
             .setInstrumentationConfiguration(event.getConfiguration());
 
-        selendroidDeploymentRegister.get().add(deployment);
+        selendroidDeploymentRegister.get().add(selendroidDeployment);
 
-        selendroidDeploy.fire(new SelendroidDeploy(deployment));
+        // which exactly Selendroid deployment is this instrumented Android deployment backed by?
+        droneContext.get().get(event.getDronePoint())
+            .setMetadata(DroidiumMetadataKey.SELENDROID_PACKAGE_NAME.class, selendroidDeployment.getSelendroidPackageName());
 
-        selendroidServerManager.get().instrument(deployment);
+        droneContext.get().get(event.getDronePoint())
+            .setMetadata(DroidiumMetadataKey.ANDROID_PACKAGE_NAME.class, instrumentedDeployment.getApplicationBasePackage());
 
-        afterInstrumentationPerformed.fire(new AfterInstrumentationPerformed(event.getDeploymentName(), event.getConfiguration()));
+        selendroidDeploy.fire(new SelendroidDeploy(selendroidDeployment));
+
+        selendroidServerManager.get().instrument(selendroidDeployment);
     }
 
     private File getSelendroidResigned(File selendroidRebuilt) {
@@ -128,8 +125,7 @@ public class InstrumentationPerformer {
     }
 
     private File getSelendroidWorkingCopy() {
-        return DroidiumFileUtils.copyFileToDirectory(configuration.get().getServerApk(),
-            DroidiumFileUtils.getTmpDir());
+        return DroidiumFileUtils.copyFileToDirectory(configuration.get().getServerApk(), DroidiumFileUtils.getTmpDir());
     }
 
     private String getSelendroidPackageName(File selendroidWorkingCopy) {

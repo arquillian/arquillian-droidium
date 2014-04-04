@@ -30,6 +30,9 @@ public class DefaultActivityManager implements ActivityManager {
 
     private AndroidDevice device;
 
+    public DefaultActivityManager() {
+    }
+
     public DefaultActivityManager(AndroidDevice device) {
         Validate.notNull(device, "Android device via which you want to manage activies can not be a null object!");
         this.device = device;

@@ -32,8 +32,6 @@
     <properties>
         <!-- known to work with Android 2.3 -->
         <version.android>2.3</version.android>
-        <version.httpclient>4.2.5</version.httpclient>
-        <version.commons.io>1.3.2</version.commons.io>
     </properties>
 
     <!-- Dependencies -->
@@ -150,12 +148,10 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>${version.httpclient}</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>${version.commons.io}</version>
         </dependency>
     </dependencies>
 

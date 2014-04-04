@@ -36,7 +36,7 @@ import org.jboss.arquillian.test.spi.enricher.resource.ResourceProvider;
 public class AndroidDeviceResourceProvider implements ResourceProvider {
 
     @Inject
-    Instance<AndroidDevice> androidDevice;
+    private Instance<AndroidDevice> androidDevice;
 
     @Override
     public boolean canProvide(Class<?> type) {

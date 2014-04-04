@@ -64,11 +64,12 @@ public class SelendroidTestAppTestCase {
 
     @Instrumentable
     // tells that this deployment will be instrumented by Arquillian Droidium
-    @Deployment(name = "selendroid")
-    // name is the must, you can not deploy two deployments with the same default name
-    @TargetsContainer("android")
-    // does not have to be here since we have just one container present
-    public static Archive<?> createSelendroidDeployment() {
+        @Deployment(name = "selendroid")
+        // name is the must, you can not deploy two deployments with the same default name
+        @TargetsContainer("android")
+        // does not have to be here since we have just one container present
+        public static
+        Archive<?> createSelendroidDeployment() {
         return ShrinkWrap.createFromZipFile(JavaArchive.class,
             new File("selendroid-test-app-" + System.getProperty("selendroid.version", "0.9.0") + ".apk"));
     }
@@ -91,8 +92,7 @@ public class SelendroidTestAppTestCase {
     @OperateOnDeployment("selendroid")
     public void test01(@ArquillianResource AndroidDevice android, @Drone WebDriver driver) {
 
-        android.getActivityManagerProvider()
-            .getActivityManager().startActivity("io.selendroid.testapp.HomeScreenActivity");
+        android.getActivityManager().startActivity("io.selendroid.testapp.HomeScreenActivity");
 
         // Go to user registration
         driver.findElement(By.id("startUserRegistration")).click();

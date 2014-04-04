@@ -17,6 +17,7 @@
 package org.arquillian.droidium.container.api;
 
 /**
+ * Manages starting and stopping of activities.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
@@ -25,29 +26,26 @@ public interface ActivityManager {
 
     /**
      *
-     * @param activity
-     * @throws AndroidExecutionException
+     * @param activity activity you want to start
      */
     void startActivity(String activity);
 
     /**
      *
-     * @param activity
-     * @throws AndroidExecutionException
+     * @param activity activity you want to start
      */
     void startActivity(Class<?> activity);
 
     /**
      *
-     * @param activity
-     * @throws AndroidExecutionException
+     * @param activity activity you want to stop
      */
     void stopActivity(String activity);
 
     /**
      *
-     * @param activity
-     * @throws AndroidExecutionException
+     * @param activity activity you want to stop
      */
     void stopActivity(Class<?> activity);
+
 }

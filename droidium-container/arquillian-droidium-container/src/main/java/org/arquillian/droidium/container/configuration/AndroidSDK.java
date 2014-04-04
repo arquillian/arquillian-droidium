@@ -261,9 +261,8 @@ public class AndroidSDK {
     }
 
     /**
-     * Returns directory for current platform
      *
-     * @return
+     * @return directory for current platform
      */
     public File getPlatformDirectory() {
         return currentPlatform.getPath();

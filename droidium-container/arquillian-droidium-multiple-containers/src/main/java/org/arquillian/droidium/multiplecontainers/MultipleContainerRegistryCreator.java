@@ -69,6 +69,7 @@ public class MultipleContainerRegistryCreator {
         MultipleLocalContainersRegistry reg = new MultipleLocalContainersRegistry(injector.get());
         ServiceLoader serviceLoader = loader.get();
 
+        @SuppressWarnings("rawtypes")
         Collection<DeployableContainer> containers = serviceLoader.all(DeployableContainer.class);
 
         if (containers.size() == 0) {

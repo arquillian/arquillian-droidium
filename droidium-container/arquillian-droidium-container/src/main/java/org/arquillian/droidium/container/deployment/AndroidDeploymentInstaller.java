@@ -64,14 +64,14 @@ public class AndroidDeploymentInstaller {
     private Instance<AndroidDeploymentRegister> androidDeploymentRegister;
 
     @Inject
-    private Event<BeforeAndroidDeploymentDeployed> beforeAndroidDeployment;
+    private Event<BeforeAndroidDeploymentDeployed> beforeDeploy;
 
     @Inject
-    private Event<AfterAndroidDeploymentDeployed> afterAndroidDeployment;
+    private Event<AfterAndroidDeploymentDeployed> afterDeploy;
 
     public void onAndroidDeployArchive(@Observes AndroidDeploy event, DeploymentDescription description) {
 
-        beforeAndroidDeployment.fire(new BeforeAndroidDeploymentDeployed(event.getArchive()));
+        beforeDeploy.fire(new BeforeAndroidDeploymentDeployed(event.getArchive()));
 
         Archive<?> archive = event.getArchive();
 
@@ -79,7 +79,7 @@ public class AndroidDeploymentInstaller {
         DroidiumFileUtils.export(archive, deployApk);
         File resignedApk = signer.get().resign(deployApk);
 
-        AndroidDeployment deployment = new AndroidDeployment();
+        final AndroidDeployment deployment = new AndroidDeployment();
 
         deployment.setDeployment(archive)
             .setDeployApk(deployApk)
@@ -90,6 +90,6 @@ public class AndroidDeploymentInstaller {
         androidDeploymentRegister.get().add(deployment);
         androidApplicationManager.get().install(deployment);
 
-        afterAndroidDeployment.fire(new AfterAndroidDeploymentDeployed(resignedApk));
+        afterDeploy.fire(new AfterAndroidDeploymentDeployed(deployment));
     }
 }

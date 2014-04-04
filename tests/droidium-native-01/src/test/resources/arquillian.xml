@@ -41,7 +41,7 @@
     </extension>
 
     <!-- suffix of qualifier matches name of annotation put on Drone instance for Aerogear test app -->
-    <extension qualifier="webdriver-aerogear">
+    <extension qualifier="webdriver">
         <property name="browser">android</property>
         <property name="remoteAddress">http://localhost:8082/wd/hub</property>
     </extension>

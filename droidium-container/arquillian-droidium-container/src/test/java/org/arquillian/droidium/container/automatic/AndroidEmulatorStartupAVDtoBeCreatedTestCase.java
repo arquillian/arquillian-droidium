@@ -64,9 +64,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * Tests creating of AVD name from scratch and staring of emulator of newly created AVD.
- * 
+ *
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
- * 
+ *
  */
 @RunWith(MockitoJUnitRunner.class)
 public class AndroidEmulatorStartupAVDtoBeCreatedTestCase extends AbstractContainerTestBase {
