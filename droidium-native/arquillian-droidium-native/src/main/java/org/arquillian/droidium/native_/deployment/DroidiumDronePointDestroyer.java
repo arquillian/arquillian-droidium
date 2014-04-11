@@ -16,7 +16,7 @@
  */
 package org.arquillian.droidium.native_.deployment;
 
-import java.util.List;
+import java.util.Iterator;
 
 import org.arquillian.droidium.container.spi.event.BeforeAndroidDeploymentUnDeployed;
 import org.arquillian.droidium.native_.metadata.DroidiumMetadataKey;
@@ -51,23 +51,33 @@ public class DroidiumDronePointDestroyer {
 
     public void destroyDrone(@Observes final BeforeAndroidDeploymentUnDeployed event) {
 
-        final List<DronePoint<WebDriver>> dronePoints = droneContext.get().find(WebDriver.class, new DronePointFilter<WebDriver>() {
+        final Iterator<DronePoint<WebDriver>> dronePointsIterator = droneContext.get()
+            .find(WebDriver.class)
+            .filter(new DroidiumDestroyDronePointFilter(event.getUnDeployment().getDeploymentName())).iterator();
 
-            @Override
-            public boolean accepts(DroneContext context, DronePoint<? extends WebDriver> dronePoint) {
+        while (dronePointsIterator.hasNext()) {
+            destroyDrone.fire(new DestroyDrone(dronePointsIterator.next()));
+        }
+    }
 
-                if (!context.get(dronePoint).hasMetadata(DroidiumMetadataKey.DEPLOYMENT.class)) {
-                    return false;
-                }
+    private class DroidiumDestroyDronePointFilter implements DronePointFilter<WebDriver> {
 
-                final String deploymentName = context.get(dronePoint).getMetadata(DroidiumMetadataKey.DEPLOYMENT.class);
+        private String deploymentName;
 
-                return deploymentName != null && event.getUnDeployment().getDeploymentName().equals(deploymentName);
+        public DroidiumDestroyDronePointFilter(String deploymentName) {
+            this.deploymentName = deploymentName;
+        }
+
+        @Override
+        public boolean accepts(DroneContext context, DronePoint<? extends WebDriver> dronePoint) {
+
+            if (!context.get(dronePoint).hasMetadata(DroidiumMetadataKey.DEPLOYMENT.class)) {
+                return false;
             }
-        });
 
-        for (DronePoint<?> dronePoint : dronePoints) {
-            destroyDrone.fire(new DestroyDrone(dronePoint));
+            final String deploymentName = context.get(dronePoint).getMetadata(DroidiumMetadataKey.DEPLOYMENT.class);
+
+            return deploymentName != null && this.deploymentName.equals(deploymentName);
         }
     }
 

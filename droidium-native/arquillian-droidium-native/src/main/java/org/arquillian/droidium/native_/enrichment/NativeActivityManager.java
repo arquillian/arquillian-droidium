@@ -17,6 +17,7 @@
 package org.arquillian.droidium.native_.enrichment;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.arquillian.droidium.container.api.ActivityManager;
@@ -97,7 +98,10 @@ public class NativeActivityManager implements ActivityManager {
             return dronePoints;
         }
 
-        for (DronePoint<WebDriver> dronePoint : droneContext.find(WebDriver.class, new DroidiumDronePointFilter())) {
+        final Iterator<DronePoint<WebDriver>> dronePointsIterator = droneContext.find(WebDriver.class).filter(new DroidiumDronePointFilter()).iterator();
+
+        while (dronePointsIterator.hasNext()) {
+            final DronePoint<WebDriver> dronePoint = dronePointsIterator.next();
 
             final DronePointContext<?> dronePointContext = droneContext.get(dronePoint);
 
