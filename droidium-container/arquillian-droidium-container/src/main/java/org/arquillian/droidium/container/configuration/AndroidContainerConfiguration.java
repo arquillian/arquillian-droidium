@@ -17,17 +17,11 @@
  */
 package org.arquillian.droidium.container.configuration;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-import org.arquillian.droidium.container.api.FileType;
 import org.arquillian.droidium.container.log.LogLevel;
 import org.arquillian.droidium.container.log.LogType;
-import org.arquillian.droidium.container.utils.AndroidIdentifierGenerator;
-import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.jboss.arquillian.container.spi.client.container.ContainerConfiguration;
 
 /**
@@ -41,8 +35,6 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
     private String fileSeparator = System.getProperty("file.separator");
 
     private static final Logger logger = Logger.getLogger(AndroidContainerConfiguration.class.getName());
-
-    private boolean forceNewBridge = true;
 
     private String serialId;
 
@@ -64,19 +56,11 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
 
     private long emulatorShutdownTimeoutInSeconds = 60L;
 
-    private String androidHome = resolveAndroidHome();
-
-    private String androidSdkHome = resolveAndroidSdkHome();
-
-    private String javaHome = resolveJavaHome();
-
     private boolean avdGenerated;
 
     private String consolePort;
 
     private String adbPort;
-
-    private String adbServerPort = "5037";
 
     private int droneHostPort = 14444;
 
@@ -92,54 +76,10 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
 
     private String logPackageBlacklist;
 
-    private int ddmlibCommandTimeout = 20000;
-
-    // by default null since its default value depends on androidSdkHome which
-    // can be changed by user, when not set by user, it will be resolved in validate() in this class
-    private String keystore = null;
-
-    private String storepass = "android";
-
-    private String keypass = "android";
-
-    private String alias = "androiddebugkey";
-
-    private String sigalg = "SHA1withRSA";
-
-    private String keyalg = "RSA";
-
-    private boolean removeTmpDir = true;
-
-    private String tmpDir = resolveTmpDir();
-
     // useful when more containers are being used, also affects log filename!
     private boolean logSerialId;
 
     private String target;
-
-    public String getAndroidSdkHome() {
-        return androidSdkHome;
-    }
-
-    public void setAndroidSdkHome(String androidSdkHome) {
-        this.androidSdkHome = androidSdkHome;
-    }
-
-    public String getAndroidHome() {
-        return androidHome;
-    }
-
-    public void setAndroidHome(String androidHome) {
-        this.androidHome = androidHome;
-    }
-
-    public String getJavaHome() {
-        return javaHome;
-    }
-
-    public void setJavaHome(String javaHome) {
-        this.javaHome = javaHome;
-    }
 
     public String getAvdName() {
         return avdName;
@@ -163,14 +103,6 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
 
     public void setEmulatorOptions(String emulatorOptions) {
         this.emulatorOptions = emulatorOptions;
-    }
-
-    public boolean isForceNewBridge() {
-        return forceNewBridge;
-    }
-
-    public void setForceNewBridge(boolean force) {
-        this.forceNewBridge = force;
     }
 
     public long getEmulatorBootupTimeoutInSeconds() {
@@ -265,14 +197,6 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
         this.adbPort = adbPort;
     }
 
-    public String getAdbServerPort() {
-        return this.adbServerPort;
-    }
-
-    public void setAdbServerPort(String adbServerPort) {
-        this.adbServerPort = adbServerPort;
-    }
-
     public int getDroneHostPort() {
         return droneHostPort;
     }
@@ -343,152 +267,8 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
         this.logSerialId = logSerialId;
     }
 
-    public String getKeystore() {
-        return keystore;
-    }
-
-    public void setKeystore(String keystore) {
-        this.keystore = keystore;
-    }
-
-    public String getStorepass() {
-        return storepass;
-    }
-
-    public void setStorepass(String storepass) {
-        this.storepass = storepass;
-    }
-
-    public String getKeypass() {
-        return keypass;
-    }
-
-    public void setKeypass(String keypass) {
-        this.keypass = keypass;
-    }
-
-    public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
-
-    public String getSigalg() {
-        return sigalg;
-    }
-
-    public void setSigalg(String sigalg) {
-        this.sigalg = sigalg;
-    }
-
-    public String getKeyalg() {
-        return keyalg;
-    }
-
-    public void setKeyalg(String keyalg) {
-        this.keyalg = keyalg;
-    }
-
-    public boolean getRemoveTmpDir() {
-        return removeTmpDir;
-    }
-
-    public void setRemoveTmpDir(boolean removeTmpDir) {
-        this.removeTmpDir = removeTmpDir;
-    }
-
-    public String getTmpDir() {
-        return tmpDir;
-    }
-
-    public void setTmpDir(String tmpDir) {
-        this.tmpDir = tmpDir;
-    }
-
-    public int getDdmlibCommandTimeout() {
-        return ddmlibCommandTimeout;
-    }
-
-    public void setDdmlibCommandTimeout(int ddmlibCommandTimeout) {
-        this.ddmlibCommandTimeout = ddmlibCommandTimeout;
-    }
-
-    public String resolveJavaHome() {
-        String JAVA_HOME_ENV = System.getenv("JAVA_HOME");
-        String JAVA_HOME_PROPERTY = System.getProperty("java.home");
-
-        return checkSlash(JAVA_HOME_PROPERTY == null ? JAVA_HOME_ENV : JAVA_HOME_PROPERTY);
-    }
-
-    public String resolveAndroidHome() {
-        String ANDROID_HOME_ENV = System.getenv("ANDROID_HOME");
-        String ANDROID_HOME_PROPERTY = System.getProperty("android.home");
-
-        return checkSlash(ANDROID_HOME_PROPERTY == null ? ANDROID_HOME_ENV : ANDROID_HOME_PROPERTY);
-    }
-
-    public String resolveUserHome() {
-        String USER_HOME_ENV = System.getenv("HOME");
-        String USER_HOME_PROPERTY = System.getProperty("user.home");
-
-        return checkSlash(USER_HOME_PROPERTY == null ? USER_HOME_ENV : USER_HOME_PROPERTY);
-    }
-
-    public String resolveAndroidSdkHome() {
-        String ANDROID_SDK_HOME_ENV = System.getenv("ANDROID_SDK_HOME");
-        String ANDROID_SDK_HOME_PROPERTY = System.getProperty("android.sdk.home");
-
-        return checkSlash(ANDROID_SDK_HOME_PROPERTY == null ?
-            (ANDROID_SDK_HOME_ENV == null ? resolveUserHome() : ANDROID_SDK_HOME_ENV)
-            : ANDROID_SDK_HOME_PROPERTY);
-    }
-
-    public String resolveTmpDir() {
-        String TMP_DIR_ENV = System.getenv("TMPDIR");
-        if (TMP_DIR_ENV == null) {
-            TMP_DIR_ENV = System.getenv("TEMP");
-        }
-        if (TMP_DIR_ENV == null) {
-            TMP_DIR_ENV = System.getenv("TMP");
-        }
-
-        String TMP_DIR_PROPERTY = System.getProperty("java.io.tmpdir");
-
-        return checkSlash(TMP_DIR_PROPERTY == null ? TMP_DIR_ENV : TMP_DIR_PROPERTY);
-    }
-
     @Override
     public void validate() throws AndroidContainerConfigurationException {
-
-        if (getAndroidHome() == null) {
-            throw new AndroidContainerConfigurationException("You have not set ANDROID_HOME environment property nor "
-                + "android.home system property. System property gets precedence.");
-        } else {
-            setAndroidHome(checkSlash(getAndroidHome()));
-        }
-
-        if (getJavaHome() == null) {
-            throw new AndroidContainerConfigurationException("You have not set JAVA_HOME environment property nor "
-                + "java.home system property. System property gets precedence.");
-        } else {
-            setJavaHome(checkSlash(getJavaHome()));
-        }
-
-        setAndroidSdkHome(checkSlash(androidSdkHome));
-        Validate.isReadableDirectory(androidSdkHome,
-            "You must provide Android SDK home directory. The value you've provided is not valid. "
-                + "You can either set it via an environment variable ANDROID_SDK_HOME or via "
-                + "property called \"androidSdkHome\" in Arquillian configuration or you can set it as system property "
-                + "\"android.sdk.home\". When this property is not specified anywhere, it defaults to \"" + resolveUserHome()
-                + "\"");
-
-        Validate.isReadableDirectory(androidHome,
-            "You must provide Android home directory. The value you have provided is not valid. "
-                + "You can either set it via environment variable ANDROID_HOME or via "
-                + "property called \"androidHome\" in Arquillian configuration or you can set it as system property "
-                + "\"android.home\".");
 
         if (avdName != null && serialId != null) {
             logger.warning("Both \"avdName\" and \"serialId\" properties are defined, the device "
@@ -503,10 +283,6 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
 
         if (adbPort != null) {
             Validate.isAdbPortValid(adbPort);
-        }
-
-        if (adbServerPort != null) {
-            Validate.isPortValid(adbServerPort);
         }
 
         if (sdCard != null) {
@@ -545,61 +321,20 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
             throw new AndroidContainerConfigurationException(
                 "Emulator shutdown timeout has to be bigger then 0.");
         }
-
-        File tmpDir = new File(new File(getTmpDir()), (new AndroidIdentifierGenerator()).getIdentifier(FileType.FILE));
-        setTmpDir(tmpDir.getAbsolutePath());
-
-        if (!tmpDir.exists()) {
-            DroidiumFileUtils.createTmpDir(tmpDir);
-        }
-
-        if (keystore == null) {
-            keystore = getAndroidSdkHome() + ".android" + fileSeparator + "debug.keystore";
-        }
-
-        try {
-            Validate.isReadable(getKeystore(), "Key store for Android APKs is not readable. File does not exist or you have "
-                + "no read access to this file. In case it does not exist, Arquillian Droidium native plugin tries to create "
-                + "keystore you specified dynamically in the file " + getKeystore());
-        } catch (IllegalArgumentException ex) {
-
-        }
-
-        Validate.notNullOrEmpty(getAlias(),
-            "You must provide valid alias for signing of APK files. You entered '" + getAlias() + "'.");
-        Validate.notNullOrEmpty(getKeypass(),
-            "You must provide valid keypass for signing of APK files. You entered '" + getKeypass() + "'.");
-        Validate.notNullOrEmpty(getStorepass(),
-            "You must provide valid storepass for signing of APK files. You entered '" + getStorepass() + "'.");
-        Validate.notNullOrEmpty(getKeyalg(), "You must provide valid key algorithm for signing packages. You entered '"
-            + getKeyalg() + "'.");
-        Validate.notNullOrEmpty(getSigalg(), "You must provide valid key algoritm for signing packages. You entered '" +
-            getSigalg() + "'.");
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("%-40s %s\n", "HOME", resolveUserHome()));
-        sb.append(String.format("%-40s %s\n", "JAVA_HOME", javaHome));
-        sb.append(String.format("%-40s %s\n", "ANDROID_HOME", androidHome));
-        sb.append(String.format("%-40s %s\n", "ANDROID_SDK_HOME", androidSdkHome));
         sb.append(String.format("%-40s %s\n", "avdName", avdName));
         sb.append(String.format("%-40s %s\n", "serialId", serialId));
         sb.append(String.format("%-40s %s\n", "target", target));
         sb.append(String.format("%-40s %s\n", "abi", abi));
         sb.append(String.format("%-40s %s\n", "consolePort", consolePort));
         sb.append(String.format("%-40s %s\n", "adbPort", adbPort));
-        sb.append(String.format("%-40s %s\n", "adbServerPort", adbServerPort));
         sb.append(String.format("%-40s %s\n", "emulatorBootupTimeoutInSeconds", emulatorBootupTimeoutInSeconds));
         sb.append(String.format("%-40s %s\n", "emulatorShutdownTimeoutInSeconds", emulatorShutdownTimeoutInSeconds));
         sb.append(String.format("%-40s %s\n", "emulatorOptions", emulatorOptions));
-        sb.append(String.format("%-40s %s\n", "keystore", keystore));
-        sb.append(String.format("%-40s %s\n", "keypass", keypass));
-        sb.append(String.format("%-40s %s\n", "storepass", storepass));
-        sb.append(String.format("%-40s %s\n", "alias", alias));
-        sb.append(String.format("%-40s %s\n", "sigalg", sigalg));
-        sb.append(String.format("%-40s %s\n", "keyalg", keyalg));
         sb.append(String.format("%-40s %s\n", "sdCard", sdCard));
         sb.append(String.format("%-40s %s\n", "sdSize", sdSize));
         sb.append(String.format("%-40s %s\n", "generateSDCard", generateSDCard));
@@ -608,30 +343,7 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
         sb.append(String.format("%-40s %s\n", "logFilePath", logFilePath));
         sb.append(String.format("%-40s %s\n", "logPackageWhitelist", logPackageWhitelist));
         sb.append(String.format("%-40s %s\n", "logPackageBlacklist", logPackageBlacklist));
-        sb.append(String.format("%-40s %s\n", "removeTmpDir", removeTmpDir));
-        sb.append(String.format("%-40s %s\n", "tmpDir", tmpDir));
-        sb.append(String.format("%-40s %s\n", "ddmlibCommandTimeout", ddmlibCommandTimeout));
-        sb.append(String.format("%-40s %s", "forceNewBridge", forceNewBridge));
         return sb.toString();
-    }
-
-    public Map<String, String> getAndroidSystemEnvironmentProperties() {
-        Map<String, String> androidEnvironmentProperties = new HashMap<String, String>();
-
-        androidEnvironmentProperties.put("ANDROID_HOME", androidHome);
-        androidEnvironmentProperties.put("ANDROID_SDK_HOME", androidSdkHome);
-        androidEnvironmentProperties.put("ANDROID_ADB_SERVER_PORT", adbServerPort);
-
-        return androidEnvironmentProperties;
-    }
-
-    private String checkSlash(String path) {
-
-        if (path == null || path.isEmpty()) {
-            return null;
-        }
-
-        return path.endsWith(fileSeparator) ? path : path + fileSeparator;
     }
 
 }

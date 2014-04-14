@@ -27,7 +27,6 @@ import static org.junit.Assert.assertNotNull;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import org.arquillian.droidium.container.AbstractAndroidTestTestBase;
 import org.arquillian.droidium.container.api.AndroidBridge;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
@@ -35,10 +34,12 @@ import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.impl.AndroidBridgeConnector;
 import org.arquillian.droidium.container.spi.event.AndroidBridgeInitialized;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStart;
+import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
 import org.arquillian.spacelift.process.ProcessExecutor;
 import org.arquillian.spacelift.process.impl.DefaultProcessExecutorFactory;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
+import org.jboss.arquillian.container.test.test.AbstractContainerTestTestBase;
 import org.jboss.arquillian.test.spi.context.TestContext;
 import org.jboss.arquillian.test.spi.event.suite.After;
 import org.jboss.arquillian.test.spi.event.suite.AfterClass;
@@ -57,9 +58,11 @@ import org.mockito.runners.MockitoJUnitRunner;
  *
  */
 @RunWith(MockitoJUnitRunner.class)
-public class AndroidBridgeConnectorTestCase extends AbstractAndroidTestTestBase {
+public class AndroidBridgeConnectorTestCase extends AbstractContainerTestTestBase {
 
     private AndroidContainerConfiguration configuration;
+
+    private DroidiumPlatformConfiguration platformConfiguration;
 
     private ProcessExecutor processExecutor;
 
@@ -73,9 +76,10 @@ public class AndroidBridgeConnectorTestCase extends AbstractAndroidTestTestBase 
     @org.junit.Before
     public void setup() {
         configuration = new AndroidContainerConfiguration();
+        platformConfiguration = new DroidiumPlatformConfiguration();
         processExecutor = new DefaultProcessExecutorFactory().getProcessExecutorInstance();
-        androidSDK = new AndroidSDK(configuration, processExecutor);
-
+        androidSDK = new AndroidSDK(platformConfiguration, processExecutor);
+        androidSDK.setupWith(configuration);
     }
 
     @Test

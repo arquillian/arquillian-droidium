@@ -65,21 +65,10 @@ public class DroidiumExtensionsValidation {
     }
 
     private boolean isNativeExtensionOnClassPath() {
-        try {
-            Class.forName("org.arquillian.droidium.native_.DroidiumNativeExtension");
-            return true;
-        } catch (ClassNotFoundException ex) {
-        }
-        return false;
+        return SecurityActions.isClassPresent("org.arquillian.droidium.native_.DroidiumNativeExtension");
     }
 
     private boolean isWebExtensionOnClassPath() {
-        try {
-            Class.forName("org.arquillian.droidium.web.DroidiumWebExtension");
-            return true;
-        } catch (ClassNotFoundException ex) {
-
-        }
-        return false;
+        return SecurityActions.isClassPresent("org.arquillian.droidium.web.DroidiumWebExtension");
     }
 }

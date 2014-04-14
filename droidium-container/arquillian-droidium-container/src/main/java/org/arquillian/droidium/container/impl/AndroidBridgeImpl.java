@@ -112,13 +112,12 @@ public class AndroidBridgeImpl implements AndroidBridge {
         logger.info("Disconnecting Android Debug Bridge at " + adbLocation.getAbsolutePath());
 
         if (isConnected()) {
-            logger.fine("\t Android Debug Bridge is connected.");
+            logger.info("Android Debug Bridge is connected.");
             if (!hasDevices()) {
-                logger.fine("Android Debug Bridge does't have devices. Going to disconnect it.");
+                logger.info("Android Debug Bridge does not have devices. Going to disconnect it.");
                 AndroidDebugBridge.disconnectBridge();
                 AndroidDebugBridge.terminate();
             } else {
-                logger.fine("Android Debug Bridge has devices.");
                 logger.info("There are still some devices on the Android Debug Bridge." +
                     " Bridge will not be disconnected until none are connected.");
             }

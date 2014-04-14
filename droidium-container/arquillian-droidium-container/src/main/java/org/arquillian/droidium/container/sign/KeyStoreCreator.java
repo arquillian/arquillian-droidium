@@ -20,7 +20,6 @@ import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Validate;
 import org.arquillian.spacelift.process.Command;
@@ -39,23 +38,18 @@ public final class KeyStoreCreator {
 
     private final AndroidSDK sdk;
 
-    private final AndroidContainerConfiguration configuration;
-
     private final ProcessExecutor executor;
 
     /**
      * @param executor
      * @param sdk
-     * @param configuration
      * @throws IllegalArgumentException if either {@code sdk} or {@code configuration} is a null object
      */
-    public KeyStoreCreator(ProcessExecutor executor, AndroidSDK sdk, AndroidContainerConfiguration configuration) {
-        Validate.notNull(configuration, "Process Executor for key store creator must not be a null object!");
-        Validate.notNull(sdk, "Android sdk for key store creator can not be a null object!");
-        Validate.notNull(configuration, "Droidium configuration for key store creator can not be a null object!");
+    public KeyStoreCreator(ProcessExecutor executor, AndroidSDK sdk) {
+        Validate.notNull(executor, "Process Executor ca not be a null object!");
+        Validate.notNull(sdk, "Android SDK can not be a null object!");
         this.executor = executor;
         this.sdk = sdk;
-        this.configuration = configuration;
     }
 
     /**
@@ -90,19 +84,19 @@ public final class KeyStoreCreator {
             .add("-keystore")
             .add(keyStoreToCreate.getAbsolutePath())
             .add("-storepass")
-            .add(configuration.getStorepass())
+            .add(sdk.getPlatformConfiguration().getStorepass())
             .add("-alias")
-            .add(configuration.getAlias())
+            .add(sdk.getPlatformConfiguration().getAlias())
             .add("-keypass")
-            .add(configuration.getKeypass())
+            .add(sdk.getPlatformConfiguration().getKeypass())
             .add("-dname")
             .add("CN=Android,O=Android,C=US")
             .add("-storetype")
             .add("JKS")
             .add("-sigalg")
-            .add(configuration.getSigalg())
+            .add(sdk.getPlatformConfiguration().getSigalg())
             .add("-keyalg")
-            .add(configuration.getKeyalg())
+            .add(sdk.getPlatformConfiguration().getKeyalg())
             .build();
 
         logger.log(Level.INFO, createKeyStoreCommand.toString());

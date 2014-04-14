@@ -97,6 +97,19 @@
                 <artifactId>arquillian-container-spi</artifactId>
                 <version>${version.arquillian.core}</version>
             </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian.container</groupId>
+                <artifactId>arquillian-container-test-impl-base</artifactId>
+                <scope>test</scope>
+                <version>${version.arquillian.core}</version>
+                <classifier>tests</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian.container</groupId>
+                <artifactId>arquillian-container-test-impl-base</artifactId>
+                <scope>test</scope>
+                <version>${version.arquillian.core}</version>
+            </dependency>
 
             <!-- Drone -->
             <dependency>

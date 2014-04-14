@@ -51,7 +51,7 @@ public class SelendroidServerManager {
 
     private static final Logger logger = Logger.getLogger(SelendroidServerManager.class.getName());
 
-    private final AndroidDevice device;
+    private AndroidDevice device;
 
     private final ProcessExecutor executor;
 
@@ -73,12 +73,22 @@ public class SelendroidServerManager {
      * @throws IllegalArgumentException if either {@code device} or {@code executor} or {@code sdk} is a null object
      */
     public SelendroidServerManager(AndroidDevice device, ProcessExecutor executor, AndroidSDK sdk) {
-        Validate.notNull(device, "Android device to set can not be a null object!");
         Validate.notNull(executor, "Process executor to set can not be a null object!");
         Validate.notNull(sdk, "Android SDK to set can not be a null object!");
         this.device = device;
         this.executor = executor;
         this.sdk = sdk;
+    }
+
+    public SelendroidServerManager(ProcessExecutor executor, AndroidSDK sdk) {
+        this(null, executor, sdk);
+    }
+
+    public SelendroidServerManager setDevice(AndroidDevice device) {
+        if (device != null) {
+            this.device = device;
+        }
+        return this;
     }
 
     /**
@@ -150,8 +160,10 @@ public class SelendroidServerManager {
         logger.fine(startApplicationInstrumentationCommand.toString());
 
         try {
-            Monkey monkey = new Monkey(DroidiumFileUtils.createRandomEmptyFile(DroidiumFileUtils.getTmpDir()), deployment
-                .getInstrumentedDeployment().getApplicationBasePackage(), true);
+            Monkey monkey = new Monkey(DroidiumFileUtils.createRandomEmptyFile(
+                sdk.getPlatformConfiguration().getTmpDir()),
+                deployment.getInstrumentedDeployment().getApplicationBasePackage(),
+                true);
             device.executeShellCommand(startApplicationInstrumentationCommand.toString(), monkey);
             Monkey.wait(device, monkey, TOP_CMD);
             waitUntilSelendroidServerCommunication(port);

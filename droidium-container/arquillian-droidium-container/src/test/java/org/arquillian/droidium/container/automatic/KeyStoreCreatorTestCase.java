@@ -24,6 +24,7 @@ import org.arquillian.droidium.container.configuration.AndroidContainerConfigura
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.sign.KeyStoreCreator;
 import org.arquillian.droidium.container.utils.AndroidIdentifierGenerator;
+import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
 import org.arquillian.spacelift.process.ProcessExecutor;
 import org.arquillian.spacelift.process.impl.DefaultProcessExecutorFactory;
 import org.junit.After;
@@ -44,6 +45,8 @@ public class KeyStoreCreatorTestCase {
 
     private AndroidContainerConfiguration configuration;
 
+    private DroidiumPlatformConfiguration platformConfiguration;
+
     private AndroidSDK androidSDK;
 
     private KeyStoreCreator keyStoreCreator;
@@ -55,9 +58,11 @@ public class KeyStoreCreatorTestCase {
     @Before
     public void setup() {
         configuration = new AndroidContainerConfiguration();
+        platformConfiguration = new DroidiumPlatformConfiguration();
         executor = new DefaultProcessExecutorFactory().getProcessExecutorInstance();
-        androidSDK = new AndroidSDK(configuration, executor);
-        keyStoreCreator = new KeyStoreCreator(executor, androidSDK, configuration);
+        androidSDK = new AndroidSDK(platformConfiguration, executor);
+        androidSDK.setupWith(configuration);
+        keyStoreCreator = new KeyStoreCreator(executor, androidSDK);
 
         IdentifierGenerator<FileType> aig = new AndroidIdentifierGenerator();
         keyStoreToCreate = new File(

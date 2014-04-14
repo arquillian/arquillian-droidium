@@ -18,8 +18,11 @@ package org.arquillian.droidium.native_.instrumentation;
 
 import java.io.File;
 
+import org.arquillian.droidium.container.api.AndroidDevice;
+import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.deployment.AndroidDeploymentRegister;
 import org.arquillian.droidium.container.impl.AndroidApplicationHelper;
+import org.arquillian.droidium.container.impl.AndroidDeviceRegister;
 import org.arquillian.droidium.container.sign.APKSigner;
 import org.arquillian.droidium.container.spi.AndroidDeployment;
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;
@@ -56,6 +59,12 @@ import org.jboss.arquillian.drone.spi.DroneContext;
 public class InstrumentationPerformer {
 
     private static int counter = 0;
+
+    @Inject
+    private Instance<AndroidSDK> sdk;
+
+    @Inject
+    private Instance<AndroidDeviceRegister> androidDeviceRegister;
 
     @Inject
     private Instance<DroidiumNativeConfiguration> configuration;
@@ -117,7 +126,10 @@ public class InstrumentationPerformer {
 
         selendroidDeploy.fire(new SelendroidDeploy(selendroidDeployment));
 
-        selendroidServerManager.get().instrument(selendroidDeployment);
+        // to perform instrumentation against "right" Android device, we are outside ContainerContext
+        AndroidDevice device = androidDeviceRegister.get().getByDeploymentName(selendroidDeployment.getDeploymentName());
+
+        selendroidServerManager.get().setDevice(device).instrument(selendroidDeployment);
     }
 
     private File getSelendroidResigned(File selendroidRebuilt) {
@@ -125,7 +137,9 @@ public class InstrumentationPerformer {
     }
 
     private File getSelendroidWorkingCopy() {
-        return DroidiumFileUtils.copyFileToDirectory(configuration.get().getServerApk(), DroidiumFileUtils.getTmpDir());
+        return DroidiumFileUtils.copyFileToDirectory(
+            configuration.get().getServerApk(),
+            sdk.get().getPlatformConfiguration().getTmpDir());
     }
 
     private String getSelendroidPackageName(File selendroidWorkingCopy) {

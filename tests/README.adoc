@@ -70,16 +70,6 @@ Selendroid provides a way how to switch between so called _views_. We can look a
 an application from native point of view or we can test web application by web view 
 which is embedded into native application.
 
-=== droidium-web-01
-
-Tests helloworld-like application which is deployed into JBoss AS and tests 
-are performed in connection with WebDriver and Arquillian Graphene. Tests are 
-executed against Android device - browser on Android device is started and 
-functional tests are executed there. It is not required to start your own 
-JBoss AS instance since this is done automatically upon test execution. 
-JBoss AS instance is extracted into your `target` and Arquillian connects 
-to this instance.
-
 === droidium-native-01-scala
 
 Shows Arquillian Droidium integration with Scala.

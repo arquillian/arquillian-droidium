@@ -34,6 +34,7 @@ import java.io.File;
 import java.text.MessageFormat;
 import java.util.Arrays;
 
+import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
 import org.arquillian.spacelift.process.ProcessExecutor;
 
 /**
@@ -71,68 +72,95 @@ public class AndroidSDK {
      */
     public static final String ADD_ONS_FOLDER_NAME = "add-ons";
 
-    private AndroidContainerConfiguration configuration;
+    private final DroidiumPlatformConfiguration platformConfiguration;
 
-    private Platform currentPlatform;
+    private final ProcessExecutor executor;
+
+    private AndroidContainerConfiguration containerConfiguration;
+
     private final File sdkPath;
     private final File javaPath;
 
-    /**
-     *
-     * @param configuration
-     * @throws AndroidContainerConfigurationException
-     */
-    public AndroidSDK(AndroidContainerConfiguration configuration, ProcessExecutor executor)
-        throws AndroidContainerConfigurationException {
+    private Platform currentPlatform;
 
-        Validate.notNull(configuration, "AndroidSDK configuration must be provided");
-        Validate.notNull(executor, "Process executor for AndroidSDK can no be null object.");
-        Validate.isReadableDirectory(configuration.getAndroidHome(), "Unable to read Android SDK from directory "
-            + configuration.getAndroidHome());
-        Validate.isReadableDirectory(configuration.getJavaHome(), "Unable to determine JAVA_HOME");
+    private static final String defaultAndroidHome;
 
-        this.configuration = configuration;
-        this.sdkPath = new File(configuration.getAndroidHome());
-        this.javaPath = new File(configuration.getJavaHome());
+    static {
+        String home = System.getProperty("android.home");
+        if (home == null) {
+            home = System.getenv("ANDROID_HOME");
+        }
+        if (home == null) {
+            home = System.getenv("HOME");
+        }
+        defaultAndroidHome = home;
+    }
 
-        // get latest available platform by default
+    public AndroidSDK(DroidiumPlatformConfiguration platformConfiguration, ProcessExecutor executor) {
+        Validate.notNull(platformConfiguration, "Droidium platform configuration can not be a null object!");
+        Validate.notNull(executor, "Process executor for AndroidSDK can not be a null object!");
+
+        this.executor = executor;
+        this.platformConfiguration = platformConfiguration;
+
+        this.sdkPath = new File(this.platformConfiguration.getAndroidHome());
+        this.javaPath = new File(this.platformConfiguration.getJavaHome());
+
+        this.currentPlatform = Platform.getAvailablePlatforms(new File(defaultAndroidHome)).iterator().next();
+    }
+
+    public void setupWith(AndroidContainerConfiguration containerConfiguration) {
+
+        Validate.notNull(containerConfiguration, "AndroidSDK configuration must be provided");
+
+        this.containerConfiguration = containerConfiguration;
+
+        // get the latest available platform by default
         this.currentPlatform = Platform.getAvailablePlatforms(sdkPath).iterator().next();
 
         // if serialID is not defined, let's try figure out by target
-        if (configuration.getSerialId() == null) {
+        if (containerConfiguration.getSerialId() == null) {
 
             Target currentTarget = null;
 
             // check whether there was target defined in configuration
-            String targetId = configuration.getTarget();
+            String targetId = containerConfiguration.getTarget();
             if (targetId != null && !"".equals(targetId)) {
                 currentTarget = Target.findMatchingTarget(executor, getAndroidPath(), targetId);
-                currentPlatform = Platform.findPlatformByTarget(sdkPath, currentTarget);
+                this.currentPlatform = Platform.findPlatformByTarget(sdkPath, currentTarget);
                 // update runtime configuration
-                configuration.setTarget(currentTarget.getName());
+                containerConfiguration.setTarget(currentTarget.getName());
             }
             // get target based on latest platform
             else {
-                currentTarget = Target.findMatchingTarget(executor, getAndroidPath(), currentPlatform.getApiLevel());
+                currentTarget = Target.findMatchingTarget(executor, getAndroidPath(), this.currentPlatform.getApiLevel());
                 // update runtime configuration
-                configuration.setTarget(currentTarget.getName());
+                containerConfiguration.setTarget(currentTarget.getName());
             }
 
             // we have select target and platform, lets try to get system image
-            SystemImage image = SystemImage.getSystemImageForTarget(sdkPath, currentTarget, configuration.getAbi());
-            configuration.setAbi(image.getAbi());
+            SystemImage image = SystemImage.getSystemImageForTarget(sdkPath, currentTarget, containerConfiguration.getAbi());
+            containerConfiguration.setAbi(image.getAbi());
         }
 
         System.out.println("Droidium runtime configuration: ");
-        System.out.println(configuration.toString());
+        System.out.println(containerConfiguration.toString());
     }
 
+    /**
+     *
+     * @return current container configuration
+     * @throws IllegalStateException if you have not called {@link AndroidSDK#setupWith(AndroidContainerConfiguration)} yet.
+     */
     public AndroidContainerConfiguration getConfiguration() {
-        return configuration;
+        if (containerConfiguration == null) {
+            throw new IllegalStateException("You have not called AndroidSDK.setupWith(AndroidContainerConfiguration) method");
+        }
+        return containerConfiguration;
     }
 
-    public void setConfiguration(AndroidContainerConfiguration configuration) {
-        this.configuration = configuration;
+    public DroidiumPlatformConfiguration getPlatformConfiguration() {
+        return platformConfiguration;
     }
 
     public String getPathForJavaTool(String tool) {

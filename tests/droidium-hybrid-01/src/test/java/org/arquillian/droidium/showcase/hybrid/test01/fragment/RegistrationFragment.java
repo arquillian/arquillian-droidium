@@ -26,9 +26,9 @@ import org.openqa.selenium.support.FindBy;
 
 /**
  * Abstraction of registration activity to register a user.
- * 
+ *
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
- * 
+ *
  */
 public class RegistrationFragment {
 

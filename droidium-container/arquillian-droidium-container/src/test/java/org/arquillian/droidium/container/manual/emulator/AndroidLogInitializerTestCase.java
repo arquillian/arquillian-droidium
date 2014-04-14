@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 
-import org.arquillian.droidium.container.AbstractAndroidTestTestBase;
 import org.arquillian.droidium.container.api.AndroidBridge;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.IdentifierGenerator;
@@ -20,10 +19,12 @@ import org.arquillian.droidium.container.log.LogcatHelper;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStart;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
 import org.arquillian.droidium.container.utils.AndroidIdentifierGenerator;
+import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
 import org.arquillian.spacelift.process.ProcessExecutor;
 import org.arquillian.spacelift.process.impl.DefaultProcessExecutorFactory;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
+import org.jboss.arquillian.container.test.test.AbstractContainerTestTestBase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -37,9 +38,11 @@ import org.mockito.runners.MockitoJUnitRunner;
  */
 @RunWith(MockitoJUnitRunner.class)
 @Ignore("not stable test")
-public class AndroidLogInitializerTestCase extends AbstractAndroidTestTestBase {
+public class AndroidLogInitializerTestCase extends AbstractContainerTestTestBase {
 
     private AndroidContainerConfiguration configuration;
+
+    private DroidiumPlatformConfiguration platformConfiguration;
 
     private AndroidSDK androidSDK;
 
@@ -63,9 +66,12 @@ public class AndroidLogInitializerTestCase extends AbstractAndroidTestTestBase {
         configuration.setConsolePort(RUNNING_EMULATOR_CONSOLE_PORT);
         configuration.setLogLevel(LogLevel.VERBOSE);
 
+        platformConfiguration = new DroidiumPlatformConfiguration();
+
         processExecutor = new DefaultProcessExecutorFactory().getProcessExecutorInstance();
 
-        androidSDK = new AndroidSDK(configuration, processExecutor);
+        androidSDK = new AndroidSDK(platformConfiguration, processExecutor);
+        androidSDK.setupWith(configuration);
 
         getManager().getContext(ContainerContext.class).activate("doesnotmatter");
 

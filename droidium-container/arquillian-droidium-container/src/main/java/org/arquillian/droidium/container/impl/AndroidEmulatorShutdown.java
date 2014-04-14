@@ -95,6 +95,9 @@ public class AndroidEmulatorShutdown {
     private Instance<ProcessExecutor> executor;
 
     @Inject
+    private Instance<AndroidDeviceRegister> androidDeviceRegister;
+
+    @Inject
     private Event<AndroidEmulatorShuttedDown> androidEmulatorShuttedDown;
 
     @Inject
@@ -105,6 +108,8 @@ public class AndroidEmulatorShutdown {
         AndroidEmulator emulator = androidEmulator.get();
         AndroidDevice device = androidDevice.get();
         AndroidContainerConfiguration configuration = this.configuration.get();
+
+        androidDeviceRegister.get().remove(device);
 
         if (emulator != null && device.isEmulator()) {
             logger.log(Level.INFO, "Stopping Android emulator of AVD name {0}.", configuration.getAvdName());

@@ -22,12 +22,12 @@ import java.util.logging.Logger;
 
 import org.arquillian.droidium.container.api.AndroidBridge;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
-import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.spi.event.AndroidBridgeInitialized;
 import org.arquillian.droidium.container.spi.event.AndroidBridgeTerminated;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStart;
 import org.arquillian.droidium.container.spi.event.AndroidEmulatorShuttedDown;
+import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Instance;
@@ -74,7 +74,7 @@ public class AndroidBridgeConnector {
     private Instance<AndroidSDK> androidSDK;
 
     @Inject
-    private Instance<AndroidContainerConfiguration> configuration;
+    private Instance<DroidiumPlatformConfiguration> configuration;
 
     @Inject
     private Event<AndroidBridgeInitialized> adbInitialized;
@@ -93,8 +93,11 @@ public class AndroidBridgeConnector {
 
         long start = System.currentTimeMillis();
 
-        AndroidBridge bridge = new AndroidBridgeImpl(new File(androidSDK.get().getAdbPath()), configuration.get()
-            .isForceNewBridge(), configuration.get().getDdmlibCommandTimeout());
+        AndroidBridge bridge = new AndroidBridgeImpl(
+            new File(androidSDK.get().getAdbPath()),
+            configuration.get().isForceNewBridge(),
+            Integer.parseInt(configuration.get().getDdmlibCommandTimeout()));
+
         bridge.connect();
         long delta = System.currentTimeMillis() - start;
 

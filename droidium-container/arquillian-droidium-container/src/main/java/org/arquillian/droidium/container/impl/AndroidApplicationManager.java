@@ -41,7 +41,7 @@ public class AndroidApplicationManager {
 
     private static final Logger logger = Logger.getLogger(AndroidApplicationManager.class.getName());
 
-    private final AndroidDevice device;
+    private AndroidDevice device;
 
     private final ProcessExecutor executor;
 
@@ -129,7 +129,7 @@ public class AndroidApplicationManager {
             .build();
 
         try {
-            Monkey monkey = new Monkey(DroidiumFileUtils.createRandomEmptyFile(DroidiumFileUtils.getTmpDir()),
+            Monkey monkey = new Monkey(DroidiumFileUtils.createRandomEmptyFile(sdk.getPlatformConfiguration().getTmpDir()),
                 command.getLast(), false);
             device.executeShellCommand(command.toString(), monkey);
             Monkey.wait(device, monkey, PACKAGES_LIST_CMD);
@@ -158,7 +158,7 @@ public class AndroidApplicationManager {
             .build();
 
         try {
-            Monkey monkey = new Monkey(DroidiumFileUtils.createRandomEmptyFile(DroidiumFileUtils.getTmpDir()),
+            Monkey monkey = new Monkey(DroidiumFileUtils.createRandomEmptyFile(sdk.getPlatformConfiguration().getTmpDir()),
                 command.getLast(), false);
             device.executeShellCommand(command.toString(), monkey);
             Monkey.wait(device, monkey, TOP_CMD);
@@ -166,5 +166,10 @@ public class AndroidApplicationManager {
             throw new AndroidExecutionException("Unable to disable running application "
                 + deployment.getApplicationBasePackage());
         }
+    }
+
+    public AndroidApplicationManager setDevice(AndroidDevice device) {
+        this.device = device;
+        return this;
     }
 }

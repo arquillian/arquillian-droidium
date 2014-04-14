@@ -16,6 +16,8 @@
  */
 package org.arquillian.droidium.native_.selendroid;
 
+import org.arquillian.droidium.container.api.AndroidDevice;
+import org.arquillian.droidium.container.impl.AndroidDeviceRegister;
 import org.arquillian.droidium.native_.spi.SelendroidDeployment;
 import org.arquillian.droidium.native_.spi.event.AfterSelendroidDeploymentUnDeployed;
 import org.arquillian.droidium.native_.spi.event.BeforeSelendroidDeploymentUnDeployed;
@@ -47,6 +49,9 @@ public class SelendroidDeploymentUnInstaller {
     private Instance<SelendroidServerManager> selendroidServerManager;
 
     @Inject
+    private Instance<AndroidDeviceRegister> androidDeviceRegister;
+
+    @Inject
     private Event<BeforeSelendroidDeploymentUnDeployed> beforeUnDeployed;
 
     @Inject
@@ -58,7 +63,10 @@ public class SelendroidDeploymentUnInstaller {
 
         beforeUnDeployed.fire(new BeforeSelendroidDeploymentUnDeployed(selendroidUnDeployment));
 
-        selendroidServerManager.get().uninstall(selendroidUnDeployment);
+        // to perform Selendroid uninstallation against "right" Android device, we are outside ContainerContext
+        AndroidDevice device = androidDeviceRegister.get().getByDeploymentName(selendroidUnDeployment.getDeploymentName());
+
+        selendroidServerManager.get().setDevice(device).uninstall(selendroidUnDeployment);
 
         afterUnDeployed.fire(new AfterSelendroidDeploymentUnDeployed(selendroidUnDeployment));
     }

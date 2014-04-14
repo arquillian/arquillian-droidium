@@ -21,35 +21,27 @@ import org.arquillian.droidium.container.activity.DefaultActivityManager;
 import org.arquillian.droidium.container.api.ActivityManager;
 import org.arquillian.droidium.container.api.ActivityManagerProvider;
 import org.arquillian.droidium.container.api.AndroidDevice;
-import org.arquillian.droidium.container.api.FileType;
-import org.arquillian.droidium.container.api.IdentifierGenerator;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
-import org.arquillian.droidium.container.deployment.AndroidDeploymentRegister;
-import org.arquillian.droidium.container.impl.AndroidApplicationHelper;
 import org.arquillian.droidium.container.impl.AndroidApplicationManager;
-import org.arquillian.droidium.container.sign.APKSigner;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStart;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStop;
 import org.arquillian.droidium.container.spi.event.AndroidDeploy;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
 import org.arquillian.droidium.container.spi.event.AndroidUnDeploy;
-import org.arquillian.droidium.container.utils.AndroidIdentifierGenerator;
-import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.arquillian.spacelift.process.ProcessExecutor;
 import org.jboss.arquillian.container.spi.client.container.DeployableContainer;
 import org.jboss.arquillian.container.spi.client.container.DeploymentException;
 import org.jboss.arquillian.container.spi.client.container.LifecycleException;
 import org.jboss.arquillian.container.spi.client.protocol.ProtocolDescription;
 import org.jboss.arquillian.container.spi.client.protocol.metadata.ProtocolMetaData;
-import org.jboss.arquillian.container.spi.event.container.BeforeStop;
+import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.InstanceProducer;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;
 import org.jboss.arquillian.core.spi.ServiceLoader;
-import org.jboss.arquillian.test.spi.annotation.SuiteScoped;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.descriptor.api.Descriptor;
 
@@ -64,14 +56,9 @@ import org.jboss.shrinkwrap.descriptor.api.Descriptor;
  * <ul>
  * <li>{@link AndroidDeviceReady}</li>
  * </ul>
- * Produces SuiteScoped:
+ * Produces ContainerScoped:
  * <ul>
- * <li>{@link AndroidApplicationHelper}</li>
- * <li>{@link APKSigner}</li>
  * <li>{@link AndroidApplicationManager}</li>
- * <li>{@link AndroidDeploymentRegister}</li>
- * <li>{@link AndroidSDK}</li>
- * <li>{@link IdentifierGenerator}</li>
  * <li>{@link AndroidContainerConfiguration}</li>
  * </ul>
  * Fires:
@@ -87,53 +74,32 @@ import org.jboss.shrinkwrap.descriptor.api.Descriptor;
 public class AndroidDeployableContainer implements DeployableContainer<AndroidContainerConfiguration> {
 
     @Inject
-    @SuiteScoped
+    @ContainerScoped
     private InstanceProducer<AndroidContainerConfiguration> configuration;
 
     @Inject
-    @SuiteScoped
-    private InstanceProducer<AndroidSDK> androidSDK;
+    private Instance<AndroidSDK> androidSDK;
 
     @Inject
-    @SuiteScoped
-    private InstanceProducer<IdentifierGenerator<FileType>> idGenerator;
+    private Instance<AndroidDevice> androidDevice;
 
     @Inject
-    @SuiteScoped
-    private InstanceProducer<APKSigner> signer;
+    private Instance<ProcessExecutor> processExecutor;
 
     @Inject
-    @SuiteScoped
-    private InstanceProducer<AndroidApplicationManager> androidApplicationManager;
+    private Instance<ServiceLoader> serviceLoader;
 
     @Inject
-    @SuiteScoped
-    private InstanceProducer<AndroidApplicationHelper> androidApplicationHelper;
+    private Event<AndroidContainerStart> androidContainerStart;
 
     @Inject
-    @SuiteScoped
-    private InstanceProducer<AndroidDeploymentRegister> androidDeploymentRegister;
-
-    @Inject
-    private Event<AndroidContainerStart> androidContainerStartEvent;
-
-    @Inject
-    private Event<AndroidContainerStop> androidContainerStopEvent;
+    private Event<AndroidContainerStop> androidContainerStop;
 
     @Inject
     private Event<AndroidDeploy> androidDeploy;
 
     @Inject
     private Event<AndroidUnDeploy> androidUnDeploy;
-
-    @Inject
-    private Instance<AndroidDevice> androidDevice;
-
-    @Inject
-    private Instance<ServiceLoader> serviceLoader;
-
-    @Inject
-    private Instance<ProcessExecutor> executor;
 
     @Override
     public Class<AndroidContainerConfiguration> getConfigurationClass() {
@@ -148,21 +114,12 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidCo
     @Override
     public void setup(AndroidContainerConfiguration configuration) {
         this.configuration.set(configuration);
-
-        AndroidContainerConfiguration conf = this.configuration.get();
-
-        executor.get().setEnvironment(conf.getAndroidSystemEnvironmentProperties());
-
-        this.androidSDK.set(new AndroidSDK(conf, executor.get()));
-        this.idGenerator.set(new AndroidIdentifierGenerator());
-        this.signer.set(new APKSigner(this.executor.get(), this.androidSDK.get(), conf));
-        this.androidApplicationHelper.set(new AndroidApplicationHelper(executor.get(), androidSDK.get()));
-        this.androidDeploymentRegister.set(new AndroidDeploymentRegister());
+        androidSDK.get().setupWith(this.configuration.get());
     }
 
     @Override
     public void start() throws LifecycleException {
-        this.androidContainerStartEvent.fire(new AndroidContainerStart());
+        androidContainerStart.fire(new AndroidContainerStart());
     }
 
     @Override
@@ -178,7 +135,7 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidCo
 
     @Override
     public void stop() throws LifecycleException {
-        this.androidContainerStopEvent.fire(new AndroidContainerStop());
+        androidContainerStop.fire(new AndroidContainerStop());
     }
 
     @Override
@@ -201,22 +158,6 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidCo
 
         if (activityManager instanceof DefaultActivityManager) {
             androidDevice.get().setActivityManager(new DefaultActivityManager(androidDevice.get()));
-        }
-
-        this.androidApplicationManager.set(new AndroidApplicationManager(androidDevice.get(), executor.get(), androidSDK.get()));
-    }
-
-    /**
-     * Deletes temporary directory where all resources (files, resigned apks, logs ... ) are stored for native plugin.
-     *
-     * This resource directory will not be deleted when you suppress it by {@code removeTmpDir="false"} in the configuration.
-     *
-     * @param event
-     */
-    public void onBeforeStop(@Observes BeforeStop event) {
-        if (event.getDeployableContainer().getConfigurationClass() == AndroidContainerConfiguration.class
-            && configuration.get().getRemoveTmpDir()) {
-            DroidiumFileUtils.removeDir(DroidiumFileUtils.getTmpDir());
         }
     }
 

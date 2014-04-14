@@ -100,13 +100,15 @@ public class SelendroidRebuilder {
     public File rebuild(File selendroidWorkingCopy, String selendroidPackageName, String applicationBasePackage) {
         Validate.notNull(selendroidWorkingCopy, "Working copy of Selendroid server to rebuild can not be a null object!");
         Validate.notNullOrEmpty(selendroidPackageName,
-                "Selendroid package name for rebuilding of Selendroid server can not be a null object nor an empty string!");
+            "Selendroid package name for rebuilding of Selendroid server can not be a null object nor an empty string!");
         Validate.notNullOrEmpty(applicationBasePackage,
-                "Application base package for rebuilding of Selendroid server can not be a null object nor an empty string!");
+            "Application base package for rebuilding of Selendroid server can not be a null object nor an empty string!");
 
-        File toBeReplacedAndroidManifest = new File(DroidiumFileUtils.getTmpDir(), "AndroidManifestToBeReplaced.xml");
-        File finalAndroidManifest = new File(DroidiumFileUtils.getTmpDir(), "AndroidManifest.xml");
-        File dummyAPK = new File(DroidiumFileUtils.getTmpDir(), "dummy.apk");
+        final File tmpDir = androidSDK.getPlatformConfiguration().getTmpDir();
+
+        File toBeReplacedAndroidManifest = new File(tmpDir, "AndroidManifestToBeReplaced.xml");
+        File finalAndroidManifest = new File(tmpDir, "AndroidManifest.xml");
+        File dummyAPK = new File(tmpDir, "dummy.apk");
 
         // copying of AndroidManifest.xml from resources of the native plugin to working directory
         FileOutputStream toBeReplacedAndroidManifestStream;
@@ -120,7 +122,7 @@ public class SelendroidRebuilder {
 
         if (androidManifestStream == null) {
             throw new SelendroidRebuilderException("the class loader of " + this.getClass().getName()
-                    + " could not find AndroidManifest.xml resource");
+                + " could not find AndroidManifest.xml resource");
         }
 
         try {
@@ -144,7 +146,7 @@ public class SelendroidRebuilder {
         finalArchive.delete("AndroidManifest.xml");
         finalArchive.add(dummyArchive.get("AndroidManifest.xml").getAsset(), "AndroidManifest.xml");
 
-        File targetFile = new File(DroidiumFileUtils.getTmpDir(), DroidiumFileUtils.getRandomAPKFileName());
+        File targetFile = new File(androidSDK.getPlatformConfiguration().getTmpDir(), DroidiumFileUtils.getRandomAPKFileName());
 
         return DroidiumFileUtils.export(finalArchive, targetFile);
     }
@@ -158,16 +160,16 @@ public class SelendroidRebuilder {
      */
     private void createDummyAPK(File dummyAPK, File androidManifest) {
         Command createDummyPackage = new CommandBuilder()
-                .add(androidSDK.getAaptPath())
-                .add("package")
-                .add("-f")
-                .add("-M")
-                .add(androidManifest.getAbsolutePath())
-                .add("-I")
-                .add(new File(androidSDK.getPlatformDirectory(), "android.jar").getAbsolutePath())
-                .add("-F")
-                .add(dummyAPK.getAbsolutePath())
-                .build();
+            .add(androidSDK.getAaptPath())
+            .add("package")
+            .add("-f")
+            .add("-M")
+            .add(androidManifest.getAbsolutePath())
+            .add("-I")
+            .add(new File(androidSDK.getPlatformDirectory(), "android.jar").getAbsolutePath())
+            .add("-F")
+            .add(dummyAPK.getAbsolutePath())
+            .build();
 
         try {
             processExecutor.execute(createDummyPackage);
@@ -189,9 +191,9 @@ public class SelendroidRebuilder {
         try {
             @SuppressWarnings("unchecked")
             ManifestFilter filter = new ManifestFilter(FileUtils.readLines(toBeReplaced))
-                    .filter(SELENDROID_PACKAGE_NAME, "package=\"" + selendroidPackageName + "\"")
-                    .filter(SELENDROID_TEST_PACKAGE, applicationBasePackage)
-                    .filter(ICON, "");
+                .filter(SELENDROID_PACKAGE_NAME, "package=\"" + selendroidPackageName + "\"")
+                .filter(SELENDROID_TEST_PACKAGE, applicationBasePackage)
+                .filter(ICON, "");
 
             if (logger.isLoggable(Level.FINE))
                 for (String line : filter.getFiltered()) {
@@ -201,7 +203,7 @@ public class SelendroidRebuilder {
             FileUtils.writeLines(finalManifest, filter.getFiltered());
         } catch (IOException e) {
             throw new SelendroidRebuilderException("Unable to filter Android manifest. Tried to filter "
-                    + toBeReplaced.getAbsolutePath() + " into " + finalManifest.getAbsolutePath() + ".");
+                + toBeReplaced.getAbsolutePath() + " into " + finalManifest.getAbsolutePath() + ".");
         }
     }
 
@@ -267,7 +269,7 @@ public class SelendroidRebuilder {
             Validate.notNullOrEmpty(toReplace, "The string to be replaced can not be a null object nor an empty string!");
             Validate.notNull(replacement, "The string as a replacement can not be a null object!");
             Validate.notNull(lines, "The list to be filtered for the replacement of '" + toReplace + "' for '" + replacement
-                    + "' can not be a null object!");
+                + "' can not be a null object!");
 
             if (lines.size() == 0) {
                 return null;

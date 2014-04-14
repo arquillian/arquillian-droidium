@@ -16,6 +16,8 @@
  */
 package org.arquillian.droidium.native_.selendroid;
 
+import org.arquillian.droidium.container.api.AndroidDevice;
+import org.arquillian.droidium.container.impl.AndroidDeviceRegister;
 import org.arquillian.droidium.native_.spi.SelendroidDeployment;
 import org.arquillian.droidium.native_.spi.event.AfterSelendroidDeploymentDeployed;
 import org.arquillian.droidium.native_.spi.event.BeforeSelendroidDeploymentDeployed;
@@ -46,6 +48,9 @@ public class SelendroidDeploymentInstaller {
     private Instance<SelendroidServerManager> selendroidServerManager;
 
     @Inject
+    private Instance<AndroidDeviceRegister> androidDeviceRegister;
+
+    @Inject
     private Event<BeforeSelendroidDeploymentDeployed> beforeDeployed;
 
     @Inject
@@ -57,7 +62,10 @@ public class SelendroidDeploymentInstaller {
 
         beforeDeployed.fire(new BeforeSelendroidDeploymentDeployed(selendroidDeployment));
 
-        selendroidServerManager.get().install(selendroidDeployment);
+        // to perform Selendroid installation against "right" Android device, we are outside ContainerContext
+        AndroidDevice device = androidDeviceRegister.get().getByDeploymentName(selendroidDeployment.getDeploymentName());
+
+        selendroidServerManager.get().setDevice(device).install(selendroidDeployment);
 
         afterDeployed.fire(new AfterSelendroidDeploymentDeployed(selendroidDeployment));
     }

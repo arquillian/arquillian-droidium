@@ -16,6 +16,7 @@
  */
 package org.arquillian.droidium.container.deployment;
 
+import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.impl.AndroidApplicationManager;
 import org.arquillian.droidium.container.spi.AndroidDeployment;
 import org.arquillian.droidium.container.spi.event.AfterAndroidDeploymentUnDeployed;
@@ -58,13 +59,13 @@ public class AndroidDeploymentUninstaller {
      *
      * @param event
      */
-    public void onAndroidUnDeploy(@Observes AndroidUnDeploy event) {
+    public void onAndroidUnDeploy(@Observes AndroidUnDeploy event, AndroidDevice device) {
 
         AndroidDeployment androidDeployment = androidDeploymentRegister.get().get(event.getArchive());
 
         beforeUnDeploy.fire(new BeforeAndroidDeploymentUnDeployed(androidDeployment));
 
-        androidApplicationManager.get().uninstall(androidDeployment);
+        androidApplicationManager.get().setDevice(device).uninstall(androidDeployment);
 
         afterUnDeploy.fire(new AfterAndroidDeploymentUnDeployed(androidDeployment));
 

@@ -17,9 +17,12 @@
 package org.arquillian.droidium.native_.configuration;
 
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.arquillian.droidium.container.spi.event.DroidiumExtensionConfigured;
 import org.arquillian.droidium.native_.spi.event.DroidiumNativeConfigured;
+import org.arquillian.droidium.platform.event.DroidiumPlatformConfigured;
 import org.jboss.arquillian.config.descriptor.api.ArquillianDescriptor;
 import org.jboss.arquillian.config.descriptor.api.ExtensionDef;
 import org.jboss.arquillian.core.api.Event;
@@ -27,14 +30,13 @@ import org.jboss.arquillian.core.api.InstanceProducer;
 import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;
-import org.jboss.arquillian.test.spi.event.suite.BeforeSuite;
 
 /**
  * Creates configuration for Droidium native plugin. <br>
  * <br>
  * Observes:
  * <ul>
- * <li>{@link BeforeSuite}</li>
+ * <li>{@link DroidiumPlatformConfigured}</li>
  * </ul>
  * Produces application scoped:<br>
  * <ul>
@@ -64,7 +66,7 @@ public class DroidiumNativeConfigurator {
     @Inject
     private Event<DroidiumNativeConfigured> droidiumNativeConfigured;
 
-    public void configureDroidiumNative(@Observes ArquillianDescriptor descriptor) {
+    public void onDroidiumExtensionConfigured(@Observes DroidiumExtensionConfigured event, ArquillianDescriptor descriptor) {
 
         logger.info("Configuring " + DROIDIUM_NATIVE_EXTENSION_NAME);
 
@@ -74,8 +76,15 @@ public class DroidiumNativeConfigurator {
             if (DROIDIUM_NATIVE_EXTENSION_NAME.equals(extensionDef.getExtensionName())) {
                 Map<String, String> properties = extensionDef.getExtensionProperties();
                 configuration.setProperties(properties);
-                configuration.validate();
+                break;
             }
+        }
+
+        configuration.validate();
+
+        if (logger.isLoggable(Level.INFO)) {
+            System.out.println("Configuration of Arquillian Droidium Native");
+            System.out.println(configuration);
         }
 
         droidiumNativeConfiguration.set(configuration);

@@ -8,13 +8,9 @@ Implementation of Arquillian container abstraction for Android devices.
 
 https://github.com/arquillian/arquillian-droidium/blob/master/droidium-container/README.adoc[Droidium container documentation]
 
-=== Arquillian Droidium Web
+=== Arquillian Droidium platform
 
-Extension for supporting web testing for Droidium container. You need this 
-when you want to functionaly test your application on mobile devices.
-Web extension relies on Selenium project from where it takes Android server APK.
-
-https://github.com/arquillian/arquillian-droidium/blob/master/droidium-web/README.adoc[Droidium web plugin documentation]
+This tiny extension provides core Android platform configuration on which Droidium container depends.
 
 === Arquillian Droidium Native
 
@@ -24,6 +20,14 @@ Native extension relies on http://dominikdary.github.io/selendroid/[Selendroid] 
 from where it takes Selendroid server APK.
 
 https://github.com/arquillian/arquillian-droidium/blob/master/droidium-native/README.adoc[Droidium native plugin documentation]
+
+=== Runtime dependencies
+
+You have to have installed https://developer.android.com/sdk/index.html[Android SDK] locally on your machine and you have to set it up fully.
+
+Be sure you set all environment properties like +ANDROID_HOME+ and +ANDROID_SDK_HOME+m +JAVA_HOME+ and +HOME+.
+
+You have to have Java installed locally as well. Droidium is developed against Java 1.6.
 
 === Example projects
 
@@ -35,13 +39,13 @@ You can generate your own project via archetypes both for native and web testing
 
 https://github.com/arquillian/arquillian-droidium/tree/master/archetypes[Droidium archetypes]
 
-=== How to install Arquillian Droidium
+=== How to install Arquillian Droidium?
 
 `mvn clean install`
 
-=== How to use Android container and web and native plugins?
+=== How to use Android container web and native testing?
 
-Every extension has its own README and configuration documentation in its respective directory.
+Please find respective README and configuration documentation in its respective directory.
 You can find archetypes for native and web testing in archetype directory so you can boostrap your 
 testing process significantly. You can also take a look into _tests_ directory. There is bunch of 
 example projects how to use it with very deep documentation.

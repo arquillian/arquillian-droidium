@@ -107,15 +107,15 @@
 
         <!-- Test dependencies -->
         <dependency>
-            <groupId>org.jboss.arquillian.junit</groupId>
-            <artifactId>arquillian-junit-standalone</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.jboss.arquillian.config</groupId>
             <artifactId>arquillian-config-impl-base</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.test</groupId>
+            <artifactId>arquillian-test-impl-base</artifactId>
+            <scope>test</scope>
+        </dependency>        
         <dependency>
             <groupId>org.jboss.arquillian.test</groupId>
             <artifactId>arquillian-test-impl-base</artifactId>

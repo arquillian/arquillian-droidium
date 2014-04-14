@@ -71,25 +71,6 @@ public class DroidiumFileUtils {
     }
 
     /**
-     * Creates directory with random name.
-     *
-     * Temporary resource directory can be specified by {@code tmpDir} configuration property in extension configuration in
-     * arquillian.xml.
-     */
-    public static void createTmpDir(File parent) {
-        try {
-            DroidiumFileUtils.tmpDir = parent;
-            boolean created = DroidiumFileUtils.tmpDir.mkdirs();
-            if (!created) {
-                throw new RuntimeException("Unable to create temporary directory " + DroidiumFileUtils.tmpDir.getAbsolutePath());
-            }
-        } catch (SecurityException ex) {
-            logger.severe("Security manager denies to create the working dir in " + parent.getAbsolutePath());
-            throw new RuntimeException("Unable to create working directory in " + parent.getAbsolutePath());
-        }
-    }
-
-    /**
      * Creates empty file saved under {@code parent}
      *
      * @param parent parent directory of file to create
@@ -149,23 +130,6 @@ public class DroidiumFileUtils {
 
         fromArchive.as(ZipExporter.class).exportTo(toFile, true);
         return toFile;
-    }
-
-    /**
-     * Exports archive to file. Archive will be exported to file placed in temporary directory. This method has
-     * to be called after {@link #createTmpDir(File)}.
-     *
-     * @param fromArchive archive to export
-     * @return exported archive as file
-     * @throws IllegalStateException if temporary directory to export archive by default is null (not set)
-     */
-    public static File export(Archive<?> fromArchive) {
-        Validate.notNull(fromArchive, "Archive to export from can not be a null object!");
-        if (DroidiumFileUtils.getTmpDir() == null) {
-            throw new IllegalStateException("Please call DroidiumFileUtils.createTmpDir(File) before calling this method.");
-        }
-        File toFile = new File(DroidiumFileUtils.getTmpDir(), DroidiumFileUtils.getRandomAPKFileName());
-        return export(fromArchive, toFile);
     }
 
 }

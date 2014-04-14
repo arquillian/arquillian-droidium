@@ -21,10 +21,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.arquillian.droidium.container.api.AndroidExecutionException;
-import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Validate;
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;
+import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
 import org.arquillian.spacelift.process.Command;
 import org.arquillian.spacelift.process.CommandBuilder;
 import org.arquillian.spacelift.process.ProcessExecutor;
@@ -44,25 +44,20 @@ public class APKSigner {
 
     private final AndroidSDK sdk;
 
-    private final AndroidContainerConfiguration configuration;
-
     private final ProcessExecutor executor;
 
     /**
      *
      * @param executor
      * @param sdk
-     * @param configuration
      * @throws IllegalArgumentException when some of arguments is a null object
      */
-    public APKSigner(ProcessExecutor executor, AndroidSDK sdk, AndroidContainerConfiguration configuration)
+    public APKSigner(ProcessExecutor executor, AndroidSDK sdk)
         throws IllegalArgumentException {
         Validate.notNull(executor, "Process executor to set can not be a null object!");
         Validate.notNull(sdk, "Android SDK to set can not be a null object!");
-        Validate.notNull(configuration, "Droidium configuration to set can not be a null object!");
         this.executor = executor;
         this.sdk = sdk;
-        this.configuration = configuration;
     }
 
     /**
@@ -80,10 +75,10 @@ public class APKSigner {
             .add("-sigalg").add("MD5withRSA")
             .add("-digestalg").add("SHA1")
             .add("-signedjar").add(signed.getAbsolutePath())
-            .add("-storepass").add(configuration.getStorepass())
-            .add("-keystore").add(new File(configuration.getKeystore()).getAbsolutePath())
+            .add("-storepass").add(sdk.getPlatformConfiguration().getStorepass())
+            .add("-keystore").add(new File(sdk.getPlatformConfiguration().getKeystore()).getAbsolutePath())
             .add(toSign.getAbsolutePath())
-            .add(configuration.getAlias())
+            .add(sdk.getPlatformConfiguration().getAlias())
             .build();
 
         logger.log(Level.FINE, jarSignerCommand.toString());
@@ -106,32 +101,32 @@ public class APKSigner {
         Validate.notNull(toResign, "File to resign can not be a null object!");
         Archive<?> apk = ShrinkWrap.createFromZipFile(JavaArchive.class, toResign);
         apk.delete("META-INF");
-        File toSign = new File(DroidiumFileUtils.getTmpDir(), DroidiumFileUtils.getRandomAPKFileName());
+        File toSign = new File(sdk.getPlatformConfiguration().getTmpDir(), DroidiumFileUtils.getRandomAPKFileName());
         DroidiumFileUtils.export(apk, toSign);
-        return sign(toSign, new File(DroidiumFileUtils.getTmpDir(), DroidiumFileUtils.getRandomAPKFileName()));
+        return sign(toSign, new File(sdk.getPlatformConfiguration().getTmpDir(), DroidiumFileUtils.getRandomAPKFileName()));
     }
 
     /**
-     * Checks if keystore as specified in {@link DroidiumNativeConfiguration} exists.
+     * Checks if keystore as specified in {@link DroidiumPlatformConfiguration} exists.
      *
      * If it does not exist, checks if default keystore (in $ANDROID_SDK_HOME/.android/debug.keystore) exist. If default
      * keystore does not exist, this method creates it.
      *
-     * Sets keystore back to {@link DroidiumNativeConfiguration} to whatever exist first.
+     * Sets keystore back to {@link DroidiumPlatformConfiguration} to whatever exist first.
      */
     private void checkKeyStore() {
-        KeyStoreCreator keyStoreCreator = new KeyStoreCreator(executor, sdk, configuration);
-        if (!keyStoreCreator.keyStoreExists(new File(configuration.getKeystore()))) {
+        KeyStoreCreator keyStoreCreator = new KeyStoreCreator(executor, sdk);
+        if (!keyStoreCreator.keyStoreExists(new File(sdk.getPlatformConfiguration().getKeystore()))) {
             File defaultKeyStore = new File(getDefaultKeyStorePath());
             if (!keyStoreCreator.keyStoreExists(defaultKeyStore)) {
                 keyStoreCreator.createKeyStore(defaultKeyStore);
             }
-            configuration.setKeystore(defaultKeyStore.getAbsolutePath());
+            sdk.getPlatformConfiguration().setProperty("keystore", defaultKeyStore.getAbsolutePath());
         }
     }
 
     private String getDefaultKeyStorePath() {
         String separator = System.getProperty("file.separator");
-        return configuration.getAndroidSdkHome() + ".android" + separator + "debug.keystore";
+        return sdk.getPlatformConfiguration().getAndroidSdkHome() + ".android" + separator + "debug.keystore";
     }
 }

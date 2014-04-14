@@ -47,14 +47,21 @@
             <artifactId>arquillian-droidium-container-spi</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>org.arquillian.protocol</groupId>
             <artifactId>arquillian-protocol-android</artifactId>
             <version>${project.version}</version>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>org.arquillian.extension</groupId>
             <artifactId>arquillian-droidium-multiple-containers</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Arquillian Droidium Platform dependencies -->
+        <dependency>
+            <groupId>org.arquillian.extension</groupId>
+            <artifactId>arquillian-droidium-platform</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -90,43 +97,49 @@
         
         <!-- Test dependencies -->
         <dependency>
-            <groupId>org.jboss.arquillian.junit</groupId>
-            <artifactId>arquillian-junit-standalone</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.jboss.arquillian.config</groupId>
             <artifactId>arquillian-config-impl-base</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.jboss.arquillian.test</groupId>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-container-test-impl-base</artifactId>
+            <scope>test</scope>
+            <classifier>tests</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-container-test-impl-base</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.core</groupId>
+            <artifactId>arquillian-core-impl-base</artifactId>
+            <scope>test</scope>
+            <classifier>tests</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.core</groupId>
+            <artifactId>arquillian-core-impl-base</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-container-impl-base</artifactId>
+            <scope>test</scope>
+            <classifier>tests</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-container-impl-base</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- Added -->
+        <dependency>
+             <groupId>org.jboss.arquillian.test</groupId>
             <artifactId>arquillian-test-impl-base</artifactId>
             <scope>test</scope>
-            <classifier>tests</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.core</groupId>
-            <artifactId>arquillian-core-impl-base</artifactId>
-            <scope>test</scope>
-            <classifier>tests</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.core</groupId>
-            <artifactId>arquillian-core-impl-base</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-container-impl-base</artifactId>
-            <scope>test</scope>
-            <classifier>tests</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-container-impl-base</artifactId>
-            <scope>test</scope>
-        </dependency>
+        </dependency>        
 
         <dependency>
             <groupId>org.jboss.as</groupId>

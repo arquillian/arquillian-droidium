@@ -49,6 +49,7 @@ import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceAvailable
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceCreate;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceDelete;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceDeleted;
+import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
 import org.arquillian.spacelift.process.ProcessExecutor;
 import org.arquillian.spacelift.process.impl.DefaultProcessExecutorFactory;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
@@ -83,6 +84,8 @@ public class AndroidEmulatorStartupAVDtoBeCreatedTestCase extends AbstractContai
 
     private AndroidContainerConfiguration configuration;
 
+    private DroidiumPlatformConfiguration platformConfiguration;
+
     private AndroidSDK androidSDK;
 
     private ProcessExecutor processorExecutor;
@@ -110,8 +113,11 @@ public class AndroidEmulatorStartupAVDtoBeCreatedTestCase extends AbstractContai
 
         configuration.validate();
 
+        platformConfiguration = new DroidiumPlatformConfiguration();
+
         processorExecutor = new DefaultProcessExecutorFactory().getProcessExecutorInstance();
-        androidSDK = new AndroidSDK(configuration, processorExecutor);
+        androidSDK = new AndroidSDK(platformConfiguration, processorExecutor);
+        androidSDK.setupWith(configuration);
 
         getManager().getContext(ContainerContext.class).activate("doesnotmatter");
 

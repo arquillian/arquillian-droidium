@@ -97,4 +97,11 @@ public class DroidiumNativeConfiguration {
             + "Arquillian Droidium native plugin. Plese be sure you have read access to the file you entered: "
             + getServerApk());
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("%-40s %s", "serverApk", getServerApk()));
+        return sb.toString();
+    }
 }

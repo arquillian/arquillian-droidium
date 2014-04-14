@@ -16,7 +16,6 @@
  */
 package org.arquillian.droidium.native_.spi.event;
 
-import org.arquillian.droidium.container.spi.event.DroidiumExtensionConfigured;
 
 /**
  * Event representing that Droidium native extension was configured.
@@ -24,6 +23,6 @@ import org.arquillian.droidium.container.spi.event.DroidiumExtensionConfigured;
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
-public class DroidiumNativeConfigured extends DroidiumExtensionConfigured {
+public class DroidiumNativeConfigured {
 
 }

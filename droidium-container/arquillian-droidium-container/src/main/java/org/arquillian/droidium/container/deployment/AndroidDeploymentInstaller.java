@@ -18,6 +18,7 @@ package org.arquillian.droidium.container.deployment;
 
 import java.io.File;
 
+import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.impl.AndroidApplicationHelper;
 import org.arquillian.droidium.container.impl.AndroidApplicationManager;
 import org.arquillian.droidium.container.sign.APKSigner;
@@ -52,6 +53,9 @@ import org.jboss.shrinkwrap.api.Archive;
 public class AndroidDeploymentInstaller {
 
     @Inject
+    private Instance<AndroidSDK> androidSDK;
+
+    @Inject
     private Instance<APKSigner> signer;
 
     @Inject
@@ -75,7 +79,7 @@ public class AndroidDeploymentInstaller {
 
         Archive<?> archive = event.getArchive();
 
-        File deployApk = new File(DroidiumFileUtils.getTmpDir(), DroidiumFileUtils.getRandomAPKFileName());
+        File deployApk = new File(androidSDK.get().getPlatformConfiguration().getTmpDir(), DroidiumFileUtils.getRandomAPKFileName());
         DroidiumFileUtils.export(archive, deployApk);
         File resignedApk = signer.get().resign(deployApk);
 

@@ -18,8 +18,7 @@
 package org.arquillian.droidium.container.spi.event;
 
 /**
- * Fired subclass of this class signals that underlying extension
- * from where that subclass is fired is fully configured from arquillian.xml.
+ * Fired when Droidium container extension was fully configured.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  */
