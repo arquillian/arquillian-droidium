@@ -67,7 +67,7 @@ public class DroidiumExclusionDecider {
 
     private boolean isAskingForAndroid(ExtensionDef webdriverExtension) {
         for (Map.Entry<String, String> entry : webdriverExtension.getExtensionProperties().entrySet()) {
-            if (entry.getKey().equals("browser") || entry.getKey().equals("browserName")) {
+            if (entry.getKey().equals("browser")) {
                 if (entry.getValue().equals("android")) {
                     return true;
                 }

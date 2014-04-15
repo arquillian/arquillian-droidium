@@ -26,9 +26,9 @@ import org.jboss.arquillian.core.api.annotation.Observes;
 
 /**
  * Before Droidium container is started, Arquillian descriptor is scanned for the presence of webdriver extensions. In case we
- * found such extension which has browser specified as "android", we assure there is web or native extension on class path. This
- * logic can help user significantly since Droidium container is tightly coupled with extensions and it is suspicious user would
- * use container alone (even it is possible).
+ * found such extension which has browser specified as "android", we assure there is native extension on class path. This logic
+ * can help user significantly since Droidium container is tightly coupled with extensions and it is suspicious user would use
+ * container alone (even it is possible).
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
@@ -47,15 +47,14 @@ public class DroidiumExtensionsValidation {
         for (ExtensionDef extension : descriptor.getExtensions()) {
             extensionProperties = extension.getExtensionProperties();
             if (extension.getExtensionName().startsWith("webdriver")) {
-                if ((extensionProperties.get("browser") != null && extensionProperties.get("browser").equals("android"))
-                    || (extensionProperties.get("browserName") != null && extensionProperties.get("browserName").equals(
-                        "android"))) {
-                    if (!isWebExtensionOnClassPath() && !isNativeExtensionOnClassPath()) {
+                String browser = extensionProperties.get("browser");
+                if (browser != null && browser.equals("android")) {
+                    if (!isNativeExtensionOnClassPath()) {
                         logger.warning("You have Droidium container as well as webdriver extension with browser \"android\" "
-                            + "configured in arquillian.xml but there is not Droidium native nor Droidium web extension on "
+                            + "configured in arquillian.xml but there is not Droidium native extension on "
                             + "the class path. This setting is highly suspicious - it might not be wrong when you actually "
                             + "do not use Drone instance injected into test case for that extension however, in most cases, "
-                            + "please add Droidium native OR web extension on class path to be able to test native Android "
+                            + "please add Droidium native on class path to be able to test native Android "
                             + "applications or web applications from Android device.");
                         break;
                     }
@@ -68,7 +67,4 @@ public class DroidiumExtensionsValidation {
         return SecurityActions.isClassPresent("org.arquillian.droidium.native_.DroidiumNativeExtension");
     }
 
-    private boolean isWebExtensionOnClassPath() {
-        return SecurityActions.isClassPresent("org.arquillian.droidium.web.DroidiumWebExtension");
-    }
 }
