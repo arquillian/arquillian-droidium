@@ -16,7 +16,7 @@
  */
 package org.arquillian.droidium.native_;
 
-import org.arquillian.droidium.container.enricher.AndroidDeviceResourceProvider;
+import org.arquillian.droidium.container.enrichment.AndroidDeviceResourceProvider;
 import org.arquillian.droidium.native_.configuration.DroidiumDronePointModifier;
 import org.arquillian.droidium.native_.configuration.DroidiumNativeConfigurator;
 import org.arquillian.droidium.native_.deployment.DeploymentActivitiesScanner;

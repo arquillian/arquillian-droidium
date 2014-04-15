@@ -17,6 +17,7 @@
 package org.arquillian.droidium.container.deployment;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
+import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.impl.AndroidApplicationManager;
 import org.arquillian.droidium.container.impl.AndroidDeviceMetadata;
@@ -56,6 +57,10 @@ public class AndroidDeviceDeploymentContext {
 
     public void onBeforeDeploy(@Observes BeforeDeploy event, AndroidDevice androidDevice) {
 
+        if (event.getDeployableContainer().getConfigurationClass() != AndroidContainerConfiguration.class) {
+            return;
+        }
+
         AndroidDeviceRegister register = androidDeviceRegister.get();
 
         if (!register.contains(androidDevice)) {
@@ -76,6 +81,10 @@ public class AndroidDeviceDeploymentContext {
     }
 
     public void onBeforeUnDeploy(@Observes BeforeUnDeploy event, AndroidDevice androidDevice) {
+
+        if (event.getDeployableContainer().getConfigurationClass() != AndroidContainerConfiguration.class) {
+            return;
+        }
 
         AndroidApplicationManager androidApplicationManager = new AndroidApplicationManager(
             androidDevice, processExecutor.get(), androidSDK.get());

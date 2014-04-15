@@ -19,7 +19,7 @@ package org.arquillian.droidium.native_.enrichment;
 import java.lang.annotation.Annotation;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
-import org.arquillian.droidium.container.enricher.AndroidDeviceResourceProvider;
+import org.arquillian.droidium.container.enrichment.AndroidDeviceResourceProvider;
 import org.arquillian.droidium.native_.DroidiumNativeExtension;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;

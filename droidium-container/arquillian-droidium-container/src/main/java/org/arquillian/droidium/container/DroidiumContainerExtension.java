@@ -23,7 +23,7 @@ import org.arquillian.droidium.container.configuration.DroidiumExtensionsValidat
 import org.arquillian.droidium.container.deployment.AndroidDeploymentInstaller;
 import org.arquillian.droidium.container.deployment.AndroidDeploymentUninstaller;
 import org.arquillian.droidium.container.deployment.AndroidDeviceDeploymentContext;
-import org.arquillian.droidium.container.enricher.AndroidDeviceResourceProvider;
+import org.arquillian.droidium.container.enrichment.AndroidDeviceResourceProvider;
 import org.arquillian.droidium.container.impl.AndroidBridgeConnector;
 import org.arquillian.droidium.container.impl.AndroidDeviceSelectorImpl;
 import org.arquillian.droidium.container.impl.AndroidEmulatorShutdown;
