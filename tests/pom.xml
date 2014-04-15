@@ -38,15 +38,16 @@
 
     <!-- Modules -->
     <modules>
+		<module>droidium-multiple-androids-01</module>
+		<module>droidium-multiple-androids-02</module>
         <module>droidium-multiple-containers-01</module>
         <module>droidium-multiple-containers-02</module>
         <module>droidium-multiple-containers-03</module>
         <module>droidium-native-01</module>
         <module>droidium-native-02</module>
-        <module>droidium-web-01</module>
+        <module>droidium-native-01-scala</module>
         <module>droidium-hybrid-01</module>
         <module>droidium-screenshooter-01</module>
-        <module>droidium-native-01-scala</module>
         <module>droidium-multiple-deployments-01</module>
     </modules>
 

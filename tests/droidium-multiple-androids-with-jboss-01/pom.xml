@@ -17,10 +17,10 @@
 
     <!-- Arfitact configuration -->
     <groupId>org.arquillian.droidium.tests</groupId>
-    <artifactId>arquillian-droidium-multiple-androids-test-02</artifactId>
+    <artifactId>arquillian-droidium-multiple-androids-with-jboss-test-01</artifactId>
     <version>1.0.0.Beta1-SNAPSHOT</version>
 
-    <description>Shows configuration of multiple Android containers</description>
+    <description>Shows configuration of multiple Android containers with JBoss AS</description>
 
     <!-- Properties -->
     <properties>
@@ -31,6 +31,7 @@
         <version.org.jboss.arquillian.graphene2>2.0.2.Final</version.org.jboss.arquillian.graphene2>
         
         <version.junit>4.11</version.junit>
+        <version.org.jboss.as>7.1.1.Final</version.org.jboss.as>
 
 		<selendroid.version>0.9.0</selendroid.version>
         <android.avd.name_1>testingEmulator_1</android.avd.name_1>
@@ -56,6 +57,12 @@
                 <version>${project.version}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>org.jboss.as</groupId>
+                <artifactId>jboss-as-arquillian-container-managed</artifactId>
+                <version>${version.org.jboss.as}</version>
+                <scope>test</scope>
+            </dependency>            
             <dependency>
                 <groupId>org.jboss.arquillian.extension</groupId>
                 <artifactId>arquillian-drone-webdriver-depchain</artifactId>
@@ -91,6 +98,11 @@
             <artifactId>arquillian-droidium-container</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-arquillian-container-managed</artifactId>
+            <scope>test</scope>
+        </dependency>                
         <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
             <artifactId>arquillian-junit-container</artifactId>
@@ -142,6 +154,32 @@
                     <target>${maven.compiler.target}</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.8</version>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.jboss.as</groupId>
+                                    <artifactId>jboss-as-dist</artifactId>
+                                    <version>${version.org.jboss.as}</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>            
         </plugins>
         <testResources>
             <testResource>
@@ -152,6 +190,36 @@
                 </includes>
             </testResource>
         </testResources>
+        <pluginManagement>
+            <plugins>
+                <!-- Ignore/Execute plugin execution -->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <!-- copy-dependency plugin -->
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-dependency-plugin</artifactId>
+                                        <versionRange>[1.0.0,)</versionRange>
+                                        <goals>
+                                            <goal>unpack</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore />
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>                
     </build>
 
 </project>

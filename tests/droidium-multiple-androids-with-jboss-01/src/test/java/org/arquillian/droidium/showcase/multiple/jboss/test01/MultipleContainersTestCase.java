@@ -14,64 +14,75 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.showcase.multiple.test01;
+package org.arquillian.droidium.showcase.multiple.jboss.test01;
 
 import java.io.File;
 
-import org.arquillian.droidium.container.api.AndroidDevice;
-import org.arquillian.droidium.showcase.classes.Foo;
+import org.arquillian.droidium.native_.api.Instrumentable;
+import org.arquillian.droidium.native_.webdriver.AndroidDriver;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.container.test.api.TargetsContainer;
+import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * Proof of concept test for showing multiple containers on classpath.
- * 
- * While testing web application, you can omit deployment for Android completely.
- * 
+ * Three deployments, two of them to each Android container, third to JBoss.
+ *
+ * JBoss AS deployment could be some server WAR / service. APKs could be your applications which interacts together via that
+ * JBoss AS deployment.
+ *
+ * Method scoped {@link AndroidDriver} from Droidium starts activity on every container against instrumented APK by Selendroid.
+ *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
- * 
+ *
  */
 @RunWith(Arquillian.class)
 @RunAsClient
 public class MultipleContainersTestCase {
 
-    @Deployment(name = "android", testable = false)
-    @TargetsContainer("android")
-    public static Archive<?> createAndroidDeployment() {
-        return ShrinkWrap.createFromZipFile(JavaArchive.class,
-            new File("selendroid-test-app-" + System.getProperty("selendroid.version", "0.9.0") + ".apk"));
+    @Deployment(name = "android_1", testable = false)
+    @TargetsContainer("android_1")
+    @Instrumentable(viaPort = 8081)
+    public static Archive<?> createAndroidDeployment_1() {
+        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.9.0.apk"));
+    }
+
+    @Deployment(name = "android_2", testable = false)
+    @TargetsContainer("android_2")
+    @Instrumentable(viaPort = 8082)
+    public static Archive<?> createAndroidDeployment_2() {
+        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("aerogear-test-android.apk"));
     }
 
     @Deployment(name = "jbossas")
     @TargetsContainer("jbossas")
     public static Archive<?> createJBossASDeployment() {
-        return ShrinkWrap.create(JavaArchive.class, "jbossas.jar").addClass(Foo.class);
+        return ShrinkWrap.create(JavaArchive.class).addClass(FakeClass.class);
     }
 
     @Test
     @InSequence(1)
-    @OperateOnDeployment("android")
-    public void test01(@ArquillianResource AndroidDevice android) {
-        Assert.assertTrue(android != null);
-        Assert.assertTrue(android.isPackageInstalled("io.selendroid.testapp"));
+    @OperateOnDeployment("android_1")
+    public void test01(@Drone @Selendroid AndroidDriver driver) {
+        driver.startActivity("io.selendroid.testapp.HomeScreenActivity");
     }
 
     @Test
     @InSequence(2)
-    @OperateOnDeployment("jbossas")
-    public void test02() {
-        Assert.assertTrue(true);
+    @OperateOnDeployment("android_2")
+    public void test02(@Drone @Aerogear AndroidDriver driver) {
+        driver.startActivity("org.jboss.aerogear.pushtest.MainActivity");
     }
 
+    private class FakeClass {
+        // just to deploy something to JBoss
+    }
 }

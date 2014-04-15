@@ -35,28 +35,34 @@ function prepare_selendroid
 function help
 {
     echo "help: "
-    echo "    $1 _avd_name _ip_address_ [debug (true|false)] [selendroid version]"
+    echo "    $1 _avd_name_1_ _avd_name_2_ _ip_address_ [debug (true|false)] [selendroid version]"
     echo "    debug is false by default"
 }
 
 if [ "x$1" == "x" ]; then
-    echo "You have not set avd name to run tests on."
+    echo "You have not set avd name of the first emulator"
     help $0
     exit
 fi
 
 if [ "x$2" == "x" ]; then
+    echo "You have not set avd name of the second emulator"
+    help $0
+    exit
+fi
+
+if [ "x$3" == "x" ]; then
     echo "You have not set your external IP address."
     help $0
     exit
 fi
 
-if [ "$3" == "true" ]; then
+if [ "$4" == "true" ]; then
     DEBUG="true"
 fi
 
-if [ ! "x$4" == "x" ]; then
-    SELENDROID_VERSION=$4
+if [ ! "x$5" == "x" ]; then
+    SELENDROID_VERSION=$5
 fi
 
 function copy_server
@@ -69,10 +75,16 @@ function copy_test_app
     cp ../$SELENDROID_TEST_APP $1
 }
 
+function copy_aerogear
+{
+    cp ../droidium-native-01/aerogear-test-android.apk $1
+}
+
 function copy_all
 {
     copy_server $1
     copy_test_app $1
+    copy_aerogear $1
 }
 
 #
@@ -91,7 +103,7 @@ function wait_until_started
 {
     emulator_state=""
     until [[ "$emulator_state" =~ "stopped" ]]; do
-        emulator_state=`$ADB_CMD -e shell getprop init.svc.bootanim 2> /dev/null`
+        emulator_state=`$ADB_CMD -s $1 -e shell getprop init.svc.bootanim 2> /dev/null`
         sleep 5
     done
 }
@@ -101,12 +113,12 @@ function wait_until_started
 #
 function stop_emulator
 {
-    $ADB_CMD -s emulator-5554 emu kill
+    $ADB_CMD -s $1 emu kill
 }
 
 function clean_env
 {
-    rm selendroid* 2> /dev/null
+    rm selendroid*.apk 2> /dev/null
 }
 
 function check_status
@@ -119,11 +131,46 @@ function check_status
     fi
 }
 
+function droidium-multiple-androids-with-jboss-01
+{
+    cd $ROOT
+    cd droidium-multiple-androids-with-jboss-01
+    copy_all .
+    mvn clean test -Dandroid.avd.name_1=$1 -Dandroid.avd.name_2=$2 -Darquillian.debug=$DEBUG
+    check_status $0 $?
+    clean_env
+    rm aerogear-test-android.apk
+}
+
+function droidium-multiple-androids-01
+{
+    cd $ROOT
+    cd droidium-multiple-androids-01
+    copy_test_app .
+    copy_aerogear .
+    mvn clean test -Dandroid.avd.name_1=$1 -Dandroid.avd.name_2=$2 -Darquillian.debug=$DEBUG
+    check_status $0 $?
+    clean_env
+    rm aerogear-test-android.apk
+}
+
+function droidium-multiple-androids-02
+{
+    cd $ROOT
+    cd droidium-multiple-androids-02
+    copy_all .
+    mvn clean test -Dandroid.avd.name_1=$1 -Dandroid.avd.name_2=$2 -Dselendroid.version=$3 -Darquillian.debug=$DEBUG
+    check_status $0 $?
+    clean_env
+    rm aerogear-test-android.apk
+}
+
 function droidium-hybrid-01
 {
     cd $ROOT
     cd droidium-hybrid-01
-    copy_all .
+    copy_server .
+    copy_test_app .
     mvn clean test -Dandroid.avd.name=$1 -Dselendroid.version=$2 -Darquillian.debug=$DEBUG
     check_status $0 $?
     clean_env
@@ -169,7 +216,8 @@ function droidium-native-01
 {
     cd $ROOT
     cd droidium-native-01
-    copy_all .
+    copy_server .
+    copy_test_app .
     mvn clean test -Dandroid.avd.name=$1 -Dselendroid.version=$2 -Darquillian.debug=$DEBUG
     check_status $0 $?
     clean_env
@@ -179,7 +227,8 @@ function droidium-native-01-scala
 {
     cd $ROOT
     cd droidium-native-01-scala
-    copy_all .
+    copy_server .
+    copy_test_app .
     mvn clean test -Dandroid.avd.name=$1 -Dselendroid.version=$2 -Darquillian.debug=$DEBUG
     check_status $0 $?
     clean_env
@@ -199,7 +248,8 @@ function droidium-screenshooter-01
 {
     cd $ROOT
     cd droidium-screenshooter-01
-    copy_all .
+    copy_server .
+    copy_test_app .
     mvn clean test -Dandroid.avd.name=$1 -Dselendroid.version=$2 -Darquillian.debug=$DEBUG
     check_status $0 $?
     clean_env
@@ -223,10 +273,21 @@ function clean_all
 
 export ANDROID_ADB_SERVER_PORT=$SERVER_PORT
 
+echo "Starting the first emulator $1"
 start_emulator $1 $EMULATOR_RAM
-wait_until_started
 
-droidium-hybrid-01 $1 $SELENDROID_VERSION
+echo "Starting the second emualtor $2"
+start_emulator $2 $EMULATOR_RAM
+
+echo "Waiting for the first emulator to start"
+wait_until_started emulator-5554
+
+echo "Waiting for the second emulator to start"
+wait_until_started emulator-5556
+
+droidium-multiple-androids-with-jboss-01 $1 $2 $SELENDROID_VERSION
+droidium-multiple-androids-01 $1 $2
+droidium-multiple-androids-02 $1 $2 $SELENDROID_VERSION
 droidium-multiple-containers-01 $1
 droidium-multiple-containers-02
 droidium-multiple-containers-03
@@ -234,9 +295,11 @@ droidium-multiple-deployments-01 $1 $SELENDROID_VERSION
 droidium-native-01 $1 $SELENDROID_VERSION
 droidium-native-01-scala $1 $SELENDROID_VERSION
 droidium-native-02 $1
+droidium-hybrid-01 $1 $SELENDROID_VERSION
 droidium-screenshooter-01 $1 $SELENDROID_VERSION
 #droidium-web-01 $1 $2
 
 clean_all
 
-stop_emulator
+stop_emulator emulator-5554
+stop_emulator emulator-5556

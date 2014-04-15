@@ -10,7 +10,35 @@ found in every project README separately.
 directory. Please copy them over to the root directory of each project when applicable 
 (where pom.xml is located) in order to satisfy project dependencies.*
 
+In order to test all test projects in this directory, execute +test_all.sh+ script like this;
+
+----
+$ ./test_all.sh android-4.2.2 android-4.2.2b 192.168.0.1 true
+----
+
+It will use two emulators which have given AVD names and sets +-Darquillian.debug+ to true.
+
 It contains these modules as standalone projects:
+
+=== droidium-multiple-androids-01
+
+This test shows how to use multiple Android containers in one test case. Activities are 
+managed directly by AndroidDevice abstraction since there is not the native plugin on class path.
+You can use any number of Android devices in tests (in connection with ordinary Java EE containers)
+so you can test very complex scenarios involving multiple Android devices in test run.
+
+=== droidium-multiple-androids-02
+
+Same as droidium-multiple-androids-01 but activities are managed by Drone injections so you can 
+functionally test your Android applications deployed even to multiple Android containers and 
+testing their interaction with possibility to involve ordinary Java EE application containers.
+
+=== droidium-multiple-androids-with-jboss-01
+
+Same as tests above but it adds JBoss AS 7.1.1 into play. You have two Android containers with 
+third container as JBoss AS in one test run. You can e.g. deploy some war or ear to JBoss AS, 
+then you can install your Android APKs to Android containers and then these APKs can have JBoss AS 
+deployment as a backend - all in one test run.
 
 === droidium-multiple-containers-01
 

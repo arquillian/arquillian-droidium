@@ -1,0 +1,15 @@
+== Arquillian Droidium - multiple Android devices test
+
+When you are executing tests, you have to set name of (possibly started) AVD
+you want to use for test executions. You _have to_ provide this information 
+for Maven otherwise tests will fail.
+
+This test shows how to use multiple Android containers in one test case. Activities are managed by AndroidDriver from Droidium. These activities are in fact 
+opened by AndroidDriver (WebDriver) since you have native plugin on class path.
+
+`mvn clean test -Dandroid.avd.name_1=name_of_avd_1 -Dandroid.avd.name_2=name_of_avd_2`
+
+This tests uses Selendroid server APK from http://dominikdary.github.io/selendroid/[Selendroid] project.
+
+You have to have `jarsigner`, `keytool` and so on in your system. You are usually good with default JDK installation.
+You should have these commands in `$JAVA_HOME`.

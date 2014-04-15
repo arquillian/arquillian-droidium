@@ -55,7 +55,6 @@ public class SelendroidTestAppTestCase {
 
     @Deployment(name = "selendroid-test-app")
     @Instrumentable
-    @TargetsContainer("android")
     public static Archive<?> SelendroidDeployment() {
         return ShrinkWrap.createFromZipFile(JavaArchive.class,
             new File("selendroid-test-app-" + System.getProperty("selendroid.version", "0.9.0") + ".apk"));

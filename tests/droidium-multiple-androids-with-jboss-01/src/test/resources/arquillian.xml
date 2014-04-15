@@ -27,20 +27,27 @@
                 <property name="logType">disable</property>
             </configuration>
         </container>
+        <container qualifier="jbossas">
+            <configuration>
+                <property name="jbossHome">${basedir}/target/jboss-as-7.1.1.Final</property>
+            </configuration>
+        </container>
     </group>
 
     <extension qualifier="droidium-native">
         <property name="serverApk">selendroid-server-${selendroid.version}.apk</property>
     </extension>
     
+    <!-- on 8080 port is JBoss AS -->
+    
     <extension qualifier="webdriver-selendroid">
         <property name="browser">android</property>
-        <property name="remoteAddress">http://localhost:8080/wd/hub</property>
+        <property name="remoteAddress">http://localhost:8081/wd/hub</property>
     </extension>
 
     <extension qualifier="webdriver-aerogear">
         <property name="browser">android</property>
-        <property name="remoteAddress">http://localhost:8081/wd/hub</property>
+        <property name="remoteAddress">http://localhost:8082/wd/hub</property>
     </extension>
     
 </arquillian>

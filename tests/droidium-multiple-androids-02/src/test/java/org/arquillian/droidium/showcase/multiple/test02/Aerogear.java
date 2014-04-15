@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.showcase.multiple.test01;
+package org.arquillian.droidium.showcase.multiple.test02;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -26,6 +26,6 @@ import org.jboss.arquillian.drone.api.annotation.Qualifier;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Qualifier
-public @interface Selendroid {
+public @interface Aerogear {
 
 }

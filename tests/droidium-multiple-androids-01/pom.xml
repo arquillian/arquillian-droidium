@@ -29,13 +29,12 @@
         <version.arquillian.core>1.1.4.Final</version.arquillian.core>
 
         <version.junit>4.11</version.junit>
-        <version.org.jboss.as>7.1.1.Final</version.org.jboss.as>
 
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
 
-        <android.avd.name>testingEmulator</android.avd.name>
-        <android.emulator.options></android.emulator.options>
+		<android.avd.name_1>testingEmulator_1</android.avd.name_1>
+		<android.avd.name_2>testingEmulator_2</android.avd.name_2>
     </properties>
 
     <!-- Dependency Management -->
