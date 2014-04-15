@@ -1,3 +1,11 @@
-== Event model for Arquillian Droidium.
+== Event model for Arquillian Droidium and related extensions
 
 graphml files are created and editable by http://www.yworks.com/en/products_yed_about.html[yed].
+
+* red is Droidium container
+* yellow is Spacelift
+* grey is Droidium Platform
+* blue is Droidium native plugin
+* green is Drone
+* lists with orange dots mean that these events are not observed by anybody, it is just SPI to further hook into
+* nodes with class and methods are observers 

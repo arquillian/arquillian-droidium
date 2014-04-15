@@ -19,7 +19,6 @@ package org.arquillian.droidium.native_;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
-import org.arquillian.droidium.container.spi.event.DroidiumExtensionConfigured;
 import org.arquillian.droidium.native_.deployment.DeploymentActivitiesMapper;
 import org.arquillian.droidium.native_.deployment.DeploymentInstrumentationMapper;
 import org.arquillian.droidium.native_.deployment.SelendroidDeploymentRegister;
@@ -99,7 +98,7 @@ public class DroidiumNativeResourceManager {
         }
     }
 
-    public void onDroidiumPlatformConfigured(@Observes DroidiumExtensionConfigured event) {
+    public void onDroidiumNativeConfigured(@Observes DroidiumNativeConfigured event) {
         deploymentActivitiesMapper.set(new DeploymentActivitiesMapper());
 
         deploymentInstrumentationMapper.set(new DeploymentInstrumentationMapper());

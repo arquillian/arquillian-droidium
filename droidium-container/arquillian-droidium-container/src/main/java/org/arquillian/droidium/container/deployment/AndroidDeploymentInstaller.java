@@ -73,7 +73,7 @@ public class AndroidDeploymentInstaller {
     @Inject
     private Event<AfterAndroidDeploymentDeployed> afterDeploy;
 
-    public void onAndroidDeployArchive(@Observes AndroidDeploy event, DeploymentDescription description) {
+    public void onAndroidDeploy(@Observes AndroidDeploy event, DeploymentDescription description) {
 
         beforeDeploy.fire(new BeforeAndroidDeploymentDeployed(event.getArchive()));
 
