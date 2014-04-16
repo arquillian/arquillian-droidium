@@ -16,6 +16,7 @@
  */
 package org.arquillian.droidium.container.impl;
 
+import org.arquillian.droidium.container.api.AndroidDeviceRegister;
 import org.arquillian.droidium.container.api.FileType;
 import org.arquillian.droidium.container.api.IdentifierGenerator;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
@@ -36,7 +37,26 @@ import org.jboss.arquillian.core.api.annotation.Observes;
 import org.jboss.arquillian.core.api.event.ManagerStopping;
 
 /**
- * TODO dopisat javadoc
+ * Produces all necessary instances further used across all Droidium.<br>
+ * <br>
+ * Produces application scoped:
+ * <ul>
+ * <li>{@link AndroidSDK}</li>
+ * <li>{@link IdentifierGenerator}</li>
+ * <li>{@link APKSigner}</li>
+ * <li>{@link AndroidDeploymentRegister}</li>
+ * <li>{@link AndroidApplicationHelper}</li>
+ * <li>{@link AndroidDeviceRegister}</li>
+ * </ul>
+ * Fires:
+ * <ul>
+ * <li>{@link DroidiumExtensionConfigured} - fired when all injections are produced</li>
+ * </ul>
+ * Observes:
+ * <ul>
+ * <li>{@link DroidiumPlatformConfigured}</li>
+ * <li>{@link ManagerStopping} - deletes temporary directory for all containers</li>
+ * </ul>
  *
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *
@@ -92,7 +112,7 @@ public class DroidiumResourceManager {
 
         androidApplicationHelper.set(new AndroidApplicationHelper(processExecutor.get(), this.androidSDK.get()));
 
-        androidDeviceRegister.set(new AndroidDeviceRegister());
+        androidDeviceRegister.set(new AndroidDeviceRegisterImpl());
 
         droidiumExtensionConfigured.fire(new DroidiumExtensionConfigured());
     }

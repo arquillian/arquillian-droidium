@@ -17,12 +17,14 @@
 package org.arquillian.droidium.container.deployment;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
+import org.arquillian.droidium.container.api.AndroidDeviceMetadata;
+import org.arquillian.droidium.container.api.AndroidDeviceRegister;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.impl.AndroidApplicationManager;
-import org.arquillian.droidium.container.impl.AndroidDeviceMetadata;
-import org.arquillian.droidium.container.impl.AndroidDeviceRegister;
+import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
 import org.arquillian.spacelift.process.ProcessExecutor;
+import org.jboss.arquillian.container.spi.Container;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.container.spi.event.container.BeforeDeploy;
 import org.jboss.arquillian.container.spi.event.container.BeforeUnDeploy;
@@ -63,15 +65,15 @@ public class AndroidDeviceDeploymentContext {
 
         AndroidDeviceRegister register = androidDeviceRegister.get();
 
-        if (!register.contains(androidDevice)) {
-            AndroidDeviceMetadata metadata = new AndroidDeviceMetadata();
+        if (register.contains(androidDevice)) {
+            AndroidDeviceMetadata metadata = register.getMetadata(androidDevice);
 
-            metadata.setContainerQualifier(event.getDeployment().getTarget().getName());
             metadata.addDeploymentName(event.getDeployment().getName());
 
             register.put(androidDevice, metadata);
         } else {
-            register.addDeploymentForDevice(androidDevice, event.getDeployment().getName());
+            throw new IllegalStateException("It seems you are trying to deploy deployment to device which is not ready yet. "
+                + "This should never happen.");
         }
 
         AndroidApplicationManager androidApplicationManager = new AndroidApplicationManager(
@@ -90,5 +92,13 @@ public class AndroidDeviceDeploymentContext {
             androidDevice, processExecutor.get(), androidSDK.get());
 
         this.androidApplicationManager.set(androidApplicationManager);
+    }
+
+    public void onAndroidDeviceReady(@Observes AndroidDeviceReady event, Container container) {
+        if (!androidDeviceRegister.get().contains(event.getDevice())) {
+            AndroidDeviceMetadata metadata = new AndroidDeviceMetadata();
+            metadata.setContainerQualifier(container.getName());
+            androidDeviceRegister.get().put(event.getDevice(), metadata);
+        }
     }
 }

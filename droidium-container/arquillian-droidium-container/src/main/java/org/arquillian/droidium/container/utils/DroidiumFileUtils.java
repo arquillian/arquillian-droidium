@@ -39,8 +39,6 @@ public class DroidiumFileUtils {
 
     private static final Logger logger = Logger.getLogger(DroidiumFileUtils.class.getName());
 
-    private static File tmpDir = null;
-
     private static final IdentifierGenerator<FileType> aig = new AndroidIdentifierGenerator();
 
     /**
@@ -59,15 +57,6 @@ public class DroidiumFileUtils {
 
     public static void removeDir(String dir) {
         DroidiumFileUtils.removeDir(new File(dir));
-    }
-
-    /**
-     * Gets temporary directory created by {@link #createTmpDir(File)}
-     *
-     * @return temporary directory where Droidium puts all resources, APKs and files during test execution
-     */
-    public static File getTmpDir() {
-        return DroidiumFileUtils.tmpDir;
     }
 
     /**

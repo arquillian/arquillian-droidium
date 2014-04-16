@@ -19,10 +19,10 @@ package org.arquillian.droidium.native_.instrumentation;
 import java.io.File;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
+import org.arquillian.droidium.container.api.AndroidDeviceRegister;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.deployment.AndroidDeploymentRegister;
 import org.arquillian.droidium.container.impl.AndroidApplicationHelper;
-import org.arquillian.droidium.container.impl.AndroidDeviceRegister;
 import org.arquillian.droidium.container.sign.APKSigner;
 import org.arquillian.droidium.container.spi.AndroidDeployment;
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;

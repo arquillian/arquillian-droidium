@@ -296,7 +296,7 @@ droidium-native-01 $1 $SELENDROID_VERSION
 droidium-native-01-scala $1 $SELENDROID_VERSION
 droidium-native-02 $1
 droidium-hybrid-01 $1 $SELENDROID_VERSION
-droidium-screenshooter-01 $1 $SELENDROID_VERSION
+#droidium-screenshooter-01 $1 $SELENDROID_VERSION
 #droidium-web-01 $1 $2
 
 clean_all

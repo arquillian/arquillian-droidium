@@ -14,12 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.container.impl;
+package org.arquillian.droidium.container.api;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Metadata related to {@link AndroidDevice} in order to bound it to deployment method names and container qualifier.
+ *
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */

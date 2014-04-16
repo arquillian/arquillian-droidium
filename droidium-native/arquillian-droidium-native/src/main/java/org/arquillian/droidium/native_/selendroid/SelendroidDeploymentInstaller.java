@@ -17,7 +17,7 @@
 package org.arquillian.droidium.native_.selendroid;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
-import org.arquillian.droidium.container.impl.AndroidDeviceRegister;
+import org.arquillian.droidium.container.api.AndroidDeviceRegister;
 import org.arquillian.droidium.native_.spi.SelendroidDeployment;
 import org.arquillian.droidium.native_.spi.event.AfterSelendroidDeploymentDeployed;
 import org.arquillian.droidium.native_.spi.event.BeforeSelendroidDeploymentDeployed;
