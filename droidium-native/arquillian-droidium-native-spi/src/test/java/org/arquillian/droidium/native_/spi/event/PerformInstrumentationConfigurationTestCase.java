@@ -16,11 +16,10 @@
  */
 package org.arquillian.droidium.native_.spi.event;
 
-import junit.framework.Assert;
-
 import org.arquillian.droidium.native_.spi.InstrumentationConfiguration;
 import org.arquillian.droidium.native_.spi.exception.InvalidInstrumentationConfigurationException;
 import org.jboss.arquillian.drone.spi.DronePoint;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

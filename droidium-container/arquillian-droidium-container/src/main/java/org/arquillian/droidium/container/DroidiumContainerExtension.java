@@ -22,7 +22,7 @@ import org.arquillian.droidium.container.configuration.DroidiumExclusionDecider;
 import org.arquillian.droidium.container.configuration.DroidiumExtensionsValidation;
 import org.arquillian.droidium.container.deployment.AndroidDeploymentInstaller;
 import org.arquillian.droidium.container.deployment.AndroidDeploymentUninstaller;
-import org.arquillian.droidium.container.deployment.AndroidDeviceDeploymentContext;
+import org.arquillian.droidium.container.deployment.AndroidDeviceContext;
 import org.arquillian.droidium.container.enrichment.AndroidDeviceResourceProvider;
 import org.arquillian.droidium.container.impl.AndroidBridgeConnector;
 import org.arquillian.droidium.container.impl.AndroidDeviceSelectorImpl;
@@ -65,7 +65,7 @@ public class DroidiumContainerExtension implements LoadableExtension {
         builder.observer(AndroidDeploymentUninstaller.class);
         builder.observer(DroidiumExclusionDecider.class);
         builder.observer(DroidiumResourceManager.class);
-        builder.observer(AndroidDeviceDeploymentContext.class);
+        builder.observer(AndroidDeviceContext.class);
     }
 
 }

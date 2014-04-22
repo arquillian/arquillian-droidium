@@ -30,12 +30,15 @@ import java.util.List;
 
 import org.arquillian.droidium.container.api.AndroidBridge;
 import org.arquillian.droidium.container.api.AndroidDevice;
+import org.arquillian.droidium.container.api.AndroidDeviceRegister;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.api.FileType;
 import org.arquillian.droidium.container.api.IdentifierGenerator;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
+import org.arquillian.droidium.container.deployment.AndroidDeviceContext;
 import org.arquillian.droidium.container.impl.AndroidBridgeConnector;
+import org.arquillian.droidium.container.impl.AndroidDeviceRegisterImpl;
 import org.arquillian.droidium.container.impl.AndroidDeviceSelectorImpl;
 import org.arquillian.droidium.container.impl.AndroidEmulator;
 import org.arquillian.droidium.container.impl.AndroidEmulatorShutdown;
@@ -55,6 +58,7 @@ import org.arquillian.spacelift.process.impl.DefaultProcessExecutorFactory;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.container.test.AbstractContainerTestBase;
+import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -90,6 +94,8 @@ public class AndroidEmulatorStartupAVDtoBeCreatedTestCase extends AbstractContai
 
     private ProcessExecutor processorExecutor;
 
+    private AndroidDeviceRegister androidDeviceRegister;
+
     @Mock
     private IdentifierGenerator<FileType> idGenerator;
 
@@ -100,6 +106,7 @@ public class AndroidEmulatorStartupAVDtoBeCreatedTestCase extends AbstractContai
         extensions.add(AndroidEmulatorStartup.class);
         extensions.add(AndroidEmulatorShutdown.class);
         extensions.add(AndroidVirtualDeviceManager.class);
+        extensions.add(AndroidDeviceContext.class);
     }
 
     @Before
@@ -116,17 +123,22 @@ public class AndroidEmulatorStartupAVDtoBeCreatedTestCase extends AbstractContai
         platformConfiguration = new DroidiumPlatformConfiguration();
 
         processorExecutor = new DefaultProcessExecutorFactory().getProcessExecutorInstance();
+
         androidSDK = new AndroidSDK(platformConfiguration, processorExecutor);
         androidSDK.setupWith(configuration);
+
+        androidDeviceRegister = new AndroidDeviceRegisterImpl();
 
         getManager().getContext(ContainerContext.class).activate("doesnotmatter");
 
         Mockito.when(idGenerator.getIdentifier(FileType.AVD)).thenReturn(AVD_GENERATED_NAME);
 
         bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration);
-        bind(ContainerScoped.class, AndroidSDK.class, androidSDK);
-        bind(ContainerScoped.class, IdentifierGenerator.class, idGenerator);
-        bind(ContainerScoped.class, ProcessExecutor.class, processorExecutor);
+        bind(ApplicationScoped.class, DroidiumPlatformConfiguration.class, platformConfiguration);
+        bind(ApplicationScoped.class, AndroidSDK.class, androidSDK);
+        bind(ApplicationScoped.class, IdentifierGenerator.class, idGenerator);
+        bind(ApplicationScoped.class, ProcessExecutor.class, processorExecutor);
+        bind(ApplicationScoped.class, AndroidDeviceRegister.class, androidDeviceRegister);
     }
 
     @After

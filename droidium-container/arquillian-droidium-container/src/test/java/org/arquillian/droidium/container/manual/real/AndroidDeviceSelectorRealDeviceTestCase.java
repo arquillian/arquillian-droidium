@@ -28,10 +28,12 @@ import java.util.List;
 
 import org.arquillian.droidium.container.api.AndroidBridge;
 import org.arquillian.droidium.container.api.AndroidDevice;
+import org.arquillian.droidium.container.api.AndroidDeviceRegister;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.impl.AndroidBridgeConnector;
+import org.arquillian.droidium.container.impl.AndroidDeviceRegisterImpl;
 import org.arquillian.droidium.container.impl.AndroidDeviceSelectorImpl;
 import org.arquillian.droidium.container.spi.event.AndroidBridgeInitialized;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStart;
@@ -42,6 +44,7 @@ import org.arquillian.spacelift.process.impl.DefaultProcessExecutorFactory;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.container.test.AbstractContainerTestBase;
+import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,6 +65,8 @@ public class AndroidDeviceSelectorRealDeviceTestCase extends AbstractContainerTe
     private DroidiumPlatformConfiguration platformConfiguration;
 
     private ProcessExecutor processExecutor;
+
+    private AndroidDeviceRegister androidDeviceRegister;
 
     private static final String PHYSICAL_DEVICE_SERIAL_ID = System.getProperty("device.serial.id");
 
@@ -86,11 +91,15 @@ public class AndroidDeviceSelectorRealDeviceTestCase extends AbstractContainerTe
         androidSDK = new AndroidSDK(platformConfiguration, processExecutor);
         androidSDK.setupWith(configuration);
 
+        androidDeviceRegister = new AndroidDeviceRegisterImpl();
+
         getManager().getContext(ContainerContext.class).activate("doesnotmatter");
 
         bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration);
-        bind(ContainerScoped.class, AndroidSDK.class, androidSDK);
-        bind(ContainerScoped.class, ProcessExecutor.class, processExecutor);
+        bind(ApplicationScoped.class, AndroidDeviceRegister.class, androidDeviceRegister);
+        bind(ApplicationScoped.class, DroidiumPlatformConfiguration.class, platformConfiguration);
+        bind(ApplicationScoped.class, AndroidSDK.class, androidSDK);
+        bind(ApplicationScoped.class, ProcessExecutor.class, processExecutor);
     }
 
     @After

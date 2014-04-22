@@ -89,6 +89,7 @@ public class AndroidSDKTestCase {
         configuration.setTarget(LATEST_TARGET);
 
         AndroidSDK sdk = new AndroidSDK(platformConfiguration, processExecutor);
+        sdk.setupWith(configuration);
 
         Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
         Assert.assertEquals(LATEST_TARGET, sdk.getConfiguration().getTarget());

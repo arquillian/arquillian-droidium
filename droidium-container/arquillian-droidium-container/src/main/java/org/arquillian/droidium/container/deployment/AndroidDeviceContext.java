@@ -39,7 +39,7 @@ import org.jboss.arquillian.core.api.annotation.Observes;
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
-public class AndroidDeviceDeploymentContext {
+public class AndroidDeviceContext {
 
     @Inject
     @ContainerScoped

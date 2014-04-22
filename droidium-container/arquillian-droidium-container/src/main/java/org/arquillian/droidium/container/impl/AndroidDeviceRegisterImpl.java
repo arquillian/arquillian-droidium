@@ -16,12 +16,13 @@
  */
 package org.arquillian.droidium.container.impl;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidDeviceMetadata;
 import org.arquillian.droidium.container.api.AndroidDeviceRegister;
+import org.arquillian.droidium.container.configuration.Validate;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 
@@ -36,11 +37,13 @@ public class AndroidDeviceRegisterImpl implements AndroidDeviceRegister {
     private final Map<AndroidDevice, AndroidDeviceMetadata> register;
 
     public AndroidDeviceRegisterImpl() {
-        register = new ConcurrentHashMap<AndroidDevice, AndroidDeviceMetadata>();
+        register = new HashMap<AndroidDevice, AndroidDeviceMetadata>();
     }
 
     @Override
     public void put(AndroidDevice androidDevice, AndroidDeviceMetadata androidDeviceMetaData) {
+        Validate.notNull(androidDevice, "Android device to put into register can not be a null object!");
+        Validate.notNull(androidDeviceMetaData, "Android device meta data to put into register can not be a null object!");
         register.put(androidDevice, androidDeviceMetaData);
     }
 
@@ -75,7 +78,7 @@ public class AndroidDeviceRegisterImpl implements AndroidDeviceRegister {
         }
 
         if (toRemove != null) {
-            register.remove(toRemove);
+            register.remove(toRemove.getKey());
         }
     }
 

@@ -56,6 +56,10 @@ public class AndroidDeviceImpl implements AndroidDevice {
 
     private int droneGuestPort = 8080;
 
+    public AndroidDeviceImpl() {
+        // only for testing purposes
+    }
+
     AndroidDeviceImpl(IDevice delegate) {
         Validate.notNull(delegate, "delegate to set for Android device can not be a null object");
         this.delegate = delegate;

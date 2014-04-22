@@ -40,6 +40,7 @@ import org.arquillian.spacelift.process.impl.DefaultProcessExecutorFactory;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.container.test.test.AbstractContainerTestTestBase;
+import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
 import org.jboss.arquillian.test.spi.context.TestContext;
 import org.jboss.arquillian.test.spi.event.suite.After;
 import org.jboss.arquillian.test.spi.event.suite.AfterClass;
@@ -93,9 +94,10 @@ public class AndroidBridgeConnectorTestCase extends AbstractContainerTestTestBas
 
         getManager().getContext(TestContext.class).activate(instance);
 
-        bind(ContainerScoped.class, ProcessExecutor.class, processExecutor);
+        bind(ApplicationScoped.class, DroidiumPlatformConfiguration.class, platformConfiguration);
+        bind(ApplicationScoped.class, ProcessExecutor.class, processExecutor);
+        bind(ApplicationScoped.class, AndroidSDK.class, androidSDK);
         bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration);
-        bind(ContainerScoped.class, AndroidSDK.class, androidSDK);
 
         fire(new AndroidContainerStart());
 
@@ -116,10 +118,6 @@ public class AndroidBridgeConnectorTestCase extends AbstractContainerTestTestBas
 
         // container 2
         getManager().getContext(ContainerContext.class).activate("container2");
-
-        bind(ContainerScoped.class, ProcessExecutor.class, processExecutor);
-        bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration);
-        bind(ContainerScoped.class, AndroidSDK.class, androidSDK);
 
         fire(new AndroidContainerStart());
 
