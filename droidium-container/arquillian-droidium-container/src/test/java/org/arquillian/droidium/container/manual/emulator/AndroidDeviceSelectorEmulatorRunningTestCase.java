@@ -37,13 +37,14 @@ import org.arquillian.droidium.container.spi.event.AndroidBridgeInitialized;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStart;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
 import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
-import org.arquillian.spacelift.process.ProcessExecutor;
-import org.arquillian.spacelift.process.impl.DefaultProcessExecutorFactory;
+import org.arquillian.spacelift.execution.Tasks;
+import org.arquillian.spacelift.execution.impl.DefaultExecutionServiceFactory;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.container.test.AbstractContainerTestBase;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -77,8 +78,6 @@ public class AndroidDeviceSelectorEmulatorRunningTestCase extends AbstractContai
 
     private AndroidSDK androidSDK;
 
-    private ProcessExecutor processExecutor;
-
     private static final String RUNNING_EMULATOR_AVD_NAME = System.getProperty("emulator.running.avd.name", "test01");
 
     private static final String RUNNING_EMULATOR_CONSOLE_PORT = System.getProperty("emulator.running.console.port", "5554");
@@ -89,6 +88,11 @@ public class AndroidDeviceSelectorEmulatorRunningTestCase extends AbstractContai
         extensions.add(AndroidDeviceSelectorImpl.class);
     }
 
+    @BeforeClass
+    public static void beforeClass() {
+        Tasks.setDefaultExecutionServiceFactory(new DefaultExecutionServiceFactory());
+    }
+
     @Before
     public void setup() {
         configuration = new AndroidContainerConfiguration();
@@ -97,16 +101,13 @@ public class AndroidDeviceSelectorEmulatorRunningTestCase extends AbstractContai
         configuration.validate();
 
         platformConfiguration = new DroidiumPlatformConfiguration();
-
-        processExecutor = new DefaultProcessExecutorFactory().getProcessExecutorInstance();
-        androidSDK = new AndroidSDK(platformConfiguration, processExecutor);
+        androidSDK = new AndroidSDK(platformConfiguration);
         androidSDK.setupWith(configuration);
 
         getManager().getContext(ContainerContext.class).activate("doesnotmatter");
 
         bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration);
         bind(ContainerScoped.class, AndroidSDK.class, androidSDK);
-        bind(ContainerScoped.class, ProcessExecutor.class, processExecutor);
     }
 
     @After

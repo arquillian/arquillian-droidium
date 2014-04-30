@@ -23,7 +23,6 @@ import org.arquillian.droidium.container.configuration.AndroidContainerConfigura
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.impl.AndroidApplicationManager;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
-import org.arquillian.spacelift.process.ProcessExecutor;
 import org.jboss.arquillian.container.spi.Container;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.container.spi.event.container.BeforeDeploy;
@@ -47,9 +46,6 @@ public class AndroidDeviceContext {
 
     @Inject
     public Instance<AndroidDevice> androidDevice;
-
-    @Inject
-    public Instance<ProcessExecutor> processExecutor;
 
     @Inject
     public Instance<AndroidSDK> androidSDK;
@@ -76,8 +72,7 @@ public class AndroidDeviceContext {
                 + "This should never happen.");
         }
 
-        AndroidApplicationManager androidApplicationManager = new AndroidApplicationManager(
-            androidDevice, processExecutor.get(), androidSDK.get());
+        AndroidApplicationManager androidApplicationManager = new AndroidApplicationManager(androidDevice, androidSDK.get());
 
         this.androidApplicationManager.set(androidApplicationManager);
     }
@@ -88,8 +83,7 @@ public class AndroidDeviceContext {
             return;
         }
 
-        AndroidApplicationManager androidApplicationManager = new AndroidApplicationManager(
-            androidDevice, processExecutor.get(), androidSDK.get());
+        AndroidApplicationManager androidApplicationManager = new AndroidApplicationManager(androidDevice, androidSDK.get());
 
         this.androidApplicationManager.set(androidApplicationManager);
     }

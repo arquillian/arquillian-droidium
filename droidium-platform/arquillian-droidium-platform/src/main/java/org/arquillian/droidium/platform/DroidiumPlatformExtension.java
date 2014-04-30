@@ -20,6 +20,7 @@ import org.arquillian.droidium.platform.impl.DroidiumPlatformConfigurator;
 import org.jboss.arquillian.core.spi.LoadableExtension;
 
 /**
+ * Registration of Droidium platform extension.
  *
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *

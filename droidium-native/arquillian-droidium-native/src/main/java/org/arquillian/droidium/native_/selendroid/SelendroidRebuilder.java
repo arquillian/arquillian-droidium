@@ -29,14 +29,15 @@ import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Validate;
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.arquillian.droidium.native_.exception.SelendroidRebuilderException;
+import org.arquillian.spacelift.execution.Tasks;
 import org.arquillian.spacelift.process.Command;
 import org.arquillian.spacelift.process.CommandBuilder;
-import org.arquillian.spacelift.process.ProcessExecutor;
+import org.arquillian.spacelift.process.ProcessDetails;
+import org.arquillian.spacelift.process.impl.CommandTool;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -52,8 +53,6 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 public class SelendroidRebuilder {
 
     private static final Logger logger = Logger.getLogger(SelendroidRebuilder.class.getName());
-
-    private final ProcessExecutor processExecutor;
 
     private final AndroidSDK androidSDK;
 
@@ -78,10 +77,8 @@ public class SelendroidRebuilder {
      * @param androidSDK
      * @throws IllegalStateException if some argument is a null object
      */
-    public SelendroidRebuilder(ProcessExecutor processExecutor, AndroidSDK androidSDK) {
-        Validate.notNull(processExecutor, "Process exeuctor for Selendroid rebuilder can not be a null object!");
+    public SelendroidRebuilder(AndroidSDK androidSDK) {
         Validate.notNull(androidSDK, "Android SDK for Selendroid rebuilder can not be null a null object!");
-        this.processExecutor = processExecutor;
         this.androidSDK = androidSDK;
     }
 
@@ -159,22 +156,22 @@ public class SelendroidRebuilder {
      * @throws SelendroidRebuilderException when creating of dummy APK fails
      */
     private void createDummyAPK(File dummyAPK, File androidManifest) {
-        Command createDummyPackage = new CommandBuilder()
-            .add(androidSDK.getAaptPath())
-            .add("package")
-            .add("-f")
-            .add("-M")
-            .add(androidManifest.getAbsolutePath())
-            .add("-I")
-            .add(new File(androidSDK.getPlatformDirectory(), "android.jar").getAbsolutePath())
-            .add("-F")
-            .add(dummyAPK.getAbsolutePath())
+        Command createDummyPackage = new CommandBuilder(androidSDK.getAaptPath())
+            .parameter("package")
+            .parameter("-f")
+            .parameter("-M")
+            .parameter(androidManifest.getAbsolutePath())
+            .parameter("-I")
+            .parameter(new File(androidSDK.getPlatformDirectory(), "android.jar").getAbsolutePath())
+            .parameter("-F")
+            .parameter(dummyAPK.getAbsolutePath())
             .build();
 
-        try {
-            processExecutor.execute(createDummyPackage);
-        } catch (AndroidExecutionException e) {
-            throw new SelendroidRebuilderException("Command failed to execute: " + createDummyPackage.toString(), e);
+        ProcessDetails processDetails = Tasks.prepare(CommandTool.class).command(createDummyPackage).execute().await();
+
+        if (processDetails.getExitValue() != 0) {
+            throw new SelendroidRebuilderException("Command failed to execute: "
+                + createDummyPackage.toString() + "with output " + processDetails.getOutput());
         }
     }
 

@@ -21,12 +21,13 @@ import java.io.File;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.impl.AndroidApplicationHelper;
 import org.arquillian.droidium.container.impl.AndroidApplicationManager;
-import org.arquillian.droidium.container.sign.APKSigner;
 import org.arquillian.droidium.container.spi.AndroidDeployment;
 import org.arquillian.droidium.container.spi.event.AfterAndroidDeploymentDeployed;
 import org.arquillian.droidium.container.spi.event.AndroidDeploy;
 import org.arquillian.droidium.container.spi.event.BeforeAndroidDeploymentDeployed;
+import org.arquillian.droidium.container.tool.APKResignerTool;
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;
+import org.arquillian.spacelift.execution.Tasks;
 import org.jboss.arquillian.container.spi.client.deployment.DeploymentDescription;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Instance;
@@ -56,9 +57,6 @@ public class AndroidDeploymentInstaller {
     private Instance<AndroidSDK> androidSDK;
 
     @Inject
-    private Instance<APKSigner> signer;
-
-    @Inject
     private Instance<AndroidApplicationHelper> androidApplicationHelper;
 
     @Inject
@@ -81,7 +79,8 @@ public class AndroidDeploymentInstaller {
 
         File deployApk = new File(androidSDK.get().getPlatformConfiguration().getTmpDir(), DroidiumFileUtils.getRandomAPKFileName());
         DroidiumFileUtils.export(archive, deployApk);
-        File resignedApk = signer.get().resign(deployApk);
+
+        final File resignedApk = Tasks.chain(deployApk, APKResignerTool.class).execute().await();
 
         final AndroidDeployment deployment = new AndroidDeployment();
 

@@ -24,11 +24,13 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.arquillian.spacelift.execution.Tasks;
+import org.arquillian.spacelift.process.Command;
 import org.arquillian.spacelift.process.CommandBuilder;
-import org.arquillian.spacelift.process.ProcessExecutor;
+import org.arquillian.spacelift.process.impl.CommandTool;
 
 /**
- * Representation of an Android Target
+ * Representation of an Android Target.
  *
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  *
@@ -120,15 +122,15 @@ class Target {
         return name;
     }
 
-    public static Target findMatchingTarget(ProcessExecutor executor, String androidToolPath, int apiLevel) {
-        return findMatchingTarget(executor, androidToolPath, String.valueOf(apiLevel));
+    public static Target findMatchingTarget(String androidToolPath, int apiLevel) {
+        return findMatchingTarget(androidToolPath, String.valueOf(apiLevel));
     }
 
-    public static Target findMatchingTarget(ProcessExecutor executor, String androidToolPath, String targetLabel)
+    public static Target findMatchingTarget(String androidToolPath, String targetLabel)
         throws AndroidContainerConfigurationException {
 
         Target t = new Target(targetLabel);
-        List<Target> availableTargets = getAvailableTargets(executor, androidToolPath);
+        List<Target> availableTargets = getAvailableTargets(androidToolPath);
         if (availableTargets.contains(t)) {
             return t;
         }
@@ -138,29 +140,27 @@ class Target {
     }
 
     /**
-     * Returns all targets available in given Android SDK installation. Executed an external process to
-     * discover the details.
+     * Returns all targets available in given Android SDK installation. Executed an external process to discover the details.
      *
-     * @param executor Process executor
      * @param androidToolPath Path to {@code android} tool
-     * @return
+     * @return list of parsed targets
      * @throws AndroidContainerConfigurationException if there are no available targets
      */
-    public static List<Target> getAvailableTargets(ProcessExecutor executor, String androidToolPath)
+    public static List<Target> getAvailableTargets(String androidToolPath)
         throws AndroidContainerConfigurationException {
 
-        List<String> targetsOutput = executor.execute(
-            new CommandBuilder()
-                .add(androidToolPath)
-                .add("list")
-                .add("target")
-                .add("-c")
-                .build()).getOutput();
+        Command listTargetsCommand = new CommandBuilder(androidToolPath).parameters("list", "target", "-c").build();
+
+        List<String> targetsOutput = Tasks.prepare(CommandTool.class)
+            .command(listTargetsCommand)
+            .execute()
+            .await()
+            .getOutput();
 
         Collections.sort(targetsOutput);
         Collections.reverse(targetsOutput);
 
-        List<Target> targets = new ArrayList<Target>();
+        final List<Target> targets = new ArrayList<Target>();
 
         for (String target : targetsOutput) {
             try {

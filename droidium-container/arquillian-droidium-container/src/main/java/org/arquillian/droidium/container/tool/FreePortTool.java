@@ -14,27 +14,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.container.utils;
+package org.arquillian.droidium.container.tool;
 
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.arquillian.droidium.container.configuration.Validate;
+import org.arquillian.spacelift.tool.Tool;
 
 /**
+ * Checks if some port is free or not to hook to.
+ *
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
-public class NetUtils {
+public class FreePortTool extends Tool<Object, Boolean> {
 
-    public static boolean isPortFree(String port) {
+    private int port = -1;
+
+    /**
+     * Sets port to check.
+     *
+     * @param port port to check
+     * @throws IllegalArgumentException if {@code port} is null object or an empty string.
+     * @throws NumberFormatException if {@code port} is not a number
+     * @return
+     */
+    public FreePortTool port(String port) {
         if (port == null || port.isEmpty()) {
-            return false;
+            throw new IllegalArgumentException("Port to check can not be a null object nor an empty string");
         }
         try {
-            return isPortFree(Integer.parseInt(port));
+            this.port = Integer.parseInt(port);
+            return this;
         } catch (NumberFormatException ex) {
             throw new NumberFormatException("Port '" + port + "' is not a number.");
         }
@@ -46,7 +62,7 @@ public class NetUtils {
      * @param port port to check the availability of
      * @return true if {@code port} is free, false otherwise
      */
-    public static boolean isPortFree(int port) {
+    private boolean isPortFree(int port) {
         if (!Validate.isPortValid(port)) {
             throw new IllegalArgumentException("Specified port " + port + " is not a valid port.");
         }
@@ -85,5 +101,15 @@ public class NetUtils {
         }
 
         return false;
+    }
+
+    @Override
+    protected Collection<String> aliases() {
+        return Arrays.asList("free_port");
+    }
+
+    @Override
+    protected Boolean process(Object input) throws Exception {
+        return isPortFree(port);
     }
 }

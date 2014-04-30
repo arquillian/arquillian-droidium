@@ -26,7 +26,6 @@ import org.arquillian.droidium.native_.enrichment.NativeActivityManager;
 import org.arquillian.droidium.native_.selendroid.SelendroidRebuilder;
 import org.arquillian.droidium.native_.selendroid.SelendroidServerManager;
 import org.arquillian.droidium.native_.spi.event.DroidiumNativeConfigured;
-import org.arquillian.spacelift.process.ProcessExecutor;
 import org.jboss.arquillian.container.spi.event.container.AfterStart;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.InstanceProducer;
@@ -62,9 +61,6 @@ public class DroidiumNativeResourceManager {
 
     @Inject
     private Instance<AndroidSDK> androidSDK;
-
-    @Inject
-    private Instance<ProcessExecutor> processExecutor;
 
     // producers
 
@@ -105,8 +101,8 @@ public class DroidiumNativeResourceManager {
 
         selendroidDeploymentRegister.set(new SelendroidDeploymentRegister());
 
-        selendroidRebuilder.set(new SelendroidRebuilder(processExecutor.get(), androidSDK.get()));
+        selendroidRebuilder.set(new SelendroidRebuilder(androidSDK.get()));
 
-        selendroidServerManager.set(new SelendroidServerManager(processExecutor.get(), androidSDK.get()));
+        selendroidServerManager.set(new SelendroidServerManager(androidSDK.get()));
     }
 }

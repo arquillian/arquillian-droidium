@@ -13,20 +13,20 @@ import org.arquillian.droidium.container.configuration.AndroidContainerConfigura
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.impl.AndroidBridgeConnector;
 import org.arquillian.droidium.container.impl.AndroidDeviceSelectorImpl;
-import org.arquillian.droidium.container.log.AndroidLogInitializer;
 import org.arquillian.droidium.container.log.LogLevel;
 import org.arquillian.droidium.container.log.LogcatHelper;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStart;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
 import org.arquillian.droidium.container.utils.AndroidIdentifierGenerator;
 import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
-import org.arquillian.spacelift.process.ProcessExecutor;
-import org.arquillian.spacelift.process.impl.DefaultProcessExecutorFactory;
+import org.arquillian.spacelift.execution.Tasks;
+import org.arquillian.spacelift.execution.impl.DefaultExecutionServiceFactory;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.container.test.test.AbstractContainerTestTestBase;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,8 +46,6 @@ public class AndroidLogInitializerTestCase extends AbstractContainerTestTestBase
 
     private AndroidSDK androidSDK;
 
-    private ProcessExecutor processExecutor;
-
     private static final String RUNNING_EMULATOR_AVD_NAME = System.getProperty("emulator.running.avd.name", "test01");
 
     private static final String RUNNING_EMULATOR_CONSOLE_PORT = System.getProperty("emulator.running.console.port", "5554");
@@ -56,7 +54,11 @@ public class AndroidLogInitializerTestCase extends AbstractContainerTestTestBase
     protected void addExtensions(List<Class<?>> extensions) {
         extensions.add(AndroidBridgeConnector.class);
         extensions.add(AndroidDeviceSelectorImpl.class);
-        extensions.add(AndroidLogInitializer.class);
+    }
+
+    @BeforeClass
+    public static void beforeClass() {
+        Tasks.setDefaultExecutionServiceFactory(new DefaultExecutionServiceFactory());
     }
 
     @Before
@@ -68,17 +70,16 @@ public class AndroidLogInitializerTestCase extends AbstractContainerTestTestBase
 
         platformConfiguration = new DroidiumPlatformConfiguration();
 
-        processExecutor = new DefaultProcessExecutorFactory().getProcessExecutorInstance();
-
-        androidSDK = new AndroidSDK(platformConfiguration, processExecutor);
+        androidSDK = new AndroidSDK(platformConfiguration);
         androidSDK.setupWith(configuration);
 
         getManager().getContext(ContainerContext.class).activate("doesnotmatter");
 
         bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration);
         bind(ContainerScoped.class, AndroidSDK.class, androidSDK);
-        bind(ContainerScoped.class, ProcessExecutor.class, processExecutor);
         bind(ContainerScoped.class, IdentifierGenerator.class, new AndroidIdentifierGenerator());
+
+        // add bind to LogInitializer
     }
 
     @After

@@ -39,8 +39,8 @@ import org.arquillian.droidium.container.spi.event.AndroidSDCardCreated;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardDelete;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardDeleted;
 import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
-import org.arquillian.spacelift.process.ProcessExecutor;
-import org.arquillian.spacelift.process.impl.DefaultProcessExecutorFactory;
+import org.arquillian.spacelift.execution.Tasks;
+import org.arquillian.spacelift.execution.impl.DefaultExecutionServiceFactory;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.container.test.test.AbstractContainerTestTestBase;
@@ -48,6 +48,7 @@ import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -69,8 +70,6 @@ public class AndroidSDCardManagerTestCase extends AbstractContainerTestTestBase 
 
     private AndroidSDK androidSDK;
 
-    private ProcessExecutor executor;
-
     private static final String SD_CARD = "340df030-8994-11e2-9e96-0800200c9a66.img";
 
     private static final String SD_CARD_LABEL = "ba817e70-8994-11e2-9e96-0800200c9a66";
@@ -87,17 +86,18 @@ public class AndroidSDCardManagerTestCase extends AbstractContainerTestTestBase 
         extensions.add(AndroidSDCardManagerImpl.class);
     }
 
+    @BeforeClass
+    public static void beforeClass() {
+        Tasks.setDefaultExecutionServiceFactory(new DefaultExecutionServiceFactory());
+    }
+
     @Before
     public void setup() {
-
-        executor = new DefaultProcessExecutorFactory().getProcessExecutorInstance();
-
         getManager().getContext(ContainerContext.class).activate("doesnotmatter");
 
         Mockito.when(idGenerator.getIdentifier(FileType.SD_CARD)).thenReturn(SD_CARD);
         Mockito.when(idGenerator.getIdentifier(FileType.SD_CARD_LABEL)).thenReturn(SD_CARD_LABEL);
         bind(ContainerScoped.class, IdentifierGenerator.class, idGenerator);
-        bind(ApplicationScoped.class, ProcessExecutor.class, executor);
     }
 
     @After
@@ -128,7 +128,7 @@ public class AndroidSDCardManagerTestCase extends AbstractContainerTestTestBase 
         platformConfiguration = new DroidiumPlatformConfiguration();
         setupSDCardConfiguration(configuration, null, SD_SIZE, SD_CARD_LABEL, true);
 
-        androidSDK = new AndroidSDK(platformConfiguration, executor);
+        androidSDK = new AndroidSDK(platformConfiguration);
         androidSDK.setupWith(configuration);
 
         bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration);
@@ -149,7 +149,7 @@ public class AndroidSDCardManagerTestCase extends AbstractContainerTestTestBase 
         platformConfiguration = new DroidiumPlatformConfiguration();
         setupSDCardConfiguration(configuration, SD_PATH, SD_SIZE, SD_CARD_LABEL, true);
 
-        androidSDK = new AndroidSDK(platformConfiguration, executor);
+        androidSDK = new AndroidSDK(platformConfiguration);
         androidSDK.setupWith(configuration);
 
         bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration);
@@ -173,7 +173,7 @@ public class AndroidSDCardManagerTestCase extends AbstractContainerTestTestBase 
         platformConfiguration = new DroidiumPlatformConfiguration();
         setupSDCardConfiguration(configuration, SD_PATH, SD_SIZE, SD_CARD_LABEL, true);
 
-        androidSDK = new AndroidSDK(platformConfiguration, executor);
+        androidSDK = new AndroidSDK(platformConfiguration);
         androidSDK.setupWith(configuration);
 
         bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration);
@@ -199,7 +199,7 @@ public class AndroidSDCardManagerTestCase extends AbstractContainerTestTestBase 
         platformConfiguration = new DroidiumPlatformConfiguration();
         setupSDCardConfiguration(configuration, SD_PATH, SD_SIZE, SD_CARD_LABEL, true);
 
-        androidSDK = new AndroidSDK(platformConfiguration, executor);
+        androidSDK = new AndroidSDK(platformConfiguration);
         androidSDK.setupWith(configuration);
 
         bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration);
@@ -220,7 +220,7 @@ public class AndroidSDCardManagerTestCase extends AbstractContainerTestTestBase 
         platformConfiguration = new DroidiumPlatformConfiguration();
         setupSDCardConfiguration(configuration, null, SD_SIZE, SD_CARD_LABEL, false);
 
-        androidSDK = new AndroidSDK(platformConfiguration, executor);
+        androidSDK = new AndroidSDK(platformConfiguration);
         androidSDK.setupWith(configuration);
 
         bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration);
@@ -242,7 +242,7 @@ public class AndroidSDCardManagerTestCase extends AbstractContainerTestTestBase 
         platformConfiguration = new DroidiumPlatformConfiguration();
         setupSDCardConfiguration(configuration, SD_PATH, SD_SIZE, SD_CARD_LABEL, false);
 
-        androidSDK = new AndroidSDK(platformConfiguration, executor);
+        androidSDK = new AndroidSDK(platformConfiguration);
         androidSDK.setupWith(configuration);
 
         bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration);
@@ -264,7 +264,7 @@ public class AndroidSDCardManagerTestCase extends AbstractContainerTestTestBase 
         platformConfiguration = new DroidiumPlatformConfiguration();
         setupSDCardConfiguration(configuration, SD_PATH, SD_SIZE, SD_CARD_LABEL, false);
 
-        androidSDK = new AndroidSDK(platformConfiguration, executor);
+        androidSDK = new AndroidSDK(platformConfiguration);
         androidSDK.setupWith(configuration);
 
         bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration);

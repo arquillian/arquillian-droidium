@@ -22,14 +22,15 @@ import org.arquillian.droidium.container.api.FileType;
 import org.arquillian.droidium.container.api.IdentifierGenerator;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
-import org.arquillian.droidium.container.sign.KeyStoreCreator;
+import org.arquillian.droidium.container.task.CreateKeyStoreTask;
 import org.arquillian.droidium.container.utils.AndroidIdentifierGenerator;
 import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
-import org.arquillian.spacelift.process.ProcessExecutor;
-import org.arquillian.spacelift.process.impl.DefaultProcessExecutorFactory;
+import org.arquillian.spacelift.execution.Tasks;
+import org.arquillian.spacelift.execution.impl.DefaultExecutionServiceFactory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -49,20 +50,20 @@ public class KeyStoreCreatorTestCase {
 
     private AndroidSDK androidSDK;
 
-    private KeyStoreCreator keyStoreCreator;
-
-    private ProcessExecutor executor;
-
     private File keyStoreToCreate;
 
+    @BeforeClass
+    public static void setup() {
+        Tasks.setDefaultExecutionServiceFactory(new DefaultExecutionServiceFactory());
+    }
+
     @Before
-    public void setup() {
+    public void before() {
         configuration = new AndroidContainerConfiguration();
         platformConfiguration = new DroidiumPlatformConfiguration();
-        executor = new DefaultProcessExecutorFactory().getProcessExecutorInstance();
-        androidSDK = new AndroidSDK(platformConfiguration, executor);
+
+        androidSDK = new AndroidSDK(platformConfiguration);
         androidSDK.setupWith(configuration);
-        keyStoreCreator = new KeyStoreCreator(executor, androidSDK);
 
         IdentifierGenerator<FileType> aig = new AndroidIdentifierGenerator();
         keyStoreToCreate = new File(
@@ -81,7 +82,8 @@ public class KeyStoreCreatorTestCase {
 
     @Test
     public void createKeyStoreTest() {
-        keyStoreCreator.createKeyStore(keyStoreToCreate);
+        Assert.assertFalse(keyStoreToCreate.exists());
+        Tasks.prepare(CreateKeyStoreTask.class).sdk(androidSDK).keyStoreToCreate(keyStoreToCreate).execute().await();
         Assert.assertTrue(keyStoreToCreate.exists());
     }
 }

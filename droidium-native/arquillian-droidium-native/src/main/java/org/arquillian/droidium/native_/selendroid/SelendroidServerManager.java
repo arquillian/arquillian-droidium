@@ -36,9 +36,11 @@ import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.arquillian.droidium.container.utils.Monkey;
 import org.arquillian.droidium.native_.exception.InvalidSelendroidPortException;
 import org.arquillian.droidium.native_.spi.SelendroidDeployment;
+import org.arquillian.spacelift.execution.Tasks;
 import org.arquillian.spacelift.process.Command;
 import org.arquillian.spacelift.process.CommandBuilder;
-import org.arquillian.spacelift.process.ProcessExecutor;
+import org.arquillian.spacelift.process.ProcessDetails;
+import org.arquillian.spacelift.process.impl.CommandTool;
 
 /**
  * Manages deployment and undeployment of Selendroid servers which instrument Android packages. There is strict one-to-one
@@ -53,8 +55,6 @@ public class SelendroidServerManager {
 
     private AndroidDevice device;
 
-    private final ProcessExecutor executor;
-
     private final AndroidSDK sdk;
 
     private static final String TOP_CMD = "top -n 1";
@@ -68,20 +68,18 @@ public class SelendroidServerManager {
     /**
      *
      * @param device
-     * @param executor
      * @param sdk
-     * @throws IllegalArgumentException if either {@code device} or {@code executor} or {@code sdk} is a null object
+     * @throws IllegalArgumentException if either {@code device} or {@code sdk} is a null object
      */
-    public SelendroidServerManager(AndroidDevice device, ProcessExecutor executor, AndroidSDK sdk) {
-        Validate.notNull(executor, "Process executor to set can not be a null object!");
+    public SelendroidServerManager(AndroidDevice device, AndroidSDK sdk) {
         Validate.notNull(sdk, "Android SDK to set can not be a null object!");
+        Validate.notNull(device, "Android device to set can not be a null object!");
         this.device = device;
-        this.executor = executor;
         this.sdk = sdk;
     }
 
-    public SelendroidServerManager(ProcessExecutor executor, AndroidSDK sdk) {
-        this(null, executor, sdk);
+    public SelendroidServerManager(AndroidSDK sdk) {
+        this(null, sdk);
     }
 
     public SelendroidServerManager setDevice(AndroidDevice device) {
@@ -92,7 +90,7 @@ public class SelendroidServerManager {
     }
 
     /**
-     * Installs resigned Selendroid server which reflects Android application meant to be instrumented into Android device.
+     * Installs resigned Selendroid server which reflects Android application meant to be instrumented to Android device.
      *
      * @param deployment deployment to install to Android device
      * @throws IllegalArgumentException if {@code deployment} or {@code SelendroidDeployment#getResigned()} is a null object
@@ -102,12 +100,11 @@ public class SelendroidServerManager {
         Validate.notNull(deployment, "Selendroid deployment to deploy can not be a null object!");
         Validate.notNull(deployment.getResigned(), "Resigned Selendroid application to deploy can not be a null object!");
 
-        Command selendroidInstallCommand = new CommandBuilder()
-            .add(sdk.getAdbPath())
-            .add("-s")
-            .add(device.getSerialNumber())
-            .add("install")
-            .add(deployment.getResigned().getAbsolutePath())
+        Command selendroidInstallCommand = new CommandBuilder(sdk.getAdbPath())
+            .parameter("-s")
+            .parameter(device.getSerialNumber())
+            .parameter("install")
+            .parameter(deployment.getResigned().getAbsolutePath())
             .build();
 
         if (device.isPackageInstalled(deployment.getSelendroidPackageName())) {
@@ -116,10 +113,11 @@ public class SelendroidServerManager {
 
         logger.fine("Selendroid server installation command: " + selendroidInstallCommand.toString());
 
-        try {
-            executor.execute(selendroidInstallCommand.getAsArray());
-        } catch (AndroidExecutionException e) {
-            throw new AndroidExecutionException(e, "Unable to execute Selendroid installation process.");
+        ProcessDetails processDetails = Tasks.prepare(CommandTool.class).command(selendroidInstallCommand).execute().await();
+
+        if (processDetails.getExitValue() != 0) {
+            throw new AndroidExecutionException("Unable to execute Selendroid installation process, exit value: " +
+                processDetails.getExitValue());
         }
 
         if (!device.isPackageInstalled(deployment.getServerBasePackage())) {
@@ -146,15 +144,15 @@ public class SelendroidServerManager {
         int port = Integer.parseInt(deployment.getInstrumentationConfiguration().getPort());
         createPortForwarding(port, port);
 
-        Command startApplicationInstrumentationCommand = new CommandBuilder()
-            .add("am").add("instrument")
-            .add("-e").add("main_activity")
+        Command startApplicationInstrumentationCommand = new CommandBuilder("am")
+            .parameter("instrument")
+            .parameter("-e").parameter("main_activity")
             // .add("\'" + deployment.getInstrumentedDeployment().getApplicationMainActivity() + "\'")
-            .add("\'\'")
-            .add("-e")
-            .add("server_port")
-            .add(deployment.getInstrumentationConfiguration().getPort())
-            .add(deployment.getServerBasePackage() + "/io.selendroid.ServerInstrumentation")
+            .parameter("\'\'")
+            .parameter("-e")
+            .parameter("server_port")
+            .parameter(deployment.getInstrumentationConfiguration().getPort())
+            .parameter(deployment.getServerBasePackage() + "/io.selendroid.ServerInstrumentation")
             .build();
 
         logger.fine(startApplicationInstrumentationCommand.toString());
@@ -174,19 +172,23 @@ public class SelendroidServerManager {
     }
 
     /**
-     * Disables Selendroid server on running on Android device.
+     * Disables Selendroid server running on Android device.
      *
      * @param deployment
      * @throws IllegalArgumentException if {@code deployment} is a null object
      */
     public void disable(SelendroidDeployment deployment) {
         Validate.notNull(deployment, "Selendroid deployment to disable can not be a null object!");
-        device.executeShellCommand(new CommandBuilder()
-            .add("pm")
-            .add("disable")
-            .add(deployment.getServerBasePackage())
-            .build()
-            .toString());
+
+        try {
+            device.executeShellCommand(new CommandBuilder("pm")
+                .parameter("disable")
+                .parameter(deployment.getServerBasePackage())
+                .build()
+                .toString());
+        } catch (AndroidExecutionException ex) {
+            throw new AndroidExecutionException("Unable to disable Selendroid deployment " + deployment.getServerBasePackage(), ex);
+        }
     }
 
     /**
@@ -198,10 +200,9 @@ public class SelendroidServerManager {
     public void uninstall(SelendroidDeployment deployment) {
         Validate.notNull(deployment, "Selendroid deployment to uninstall can not be a null object!");
         try {
-            device.executeShellCommand(new CommandBuilder()
-                .add("pm")
-                .add("uninstall")
-                .add(deployment.getServerBasePackage())
+            device.executeShellCommand(new CommandBuilder("pm")
+                .parameter("uninstall")
+                .parameter(deployment.getServerBasePackage())
                 .build()
                 .toString());
         } catch (AndroidExecutionException ex) {

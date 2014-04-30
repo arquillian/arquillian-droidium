@@ -55,10 +55,6 @@ public class AndroidDeploymentUninstaller {
     @Inject
     private Event<AfterAndroidDeploymentUnDeployed> afterUnDeploy;
 
-    /**
-     *
-     * @param event
-     */
     public void onAndroidUnDeploy(@Observes AndroidUnDeploy event, AndroidDevice device) {
 
         AndroidDeployment androidDeployment = androidDeploymentRegister.get().get(event.getArchive());

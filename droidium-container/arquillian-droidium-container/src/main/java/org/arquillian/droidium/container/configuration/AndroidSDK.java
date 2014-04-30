@@ -35,7 +35,6 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 
 import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
-import org.arquillian.spacelift.process.ProcessExecutor;
 
 /**
  * Represents an Android SDK.
@@ -74,8 +73,6 @@ public class AndroidSDK {
 
     private final DroidiumPlatformConfiguration platformConfiguration;
 
-    private final ProcessExecutor executor;
-
     private AndroidContainerConfiguration containerConfiguration;
 
     private final File sdkPath;
@@ -96,11 +93,9 @@ public class AndroidSDK {
         defaultAndroidHome = home;
     }
 
-    public AndroidSDK(DroidiumPlatformConfiguration platformConfiguration, ProcessExecutor executor) {
+    public AndroidSDK(DroidiumPlatformConfiguration platformConfiguration) {
         Validate.notNull(platformConfiguration, "Droidium platform configuration can not be a null object!");
-        Validate.notNull(executor, "Process executor for AndroidSDK can not be a null object!");
 
-        this.executor = executor;
         this.platformConfiguration = platformConfiguration;
 
         this.sdkPath = new File(this.platformConfiguration.getAndroidHome());
@@ -126,14 +121,14 @@ public class AndroidSDK {
             // check whether there was target defined in configuration
             String targetId = containerConfiguration.getTarget();
             if (targetId != null && !"".equals(targetId)) {
-                currentTarget = Target.findMatchingTarget(executor, getAndroidPath(), targetId);
+                currentTarget = Target.findMatchingTarget(getAndroidPath(), targetId);
                 this.currentPlatform = Platform.findPlatformByTarget(sdkPath, currentTarget);
                 // update runtime configuration
                 containerConfiguration.setTarget(currentTarget.getName());
             }
             // get target based on latest platform
             else {
-                currentTarget = Target.findMatchingTarget(executor, getAndroidPath(), this.currentPlatform.getApiLevel());
+                currentTarget = Target.findMatchingTarget(getAndroidPath(), this.currentPlatform.getApiLevel());
                 // update runtime configuration
                 containerConfiguration.setTarget(currentTarget.getName());
             }

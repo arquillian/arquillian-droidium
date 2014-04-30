@@ -30,44 +30,41 @@ import org.jboss.arquillian.drone.spi.DronePointContext.MetadataKey;
 public interface DroidiumMetadataKey {
 
     /**
-     * Under this key, name of Android package deployed via @Deployment method is saved value to {@link DronePoint} metadata.
+     * Under this key, a name of Android package deployed via {@code @Deployment} method is saved to {@link DronePoint}
+     * metadata.
      *
-     * This key differs from {@link DEPLOYMENT} key which reflects @Deployment name itself.
+     * This key differs from {@link DEPLOYMENT} key which reflects {@code @Deployment} name itself.
      */
     public interface ANDROID_PACKAGE_NAME extends MetadataKey<String> {
-
     }
 
     /**
-     * Under this key, name of Selendroid deployment package name is saved as a value to {@link DronePoint} metadata.
+     * Under this key, a name of Selendroid deployment package name is saved to {@link DronePoint} metadata.
      *
      */
     interface SELENDROID_PACKAGE_NAME extends MetadataKey<String> {
-
     }
 
     /**
-     * Under this key, deployment name from {@code @Deployment} method is saved as value to {@link DronePoint} metadata on which
-     * some particular DronePoint operates.
+     * Under this key, a deployment name from {@code @Deployment} method is saved as value to {@link DronePoint} metadata on
+     * which some particular {@link DronePoint} operates.
      *
      * This key differs from {@link ANDROID_PACKAGE_NAME} which reflects name of Android APK package itself.
      */
     interface DEPLOYMENT extends MetadataKey<String> {
-
     }
 
     /**
-     * Under this key, list of activities which is some Drone acting upon is saved as value to {@link DronePoint} metadata.
+     * Under this key, a list of activities which is some Drone acting upon is saved to {@link DronePoint} metadata.
      */
     interface ACTIVITIES extends MetadataKey<List<String>> {
     }
 
     /**
-     * Under this key, port number is saved as a value to {@link DronePoint} metadata via which some particular Drone interacts
-     * with Selendroid deployment instrumenting Arquillian deployment
+     * Under this key, port number is saved to {@link DronePoint} metadata via which some particular Drone interacts with
+     * Selendroid deployment instrumenting Arquillian deployment.
      */
     interface PORT extends MetadataKey<String> {
-
     }
 
 }

@@ -24,7 +24,6 @@ package org.arquillian.droidium.container.automatic;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -40,7 +39,6 @@ import org.arquillian.droidium.container.deployment.AndroidDeviceContext;
 import org.arquillian.droidium.container.impl.AndroidBridgeConnector;
 import org.arquillian.droidium.container.impl.AndroidDeviceRegisterImpl;
 import org.arquillian.droidium.container.impl.AndroidDeviceSelectorImpl;
-import org.arquillian.droidium.container.impl.AndroidEmulator;
 import org.arquillian.droidium.container.impl.AndroidEmulatorShutdown;
 import org.arquillian.droidium.container.impl.AndroidEmulatorStartup;
 import org.arquillian.droidium.container.impl.AndroidVirtualDeviceManager;
@@ -53,14 +51,15 @@ import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceCreate;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceDelete;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceDeleted;
 import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
-import org.arquillian.spacelift.process.ProcessExecutor;
-import org.arquillian.spacelift.process.impl.DefaultProcessExecutorFactory;
+import org.arquillian.spacelift.execution.Tasks;
+import org.arquillian.spacelift.execution.impl.DefaultExecutionServiceFactory;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.container.test.AbstractContainerTestBase;
 import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -92,8 +91,6 @@ public class AndroidEmulatorStartupAVDtoBeCreatedTestCase extends AbstractContai
 
     private AndroidSDK androidSDK;
 
-    private ProcessExecutor processorExecutor;
-
     private AndroidDeviceRegister androidDeviceRegister;
 
     @Mock
@@ -109,6 +106,11 @@ public class AndroidEmulatorStartupAVDtoBeCreatedTestCase extends AbstractContai
         extensions.add(AndroidDeviceContext.class);
     }
 
+    @BeforeClass
+    public static void beforeClass() {
+        Tasks.setDefaultExecutionServiceFactory(new DefaultExecutionServiceFactory());
+    }
+
     @Before
     public void setup() {
         configuration = new AndroidContainerConfiguration();
@@ -122,9 +124,7 @@ public class AndroidEmulatorStartupAVDtoBeCreatedTestCase extends AbstractContai
 
         platformConfiguration = new DroidiumPlatformConfiguration();
 
-        processorExecutor = new DefaultProcessExecutorFactory().getProcessExecutorInstance();
-
-        androidSDK = new AndroidSDK(platformConfiguration, processorExecutor);
+        androidSDK = new AndroidSDK(platformConfiguration);
         androidSDK.setupWith(configuration);
 
         androidDeviceRegister = new AndroidDeviceRegisterImpl();
@@ -137,7 +137,6 @@ public class AndroidEmulatorStartupAVDtoBeCreatedTestCase extends AbstractContai
         bind(ApplicationScoped.class, DroidiumPlatformConfiguration.class, platformConfiguration);
         bind(ApplicationScoped.class, AndroidSDK.class, androidSDK);
         bind(ApplicationScoped.class, IdentifierGenerator.class, idGenerator);
-        bind(ApplicationScoped.class, ProcessExecutor.class, processorExecutor);
         bind(ApplicationScoped.class, AndroidDeviceRegister.class, androidDeviceRegister);
     }
 
@@ -159,12 +158,8 @@ public class AndroidEmulatorStartupAVDtoBeCreatedTestCase extends AbstractContai
         assertNotNull("Android device is null!", runningDevice);
         bind(ContainerScoped.class, AndroidDevice.class, runningDevice);
 
-        AndroidEmulator emulator = getManager().getContext(ContainerContext.class)
-            .getObjectStore().get(AndroidEmulator.class);
-        assertNotNull("Android emulator is null!", emulator);
-        bind(ContainerScoped.class, AndroidEmulator.class, emulator);
-
-        assertTrue(configuration.isAVDGenerated());
+        AndroidContainerConfiguration configuration = getManager().getContext(ContainerContext.class).getObjectStore().get(AndroidContainerConfiguration.class);
+        assertNotNull(configuration);
         assertEquals(AVD_GENERATED_NAME, runningDevice.getAvdName());
 
         fire(new AndroidContainerStop());

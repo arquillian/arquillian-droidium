@@ -23,8 +23,8 @@ import org.arquillian.droidium.container.api.AndroidDeviceRegister;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.deployment.AndroidDeploymentRegister;
 import org.arquillian.droidium.container.impl.AndroidApplicationHelper;
-import org.arquillian.droidium.container.sign.APKSigner;
 import org.arquillian.droidium.container.spi.AndroidDeployment;
+import org.arquillian.droidium.container.tool.APKResignerTool;
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.arquillian.droidium.native_.configuration.DroidiumNativeConfiguration;
 import org.arquillian.droidium.native_.deployment.SelendroidDeploymentRegister;
@@ -34,6 +34,7 @@ import org.arquillian.droidium.native_.selendroid.SelendroidServerManager;
 import org.arquillian.droidium.native_.spi.SelendroidDeployment;
 import org.arquillian.droidium.native_.spi.event.PerformInstrumentation;
 import org.arquillian.droidium.native_.spi.event.SelendroidDeploy;
+import org.arquillian.spacelift.execution.Tasks;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;
@@ -80,9 +81,6 @@ public class InstrumentationPerformer {
 
     @Inject
     private Instance<AndroidApplicationHelper> applicationHelper;
-
-    @Inject
-    private Instance<APKSigner> signer;
 
     @Inject
     private Instance<SelendroidServerManager> selendroidServerManager;
@@ -133,7 +131,7 @@ public class InstrumentationPerformer {
     }
 
     private File getSelendroidResigned(File selendroidRebuilt) {
-        return signer.get().resign(selendroidRebuilt);
+        return Tasks.chain(selendroidRebuilt, APKResignerTool.class).execute().await();
     }
 
     private File getSelendroidWorkingCopy() {

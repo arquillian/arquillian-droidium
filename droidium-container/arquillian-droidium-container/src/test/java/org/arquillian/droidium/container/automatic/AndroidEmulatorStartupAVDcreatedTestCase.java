@@ -36,7 +36,6 @@ import org.arquillian.droidium.container.deployment.AndroidDeviceContext;
 import org.arquillian.droidium.container.impl.AndroidBridgeConnector;
 import org.arquillian.droidium.container.impl.AndroidDeviceRegisterImpl;
 import org.arquillian.droidium.container.impl.AndroidDeviceSelectorImpl;
-import org.arquillian.droidium.container.impl.AndroidEmulator;
 import org.arquillian.droidium.container.impl.AndroidEmulatorShutdown;
 import org.arquillian.droidium.container.impl.AndroidEmulatorStartup;
 import org.arquillian.droidium.container.spi.event.AndroidBridgeInitialized;
@@ -46,8 +45,8 @@ import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
 import org.arquillian.droidium.container.spi.event.AndroidEmulatorShuttedDown;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceAvailable;
 import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
-import org.arquillian.spacelift.process.ProcessExecutor;
-import org.arquillian.spacelift.process.impl.DefaultProcessExecutorFactory;
+import org.arquillian.spacelift.execution.Tasks;
+import org.arquillian.spacelift.execution.impl.DefaultExecutionServiceFactory;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.container.test.AbstractContainerTestBase;
@@ -55,6 +54,7 @@ import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -86,8 +86,6 @@ public class AndroidEmulatorStartupAVDcreatedTestCase extends AbstractContainerT
 
     private AndroidSDK androidSDK;
 
-    private ProcessExecutor processExecutor;
-
     private AndroidDeviceRegister androidDeviceRegister;
 
     private static final String EMULATOR_AVD_NAME = System.getProperty("emulator.to.run.avd.name", "test01");
@@ -107,6 +105,11 @@ public class AndroidEmulatorStartupAVDcreatedTestCase extends AbstractContainerT
         extensions.add(AndroidDeviceContext.class);
     }
 
+    @BeforeClass
+    public static void beforeClass() {
+        Tasks.setDefaultExecutionServiceFactory(new DefaultExecutionServiceFactory());
+    }
+
     @Before
     public void setup() {
         configuration = new AndroidContainerConfiguration();
@@ -118,8 +121,7 @@ public class AndroidEmulatorStartupAVDcreatedTestCase extends AbstractContainerT
 
         platformConfiguration = new DroidiumPlatformConfiguration();
 
-        processExecutor = new DefaultProcessExecutorFactory().getProcessExecutorInstance();
-        androidSDK = new AndroidSDK(platformConfiguration, processExecutor);
+        androidSDK = new AndroidSDK(platformConfiguration);
         androidSDK.setupWith(configuration);
 
         androidDeviceRegister = new AndroidDeviceRegisterImpl();
@@ -129,7 +131,6 @@ public class AndroidEmulatorStartupAVDcreatedTestCase extends AbstractContainerT
         bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration);
         bind(ApplicationScoped.class, DroidiumPlatformConfiguration.class, platformConfiguration);
         bind(ApplicationScoped.class, AndroidSDK.class, androidSDK);
-        bind(ApplicationScoped.class, ProcessExecutor.class, processExecutor);
         bind(ApplicationScoped.class, AndroidDeviceRegister.class, androidDeviceRegister);
     }
 
@@ -159,10 +160,6 @@ public class AndroidEmulatorStartupAVDcreatedTestCase extends AbstractContainerT
         AndroidDevice runningDevice = getManager().getContext(ContainerContext.class).getObjectStore().get(AndroidDevice.class);
         assertNotNull("Android device is null!", runningDevice);
         bind(ContainerScoped.class, AndroidDevice.class, runningDevice);
-
-        AndroidEmulator emulator = getManager().getContext(ContainerContext.class).getObjectStore().get(AndroidEmulator.class);
-        assertNotNull("Android emulator is null!", emulator);
-        bind(ContainerScoped.class, AndroidEmulator.class, emulator);
 
         fire(new AndroidContainerStop());
 

@@ -29,8 +29,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 
 /**
- * Set of utility methods for Droidium regarding of file and directory management. It creates temporary directory where all
- * resources needed while the test execution is running are stored e.g. rebuilt packages are stored there.
+ * Set of utility methods for Droidium regarding of file and directory management.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
@@ -55,6 +54,11 @@ public class DroidiumFileUtils {
         }
     }
 
+    /**
+     * Removes directory
+     *
+     * @param dir directory to remove
+     */
     public static void removeDir(String dir) {
         DroidiumFileUtils.removeDir(new File(dir));
     }
@@ -79,6 +83,16 @@ public class DroidiumFileUtils {
     }
 
     /**
+     * Creates empty file saved under {@code parent}
+     *
+     * @param parent parent directory of file to create
+     * @return empty file saved in parent with random name
+     */
+    public static File createRandomEmptyFile(String parent) {
+        return createRandomEmptyFile(new File(parent));
+    }
+
+    /**
      * Copies {@code src} file to {@code dest} directory.
      *
      * @param src source file to copy
@@ -91,6 +105,16 @@ public class DroidiumFileUtils {
         } catch (IOException ex) {
             throw new RuntimeException("Unable to copy " + src.getAbsolutePath() + " to " + dest.getAbsolutePath());
         }
+    }
+
+    /**
+     * Copies {@code src} file to {@code dest} directory.
+     *
+     * @param src source file to copy
+     * @param dest destination directory where file is copied
+     */
+    public static File copyFileToDirectory(String src, String dest) {
+        return copyFileToDirectory(new File(src), new File(dest));
     }
 
     /**

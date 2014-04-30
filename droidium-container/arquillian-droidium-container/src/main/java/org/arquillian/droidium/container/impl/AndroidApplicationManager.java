@@ -26,12 +26,14 @@ import org.arquillian.droidium.container.configuration.Validate;
 import org.arquillian.droidium.container.spi.AndroidDeployment;
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.arquillian.droidium.container.utils.Monkey;
+import org.arquillian.spacelift.execution.Tasks;
 import org.arquillian.spacelift.process.Command;
 import org.arquillian.spacelift.process.CommandBuilder;
-import org.arquillian.spacelift.process.ProcessExecutor;
+import org.arquillian.spacelift.process.ProcessDetails;
+import org.arquillian.spacelift.process.impl.CommandTool;
 
 /**
- * Manages deployment and undeployment of Android applications. It installs, uninstalls and disable running applications on
+ * Manages deployment and undeployment of Android applications. It installs, uninstalls and disables running applications on
  * Android device.
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
@@ -42,8 +44,6 @@ public class AndroidApplicationManager {
     private static final Logger logger = Logger.getLogger(AndroidApplicationManager.class.getName());
 
     private AndroidDevice device;
-
-    private final ProcessExecutor executor;
 
     private final AndroidSDK sdk;
 
@@ -58,12 +58,10 @@ public class AndroidApplicationManager {
      * @param sdk
      * @throws IllegalArgumentException if either {@code device} or {@code executor} or {@code sdk} is a null object
      */
-    public AndroidApplicationManager(AndroidDevice device, ProcessExecutor executor, AndroidSDK sdk) {
+    public AndroidApplicationManager(AndroidDevice device, AndroidSDK sdk) {
         Validate.notNull(device, "Android device you are trying to pass to Android application manager is a null object!");
-        Validate.notNull(executor, "Process executor you are trying to pass to Android application manager is a null object!");
         Validate.notNull(sdk, "Android SDK you are trying to pass to Android application manager is a null object!");
         this.device = device;
-        this.executor = executor;
         this.sdk = sdk;
     }
 
@@ -80,12 +78,11 @@ public class AndroidApplicationManager {
         Validate.notNull(deployment.getResignedApk(), "Application to install is a null object!");
         Validate.notNull(deployment.getApplicationBasePackage(), "Application base package name is a null object!");
 
-        Command installCommand = new CommandBuilder()
-            .add(sdk.getAdbPath())
-            .add("-s")
-            .add(device.getSerialNumber())
-            .add("install")
-            .add(deployment.getResignedApk().getAbsolutePath())
+        Command installCommand = new CommandBuilder(sdk.getAdbPath())
+            .parameters("-s")
+            .parameter(device.getSerialNumber())
+            .parameter("install")
+            .parameter(deployment.getResignedApk().getAbsolutePath())
             .build();
 
         logger.fine("AUT installation command: " + installCommand.toString());
@@ -96,12 +93,22 @@ public class AndroidApplicationManager {
             device.uninstallPackage(applicationBasePackage);
         }
 
+        ProcessDetails processDetails = null;
+
         try {
-            executor.execute(installCommand);
+            processDetails = Tasks.prepare(CommandTool.class)
+                .command(installCommand)
+                .execute()
+                .await();
         } catch (AndroidExecutionException e) {
             // rewrap exception to have better stacktrace
-            throw new AndroidExecutionException(e, "Unable to execute installation command {0} for the application {1}",
-                installCommand, applicationBasePackage);
+            throw new AndroidExecutionException(e, "Unable to execute installation command '{0} {1}' for the application {2}. "
+                + "Execution ended with exit code {3} with output\n{4}",
+                sdk.getAdbPath(),
+                installCommand,
+                applicationBasePackage,
+                processDetails.getExitValue(),
+                processDetails.getOutput());
         }
 
         if (!device.isPackageInstalled(applicationBasePackage)) {
@@ -122,16 +129,14 @@ public class AndroidApplicationManager {
         Validate.notNull(deployment, "Android deployment you are trying to uninstall can not be a null object!");
         Validate.notNull(deployment.getApplicationBasePackage(), "Application base package can not be a null object!");
 
-        Command command = new CommandBuilder()
-            .add("pm")
-            .add("uninstall")
-            .add(deployment.getApplicationBasePackage())
-            .build();
+        StringBuilder sb = new StringBuilder();
+        String command = sb.append("pm ").append("uninstall ").append(deployment.getApplicationBasePackage()).toString();
 
         try {
             Monkey monkey = new Monkey(DroidiumFileUtils.createRandomEmptyFile(sdk.getPlatformConfiguration().getTmpDir()),
-                command.getLast(), false);
-            device.executeShellCommand(command.toString(), monkey);
+                deployment.getApplicationBasePackage(), false);
+            device.executeShellCommand(command, monkey);
+
             Monkey.wait(device, monkey, PACKAGES_LIST_CMD);
         } catch (IOException ex) {
             throw new AndroidExecutionException("Unable to uninstall application " + deployment.getApplicationBasePackage()
@@ -151,15 +156,15 @@ public class AndroidApplicationManager {
         Validate.notNull(deployment, "Android deployment you are trying to kill can not be a null object!");
         Validate.notNull(deployment.getApplicationBasePackage(), "Application base package name can not be a null object!");
 
-        Command command = new CommandBuilder()
-            .add("pm")
-            .add("disable")
-            .add(deployment.getApplicationBasePackage())
-            .build();
+        StringBuilder sb = new StringBuilder();
+        String command = sb.append("pm ").append("disable ").append(deployment.getApplicationBasePackage()).toString();
 
         try {
-            Monkey monkey = new Monkey(DroidiumFileUtils.createRandomEmptyFile(sdk.getPlatformConfiguration().getTmpDir()),
-                command.getLast(), false);
+            Monkey monkey = new Monkey(
+                DroidiumFileUtils.createRandomEmptyFile(
+                    sdk.getPlatformConfiguration().getTmpDir()),
+                deployment.getApplicationBasePackage(),
+                false);
             device.executeShellCommand(command.toString(), monkey);
             Monkey.wait(device, monkey, TOP_CMD);
         } catch (IOException e) {

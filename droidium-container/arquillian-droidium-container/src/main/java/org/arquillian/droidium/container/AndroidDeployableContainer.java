@@ -29,7 +29,6 @@ import org.arquillian.droidium.container.spi.event.AndroidContainerStop;
 import org.arquillian.droidium.container.spi.event.AndroidDeploy;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
 import org.arquillian.droidium.container.spi.event.AndroidUnDeploy;
-import org.arquillian.spacelift.process.ProcessExecutor;
 import org.jboss.arquillian.container.spi.client.container.DeployableContainer;
 import org.jboss.arquillian.container.spi.client.container.DeploymentException;
 import org.jboss.arquillian.container.spi.client.container.LifecycleException;
@@ -82,9 +81,6 @@ public class AndroidDeployableContainer implements DeployableContainer<AndroidCo
 
     @Inject
     private Instance<AndroidDevice> androidDevice;
-
-    @Inject
-    private Instance<ProcessExecutor> processExecutor;
 
     @Inject
     private Instance<ServiceLoader> serviceLoader;

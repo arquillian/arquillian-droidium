@@ -32,9 +32,11 @@ import org.arquillian.droidium.container.spi.event.AndroidSDCardCreate;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardCreated;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardDelete;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardDeleted;
+import org.arquillian.spacelift.execution.ExecutionException;
+import org.arquillian.spacelift.execution.Tasks;
 import org.arquillian.spacelift.process.Command;
 import org.arquillian.spacelift.process.CommandBuilder;
-import org.arquillian.spacelift.process.ProcessExecutor;
+import org.arquillian.spacelift.process.impl.CommandTool;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;
@@ -70,9 +72,6 @@ public class AndroidSDCardManagerImpl implements AndroidSDCardManager {
 
     @Inject
     private Instance<IdentifierGenerator<FileType>> idGenerator;
-
-    @Inject
-    private Instance<ProcessExecutor> executor;
 
     @Inject
     private Event<AndroidSDCardCreated> androidSDCardCreated;
@@ -164,15 +163,20 @@ public class AndroidSDCardManagerImpl implements AndroidSDCardManager {
     public void createSDCard(SDCard sdCard) throws AndroidExecutionException {
         AndroidSDCard androidSDCard = (AndroidSDCard) sdCard;
 
-        Command command = new CommandBuilder()
-            .add(this.androidSDK.get().getMakeSdCardPath())
-            .add("-l")
-            .add(androidSDCard.getLabel())
-            .add(androidSDCard.getSize())
-            .add(androidSDCard.getFileName())
+        AndroidSDK sdk = androidSDK.get();
+
+        Command command = new CommandBuilder(sdk.getMakeSdCardPath())
+            .parameter("-l")
+            .parameter(androidSDCard.getLabel())
+            .parameter(androidSDCard.getSize())
+            .parameter(androidSDCard.getFileName())
             .build();
 
-        executor.get().execute(command);
+        try {
+            Tasks.prepare(CommandTool.class).command(command).execute().await();
+        } catch (ExecutionException ex) {
+            throw new AndroidExecutionException("Unable to create SD card", ex);
+        }
 
         logger.log(Level.INFO, "Android SD card labelled {0} located at {1} with size of {2} was created.", new Object[] {
             androidSDCard.getLabel(), androidSDCard.getFileName(), androidSDCard.getSize() });

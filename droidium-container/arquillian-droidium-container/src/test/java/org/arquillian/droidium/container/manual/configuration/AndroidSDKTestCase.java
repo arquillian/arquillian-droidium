@@ -20,9 +20,10 @@ import org.arquillian.droidium.container.configuration.AndroidContainerConfigura
 import org.arquillian.droidium.container.configuration.AndroidContainerConfigurationException;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
-import org.arquillian.spacelift.process.ProcessExecutor;
-import org.arquillian.spacelift.process.impl.DefaultProcessExecutorFactory;
+import org.arquillian.spacelift.execution.Tasks;
+import org.arquillian.spacelift.execution.impl.DefaultExecutionServiceFactory;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -46,12 +47,15 @@ public class AndroidSDKTestCase {
 
     private static final String ANDROID_WEAR_ABI = "android-wear/armeabi-v7a";
 
-    private ProcessExecutor processExecutor = new DefaultProcessExecutorFactory().getProcessExecutorInstance();
-
     private DroidiumPlatformConfiguration platformConfiguration = new DroidiumPlatformConfiguration();
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
+
+    @BeforeClass
+    public static void setup() {
+        Tasks.setDefaultExecutionServiceFactory(new DefaultExecutionServiceFactory());
+    }
 
     @Test
     public void testAbiNullTargetNull() {
@@ -60,7 +64,7 @@ public class AndroidSDKTestCase {
         configuration.setAbi(null);
         configuration.setTarget(null);
 
-        AndroidSDK sdk = new AndroidSDK(platformConfiguration, processExecutor);
+        AndroidSDK sdk = new AndroidSDK(platformConfiguration);
         sdk.setupWith(configuration);
 
         Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
@@ -74,7 +78,7 @@ public class AndroidSDKTestCase {
         configuration.setAbi(null);
         configuration.setTarget(null);
 
-        AndroidSDK sdk = new AndroidSDK(platformConfiguration, processExecutor);
+        AndroidSDK sdk = new AndroidSDK(platformConfiguration);
         sdk.setupWith(configuration);
 
         Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
@@ -88,7 +92,7 @@ public class AndroidSDKTestCase {
         configuration.setAbi("x86");
         configuration.setTarget(LATEST_TARGET);
 
-        AndroidSDK sdk = new AndroidSDK(platformConfiguration, processExecutor);
+        AndroidSDK sdk = new AndroidSDK(platformConfiguration);
         sdk.setupWith(configuration);
 
         Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
@@ -101,7 +105,7 @@ public class AndroidSDKTestCase {
 
         configuration.setAbi("x86");
 
-        AndroidSDK sdk = new AndroidSDK(platformConfiguration, processExecutor);
+        AndroidSDK sdk = new AndroidSDK(platformConfiguration);
         sdk.setupWith(configuration);
 
         Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
@@ -115,7 +119,7 @@ public class AndroidSDKTestCase {
         configuration.setAbi("x86");
         configuration.setTarget("19");
 
-        AndroidSDK sdk = new AndroidSDK(platformConfiguration, processExecutor);
+        AndroidSDK sdk = new AndroidSDK(platformConfiguration);
         sdk.setupWith(configuration);
 
         Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
@@ -129,7 +133,7 @@ public class AndroidSDKTestCase {
         configuration.setAbi("x86");
         configuration.setTarget("android-19");
 
-        AndroidSDK sdk = new AndroidSDK(platformConfiguration, processExecutor);
+        AndroidSDK sdk = new AndroidSDK(platformConfiguration);
         sdk.setupWith(configuration);
 
         Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
@@ -142,7 +146,7 @@ public class AndroidSDKTestCase {
 
         configuration.setTarget(GOOGLE_LATEST_TARGET_ARMEABI_V7A);
 
-        AndroidSDK sdk = new AndroidSDK(platformConfiguration, processExecutor);
+        AndroidSDK sdk = new AndroidSDK(platformConfiguration);
         sdk.setupWith(configuration);
 
         Assert.assertEquals("default/armeabi-v7a", sdk.getConfiguration().getAbi());
@@ -155,7 +159,7 @@ public class AndroidSDKTestCase {
 
         configuration.setTarget(GOOGLE_LATEST_TARGET_X86);
 
-        AndroidSDK sdk = new AndroidSDK(platformConfiguration, processExecutor);
+        AndroidSDK sdk = new AndroidSDK(platformConfiguration);
         sdk.setupWith(configuration);
 
         Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
@@ -169,7 +173,7 @@ public class AndroidSDKTestCase {
         configuration.setAbi("x86");
         configuration.setTarget(GOOGLE_LATEST_TARGET_X86);
 
-        AndroidSDK sdk = new AndroidSDK(platformConfiguration, processExecutor);
+        AndroidSDK sdk = new AndroidSDK(platformConfiguration);
         sdk.setupWith(configuration);
 
         Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
@@ -183,7 +187,7 @@ public class AndroidSDKTestCase {
 
         configuration.setAbi(ANDROID_WEAR_ABI);
 
-        AndroidSDK sdk = new AndroidSDK(platformConfiguration, processExecutor);
+        AndroidSDK sdk = new AndroidSDK(platformConfiguration);
         sdk.setupWith(configuration);
 
         Assert.assertEquals(ANDROID_WEAR_ABI, sdk.getConfiguration().getAbi());
@@ -197,7 +201,7 @@ public class AndroidSDKTestCase {
         configuration.setTarget(LATEST_TARGET);
         configuration.setAbi("default/x86");
 
-        AndroidSDK sdk = new AndroidSDK(platformConfiguration, processExecutor);
+        AndroidSDK sdk = new AndroidSDK(platformConfiguration);
         sdk.setupWith(configuration);
 
         Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
@@ -215,7 +219,7 @@ public class AndroidSDKTestCase {
         configuration.setAbi("mips");
         configuration.setTarget(LOWEST_TARGET);
 
-        AndroidSDK sdk = new AndroidSDK(platformConfiguration, processExecutor);
+        AndroidSDK sdk = new AndroidSDK(platformConfiguration);
         sdk.setupWith(configuration);
 
         Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
@@ -232,7 +236,7 @@ public class AndroidSDKTestCase {
         configuration.setAbi("default/x86");
         configuration.setTarget("android-100");
 
-        new AndroidSDK(platformConfiguration, processExecutor).setupWith(configuration);
+        new AndroidSDK(platformConfiguration).setupWith(configuration);
     }
 
 }

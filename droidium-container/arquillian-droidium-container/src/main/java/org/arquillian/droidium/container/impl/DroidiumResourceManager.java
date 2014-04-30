@@ -21,13 +21,11 @@ import org.arquillian.droidium.container.api.FileType;
 import org.arquillian.droidium.container.api.IdentifierGenerator;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.deployment.AndroidDeploymentRegister;
-import org.arquillian.droidium.container.sign.APKSigner;
 import org.arquillian.droidium.container.spi.event.DroidiumExtensionConfigured;
 import org.arquillian.droidium.container.utils.AndroidIdentifierGenerator;
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.arquillian.droidium.platform.event.DroidiumPlatformConfigured;
 import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
-import org.arquillian.spacelift.process.ProcessExecutor;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.InstanceProducer;
@@ -73,10 +71,6 @@ public class DroidiumResourceManager {
 
     @Inject
     @ApplicationScoped
-    private InstanceProducer<APKSigner> signer;
-
-    @Inject
-    @ApplicationScoped
     private InstanceProducer<AndroidDeploymentRegister> androidDeploymentRegister;
 
     @Inject
@@ -91,26 +85,21 @@ public class DroidiumResourceManager {
     private Instance<DroidiumPlatformConfiguration> platformConfiguration;
 
     @Inject
-    private Instance<ProcessExecutor> processExecutor;
-
-    @Inject
     private Event<DroidiumExtensionConfigured> droidiumExtensionConfigured;
 
     public void onDroidiumPlatformConfigured(@Observes DroidiumPlatformConfigured event) {
 
         // AndroidSDK
 
-        androidSDK.set(new AndroidSDK(platformConfiguration.get(), processExecutor.get()));
+        androidSDK.set(new AndroidSDK(platformConfiguration.get()));
 
         // Other producers
 
         idGenerator.set(new AndroidIdentifierGenerator());
 
-        signer.set(new APKSigner(processExecutor.get(), this.androidSDK.get()));
-
         androidDeploymentRegister.set(new AndroidDeploymentRegister());
 
-        androidApplicationHelper.set(new AndroidApplicationHelper(processExecutor.get(), this.androidSDK.get()));
+        androidApplicationHelper.set(new AndroidApplicationHelper(this.androidSDK.get()));
 
         androidDeviceRegister.set(new AndroidDeviceRegisterImpl());
 

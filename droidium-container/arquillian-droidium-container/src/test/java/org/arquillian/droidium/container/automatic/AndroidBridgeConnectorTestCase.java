@@ -35,8 +35,8 @@ import org.arquillian.droidium.container.impl.AndroidBridgeConnector;
 import org.arquillian.droidium.container.spi.event.AndroidBridgeInitialized;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStart;
 import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
-import org.arquillian.spacelift.process.ProcessExecutor;
-import org.arquillian.spacelift.process.impl.DefaultProcessExecutorFactory;
+import org.arquillian.spacelift.execution.Tasks;
+import org.arquillian.spacelift.execution.impl.DefaultExecutionServiceFactory;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.container.test.test.AbstractContainerTestTestBase;
@@ -65,8 +65,6 @@ public class AndroidBridgeConnectorTestCase extends AbstractContainerTestTestBas
 
     private DroidiumPlatformConfiguration platformConfiguration;
 
-    private ProcessExecutor processExecutor;
-
     private AndroidSDK androidSDK;
 
     @Override
@@ -74,12 +72,16 @@ public class AndroidBridgeConnectorTestCase extends AbstractContainerTestTestBas
         extensions.add(AndroidBridgeConnector.class);
     }
 
+    @org.junit.BeforeClass
+    public static void beforeClass() {
+        Tasks.setDefaultExecutionServiceFactory(new DefaultExecutionServiceFactory());
+    }
+
     @org.junit.Before
     public void setup() {
         configuration = new AndroidContainerConfiguration();
         platformConfiguration = new DroidiumPlatformConfiguration();
-        processExecutor = new DefaultProcessExecutorFactory().getProcessExecutorInstance();
-        androidSDK = new AndroidSDK(platformConfiguration, processExecutor);
+        androidSDK = new AndroidSDK(platformConfiguration);
         androidSDK.setupWith(configuration);
     }
 
@@ -95,7 +97,6 @@ public class AndroidBridgeConnectorTestCase extends AbstractContainerTestTestBas
         getManager().getContext(TestContext.class).activate(instance);
 
         bind(ApplicationScoped.class, DroidiumPlatformConfiguration.class, platformConfiguration);
-        bind(ApplicationScoped.class, ProcessExecutor.class, processExecutor);
         bind(ApplicationScoped.class, AndroidSDK.class, androidSDK);
         bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration);
 

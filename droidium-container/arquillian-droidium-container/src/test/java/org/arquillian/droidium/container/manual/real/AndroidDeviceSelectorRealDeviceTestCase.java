@@ -39,14 +39,15 @@ import org.arquillian.droidium.container.spi.event.AndroidBridgeInitialized;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStart;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
 import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
-import org.arquillian.spacelift.process.ProcessExecutor;
-import org.arquillian.spacelift.process.impl.DefaultProcessExecutorFactory;
+import org.arquillian.spacelift.execution.Tasks;
+import org.arquillian.spacelift.execution.impl.DefaultExecutionServiceFactory;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.container.test.AbstractContainerTestBase;
 import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -64,8 +65,6 @@ public class AndroidDeviceSelectorRealDeviceTestCase extends AbstractContainerTe
 
     private DroidiumPlatformConfiguration platformConfiguration;
 
-    private ProcessExecutor processExecutor;
-
     private AndroidDeviceRegister androidDeviceRegister;
 
     private static final String PHYSICAL_DEVICE_SERIAL_ID = System.getProperty("device.serial.id");
@@ -78,6 +77,11 @@ public class AndroidDeviceSelectorRealDeviceTestCase extends AbstractContainerTe
         extensions.add(AndroidDeviceSelectorImpl.class);
     }
 
+    @BeforeClass
+    public static void beforeClass() {
+        Tasks.setDefaultExecutionServiceFactory(new DefaultExecutionServiceFactory());
+    }
+
     @Before
     public void setup() {
         configuration = new AndroidContainerConfiguration();
@@ -86,9 +90,7 @@ public class AndroidDeviceSelectorRealDeviceTestCase extends AbstractContainerTe
 
         platformConfiguration = new DroidiumPlatformConfiguration();
 
-        processExecutor = new DefaultProcessExecutorFactory().getProcessExecutorInstance();
-
-        androidSDK = new AndroidSDK(platformConfiguration, processExecutor);
+        androidSDK = new AndroidSDK(platformConfiguration);
         androidSDK.setupWith(configuration);
 
         androidDeviceRegister = new AndroidDeviceRegisterImpl();
@@ -99,7 +101,6 @@ public class AndroidDeviceSelectorRealDeviceTestCase extends AbstractContainerTe
         bind(ApplicationScoped.class, AndroidDeviceRegister.class, androidDeviceRegister);
         bind(ApplicationScoped.class, DroidiumPlatformConfiguration.class, platformConfiguration);
         bind(ApplicationScoped.class, AndroidSDK.class, androidSDK);
-        bind(ApplicationScoped.class, ProcessExecutor.class, processExecutor);
     }
 
     @After

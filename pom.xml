@@ -74,7 +74,7 @@
         <version.ddmlib>22.7.2</version.ddmlib>
 
         <!-- Spacelift -->
-        <version.spacelift>1.0.0.Alpha1</version.spacelift>
+        <version.spacelift>1.0.0.Alpha2-SNAPSHOT</version.spacelift>
 
         <!-- Screenshooter -->
         <version.recorder.screenshooter>1.0.0.Alpha1</version.recorder.screenshooter>
