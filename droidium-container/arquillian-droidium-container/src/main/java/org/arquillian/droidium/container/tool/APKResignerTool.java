@@ -45,11 +45,8 @@ public class APKResignerTool extends APKSignerTool {
         apk.delete("META-INF");
 
         File toSign = new File(androidSDK.getPlatformConfiguration().getTmpDir(), DroidiumFileUtils.getRandomAPKFileName());
-
         DroidiumFileUtils.export(apk, toSign);
 
-        File signed = new File(androidSDK.getPlatformConfiguration().getTmpDir(), DroidiumFileUtils.getRandomAPKFileName());
-
-        return super.process(signed);
+        return super.process(toSign);
     }
 }

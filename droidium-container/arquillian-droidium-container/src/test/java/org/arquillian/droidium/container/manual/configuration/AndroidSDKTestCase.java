@@ -53,7 +53,7 @@ public class AndroidSDKTestCase {
     public ExpectedException expectedException = ExpectedException.none();
 
     @BeforeClass
-    public static void setup() {
+    public static void initializateExecutionService() {
         Tasks.setDefaultExecutionServiceFactory(new DefaultExecutionServiceFactory());
     }
 

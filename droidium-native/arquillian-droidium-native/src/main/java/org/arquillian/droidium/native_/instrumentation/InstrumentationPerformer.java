@@ -131,7 +131,7 @@ public class InstrumentationPerformer {
     }
 
     private File getSelendroidResigned(File selendroidRebuilt) {
-        return Tasks.chain(selendroidRebuilt, APKResignerTool.class).execute().await();
+        return Tasks.chain(selendroidRebuilt, APKResignerTool.class).sdk(sdk.get()).execute().await();
     }
 
     private File getSelendroidWorkingCopy() {

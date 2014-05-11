@@ -73,7 +73,7 @@ public class AndroidBridgeConnectorTestCase extends AbstractContainerTestTestBas
     }
 
     @org.junit.BeforeClass
-    public static void beforeClass() {
+    public static void initializateExecutionService() {
         Tasks.setDefaultExecutionServiceFactory(new DefaultExecutionServiceFactory());
     }
 

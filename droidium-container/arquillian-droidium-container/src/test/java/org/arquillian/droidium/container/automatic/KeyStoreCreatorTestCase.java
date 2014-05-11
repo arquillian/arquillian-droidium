@@ -53,7 +53,7 @@ public class KeyStoreCreatorTestCase {
     private File keyStoreToCreate;
 
     @BeforeClass
-    public static void setup() {
+    public static void initializateExecutionService() {
         Tasks.setDefaultExecutionServiceFactory(new DefaultExecutionServiceFactory());
     }
 
@@ -61,13 +61,8 @@ public class KeyStoreCreatorTestCase {
     public void before() {
         configuration = new AndroidContainerConfiguration();
         platformConfiguration = new DroidiumPlatformConfiguration();
-
         androidSDK = new AndroidSDK(platformConfiguration);
         androidSDK.setupWith(configuration);
-
-        IdentifierGenerator<FileType> aig = new AndroidIdentifierGenerator();
-        keyStoreToCreate = new File(
-            System.getProperty("java.io.tmpdir") + System.getProperty("file.separator") + aig.getIdentifier(FileType.FILE));
     }
 
     @After
@@ -82,8 +77,11 @@ public class KeyStoreCreatorTestCase {
 
     @Test
     public void createKeyStoreTest() {
-        Assert.assertFalse(keyStoreToCreate.exists());
-        Tasks.prepare(CreateKeyStoreTask.class).sdk(androidSDK).keyStoreToCreate(keyStoreToCreate).execute().await();
+        IdentifierGenerator<FileType> aig = new AndroidIdentifierGenerator();
+        keyStoreToCreate = new File(
+            System.getProperty("java.io.tmpdir") + System.getProperty("file.separator") + aig.getIdentifier(FileType.FILE));
+
+        Tasks.chain(keyStoreToCreate, CreateKeyStoreTask.class).sdk(androidSDK).execute().await();
         Assert.assertTrue(keyStoreToCreate.exists());
     }
 }

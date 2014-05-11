@@ -87,7 +87,7 @@ public class AndroidSDCardManagerTestCase extends AbstractContainerTestTestBase 
     }
 
     @BeforeClass
-    public static void beforeClass() {
+    public static void initializateExecutionService() {
         Tasks.setDefaultExecutionServiceFactory(new DefaultExecutionServiceFactory());
     }
 

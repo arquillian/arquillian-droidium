@@ -106,7 +106,7 @@ public class AndroidEmulatorStartupAVDcreatedTestCase extends AbstractContainerT
     }
 
     @BeforeClass
-    public static void beforeClass() {
+    public static void initializateExecutionService() {
         Tasks.setDefaultExecutionServiceFactory(new DefaultExecutionServiceFactory());
     }
 

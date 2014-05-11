@@ -155,7 +155,7 @@ class Target {
             .command(listTargetsCommand)
             .execute()
             .await()
-            .getOutput();
+            .output();
 
         Collections.sort(targetsOutput);
         Collections.reverse(targetsOutput);

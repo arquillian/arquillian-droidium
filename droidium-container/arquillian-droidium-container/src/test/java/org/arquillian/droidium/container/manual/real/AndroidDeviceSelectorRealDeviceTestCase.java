@@ -22,8 +22,6 @@
 
 package org.arquillian.droidium.container.manual.real;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.util.List;
 
 import org.arquillian.droidium.container.api.AndroidBridge;
@@ -52,6 +50,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertNotNull;
+
 /**
  * Tests getting of real Android device via {@link AndroidDeviceSelectorImpl}
  *
@@ -78,7 +78,7 @@ public class AndroidDeviceSelectorRealDeviceTestCase extends AbstractContainerTe
     }
 
     @BeforeClass
-    public static void beforeClass() {
+    public static void initializateExecutionService() {
         Tasks.setDefaultExecutionServiceFactory(new DefaultExecutionServiceFactory());
     }
 

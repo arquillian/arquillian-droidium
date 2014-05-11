@@ -36,7 +36,7 @@ import org.arquillian.droidium.native_.exception.SelendroidRebuilderException;
 import org.arquillian.spacelift.execution.Tasks;
 import org.arquillian.spacelift.process.Command;
 import org.arquillian.spacelift.process.CommandBuilder;
-import org.arquillian.spacelift.process.ProcessDetails;
+import org.arquillian.spacelift.process.ProcessResult;
 import org.arquillian.spacelift.process.impl.CommandTool;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -167,11 +167,11 @@ public class SelendroidRebuilder {
             .parameter(dummyAPK.getAbsolutePath())
             .build();
 
-        ProcessDetails processDetails = Tasks.prepare(CommandTool.class).command(createDummyPackage).execute().await();
+        ProcessResult processResult = Tasks.prepare(CommandTool.class).command(createDummyPackage).execute().await();
 
-        if (processDetails.getExitValue() != 0) {
+        if (processResult.exitValue() != 0) {
             throw new SelendroidRebuilderException("Command failed to execute: "
-                + createDummyPackage.toString() + "with output " + processDetails.getOutput());
+                + createDummyPackage.toString() + "with output " + processResult.output());
         }
     }
 

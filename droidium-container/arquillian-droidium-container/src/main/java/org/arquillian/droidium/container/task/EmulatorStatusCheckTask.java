@@ -21,7 +21,7 @@ import org.arquillian.spacelift.execution.Execution;
 import org.arquillian.spacelift.execution.ExecutionCondition;
 import org.arquillian.spacelift.execution.ExecutionException;
 import org.arquillian.spacelift.execution.Task;
-import org.arquillian.spacelift.process.ProcessDetails;
+import org.arquillian.spacelift.process.ProcessResult;
 
 /**
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
@@ -29,11 +29,11 @@ import org.arquillian.spacelift.process.ProcessDetails;
  */
 public class EmulatorStatusCheckTask extends Task<Object, Void> {
 
-    public static final ExecutionCondition<ProcessDetails> isBootedCondition = new EmulatorStatusCheckTask.EmulatorIsBootedExecutionCondition();
+    public static final ExecutionCondition<ProcessResult> isBootedCondition = new EmulatorStatusCheckTask.EmulatorIsBootedExecutionCondition();
 
-    private Execution<ProcessDetails> emulatorExecution;
+    private Execution<ProcessResult> emulatorExecution;
 
-    public Task<Object, Void> execution(Execution<ProcessDetails> emulatorExecution) {
+    public Task<Object, Void> execution(Execution<ProcessResult> emulatorExecution) {
         this.emulatorExecution = emulatorExecution;
         return this;
     }
@@ -43,17 +43,17 @@ public class EmulatorStatusCheckTask extends Task<Object, Void> {
 
         if (emulatorExecution.isFinished() && emulatorExecution.hasFailed()) {
 
-            ProcessDetails processDetails = emulatorExecution.await();
+            ProcessResult processDetails = emulatorExecution.await();
 
             if (processDetails != null) {
                 StringBuilder sb = new StringBuilder();
 
-                for (String line : processDetails.getOutput()) {
+                for (String line : processDetails.output()) {
                     sb.append(line).append("\n");
                 }
 
                 throw new AndroidExecutionException(String.format("Starting of emulator failed with exit value {0} and output {1}",
-                    processDetails.getExitValue(), sb.toString()));
+                    processDetails.exitValue(), sb.toString()));
             } else {
                 throw new IllegalStateException("Execution of emulator process failed.");
             }
@@ -62,12 +62,12 @@ public class EmulatorStatusCheckTask extends Task<Object, Void> {
         return null;
     }
 
-    private static class EmulatorIsBootedExecutionCondition implements ExecutionCondition<ProcessDetails> {
+    private static class EmulatorIsBootedExecutionCondition implements ExecutionCondition<ProcessResult> {
 
         @Override
-        public boolean satisfiedBy(ProcessDetails processDetails) throws ExecutionException {
+        public boolean satisfiedBy(ProcessResult processResult) throws ExecutionException {
 
-            for (String line : processDetails.getOutput()) {
+            for (String line : processResult.output()) {
                 if (line.contains("[ro.runtime.firstboot]")) {
                     return true;
                 }

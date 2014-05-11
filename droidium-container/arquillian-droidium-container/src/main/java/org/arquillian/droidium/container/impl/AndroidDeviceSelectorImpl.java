@@ -356,7 +356,7 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
 
             Command command = cb.build();
 
-            return Tasks.prepare(CommandTool.class).command(command).execute().await().getOutput();
+            return Tasks.prepare(CommandTool.class).command(command).execute().await().output();
         } catch (ExecutionException ex) {
             throw new AndroidExecutionException(ex, "Unable to get list of AVDs");
         }

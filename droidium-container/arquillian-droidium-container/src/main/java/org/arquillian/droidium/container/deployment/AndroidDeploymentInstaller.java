@@ -80,7 +80,7 @@ public class AndroidDeploymentInstaller {
         File deployApk = new File(androidSDK.get().getPlatformConfiguration().getTmpDir(), DroidiumFileUtils.getRandomAPKFileName());
         DroidiumFileUtils.export(archive, deployApk);
 
-        final File resignedApk = Tasks.chain(deployApk, APKResignerTool.class).execute().await();
+        final File resignedApk = Tasks.chain(deployApk, APKResignerTool.class).sdk(androidSDK.get()).execute().await();
 
         final AndroidDeployment deployment = new AndroidDeployment();
 

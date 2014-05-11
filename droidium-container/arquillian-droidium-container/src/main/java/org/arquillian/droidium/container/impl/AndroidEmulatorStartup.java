@@ -37,7 +37,7 @@ import org.arquillian.spacelift.execution.ExecutionException;
 import org.arquillian.spacelift.execution.Tasks;
 import org.arquillian.spacelift.process.Command;
 import org.arquillian.spacelift.process.CommandBuilder;
-import org.arquillian.spacelift.process.ProcessDetails;
+import org.arquillian.spacelift.process.ProcessResult;
 import org.arquillian.spacelift.process.ProcessInteractionBuilder;
 import org.arquillian.spacelift.process.impl.CommandTool;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
@@ -108,7 +108,7 @@ public class AndroidEmulatorStartup {
         DeviceDiscovery deviceDiscovery = new DeviceDiscovery();
         AndroidDebugBridge.addDeviceChangeListener(deviceDiscovery);
 
-        Execution<ProcessDetails> emulatorExecution = startEmulator();
+        Execution<ProcessResult> emulatorExecution = startEmulator();
 
         CountDownWatch watch = new CountDownWatch(configuration.getEmulatorBootupTimeoutInSeconds(), TimeUnit.SECONDS);
 
@@ -139,17 +139,17 @@ public class AndroidEmulatorStartup {
         androidDeviceReady.fire(new AndroidDeviceReady(androidDevice));
     }
 
-    private Execution<ProcessDetails> startEmulator() throws AndroidExecutionException {
+    private Execution<ProcessResult> startEmulator() throws AndroidExecutionException {
 
         AndroidSDK sdk = this.androidSDK.get();
         AndroidContainerConfiguration configuration = this.configuration.get();
 
-        CommandBuilder cb = new CommandBuilder(sdk.getEmulatorPath());
+        CommandBuilder command = new CommandBuilder(sdk.getEmulatorPath());
 
-        cb.parameter("-avd").parameter(configuration.getAvdName());
+        command.parameter("-avd").parameter(configuration.getAvdName());
 
         if (configuration.getSdCard() != null) {
-            cb.parameters("-sdcard", configuration.getSdCard());
+            command.parameters("-sdcard", configuration.getSdCard());
         }
 
         if (configuration.getConsolePort() != null) {
@@ -167,34 +167,33 @@ public class AndroidEmulatorStartup {
         }
 
         if (configuration.getConsolePort() != null && configuration.getAdbPort() != null) {
-            cb.parameter("-ports").parameter(configuration.getConsolePort() + "," + configuration.getAdbPort());
+            command.parameter("-ports").parameter(configuration.getConsolePort() + "," + configuration.getAdbPort());
         } else if (configuration.getConsolePort() != null) {
-            cb.parameter("-port").parameter(configuration.getConsolePort());
+            command.parameter("-port").parameter(configuration.getConsolePort());
         }
 
-        cb.splitToParameters(configuration.getEmulatorOptions());
-
-        Command startEmulatorCommand = cb.build();
+        command.splitToParameters(configuration.getEmulatorOptions());
 
         logger.log(Level.INFO, "Starting emulator \"{0}\", using {1}", new Object[] {
-            configuration.getAvdName(), startEmulatorCommand });
+            configuration.getAvdName(), command });
 
         // define what patterns would be consider worthy to notify user
         ProcessInteractionBuilder interactions = new ProcessInteractionBuilder()
-            .errors("^SDL init failure.*$")
-            .errors("^PANIC:.*$")
-            .errors("^error.*$");
+            .when("^SDL init failure.*$").printToErr()
+            .when("^PANIC:.*$").printToErr()
+            .when("^error.*$").printToErr()
+            .when("^unknown option:.*$").printToErr();
 
         // start emulator but does not wait for its termination here
         try {
             return Tasks.prepare(CommandTool.class)
-                .command(startEmulatorCommand)
+                .command(command)
                 .interaction(interactions.build())
                 .execute();
         } catch (ExecutionException ex) {
             throw new AndroidExecutionException(ex, "Unable to start emulator \"{0}\", using {1}",
                 configuration.getAvdName(),
-                startEmulatorCommand.toString());
+                command);
         }
     }
 

@@ -1,7 +1,5 @@
 package org.arquillian.droidium.container.manual.emulator;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
@@ -33,6 +31,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertNotNull;
+
 /**
  * @author <a href="mailto:tkriz@redhat.com">Tadeas Kriz</a>
  */
@@ -58,6 +58,11 @@ public class AndroidLogInitializerTestCase extends AbstractContainerTestTestBase
 
     @BeforeClass
     public static void beforeClass() {
+        Tasks.setDefaultExecutionServiceFactory(new DefaultExecutionServiceFactory());
+    }
+
+    @BeforeClass
+    public static void initializateExecutionService() {
         Tasks.setDefaultExecutionServiceFactory(new DefaultExecutionServiceFactory());
     }
 

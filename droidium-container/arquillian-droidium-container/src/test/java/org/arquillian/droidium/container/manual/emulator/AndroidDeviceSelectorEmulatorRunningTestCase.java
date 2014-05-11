@@ -22,8 +22,6 @@
 
 package org.arquillian.droidium.container.manual.emulator;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.util.List;
 
 import org.arquillian.droidium.container.api.AndroidBridge;
@@ -49,6 +47,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Tests connecting to the running emulator of specific avd and console port.
@@ -89,7 +89,7 @@ public class AndroidDeviceSelectorEmulatorRunningTestCase extends AbstractContai
     }
 
     @BeforeClass
-    public static void beforeClass() {
+    public static void initializateExecutionService() {
         Tasks.setDefaultExecutionServiceFactory(new DefaultExecutionServiceFactory());
     }
 

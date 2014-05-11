@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.arquillian.droidium.container.configuration.AndroidSDK;
+import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.arquillian.spacelift.execution.Tasks;
 import org.arquillian.spacelift.process.Command;
 import org.arquillian.spacelift.process.CommandBuilder;
@@ -37,31 +38,9 @@ public class APKSignerTool extends Tool<File, File> {
 
     protected AndroidSDK androidSDK;
 
-    protected File toSign;
-
-    protected File signed;
-
     public APKSignerTool sdk(AndroidSDK androidSDK) {
         this.androidSDK = androidSDK;
         return this;
-    }
-
-    public APKSignerTool signed(File signed) {
-        this.signed = signed;
-        return this;
-    }
-
-    public APKSignerTool signed(String signed) {
-        return signed(new File(signed));
-    }
-
-    public APKSignerTool toSign(File toSign) {
-        this.toSign = toSign;
-        return this;
-    }
-
-    public APKSignerTool toSign(String toSign) {
-        return toSign(new File(toSign));
     }
 
     @Override
@@ -70,20 +49,13 @@ public class APKSignerTool extends Tool<File, File> {
     }
 
     @Override
-    protected File process(File input) throws Exception {
+    protected File process(File toSign) throws Exception {
 
-        if (toSign == null && input != null) {
-            toSign = input;
+        if (toSign == null || !toSign.exists()) {
+            throw new IllegalStateException("File to be signed is either null or it does not exists");
         }
 
-        if (toSign == null) {
-            throw new IllegalStateException("You have not called toSign() method or you have chained this task and "
-                + "its input is null.");
-        }
-
-        if (signed == null) {
-            throw new IllegalStateException("You have not called signed() method.");
-        }
+        File signed = new File(androidSDK.getPlatformConfiguration().getTmpDir(), DroidiumFileUtils.getRandomAPKFileName());
 
         Command jarSignerCommand = new CommandBuilder(androidSDK.getPathForJavaTool("jarsigner"))
             .parameter("-sigalg").parameter("MD5withRSA")

@@ -26,10 +26,11 @@ import org.arquillian.droidium.container.configuration.Validate;
 import org.arquillian.droidium.container.spi.AndroidDeployment;
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.arquillian.droidium.container.utils.Monkey;
+import org.arquillian.spacelift.execution.ExecutionException;
 import org.arquillian.spacelift.execution.Tasks;
 import org.arquillian.spacelift.process.Command;
 import org.arquillian.spacelift.process.CommandBuilder;
-import org.arquillian.spacelift.process.ProcessDetails;
+import org.arquillian.spacelift.process.ProcessResult;
 import org.arquillian.spacelift.process.impl.CommandTool;
 
 /**
@@ -93,22 +94,22 @@ public class AndroidApplicationManager {
             device.uninstallPackage(applicationBasePackage);
         }
 
-        ProcessDetails processDetails = null;
+        ProcessResult processDetails = null;
 
         try {
             processDetails = Tasks.prepare(CommandTool.class)
                 .command(installCommand)
                 .execute()
                 .await();
-        } catch (AndroidExecutionException e) {
+        } catch (ExecutionException e) {
             // rewrap exception to have better stacktrace
             throw new AndroidExecutionException(e, "Unable to execute installation command '{0} {1}' for the application {2}. "
                 + "Execution ended with exit code {3} with output\n{4}",
                 sdk.getAdbPath(),
                 installCommand,
                 applicationBasePackage,
-                processDetails.getExitValue(),
-                processDetails.getOutput());
+                processDetails.exitValue(),
+                processDetails.output());
         }
 
         if (!device.isPackageInstalled(applicationBasePackage)) {

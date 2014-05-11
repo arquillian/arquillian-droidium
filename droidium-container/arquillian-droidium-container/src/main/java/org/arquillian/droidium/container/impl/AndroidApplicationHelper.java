@@ -136,7 +136,7 @@ public class AndroidApplicationHelper {
             .command(command)
             .execute()
             .await()
-            .getOutput();
+            .output();
     }
 
     private List<String> getAAPTXmlTreeOutput(File apkFile) {
@@ -151,7 +151,7 @@ public class AndroidApplicationHelper {
             .command(command)
             .execute()
             .await()
-            .getOutput();
+            .output();
     }
 
     private List<String> filterActivities(List<String> output) {

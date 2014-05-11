@@ -39,7 +39,7 @@ import org.arquillian.droidium.native_.spi.SelendroidDeployment;
 import org.arquillian.spacelift.execution.Tasks;
 import org.arquillian.spacelift.process.Command;
 import org.arquillian.spacelift.process.CommandBuilder;
-import org.arquillian.spacelift.process.ProcessDetails;
+import org.arquillian.spacelift.process.ProcessResult;
 import org.arquillian.spacelift.process.impl.CommandTool;
 
 /**
@@ -69,11 +69,10 @@ public class SelendroidServerManager {
      *
      * @param device
      * @param sdk
-     * @throws IllegalArgumentException if either {@code device} or {@code sdk} is a null object
+     * @throws IllegalArgumentException if {@code sdk} is a null object
      */
     public SelendroidServerManager(AndroidDevice device, AndroidSDK sdk) {
         Validate.notNull(sdk, "Android SDK to set can not be a null object!");
-        Validate.notNull(device, "Android device to set can not be a null object!");
         this.device = device;
         this.sdk = sdk;
     }
@@ -97,6 +96,7 @@ public class SelendroidServerManager {
      * @throws AndroidExecutionException
      */
     public void install(SelendroidDeployment deployment) {
+        Validate.notNull(device, "Android device can not be a null object!");
         Validate.notNull(deployment, "Selendroid deployment to deploy can not be a null object!");
         Validate.notNull(deployment.getResigned(), "Resigned Selendroid application to deploy can not be a null object!");
 
@@ -113,11 +113,11 @@ public class SelendroidServerManager {
 
         logger.fine("Selendroid server installation command: " + selendroidInstallCommand.toString());
 
-        ProcessDetails processDetails = Tasks.prepare(CommandTool.class).command(selendroidInstallCommand).execute().await();
+        ProcessResult processResult = Tasks.prepare(CommandTool.class).command(selendroidInstallCommand).execute().await();
 
-        if (processDetails.getExitValue() != 0) {
+        if (processResult.exitValue() != 0) {
             throw new AndroidExecutionException("Unable to execute Selendroid installation process, exit value: " +
-                processDetails.getExitValue());
+                processResult.exitValue());
         }
 
         if (!device.isPackageInstalled(deployment.getServerBasePackage())) {
@@ -135,6 +135,7 @@ public class SelendroidServerManager {
      * @throws AndroidExecutionException
      */
     public void instrument(SelendroidDeployment deployment) {
+        Validate.notNull(device, "Android device can not be a null object!");
         Validate.notNull(deployment, "Deployment to instument is a null object!");
         Validate.notNull(deployment.getInstrumentationConfiguration(),
             "Instrumentation configuration of the underlying deployment is a null object!");
@@ -178,6 +179,7 @@ public class SelendroidServerManager {
      * @throws IllegalArgumentException if {@code deployment} is a null object
      */
     public void disable(SelendroidDeployment deployment) {
+        Validate.notNull(device, "Android device can not be a null object!");
         Validate.notNull(deployment, "Selendroid deployment to disable can not be a null object!");
 
         try {
@@ -198,6 +200,7 @@ public class SelendroidServerManager {
      * @throws IllegalArgumentException if {@code deployment} is a null object
      */
     public void uninstall(SelendroidDeployment deployment) {
+        Validate.notNull(device, "Android device can not be a null object!");
         Validate.notNull(deployment, "Selendroid deployment to uninstall can not be a null object!");
         try {
             device.executeShellCommand(new CommandBuilder("pm")

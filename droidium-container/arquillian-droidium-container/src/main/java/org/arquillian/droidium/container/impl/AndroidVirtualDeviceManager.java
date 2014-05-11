@@ -126,14 +126,15 @@ public class AndroidVirtualDeviceManager {
         AndroidSDK sdk = this.androidSDK.get();
 
         try {
-            CommandBuilder cb = new CommandBuilder(sdk.getAndroidPath());
-            cb.parameter("create")
+            CommandBuilder cb = new CommandBuilder(sdk.getAndroidPath())
+                .parameter("create")
                 .parameter("avd")
                 .parameter("-n")
                 .parameter(configuration.getAvdName())
                 .parameter("-t")
                 .parameter(configuration.getTarget())
                 .parameter("-f");
+
             // add ABI only if it was specified, append it to the command
             // Droidium might not be correctly autodiscovering ABI based on Target
             if (configuration.getAbi() != null && !"".equals(configuration.getAbi())) {
@@ -146,16 +147,13 @@ public class AndroidVirtualDeviceManager {
                 cb.parameter("-c").parameter(configuration.getSdSize());
             }
 
-            Command command = cb.build();
-
-            logger.log(Level.INFO, "Creating new AVD using: {0}", command);
+            logger.log(Level.INFO, "Creating new avd using: {0}", cb);
 
             ProcessInteraction interaction = new ProcessInteractionBuilder().
-                replyTo("Do you wish to create a custom hardware profile \\[no\\]")
-                .with("no" + System.getProperty("line.separator"))
-                .build();
+                when("Do you wish to create a custom hardware profile \\[no\\]")
+                .replyWith("no" + System.getProperty("line.separator")).build();
 
-            Tasks.prepare(CommandTool.class).interaction(interaction).command(command).execute().await();
+            Tasks.prepare(CommandTool.class).command(cb).interaction(interaction).execute().await();
 
             configuration.setAvdGenerated(true);
 
