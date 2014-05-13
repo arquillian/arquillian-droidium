@@ -19,6 +19,7 @@ package org.arquillian.droidium.native_;
 import org.arquillian.droidium.container.enrichment.AndroidDeviceResourceProvider;
 import org.arquillian.droidium.native_.configuration.DroidiumDronePointModifier;
 import org.arquillian.droidium.native_.configuration.DroidiumNativeConfigurator;
+import org.arquillian.droidium.native_.configuration.SelendroidDownloader;
 import org.arquillian.droidium.native_.deployment.DeploymentActivitiesScanner;
 import org.arquillian.droidium.native_.deployment.DeploymentInstrumentationResolver;
 import org.arquillian.droidium.native_.deployment.DroidiumDronePointDestroyer;
@@ -51,6 +52,7 @@ public class DroidiumNativeExtension implements LoadableExtension {
         // configuration
         builder.observer(DroidiumNativeConfigurator.class);
         builder.observer(DroidiumNativeResourceManager.class);
+        builder.observer(SelendroidDownloader.class);
 
         // resolvers & enrichers
         builder.observer(DeploymentInstrumentationResolver.class);

@@ -56,6 +56,8 @@ public class AndroidDeviceImpl implements AndroidDevice {
 
     private int droneGuestPort = 8080;
 
+    private boolean alreadyRuns = false;
+
     public AndroidDeviceImpl() {
         // only for testing purposes
     }
@@ -203,8 +205,9 @@ public class AndroidDeviceImpl implements AndroidDevice {
 
     @Override
     public void installPackage(File packageFilePath, boolean reinstall, String... extraArgs) throws AndroidExecutionException {
-        Validate.isReadable(packageFilePath.getAbsoluteFile(), "File " + packageFilePath.getAbsoluteFile()
-            + " must represent a readable APK file");
+        if (!Validate.isReadable(packageFilePath.getAbsoluteFile())) {
+            throw new IllegalArgumentException("File " + packageFilePath.getAbsoluteFile() + " must represent a readable APK file");
+        }
         try {
             String retval = delegate.installPackage(packageFilePath.getAbsolutePath(), reinstall, extraArgs);
             if (retval != null) {
@@ -264,6 +267,16 @@ public class AndroidDeviceImpl implements AndroidDevice {
         Screenshot screenshot = new ScreenshotImpl();
         screenshot.setRawImage(delegate.getScreenshot());
         return screenshot;
+    }
+
+    @Override
+    public void setAlreadyRuns(boolean alreadyRuns) {
+        this.alreadyRuns = alreadyRuns;
+    }
+
+    @Override
+    public boolean getAlreadyRuns() {
+        return alreadyRuns;
     }
 
     private static class ScreenshotImpl implements Screenshot {
@@ -341,6 +354,7 @@ public class AndroidDeviceImpl implements AndroidDevice {
         sb.append(String.format("%-40s %s\n", "isEmulator", isEmulator()));
         sb.append(String.format("%-40s %s\n", "isOffline", isOffline()));
         sb.append(String.format("%-40s %s\n", "isOnline", isOnline()));
+        sb.append(String.format("%-40s %s\n", "alreadyRuns", getAlreadyRuns()));
         sb.append(String.format("%-40s %s\n", "droneHostPort", getDroneHostPort()));
         sb.append(String.format("%-40s %s", "droneGuestPort", getDroneGuestPort()));
         return sb.toString();

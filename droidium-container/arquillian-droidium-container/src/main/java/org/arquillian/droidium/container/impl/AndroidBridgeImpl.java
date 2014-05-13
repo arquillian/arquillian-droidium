@@ -64,7 +64,9 @@ public class AndroidBridgeImpl implements AndroidBridge {
      *
      */
     AndroidBridgeImpl(File adbLocation, boolean forceNewBridge, int ddmsTimeOut) throws IllegalArgumentException {
-        Validate.isReadable(adbLocation, "ADB location does not represent a readable file: " + adbLocation);
+        if (!Validate.isReadable(adbLocation)) {
+            throw new IllegalArgumentException("ADB location does not represent a readable file: " + adbLocation);
+        }
 
         if (ddmsTimeOut < DDM_MINIMAL_TIMEOUT) {
             logger.log(Level.INFO, "It is not allowed to set timeout for ddms shell commands lower then {0} miliseconds.",

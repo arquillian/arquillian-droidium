@@ -27,13 +27,6 @@
         </container>
     </group>
 
-    <!-- Support for Arquillian Droidium Native extension 
-        for testing native Android applications via Selendroid -->
-    <extension qualifier="droidium-native">
-        <!-- path to your selendroid-server.apk -->
-        <property name="serverApk">selendroid-server-${selendroid.version}.apk</property>
-    </extension>
-
     <!-- Support for Graphene WebDriver which is injected into test while using Selendroid -->
     <extension qualifier="webdriver">
         <property name="browser">android</property>

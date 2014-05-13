@@ -126,6 +126,7 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
         if (isConnectingToPhysicalDevice()) {
             try {
                 device = getPhysicalDevice();
+                device.setAlreadyRuns(true);
                 setDronePorts(device);
                 androidDevice.set(device);
                 androidDeviceReady.fire(new AndroidDeviceReady(device));
@@ -150,6 +151,7 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
         if (isConnectingToVirtualDevice()) {
             device = getVirtualDevice();
             if (device != null) {
+                device.setAlreadyRuns(true);
                 setDronePorts(device);
                 androidDevice.set(device);
                 androidDeviceReady.fire(new AndroidDeviceReady(device));

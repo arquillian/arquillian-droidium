@@ -123,67 +123,47 @@ public class Validate {
     }
 
     /**
-     * Checks that the specified String is not null or empty and represents a readable file, throws exception if it is empty or
-     * null and does not represent a path to a file.
+     * Checks if {@code path} represents a readable file.
      *
-     * @param path The path to check
-     * @param message The exception message
-     * @throws IllegalArgumentException Thrown if path is empty, null or invalid
+     * @param path the path to check
+     * @throws IllegalArgumentException thrown if path is a null object or an empty string
      */
-    public static boolean isReadable(final String path, final String message) throws IllegalArgumentException {
+    public static boolean isReadable(final String path) throws IllegalArgumentException {
         notNullOrEmpty(path, "File to check against readability is null object or empty.");
-
-        File file = new File(path);
-
-        return isReadable(file, message);
+        return isReadable(new File(path));
     }
 
     /**
-     * Checks that the specified String is not null or empty and represents a readable directory, throws exception if it is
-     * empty or null and does not represent a path to a directory.
+     * Checks if {@code path} represents a readable directory
      *
-     * @param path The path to check
-     * @param message The exception message
-     * @throws IllegalArgumentException Thrown if path is empty, null or invalid
+     * @param path the path to check
+     * @throws IllegalArgumentException thrown if path is a null object or an empty string
      */
-    public static void isReadableDirectory(final String path, final String message) throws IllegalArgumentException {
+    public static boolean isReadableDirectory(final String path) throws IllegalArgumentException {
         notNullOrEmpty(path, "Directory to check against readability is null object or empty string.");
-
-        File file = new File(path);
-        isReadableDirectory(file, message);
+        return isReadableDirectory(new File(path));
     }
 
     /**
-     * Checks that the specified {@code file} represents a readable file.
+     * Checks if {@code file} represents a readable file
      *
-     * @param file The file to check
-     * @param message The exception message
-     * @throws IllegalArgumentException Thrown if file is null or invalid
+     * @param file the file to check
+     * @throws IllegalArgumentException thrown if file is null
      */
-    public static boolean isReadable(final File file, final String message) throws IllegalArgumentException {
+    public static boolean isReadable(final File file) throws IllegalArgumentException {
         notNull(file, "File to check against readability is null object.");
-
-        if (!file.exists() || !file.canRead()) {
-            throw new IllegalArgumentException(message);
-        }
-
-        return true;
+        return file.exists() && file.canRead();
     }
 
     /**
-     * Checks that the specified {@code file} represents a readable directory.
+     * Checks if {@code file} represents a readable directory.
      *
-     * @param file The path to check
-     * @param message The exception message
-     * @throws IllegalArgumentException Thrown if file is null or invalid
+     * @param file the path to check
+     * @throws IllegalArgumentException thrown if file is null
      */
-    public static void isReadableDirectory(final File file, final String message) throws IllegalArgumentException {
+    public static boolean isReadableDirectory(final File file) throws IllegalArgumentException {
         notNull(file, "Directory to check against readability is null object.");
-
-        if (!file.exists() || !file.isDirectory() || !file.canRead() || !file.canExecute()) {
-            throw new IllegalArgumentException(message);
-        }
-
+        return isReadable(file) && file.isDirectory() && file.canExecute();
     }
 
     /**

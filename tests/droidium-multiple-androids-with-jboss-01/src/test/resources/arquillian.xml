@@ -34,10 +34,6 @@
         </container>
     </group>
 
-    <extension qualifier="droidium-native">
-        <property name="serverApk">selendroid-server-${selendroid.version}.apk</property>
-    </extension>
-    
     <!-- on 8080 port is JBoss AS -->
     
     <extension qualifier="webdriver-selendroid">

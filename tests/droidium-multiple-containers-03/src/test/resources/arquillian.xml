@@ -23,7 +23,7 @@
             -->
         <container qualifier="android" default="true">
             <configuration>
-                <property name="avdName">android-4.1.2</property>
+                <property name="avdName">${android.avd.name}</property>
                 <property name="emulatorOptions">${android.emulator.options}</property>
                 <property name="emulatorBootupTimeoutInSeconds">600</property>
                 <property name="logType">disable</property>

@@ -29,10 +29,6 @@
         </container>
     </group>
 
-    <extension qualifier="droidium-native">
-        <property name="serverApk">selendroid-server-${selendroid.version}.apk</property>
-    </extension>
-    
     <extension qualifier="webdriver-selendroid">
         <property name="browser">android</property>
         <property name="remoteAddress">http://localhost:8080/wd/hub</property>

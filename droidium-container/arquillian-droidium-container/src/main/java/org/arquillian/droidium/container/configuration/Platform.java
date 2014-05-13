@@ -147,8 +147,10 @@ class Platform {
         List<File> foundPlatformDirs = new ArrayList<File>();
 
         final File platformsDirectory = new File(sdkPath, AndroidSDK.PLATFORMS_FOLDER_NAME);
-        Validate.isReadableDirectory(platformsDirectory, "Unable to read Android SDK Platforms directory from directory "
-            + platformsDirectory);
+        if (!Validate.isReadableDirectory(platformsDirectory)) {
+            throw new IllegalArgumentException("Unable to read Android SDK Platforms directory from directory "
+                + platformsDirectory);
+        }
 
         final File[] platformDirectories = platformsDirectory.listFiles();
         for (File file : platformDirectories) {
@@ -201,6 +203,5 @@ class Platform {
             return false;
         return true;
     }
-
 
 }

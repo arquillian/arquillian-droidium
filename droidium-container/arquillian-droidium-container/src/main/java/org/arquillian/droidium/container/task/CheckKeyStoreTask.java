@@ -42,9 +42,9 @@ public class CheckKeyStoreTask extends Task<Object, File> {
 
     @Override
     protected File process(Object input) throws Exception {
-        if (!keyStoreExists(new File(androidSDK.getPlatformConfiguration().getKeystore()))) {
+        if (!Validate.isReadable(new File(androidSDK.getPlatformConfiguration().getKeystore()))) {
             File defaultKeyStore = new File(getDefaultKeyStorePath());
-            if (!keyStoreExists(defaultKeyStore)) {
+            if (!Validate.isReadable(defaultKeyStore)) {
                 return defaultKeyStore;
             }
         }
@@ -56,19 +56,4 @@ public class CheckKeyStoreTask extends Task<Object, File> {
         return androidSDK.getPlatformConfiguration().getAndroidSdkHome() + ".android" + separator + "debug.keystore";
     }
 
-    /**
-     * Checks if {@code keystore} exists.
-     *
-     * @param keyStore keystore to check the existentiality of
-     * @return true if {@code keystore} exists, false otherwise
-     */
-    private boolean keyStoreExists(File keyStore) {
-        try {
-            Validate.isReadable(keyStore,
-                "You must provide a valid path to keystore for signing of APK files: '" + keyStore.getAbsolutePath() + ".");
-            return true;
-        } catch (IllegalArgumentException ex) {
-            return false;
-        }
-    }
 }

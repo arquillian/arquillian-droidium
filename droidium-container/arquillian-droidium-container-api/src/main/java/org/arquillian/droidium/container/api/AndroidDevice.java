@@ -191,4 +191,16 @@ public interface AndroidDevice {
      * @return activity manager
      */
     ActivityManager getActivityManager();
+
+    /**
+     *
+     * @param alreadyRuns true if Android device already runs, false otherwise
+     */
+    void setAlreadyRuns(boolean alreadyRuns);
+
+    /**
+     *
+     * @return true if Android device is already running prior to test execution, false otherwise
+     */
+    boolean getAlreadyRuns();
 }

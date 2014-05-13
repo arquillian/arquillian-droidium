@@ -30,12 +30,24 @@ import org.arquillian.droidium.container.configuration.Validate;
  */
 public class DroidiumNativeConfiguration {
 
-    private String serverApk = "selendroid-server.apk";
+    public static final String SELENDROID_VERSION = "0.9.0";
+
+    public static final String SERVER_HOME = System.getProperty("user.home") + "/.droidium/selendroid-server-" + SELENDROID_VERSION + ".apk";
+
+    public static final String DRIVER_HOME = System.getProperty("user.home") + "/.droidium/android-driver-app-" + SELENDROID_VERSION + ".apk";
+
+    private String serverApk = SERVER_HOME;
+
+    private String driverApk = DRIVER_HOME;
 
     private Map<String, String> properties = new HashMap<String, String>();
 
     public File getServerApk() {
         return new File(getProperty("serverApk", serverApk));
+    }
+
+    public File getDriverApk() {
+        return new File(getProperty("driverApk", driverApk));
     }
 
     /**
@@ -86,22 +98,15 @@ public class DroidiumNativeConfiguration {
 
     /**
      * Validates configuration of Arquillian Droidium native plugin.
-     *
-     * @throws IllegalArgumentException if {@code getServerApk()} is not readable or if {@code getTmpDir()} is not readable
-     *         directory of if {@code getTmpDir()} is not writable of if {@code getAlias()},{@code getKeypass()} or
-     *         {@code getStorepass()} is either null or empty string.
-     * @throws IllegalStateException if it is impossible to create new file as {@code getLogFile()}.
      */
     public void validate() throws IllegalArgumentException, IllegalStateException {
-        Validate.isReadable(getServerApk(), "You must provide a valid path to Android Server APK for "
-            + "Arquillian Droidium native plugin. Plese be sure you have read access to the file you entered: "
-            + getServerApk());
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("%-40s %s", "serverApk", getServerApk()));
+        sb.append(String.format("%-40s %s\n", "serverApk", getServerApk()));
+        sb.append(String.format("%-40s %s\n", "driverApk", getDriverApk()));
         return sb.toString();
     }
 }

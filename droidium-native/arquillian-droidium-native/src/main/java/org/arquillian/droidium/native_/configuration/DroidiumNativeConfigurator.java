@@ -82,12 +82,12 @@ public class DroidiumNativeConfigurator {
 
         configuration.validate();
 
+        droidiumNativeConfiguration.set(configuration);
+        droidiumNativeConfigured.fire(new DroidiumNativeConfigured());
+
         if (logger.isLoggable(Level.INFO)) {
             System.out.println("Configuration of Arquillian Droidium Native");
             System.out.println(configuration);
         }
-
-        droidiumNativeConfiguration.set(configuration);
-        droidiumNativeConfigured.fire(new DroidiumNativeConfigured());
     }
 }

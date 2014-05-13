@@ -92,7 +92,7 @@ public class AndroidEmulatorShutdown {
 
         androidDeviceRegister.get().remove(device);
 
-        if (device != null && device.isEmulator()) {
+        if (device != null && device.isEmulator() && !device.getAlreadyRuns()) {
             logger.log(Level.INFO, "Stopping Android emulator of AVD name {0}.", configuration.getAvdName());
 
             CountDownWatch countdown = new CountDownWatch(configuration.getEmulatorShutdownTimeoutInSeconds(), TimeUnit.SECONDS);

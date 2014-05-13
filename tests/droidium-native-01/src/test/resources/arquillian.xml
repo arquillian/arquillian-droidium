@@ -27,13 +27,6 @@
         </container>
     </group>
 
-    <!-- Support for Arquillian Droidium Native extension
-        for testing native Android applications via Selendroid -->
-    <extension qualifier="droidium-native">
-        <!-- path to your selendroid-server.apk -->
-        <property name="serverApk">selendroid-server-${selendroid.version}.apk</property>
-    </extension>
-
     <!-- suffix of qualifier matches name of annotation put for Drone instance for Selendroid test app -->
     <extension qualifier="webdriver-selendroid">
         <property name="browser">android</property>
