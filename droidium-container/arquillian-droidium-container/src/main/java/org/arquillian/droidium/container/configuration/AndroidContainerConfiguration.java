@@ -52,7 +52,7 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
 
     private String abi;
 
-    private long emulatorBootupTimeoutInSeconds = 120L;
+    private long emulatorBootupTimeoutInSeconds = 600L;
 
     private long emulatorShutdownTimeoutInSeconds = 60L;
 
