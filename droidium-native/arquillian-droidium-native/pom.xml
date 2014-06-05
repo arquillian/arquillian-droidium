@@ -31,7 +31,7 @@
     <!-- Properties -->
     <properties>
         <!-- Selendroid -->
-        <version.selendroid>0.9.0</version.selendroid>
+        <version.selendroid>0.10.0</version.selendroid>
 
         <!-- Other versions -->
         <version.mockito>1.9.5</version.mockito>

@@ -65,13 +65,13 @@
         <version.arquillian.core>1.1.4.Final</version.arquillian.core>
 
         <!-- Arquillian Drone -->
-        <version.arquillian.drone>2.0.0.Alpha2</version.arquillian.drone>
+        <version.arquillian.drone>2.0.0.Alpha3-SNAPSHOT</version.arquillian.drone>
 
         <!-- Testing AS7 container -->
         <version.org.jboss.as>7.1.1.Final</version.org.jboss.as>
 
         <!-- ddmlib -->
-        <version.ddmlib>22.7.2</version.ddmlib>
+        <version.ddmlib>22.8.4</version.ddmlib>
 
         <!-- Spacelift -->
         <version.spacelift>1.0.0.Alpha2</version.spacelift>
@@ -81,7 +81,7 @@
 
         <!-- Other versions -->
         <version.maven.animal.sniffer>1.9</version.maven.animal.sniffer>
-        <version.httpclient>4.2.5</version.httpclient>
+        <version.httpclient>4.3.2</version.httpclient>
         <version.commons.io>1.3.2</version.commons.io>
         <version.junit>4.11</version.junit>
 

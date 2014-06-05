@@ -24,10 +24,10 @@ import java.util.logging.Logger;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.CoreConnectionPNames;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
@@ -227,10 +227,17 @@ public class SelendroidServerManager {
      */
     private void waitUntilSelendroidServerCommunication(int port) {
         validatePort(port);
-        HttpClient httpClient = new DefaultHttpClient();
 
-        httpClient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, SOCKET_TIME_OUT_SECONDS * 1000);
-        httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, CONNECTION_TIME_OUT_SECONDS * 1000);
+        RequestConfig config = RequestConfig.custom()
+            .setConnectTimeout(CONNECTION_TIME_OUT_SECONDS * 1000)
+            .setConnectionRequestTimeout(CONNECTION_TIME_OUT_SECONDS * 1000)
+            .setSocketTimeout(SOCKET_TIME_OUT_SECONDS * 1000)
+            .build();
+
+        CloseableHttpClient client = HttpClients.custom()
+            .setDefaultRequestConfig(config)
+            .disableContentCompression()
+            .build();
 
         HttpGet httpGet = new HttpGet(getSelendroidStatusURI(port));
 
@@ -238,7 +245,7 @@ public class SelendroidServerManager {
 
         for (int i = NUM_CONNECTION_RETIRES; i > 0; i--) {
             try {
-                HttpResponse response = httpClient.execute(httpGet);
+                HttpResponse response = client.execute(httpGet);
                 int statusCode = response.getStatusLine().getStatusCode();
                 if (statusCode == 200) {
                     connectionSuccess = true;
@@ -252,7 +259,11 @@ public class SelendroidServerManager {
             }
         }
 
-        httpClient.getConnectionManager().shutdown();
+        try {
+            client.close();
+        } catch (IOException e) {
+            logger.log(Level.WARNING, e.getMessage());
+        }
 
         if (!connectionSuccess) {
             throw new AndroidExecutionException("Unable to get successful connection from Selendroid http server.");
