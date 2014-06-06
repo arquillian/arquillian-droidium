@@ -9,8 +9,8 @@ be able to start some Android container successfuly.
 The significant difference between ordinary container adapter for Arquillian and Android container is that while
 using the ordinary one, you have to use only that one type of the container you are deploying the archives to. 
 There is not the support for multiple container implementations in 1.x versions of Arquillian out of the box 
-so you are normaly forced not to mix two different container adapter implementations together. This restriction is 
-overriden by module _arquillian-droidium-multiple-containers_ via which it is possible to use ordinary 
+so you are normally forced not to mix two different container adapter implementations together. This restriction is 
+overridden by module _arquillian-droidium-multiple-containers_ via which it is possible to use ordinary 
 container adapter e.g. JBoss AS with Android container adapter itself. Because of this, you can then deploy 
 your web application into JBoss AS container and you test it on your mobile phone (emulator or physical device).
 
@@ -137,8 +137,6 @@ Put it all together, you can use just Android container itself as:
 While Droidium tries to guess the container, Android container is recognized even it is not named like _android_ or _droidium_. In this case, 
 it is sufficient that container contains some configuration property which is Droidium specific such as avdName, serialId, consolePort or emulatorOptions.
 
-Right now, you can not use more than one Android container simultaneously.
-
 == Basic usage
 
 ----
@@ -166,7 +164,7 @@ public class ContainerTest {
 Up to this point, you saw how container itself is configured but there are not _true_ tests.
 It is because Android container _is not_ intended to test your code at all. The reason why Android container 
 adapter implementation exists is that it provides common framework how Android device is 
-started and shutted down. It treats device management of your emulator or physical device 
+started and shut down. It treats device management of your emulator or physical device 
 and it treats creation of AVD from scratch as well as management of Android SD cards which are used in 
 connection with Android emulator.
 
@@ -200,37 +198,10 @@ between physical Android Device and emulator is done.
 
 System properties overrides environment properties.
 
-==== androidHome
-===== default: $ANDROID_HOME
-
-`androidHome` property holds the directory where your Android SDK is installed. It is not necessary to specify it 
-since it is automatically read from the system environment property `$ANDROID_HOME` which can be easily exported 
-as `export $ANDROID_HOME=/path/to/your/sdk` for the current shell or it can be put into `~/.bash_profile` to be 
-persisted. It can be specified in rutime via `android.home` System property.
-
-----
-<configuration>
-    <property name="androidHome">/path/to/your/android/sdk</property>
-</configuration>
-----
-
 or from e.g. Maven point of view:
 
 ----
 -Dandroid.home=/path/to/your/android/sdk
-----
-
-=== androidSdkHome
-==== default: $ANDROID_SDK_HOME
-
-This property tells where are e.g. your AVDs stored. By default. When this property is not set, it defaults to `$HOME` in 
-`.android` directory. When you set this property e.g. to `target`, your AVDs will be created in `target` directory so 
-after you clean your test, there is not any sign there was some Android used. You can use system property `android.sdk.home` as well.
-
-----
-<configuration>
-    <property name="androidSdkHome">target</property>
-</configuration>
 ----
 
 ==== javaHome
@@ -242,31 +213,6 @@ shell infrastructure. After setting this, it uses commands as `jarsigner` or `ke
 ----
 <configuration>
     <property name="javaHome">/path/to/your/java</property>
-</configuration>
-----
-
-==== forceNewBridge
-===== default: true
-
-`forceNewBridge` boolean property specifies if Android Debug Bridge (ADB) should be forced to be created even it 
-already is. It can have only `true` or `false` value. When not used, it is set to true.
-
-----
-<configuration>
-    <property name="forceNewBridge">false</property>
-</configuration>
-----
-
-==== ddmlibCommandTimeout
-===== default: 20000
-
-`ddmlibCommandTimeout` property says what is the timeout for ddmlib library which executes commands for your device. When 
-it is low, in emulated or CI environment, default timeout (5000 milliseconds) can be not enough due to its slowness. In that 
-case, try to raise the value of this property. It is measured in milliseconds. You can not set the timeout lower then 5000 ms.
-
-----
-<configuration>
-    <property name="ddmlibCommandTimeout">60000</property>
 </configuration>
 ----
 
@@ -416,17 +362,6 @@ Specifies which adb port should emulator connect to. It has to be odd number in 
 ----
 <configuration>
     <property name="adbPort">5559</property>
-</configuration>
-----
-
-==== adbServerPort
-===== default: 5037
-
-Specifies ADB server port against which should Droidium connect in order to parse emulators. It is +ANDROID_ADB_SERVER_PORT+ property from Droidium point of view.
-
-----
-<configuration>
-    <property name="adbServerPort">5038</property>
 </configuration>
 ----
 
@@ -596,85 +531,6 @@ before the extension (e.g. target/logcat.log will change to target/logcat.serial
 <configuration>
     <property name="logSerialId">true</property>
 </configuration>
-----
-
-=== All following paramaters regarding debug keystore and its generation are subject of `keytool` command.
-
-==== keystore
-===== default: $ANDROID_SDK_HOME/.android/debug.keystore
-
-Sets keystore to use for resigning packages after they are modified dynamically. Not resigning them 
-would result into impossibility to install them to Android device since certificates would be different.
-Debug key store is automatically created for you when it is not created yet, typically in `~/.android` or when you 
-specifies keystore in `keystore` property and such keystore path does not exist.
-
-----
-<property name="keystore">/path/to/your/key/store</property>
-----
-
-==== storepass
-===== default: "android"
-
-----
-<property name="storepass">storepass</property>
-----
-
-==== keypass
-===== default: "android"
-
-----
-<property name="keypass">keypass</property>
-----
-
-==== alias
-===== default: androiddebugkey
-
-----
-<property name="alias">somealias</property>
-----
-
-==== sigalg
-===== default: SHA1withRSA
-
-Tells what kind of signature algoritm to use for a debug keystore when it is created.
-
-----
-<property name="sigalg">MD5withSHA</property>
-----
-
-==== keyalg
-===== default: RSA
-
-Tells what kind of key algoritm to use for a debug keystore when it is created.
-
-----
-<property name="keyalg">some_other_keyalg</property>
-----
-
-==== tmpDir
-===== default: java.io.tmpdir
-
-Specifies where to do all repackaging operaions with Selendroid server and _aut_. All reconstruction, 
-resigning and storing of APKs is done there. From the implementation point of view, all packages and 
-directories are random UUID identifiers.
-
-This directory is deleted by default where tests are finished. It can be changed via `removeTmpDir` 
-property.
-
-----
-<property name="tmpDir">/path/to/tmp/dir</property>
-----
-
-==== removeTmpDir
-===== default: true
-
-Specifies if all temporary resources as repackaged Selendroid server should be removed by default.
-Set it to false when you want to inspect what packages are going to be installed for debug purposes, 
-however it is desired to remove this directory by default since it can occupy significant amount of 
-space. For every test run, other working directory is created every time.
-
-----
-<property name="removeTmpDir">true|false</property>
 ----
 
 == Connection logic of Android container

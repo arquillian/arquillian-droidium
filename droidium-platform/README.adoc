@@ -1,0 +1,155 @@
+== Arquillian Droidium Platform
+
+Arquillian Droidium Platform extension setups you Arquillian environment to match your Android-related preferences.
+
+In most cases you do not have to put anything into +arquillian.xml+ since default values are just good. However in case 
+you need to modify them, you have to register this extension as follows into +arquillian.xml+
+
+----
+<extension qualifier="droidium-platform">
+    <property name="property_name">value</property>
+    ... other properties
+</extension>
+----
+
+==== androidHome
+===== default: $ANDROID_HOME
+
+`androidHome` property holds the directory where your Android SDK is installed. It is not necessary to specify it 
+since it is automatically read from the system environment property `$ANDROID_HOME` which can be easily exported 
+as `export $ANDROID_HOME=/path/to/your/sdk` for the current shell or it can be put into `~/.bash_profile` to be 
+persisted. It can be specified in rutime via `android.home` System property.
+
+----
+<property name="androidHome">/path/to/your/android/sdk</property>
+----
+
+==== androidSdkHome
+===== default: $ANDROID_SDK_HOME
+
+This property tells where are e.g. your AVDs stored. By default. When this property is not set, it defaults to `$HOME` in 
+`.android` directory. When you set this property e.g. to `target`, your AVDs will be created in `target` directory so 
+after you clean your test, there is not any sign there was some Android used. You can use system property `android.sdk.home` as well.
+
+----
+<property name="androidSdkHome">target</property>
+----
+
+==== forceNewBridge
+===== default: true
+
+`forceNewBridge` boolean property specifies if Android Debug Bridge (ADB) should be forced to be created even it 
+already is. It can have only `true` or `false` value. When not used, it is set to true.
+
+----
+<property name="forceNewBridge">false</property>
+----
+
+==== javaHome
+===== default: $JAVA_HOME
+
+`javaHome` property sets the directory where your JDK installation is placed. It can be set similarly as `androidHome` property via
+shell infrastructure. After setting this, it uses commands as `jarsigner` or `keytool` from there.
+
+----
+<property name="javaHome">/path/to/your/java</property>
+----
+
+==== ddmlibCommandTimeout
+===== default: 20000
+
+`ddmlibCommandTimeout` property says what is the timeout for ddmlib library which executes commands for your device. When 
+it is low, in emulated or CI environment, default timeout (5000 milliseconds) can be not enough due to its slowness. In that 
+case, try to raise the value of this property. It is measured in milliseconds. You can not set the timeout lower then 5000 ms.
+
+----
+<property name="ddmlibCommandTimeout">60000</property>
+----
+
+==== adbServerPort
+===== default: 5037
+
+Specifies ADB server port against which should Droidium connect in order to parse emulators. It is +ANDROID_ADB_SERVER_PORT+ property from Droidium point of view.
+
+----
+<property name="adbServerPort">5038</property>
+----
+
+==== tmpDir
+===== default: java.io.tmpdir
+
+Specifies where to do all repackaging operaions with Selendroid server and _aut_. All reconstruction, 
+resigning and storing of APKs is done there. From the implementation point of view, all packages and 
+directories are random UUID identifiers.
+
+This directory is deleted by default where tests are finished. It can be changed via `removeTmpDir` 
+property.
+
+----
+<property name="tmpDir">/path/to/tmp/dir</property>
+----
+
+==== removeTmpDir
+===== default: true
+
+Specifies if all temporary resources as repackaged Selendroid server should be removed by default.
+Set it to false when you want to inspect what packages are going to be installed for debug purposes, 
+however it is desired to remove this directory by default since it can occupy significant amount of 
+space. For every test run, other working directory is created every time.
+
+----
+<property name="removeTmpDir">true|false</property>
+----
+
+=== All following paramaters regarding debug keystore and its generation are subject of `keytool` command.
+
+==== keystore
+===== default: $ANDROID_SDK_HOME/.android/debug.keystore
+
+Sets keystore to use for resigning packages after they are modified dynamically. Not resigning them 
+would result into impossibility to install them to Android device since certificates would be different.
+Debug key store is automatically created for you when it is not created yet, typically in `~/.android` or when you 
+specifies keystore in `keystore` property and such keystore path does not exist.
+
+----
+<property name="keystore">/path/to/your/key/store</property>
+----
+
+==== storepass
+===== default: "android"
+
+----
+<property name="storepass">storepass</property>
+----
+
+==== keypass
+===== default: "android"
+
+----
+<property name="keypass">keypass</property>
+----
+
+==== alias
+===== default: androiddebugkey
+
+----
+<property name="alias">somealias</property>
+----
+
+==== sigalg
+===== default: SHA1withRSA
+
+Tells what kind of signature algoritm to use for a debug keystore when it is created.
+
+----
+<property name="sigalg">MD5withSHA</property>
+----
+
+==== keyalg
+===== default: RSA
+
+Tells what kind of key algoritm to use for a debug keystore when it is created.
+
+----
+<property name="keyalg">some_other_keyalg</property>
+----
