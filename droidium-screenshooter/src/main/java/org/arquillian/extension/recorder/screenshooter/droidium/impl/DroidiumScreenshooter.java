@@ -30,6 +30,7 @@ import org.arquillian.extension.recorder.screenshooter.ScreenshooterConfiguratio
 import org.arquillian.extension.recorder.screenshooter.Screenshot;
 import org.arquillian.extension.recorder.screenshooter.ScreenshotMetaData;
 import org.arquillian.extension.recorder.screenshooter.ScreenshotType;
+import org.arquillian.recorder.reporter.impl.TakenResourceRegister;
 import org.jboss.arquillian.core.spi.Validate;
 
 import com.android.ddmlib.RawImage;
@@ -50,6 +51,18 @@ public class DroidiumScreenshooter implements Screenshooter {
 
     private AndroidDevice device;
 
+    private TakenResourceRegister takenResourceRegister;
+
+    /**
+     *
+     * @param takenResourceRegister
+     * @throws IllegalArgumentException if {@code takenResourceRegister} is a null object
+     */
+    public DroidiumScreenshooter(TakenResourceRegister takenResourceRegister) {
+        Validate.notNull(takenResourceRegister, "Resource register can not be a null object!");
+        this.takenResourceRegister = takenResourceRegister;
+    }
+
     @Override
     public void init(ScreenshooterConfiguration configuration) {
         if (this.configuration == null) {
@@ -57,7 +70,7 @@ public class DroidiumScreenshooter implements Screenshooter {
                 this.configuration = configuration;
                 File root = this.configuration.getRootDir();
                 setScreenshotTargetDir(root);
-                setScreensthotType(ScreenshotType.valueOf(this.configuration.getScreenshotType()));
+                setScreenshotType(ScreenshotType.valueOf(this.configuration.getScreenshotType()));
             }
         }
     }
@@ -148,6 +161,8 @@ public class DroidiumScreenshooter implements Screenshooter {
         screenshot.setWidth(rawImage.width);
         screenshot.setResourceType(screenshotType);
 
+        takenResourceRegister.addTaken(screenshot);
+
         return screenshot;
 
     }
@@ -166,7 +181,7 @@ public class DroidiumScreenshooter implements Screenshooter {
     }
 
     @Override
-    public void setScreensthotType(ScreenshotType screenshotType) {
+    public void setScreenshotType(ScreenshotType screenshotType) {
         Validate.notNull(screenshotType, "Screenshot type is a null object!");
         this.screenshotType = screenshotType;
     }

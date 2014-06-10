@@ -17,6 +17,30 @@ Example of HTML report via https://github.com/arquillian/arquillian-recorder[Arq
 
 == Settings
 
-Settings are same as for browser screenshooter. Please consult README file there. The only thing which this screenshooter does not support is obviously 'takeOnEveryAction' option since there is not WebDriver instance which takes screenshots.
+Following +arquillian.xml+ properties are supported within *screenshooter* qualifier:
+
+|===
+|Configuration Property|Description|Default Value
+
+|+takeBeforeTest+
+|take a screenshot after page loading, that is calling +WebDriver.get(String)+
+|false
+|+takeAfterTest+
+|take a screenshot as the last action in the test execution
+|false
+|+takeWhenTestFailed+
+|take a screenshot only when the test failed
+|true 
+|+rootDir+
+|folder where all screenshots will be placed
+|target
+|+baseDir+
+|folder inside the root folder where the screenshots be placed
+|screenshots
+|+screenshotType+
+|type of taken image
+|PNG
+
+|===
 
 In order to know how to configure Arquillian Reporter extension which is embedded into Droidium screenshooter, check https://github.com/arquillian/arquillian-recorder/blob/master/README.adoc[this documentation].

@@ -133,7 +133,7 @@ public class SelendroidTestAppTestCase {
         screenshooter.setScreenshotTargetDir("target/screenshots-2");
 
         // from now on, take all images as BMP if not specified otherwise
-        screenshooter.setScreensthotType(ScreenshotType.BMP);
+        screenshooter.setScreenshotType(ScreenshotType.BMP);
 
         // you can name it, it will be PNG image by default
         screenshooter.takeScreenshot("myscreenshot1");

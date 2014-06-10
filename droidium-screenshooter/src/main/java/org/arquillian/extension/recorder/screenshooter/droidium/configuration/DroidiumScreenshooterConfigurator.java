@@ -34,6 +34,19 @@ import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;
 
 /**
+ * Observes:
+ * <ul>
+ * <li>{@link ReportingExtensionConfigured}</li>
+ * </ul>
+ * Creates:
+ * <ul>
+ * <li>{@link ScreenshooterConfiguration}</li>
+ * </ul>
+ * Fires:
+ * <ul>
+ * <li>{@link ScreenshooterExtensionConfigured}</li>
+ * </ul>
+ * 
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */

@@ -21,6 +21,7 @@ import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
 import org.arquillian.extension.recorder.screenshooter.Screenshooter;
 import org.arquillian.extension.recorder.screenshooter.ScreenshooterConfiguration;
 import org.arquillian.extension.recorder.screenshooter.event.ScreenshooterExtensionConfigured;
+import org.arquillian.recorder.reporter.impl.TakenResourceRegister;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.InstanceProducer;
 import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
@@ -28,6 +29,16 @@ import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;
 
 /**
+ * Observes:
+ * <ul>
+ * <li>{@link ScreenshooterExtensionConfigured}</li>
+ * </ul>
+ * Creates {@link ApplicationScoped}:
+ * <ul>
+ * <li>{@link Screenshooter}</li>
+ * <li>{@link TakenResourceRegister}</li>
+ * </ul>
+ * 
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
@@ -36,6 +47,10 @@ public class DroidiumScreenshooterCreator {
     @Inject
     @ApplicationScoped
     private InstanceProducer<Screenshooter> screenshooter;
+
+    @Inject
+    @ApplicationScoped
+    private InstanceProducer<TakenResourceRegister> takenResourceRegister;
 
     @Inject
     private Instance<ScreenshooterConfiguration> configuration;
@@ -47,7 +62,11 @@ public class DroidiumScreenshooterCreator {
      */
     public void onScreenshooterExtensionConfigured(@Observes ScreenshooterExtensionConfigured event) {
 
-        Screenshooter screenshooter = new DroidiumScreenshooter();
+        if (takenResourceRegister.get() == null) {
+            this.takenResourceRegister.set(new TakenResourceRegister());
+        }
+
+        Screenshooter screenshooter = new DroidiumScreenshooter(takenResourceRegister.get());
         screenshooter.init(configuration.get());
 
         this.screenshooter.set(screenshooter);
