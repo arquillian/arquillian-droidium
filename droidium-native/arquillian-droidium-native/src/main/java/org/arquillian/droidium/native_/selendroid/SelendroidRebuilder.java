@@ -73,7 +73,6 @@ public class SelendroidRebuilder {
 
     /**
      *
-     * @param processExecutor
      * @param androidSDK
      * @throws IllegalStateException if some argument is a null object
      */

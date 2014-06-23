@@ -41,7 +41,6 @@ import org.jboss.arquillian.core.api.event.ManagerStopping;
  * <ul>
  * <li>{@link AndroidSDK}</li>
  * <li>{@link IdentifierGenerator}</li>
- * <li>{@link APKSigner}</li>
  * <li>{@link AndroidDeploymentRegister}</li>
  * <li>{@link AndroidApplicationHelper}</li>
  * <li>{@link AndroidDeviceRegister}</li>

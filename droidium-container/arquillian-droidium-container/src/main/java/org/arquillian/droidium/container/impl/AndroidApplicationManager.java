@@ -55,7 +55,6 @@ public class AndroidApplicationManager {
     /**
      *
      * @param device
-     * @param executor
      * @param sdk
      * @throws IllegalArgumentException if either {@code device} or {@code executor} or {@code sdk} is a null object
      */

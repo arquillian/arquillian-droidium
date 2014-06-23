@@ -62,12 +62,6 @@
             <artifactId>arquillian-spacelift-spi</artifactId>
             <version>${version.spacelift}</version>
         </dependency>
-        
-        <!-- External dependencies -->
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>        
     </dependencies>
 
 </project>

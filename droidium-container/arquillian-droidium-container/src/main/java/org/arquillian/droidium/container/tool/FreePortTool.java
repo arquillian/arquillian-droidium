@@ -42,7 +42,7 @@ public class FreePortTool extends Tool<Object, Boolean> {
      * @param port port to check
      * @throws IllegalArgumentException if {@code port} is null object or an empty string.
      * @throws NumberFormatException if {@code port} is not a number
-     * @return
+     * @return this
      */
     public FreePortTool port(String port) {
         if (port == null || port.isEmpty()) {

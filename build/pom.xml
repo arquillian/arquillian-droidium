@@ -41,6 +41,9 @@
         <!-- Taken from root parent of the project -->
         <version.com.android.tools.ddms>${version.ddmlib}</version.com.android.tools.ddms>
         <version.arquillian.spacelift>${version.spacelift}</version.arquillian.spacelift>
+        
+        <!-- Other -->
+        <version.maven.checkstyle.plugin>2.12.1</version.maven.checkstyle.plugin>
     </properties>
 
     <!-- Dependency Management -->
@@ -168,8 +171,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${version.maven.checkstyle.plugin}</version>
                 <configuration>
-                    <configLocation>../../build/src/main/resources/arquillian-droidium-checkstyle/checkstyle.xml</configLocation>
+                    <configLocation>src/main/resources/arquillian-droidium-checkstyle/checkstyle.xml</configLocation>
                     <consoleOutput>true</consoleOutput>
                     <failsOnError>true</failsOnError>
                 </configuration>
