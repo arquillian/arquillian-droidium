@@ -57,6 +57,12 @@
         <tag>HEAD</tag>
     </scm>
 
+    <!-- Issues -->
+    <issueManagement>
+        <system>jira</system>
+        <url>https://issues.jboss.org/browse/ARQ</url>
+    </issueManagement>
+
     <!-- Properties -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -94,7 +100,7 @@
     <!-- Modules -->
     <modules>
         <module>build</module>
-		<module>droidium-platform</module>
+        <module>droidium-platform</module>
         <module>droidium-container</module>
         <module>droidium-native</module>
         <module>archetypes</module>
