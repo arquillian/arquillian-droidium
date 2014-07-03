@@ -71,7 +71,7 @@
         <version.arquillian.core>1.1.4.Final</version.arquillian.core>
 
         <!-- Arquillian Drone -->
-        <version.arquillian.drone>2.0.0.Alpha3-SNAPSHOT</version.arquillian.drone>
+        <version.arquillian.drone>2.0.0.Alpha2</version.arquillian.drone>
 
         <!-- Testing AS7 container -->
         <version.org.jboss.as>7.1.1.Final</version.org.jboss.as>
