@@ -11,10 +11,11 @@
 ROOT=$(pwd)
 ADB_CMD=$ANDROID_HOME/platform-tools/adb
 EMULATOR_CMD=$ANDROID_HOME/tools/emulator
+MAVEN_CMD=mvn
 EMULATOR_RAM=343
 SERVER_PORT=5037
 
-SELENDROID_VERSION=0.9.0
+SELENDROID_VERSION=0.10.0
 SELENDROID_TEST_APP=selendroid-test-app-$SELENDROID_VERSION.apk
 
 DEBUG="false"
@@ -55,14 +56,24 @@ if [ ! "x$5" == "true" ]; then
     STAGING="-Pjboss-staging-repository-group"
 fi
 
+function die {
+    echo $@
+    exit 1
+}
+
+function mvn {
+    echo "mvn -Dselendroid.version=$SELENDROID_VERSION $@"
+    command $MAVEN_CMD -Dselendroid.version=$SELENDROID_VERSION $@
+}
+
 function copy_test_app
 {
-    cp ../$SELENDROID_TEST_APP $1
+    cp -v ../$SELENDROID_TEST_APP $1 || die "Unable to copy Selendroid Test App"
 }
 
 function copy_aerogear
 {
-    cp ../droidium-native-01/aerogear-test-android.apk $1
+    cp -v ../droidium-native-01/aerogear-test-android.apk $1
 }
 
 function copy_all
@@ -143,7 +154,7 @@ function droidium-multiple-androids-02
     cd $ROOT
     cd droidium-multiple-androids-02
     copy_all .
-    mvn clean test -Dandroid.avd.name_1=$1 -Dandroid.avd.name_2=$2 -Dselendroid.version=$3 -Darquillian.debug=$DEBUG $STAGING
+    mvn clean test -Dandroid.avd.name_1=$1 -Dandroid.avd.name_2=$2 -Darquillian.debug=$DEBUG $STAGING
     check_status $0 $?
     clean_env
     rm aerogear-test-android.apk
@@ -154,7 +165,7 @@ function droidium-hybrid-01
     cd $ROOT
     cd droidium-hybrid-01
     copy_test_app .
-    mvn clean test -Dandroid.avd.name=$1 -Dselendroid.version=$2 -Darquillian.debug=$DEBUG $STAGING
+    mvn clean test -Dandroid.avd.name=$1 -Darquillian.debug=$DEBUG $STAGING
     check_status $0 $?
     clean_env
 }
@@ -190,7 +201,7 @@ function droidium-multiple-deployments-01
     cd $ROOT
     cd droidium-multiple-deployments-01
     copy_all .
-    mvn clean test -Dandroid.avd.name=$1 -Dselendroid.version=$2 -Darquillian.debug=$DEBUG $STAGING
+    mvn clean test -Dandroid.avd.name=$1 -Darquillian.debug=$DEBUG $STAGING
     check_status $0 $?
     clean_env
 }
@@ -200,7 +211,7 @@ function droidium-native-01
     cd $ROOT
     cd droidium-native-01
     copy_test_app .
-    mvn clean test -Dandroid.avd.name=$1 -Dselendroid.version=$2 -Darquillian.debug=$DEBUG $STAGING
+    mvn clean test -Dandroid.avd.name=$1 -Darquillian.debug=$DEBUG $STAGING
     check_status $0 $?
     clean_env
 }
@@ -210,7 +221,7 @@ function droidium-native-01-scala
     cd $ROOT
     cd droidium-native-01-scala
     copy_test_app .
-    mvn clean test -Dandroid.avd.name=$1 -Dselendroid.version=$2 -Darquillian.debug=$DEBUG $STAGING
+    mvn clean test -Dandroid.avd.name=$1 -Darquillian.debug=$DEBUG $STAGING
     check_status $0 $?
     clean_env
 }
@@ -230,7 +241,7 @@ function droidium-screenshooter-01
     cd $ROOT
     cd droidium-screenshooter-01
     copy_test_app .
-    mvn clean test -Dandroid.avd.name=$1 -Dselendroid.version=$2 -Darquillian.debug=$DEBUG $STAGING
+    mvn clean test -Dandroid.avd.name=$1 -Darquillian.debug=$DEBUG $STAGING
     check_status $0 $?
     clean_env
 }
@@ -265,18 +276,18 @@ wait_until_started emulator-5554
 echo "Waiting for the second emulator to start"
 wait_until_started emulator-5556
 
-droidium-multiple-androids-with-jboss-01 $1 $2 $SELENDROID_VERSION
-droidium-multiple-androids-01 $1 $2 $SELENDROID_VERSION
-droidium-multiple-androids-02 $1 $2 $SELENDROID_VERSION
+droidium-multiple-androids-with-jboss-01 $1 $2 
+droidium-multiple-androids-01 $1 $2 
+droidium-multiple-androids-02 $1 $2 
 droidium-multiple-containers-01 $1
 droidium-multiple-containers-02
 droidium-multiple-containers-03
-droidium-multiple-deployments-01 $1 $SELENDROID_VERSION
-droidium-native-01 $1 $SELENDROID_VERSION
-droidium-native-01-scala $1 $SELENDROID_VERSION
+droidium-multiple-deployments-01 $1 
+droidium-native-01 $1 
+droidium-native-01-scala $1 
 droidium-native-02 $1
-droidium-hybrid-01 $1 $SELENDROID_VERSION
-droidium-screenshooter-01 $1 $SELENDROID_VERSION
+droidium-hybrid-01 $1 
+droidium-screenshooter-01 $1 
 #droidium-web-01 $1 $2
 
 clean_all
