@@ -73,4 +73,15 @@ public class TargetRegexTest {
         Assert.assertThat(apiLevel, is(19));
     }
 
+    @Test
+    public void googleAndroidPatternNewX86() {
+        Matcher m = Target.GOOGLE_ADDON_PATTERN.matcher("Google Inc.:Google APIs (x86 System Image):19");
+        Assert.assertThat(m.matches(), is(true));
+
+        String type = m.group(1);
+        Assert.assertThat(type, is("Google APIs (x86 System Image)"));
+
+        int apiLevel = Integer.parseInt(m.group(2));
+        Assert.assertThat(apiLevel, is(19));
+    }
 }

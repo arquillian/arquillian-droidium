@@ -42,7 +42,7 @@ class Target {
 
     protected static final Pattern ANDROID_PATTERN = Pattern.compile("android-([0-9]+)");
 
-    protected static final Pattern GOOGLE_ADDON_PATTERN = Pattern.compile("Google Inc.:([\\w ]+):([0-9]+)");
+    protected static final Pattern GOOGLE_ADDON_PATTERN = Pattern.compile("Google Inc.:([\\w \\(\\)]+):([0-9]+)");
 
     private final String name;
 
