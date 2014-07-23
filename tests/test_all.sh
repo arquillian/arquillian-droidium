@@ -132,7 +132,7 @@ function droidium-multiple-androids-with-jboss-01
     cd droidium-multiple-androids-with-jboss-01
     copy_all .
     mvn clean test -Dandroid.avd.name_1=$1 -Dandroid.avd.name_2=$2 -Darquillian.debug=$DEBUG $STAGING
-    check_status $0 $?
+    check_status ${FUNCNAME[0]} $?
     clean_env
     rm aerogear-test-android.apk
 }
@@ -144,7 +144,7 @@ function droidium-multiple-androids-01
     copy_test_app .
     copy_aerogear .
     mvn clean test -Dandroid.avd.name_1=$1 -Dandroid.avd.name_2=$2 -Darquillian.debug=$DEBUG $STAGING
-    check_status $0 $?
+    check_status ${FUNCNAME[0]} $?
     clean_env
     rm aerogear-test-android.apk
 }
@@ -155,7 +155,7 @@ function droidium-multiple-androids-02
     cd droidium-multiple-androids-02
     copy_all .
     mvn clean test -Dandroid.avd.name_1=$1 -Dandroid.avd.name_2=$2 -Darquillian.debug=$DEBUG $STAGING
-    check_status $0 $?
+    check_status ${FUNCNAME[0]} $?
     clean_env
     rm aerogear-test-android.apk
 }
@@ -166,7 +166,7 @@ function droidium-hybrid-01
     cd droidium-hybrid-01
     copy_test_app .
     mvn clean test -Dandroid.avd.name=$1 -Darquillian.debug=$DEBUG $STAGING
-    check_status $0 $?
+    check_status ${FUNCNAME[0]} $?
     clean_env
 }
 
@@ -176,7 +176,7 @@ function droidium-multiple-containers-01
     cd droidium-multiple-containers-01
     copy_test_app .
     mvn clean test -Dandroid.avd.name=$1 -Darquillian.debug=$DEBUG $STAGING
-    check_status $0 $?
+    check_status ${FUNCNAME[0]} $?
     clean_env
 }
 
@@ -185,7 +185,7 @@ function droidium-multiple-containers-02
     cd $ROOT
     cd droidium-multiple-containers-02
     mvn clean test -Darquillian.debug=$DEBUG $STAGING
-    check_status $0 $?
+    check_status ${FUNCNAME[0]} $?
 }
 
 function droidium-multiple-containers-03
@@ -193,7 +193,7 @@ function droidium-multiple-containers-03
     cd $ROOT
     cd droidium-multiple-containers-03
     mvn clean test -Darquillian.debug=$DEBUG $STAGING
-    check_status $0 $?
+    check_status ${FUNCNAME[0]} $?
 }
 
 function droidium-multiple-deployments-01
@@ -202,7 +202,7 @@ function droidium-multiple-deployments-01
     cd droidium-multiple-deployments-01
     copy_all .
     mvn clean test -Dandroid.avd.name=$1 -Darquillian.debug=$DEBUG $STAGING
-    check_status $0 $?
+    check_status ${FUNCNAME[0]} $?
     clean_env
 }
 
@@ -212,7 +212,7 @@ function droidium-native-01
     cd droidium-native-01
     copy_test_app .
     mvn clean test -Dandroid.avd.name=$1 -Darquillian.debug=$DEBUG $STAGING
-    check_status $0 $?
+    check_status ${FUNCNAME[0]} $?
     clean_env
 }
 
@@ -222,7 +222,7 @@ function droidium-native-01-scala
     cd droidium-native-01-scala
     copy_test_app .
     mvn clean test -Dandroid.avd.name=$1 -Darquillian.debug=$DEBUG $STAGING
-    check_status $0 $?
+    check_status ${FUNCNAME[0]} $?
     clean_env
 }
 
@@ -232,7 +232,7 @@ function droidium-native-02
     cd droidium-native-02
     copy_test_app .
     mvn clean test -Dandroid.avd.name=$1 -Darquillian.debug=$DEBUG $STAGING
-    check_status $0 $?
+    check_status ${FUNCNAME[0]} $?
     clean_env
 }
 
@@ -242,7 +242,7 @@ function droidium-screenshooter-01
     cd droidium-screenshooter-01
     copy_test_app .
     mvn clean test -Dandroid.avd.name=$1 -Darquillian.debug=$DEBUG $STAGING
-    check_status $0 $?
+    check_status ${FUNCNAME[0]} $?
     clean_env
 }
 
@@ -251,7 +251,7 @@ function droidium-web-01
     cd $ROOT
     cd droidium-web-01
     mvn test -Dip.jboss=$2 -Dandroid.avd.name=$1 -Darquillian.debug=$DEBUG $STAGING
-    check_status $0 $?
+    check_status ${FUNCNAME[0]} $?
 }
 
 function clean_all
