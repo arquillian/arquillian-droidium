@@ -52,7 +52,7 @@ if [ "$4" == "true" ]; then
     DEBUG="true"
 fi
 
-if [ ! "x$5" == "true" ]; then
+if [ "$5" == "true" ]; then
     STAGING="-Pjboss-staging-repository-group"
 fi
 
