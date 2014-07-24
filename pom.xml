@@ -73,6 +73,9 @@
         <!-- Arquillian Drone -->
         <version.arquillian.drone>2.0.0.Alpha2</version.arquillian.drone>
 
+        <!-- Arquillian Graphene -->
+        <version.arquillian.graphene>2.1.0.Alpha1</version.arquillian.graphene>
+
         <!-- Testing AS7 container -->
         <version.org.jboss.as>7.1.1.Final</version.org.jboss.as>
 
@@ -83,7 +86,7 @@
         <version.spacelift>1.0.0.Alpha2</version.spacelift>
 
         <!-- Screenshooter -->
-        <version.recorder.screenshooter>1.0.0.Alpha3</version.recorder.screenshooter>
+        <version.recorder.screenshooter>1.0.0.Alpha4</version.recorder.screenshooter>
 
         <!-- Other versions -->
         <version.maven.animal.sniffer>1.11</version.maven.animal.sniffer>

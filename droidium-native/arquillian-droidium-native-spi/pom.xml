@@ -48,6 +48,10 @@
             <groupId>org.jboss.arquillian.extension</groupId>
             <artifactId>arquillian-drone-spi</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.graphene</groupId>
+            <artifactId>graphene-webdriver-spi</artifactId>
+        </dependency>
         
         <!-- Test dependency -->
         <dependency>

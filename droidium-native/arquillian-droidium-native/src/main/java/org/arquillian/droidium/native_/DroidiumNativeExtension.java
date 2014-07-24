@@ -27,6 +27,7 @@ import org.arquillian.droidium.native_.enrichment.DroneAndroidDeviceResourceProv
 import org.arquillian.droidium.native_.instrumentation.InstrumentationPerformDecider;
 import org.arquillian.droidium.native_.instrumentation.InstrumentationPerformer;
 import org.arquillian.droidium.native_.instrumentation.InstrumentationRemoveDecider;
+import org.arquillian.droidium.native_.location.DroidiumLocationDecider;
 import org.arquillian.droidium.native_.selendroid.SelendroidDeploymentInstaller;
 import org.arquillian.droidium.native_.selendroid.SelendroidDeploymentUnInstaller;
 import org.arquillian.droidium.native_.webdriver.AndroidBrowserCapabilities;
@@ -36,6 +37,7 @@ import org.jboss.arquillian.drone.spi.Configurator;
 import org.jboss.arquillian.drone.spi.Destructor;
 import org.jboss.arquillian.drone.spi.Instantiator;
 import org.jboss.arquillian.drone.webdriver.spi.BrowserCapabilities;
+import org.jboss.arquillian.graphene.spi.location.LocationDecider;
 import org.jboss.arquillian.test.spi.enricher.resource.ResourceProvider;
 
 /**
@@ -79,6 +81,9 @@ public class DroidiumNativeExtension implements LoadableExtension {
 
         // Drone-aware AndroidDevice enricher
         builder.override(ResourceProvider.class, AndroidDeviceResourceProvider.class, DroneAndroidDeviceResourceProvider.class);
+
+        // Graphene stuff
+        builder.service(LocationDecider.class, DroidiumLocationDecider.class);
     }
 
 }

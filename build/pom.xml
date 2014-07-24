@@ -123,6 +123,13 @@
                 <scope>import</scope>
             </dependency>
 
+            <!-- Graphene -->
+            <dependency>
+                <groupId>org.jboss.arquillian.graphene</groupId>
+                <artifactId>graphene-webdriver-spi</artifactId>
+                <version>${version.arquillian.graphene}</version>
+            </dependency>
+
             <!-- Android -->
             <dependency>
                 <groupId>com.android.tools.ddms</groupId>
