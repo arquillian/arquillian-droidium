@@ -15,7 +15,7 @@ MAVEN_CMD=mvn
 EMULATOR_RAM=343
 SERVER_PORT=5037
 
-SELENDROID_VERSION=0.10.0
+SELENDROID_VERSION=0.11.0
 SELENDROID_TEST_APP=selendroid-test-app-$SELENDROID_VERSION.apk
 
 DEBUG="false"
@@ -286,7 +286,7 @@ droidium-multiple-deployments-01 $1
 droidium-native-01 $1 
 droidium-native-01-scala $1 
 droidium-native-02 $1
-droidium-hybrid-01 $1 
+#droidium-hybrid-01 $1 
 droidium-screenshooter-01 $1 
 #droidium-web-01 $1 $2
 

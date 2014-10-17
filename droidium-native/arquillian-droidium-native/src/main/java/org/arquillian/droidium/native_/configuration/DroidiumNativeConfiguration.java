@@ -30,7 +30,7 @@ import org.arquillian.droidium.container.configuration.Validate;
  */
 public class DroidiumNativeConfiguration {
 
-    public static final String SELENDROID_VERSION = "0.9.0";
+    public static final String SELENDROID_VERSION = "0.11.0";
 
     public static final String SERVER_HOME = System.getProperty("user.home") + "/.droidium/selendroid-server-" + SELENDROID_VERSION + ".apk";
 

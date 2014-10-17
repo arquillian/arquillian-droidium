@@ -27,10 +27,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <version.org.jboss.arquillian.drone>2.0.0.Alpha2</version.org.jboss.arquillian.drone>
-        <version.arquillian.core>1.1.4.Final</version.arquillian.core>
+        <version.arquillian.core>1.1.5.Final</version.arquillian.core>
 
         <version.junit>4.11</version.junit>
-
+        <version.selenium>2.42.2</version.selenium>
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
 
@@ -43,12 +43,19 @@
 
         <android.avd.name>testingEmulator</android.avd.name>
         <android.emulator.options></android.emulator.options>
-        <selendroid.version>0.9.0</selendroid.version>
+        <selendroid.version>0.11.0</selendroid.version>
     </properties>
 
     <!-- Dependency Management -->
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.jboss.arquillian.selenium</groupId>
+                <artifactId>selenium-bom</artifactId>
+                <version>${version.selenium}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>org.jboss.arquillian.extension</groupId>
                 <artifactId>arquillian-drone-webdriver-depchain</artifactId>

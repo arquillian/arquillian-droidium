@@ -27,7 +27,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <version.org.jboss.arquillian.drone>2.0.0.Alpha2</version.org.jboss.arquillian.drone>
-        <version.arquillian.core>1.1.4.Final</version.arquillian.core>
+        <version.arquillian.core>1.1.5.Final</version.arquillian.core>
 
         <version.junit>4.11</version.junit>
 

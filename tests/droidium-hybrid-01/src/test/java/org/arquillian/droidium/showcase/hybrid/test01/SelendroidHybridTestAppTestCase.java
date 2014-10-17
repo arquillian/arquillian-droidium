@@ -34,7 +34,6 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
@@ -98,8 +97,6 @@ public class SelendroidHybridTestAppTestCase {
 
         android.getActivityManager().startActivity("io.selendroid.testapp.HomeScreenActivity");
 
-        driver.switchTo().window("NATIVE_APP");
-
         homeFragment.startUserRegistration();
         registrationFragment.registerUser(USER_NAME, USER_EMAIL, USER_PASSWORD, USER_REAL_NAME, LANGUAGE, ACCEPT_ADDS);
         verificationFragment.verifyUser(USER_NAME, USER_EMAIL, USER_PASSWORD, USER_REAL_NAME, LANGUAGE, ACCEPT_ADDS);
@@ -108,7 +105,6 @@ public class SelendroidHybridTestAppTestCase {
 
     @Test
     @InSequence(2)
-    @Ignore
     public void webViewTest() {
         homeFragment.startWebView();
 

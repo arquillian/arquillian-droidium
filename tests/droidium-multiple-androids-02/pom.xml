@@ -26,13 +26,13 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <version.arquillian.core>1.1.4.Final</version.arquillian.core>
+        <version.arquillian.core>1.1.5.Final</version.arquillian.core>
         <version.arquillian.drone>2.0.0.Alpha2</version.arquillian.drone>
-        <version.org.jboss.arquillian.graphene2>2.0.3.Final</version.org.jboss.arquillian.graphene2>
+        <version.org.jboss.arquillian.graphene2>2.1.0.Alpha1</version.org.jboss.arquillian.graphene2>
         
         <version.junit>4.11</version.junit>
-
-		<selendroid.version>0.9.0</selendroid.version>
+        <version.selenium>2.42.2</version.selenium>
+		<selendroid.version>0.11.0</selendroid.version>
         <android.avd.name_1>testingEmulator_1</android.avd.name_1>
         <android.avd.name_2>testingEmulator_2</android.avd.name_2>
 
@@ -47,6 +47,13 @@
                 <groupId>org.jboss.arquillian</groupId>
                 <artifactId>arquillian-bom</artifactId>
                 <version>${version.arquillian.core}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian.selenium</groupId>
+                <artifactId>selenium-bom</artifactId>
+                <version>${version.selenium}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
