@@ -198,7 +198,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>animal-sniffer-maven-plugin</artifactId>
-                <version>1.9</version>
+                <version>${version.maven.animal.sniffer}</version>
                 <executions>
                     <execution>
                         <id>signature-check</id>
@@ -212,9 +212,16 @@
                     <signature>
                         <groupId>org.codehaus.mojo.signature</groupId>
                         <artifactId>java16</artifactId>
-                        <version>1.0</version>
+                        <version>1.1</version>
                     </signature>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.ow2.asm</groupId>
+                        <artifactId>asm-all</artifactId>
+                        <version>5.0.3</version>
+                    </dependency>
+                </dependencies>                
             </plugin>
         </plugins>
 
