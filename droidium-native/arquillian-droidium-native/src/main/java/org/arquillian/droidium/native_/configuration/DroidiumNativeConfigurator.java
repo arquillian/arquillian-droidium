@@ -22,7 +22,6 @@ import java.util.logging.Logger;
 
 import org.arquillian.droidium.container.spi.event.DroidiumExtensionConfigured;
 import org.arquillian.droidium.native_.spi.event.DroidiumNativeConfigured;
-import org.arquillian.droidium.platform.event.DroidiumPlatformConfigured;
 import org.jboss.arquillian.config.descriptor.api.ArquillianDescriptor;
 import org.jboss.arquillian.config.descriptor.api.ExtensionDef;
 import org.jboss.arquillian.core.api.Event;
@@ -36,7 +35,7 @@ import org.jboss.arquillian.core.api.annotation.Observes;
  * <br>
  * Observes:
  * <ul>
- * <li>{@link DroidiumPlatformConfigured}</li>
+ * <li>{@link DroidiumExtensionConfigured}</li>
  * </ul>
  * Produces application scoped:<br>
  * <ul>
