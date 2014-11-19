@@ -22,22 +22,23 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Validate;
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.arquillian.droidium.native_.exception.SelendroidRebuilderException;
+import org.arquillian.spacelift.execution.ExecutionException;
 import org.arquillian.spacelift.execution.Tasks;
 import org.arquillian.spacelift.process.Command;
 import org.arquillian.spacelift.process.CommandBuilder;
 import org.arquillian.spacelift.process.ProcessResult;
 import org.arquillian.spacelift.process.impl.CommandTool;
+import org.arquillian.spacelift.task.io.FileReader;
+import org.arquillian.spacelift.tool.basic.StringReplacementTool;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -102,14 +103,13 @@ public class SelendroidRebuilder {
 
         final File tmpDir = androidSDK.getPlatformConfiguration().getTmpDir();
 
-        File toBeReplacedAndroidManifest = new File(tmpDir, "AndroidManifestToBeReplaced.xml");
         File finalAndroidManifest = new File(tmpDir, "AndroidManifest.xml");
         File dummyAPK = new File(tmpDir, "dummy.apk");
 
         // copying of AndroidManifest.xml from resources of the native plugin to working directory
-        FileOutputStream toBeReplacedAndroidManifestStream;
+        FileOutputStream finalAndroidManifestStream;
         try {
-            toBeReplacedAndroidManifestStream = new FileOutputStream(toBeReplacedAndroidManifest.getAbsoluteFile());
+            finalAndroidManifestStream = new FileOutputStream(finalAndroidManifest.getAbsoluteFile());
         } catch (FileNotFoundException ex) {
             throw new SelendroidRebuilderException();
         }
@@ -122,15 +122,15 @@ public class SelendroidRebuilder {
         }
 
         try {
-            toBeReplacedAndroidManifestStream.write(IOUtils.toByteArray(androidManifestStream));
+            finalAndroidManifestStream.write(IOUtils.toByteArray(androidManifestStream));
         } catch (IOException ex) {
-            throw new SelendroidRebuilderException("unable to write to " + toBeReplacedAndroidManifest.getAbsolutePath());
+            throw new SelendroidRebuilderException("unable to write to " + finalAndroidManifest.getAbsolutePath());
         }
 
-        closeStream(toBeReplacedAndroidManifestStream);
+        closeStream(finalAndroidManifestStream);
         closeStream(androidManifestStream);
 
-        filter(toBeReplacedAndroidManifest, finalAndroidManifest, selendroidPackageName, applicationBasePackage);
+        filter(finalAndroidManifest, selendroidPackageName, applicationBasePackage);
 
         // create dummy package in order to get compiled AndroidManifest.xml
         createDummyAPK(dummyAPK, finalAndroidManifest);
@@ -168,7 +168,7 @@ public class SelendroidRebuilder {
 
         ProcessResult processResult = Tasks.prepare(CommandTool.class).command(createDummyPackage).execute().await();
 
-        if (processResult.exitValue() != 0) {
+        if (processResult != null && processResult.exitValue() != 0) {
             throw new SelendroidRebuilderException("Command failed to execute: "
                 + createDummyPackage.toString() + "with output " + processResult.output());
         }
@@ -177,29 +177,21 @@ public class SelendroidRebuilder {
     /**
      * Filters {@code toBeReplaced} manifest and writes it, after filtering, to {@code finalManifest}.
      *
-     * @param toBeReplaced manifest file to be filtered
-     * @param finalManifest manifest file after the filtering
+     * @param manifest manifest file after the filtering
      * @param selendroidPackageName Selendroid package name to set in {@code finalManifest} instead of the old one
      * @param applicationBasePackage application base package to set in {@code finalManifest} instead of the old one
-     * @throws SelendroidRebuilderException
      */
-    private void filter(File toBeReplaced, File finalManifest, String selendroidPackageName, String applicationBasePackage) {
-        try {
-            @SuppressWarnings("unchecked")
-            ManifestFilter filter = new ManifestFilter(FileUtils.readLines(toBeReplaced))
-                .filter(SELENDROID_PACKAGE_NAME, "package=\"" + selendroidPackageName + "\"")
-                .filter(SELENDROID_TEST_PACKAGE, applicationBasePackage)
-                .filter(ICON, "");
+    private void filter(File manifest, String selendroidPackageName, String applicationBasePackage) {
 
-            if (logger.isLoggable(Level.FINE))
-                for (String line : filter.getFiltered()) {
-                    System.out.println(line);
-                }
+        Tasks.prepare(StringReplacementTool.class).in(manifest)
+            .replace(SELENDROID_PACKAGE_NAME).with("package=\"" + selendroidPackageName + "\"")
+            .replace(SELENDROID_TEST_PACKAGE).with(applicationBasePackage)
+            .replace(ICON).with("").execute().await();
 
-            FileUtils.writeLines(finalManifest, filter.getFiltered());
-        } catch (IOException e) {
-            throw new SelendroidRebuilderException("Unable to filter Android manifest. Tried to filter "
-                + toBeReplaced.getAbsolutePath() + " into " + finalManifest.getAbsolutePath() + ".");
+        if (logger.isLoggable(Level.FINE)) {
+            String replaced = Tasks.chain(Arrays.asList(manifest), FileReader.class)
+                .execute().await().entrySet().iterator().next().getValue();
+            System.out.println(replaced);
         }
     }
 
@@ -218,65 +210,6 @@ public class SelendroidRebuilder {
             // ignore
         } finally {
             stream = null;
-        }
-    }
-
-    /**
-     * Wrapper around the filtering.
-     *
-     * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
-     *
-     */
-    protected class ManifestFilter {
-
-        private List<String> manifest;
-
-        public ManifestFilter(List<String> manifest) {
-            this.manifest = manifest;
-        }
-
-        public ManifestFilter filter(String toReplace, String replacement) {
-            manifest = Replacer.replace(manifest, toReplace, replacement);
-            return this;
-        }
-
-        public List<String> getFiltered() {
-            return this.manifest;
-        }
-    }
-
-    /**
-     * Replaces strings in a list of strings.
-     *
-     * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
-     *
-     */
-    protected static class Replacer {
-
-        /**
-         * @param lines lines to filter for the replacement
-         * @param toReplace string to replace
-         * @param replacement string to replace {@code toReplace} with
-         * @return filtered {@code fileLines} after replacement
-         * @throws IllegalArgumentException if {@code toReplace} is null or empty, or if {@code replacement} is null, or if list
-         *         to be filtered is null
-         */
-        public static List<String> replace(List<String> lines, String toReplace, String replacement) {
-            Validate.notNullOrEmpty(toReplace, "The string to be replaced can not be a null object nor an empty string!");
-            Validate.notNull(replacement, "The string as a replacement can not be a null object!");
-            Validate.notNull(lines, "The list to be filtered for the replacement of '" + toReplace + "' for '" + replacement
-                + "' can not be a null object!");
-
-            if (lines.size() == 0) {
-                return null;
-            }
-
-            List<String> filtered = new ArrayList<String>();
-            for (String line : lines) {
-                filtered.add(line.replaceAll(toReplace, replacement));
-            }
-
-            return filtered;
         }
     }
 

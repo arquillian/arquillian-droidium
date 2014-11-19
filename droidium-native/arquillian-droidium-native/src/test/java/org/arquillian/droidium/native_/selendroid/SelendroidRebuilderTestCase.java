@@ -16,10 +16,21 @@
  */
 package org.arquillian.droidium.native_.selendroid;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.arquillian.spacelift.execution.Tasks;
+import org.arquillian.spacelift.execution.impl.DefaultExecutionServiceFactory;
+import org.arquillian.spacelift.task.io.FileReader;
+import org.arquillian.spacelift.task.io.FileWriter;
+import org.arquillian.spacelift.tool.basic.StringReplacementTool;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -31,28 +42,51 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class SelendroidRebuilderTestCase {
 
-    @Test
-    public void testReplacer() {
-        List<String> lines = new ArrayList<String>();
-        lines.add("xyz package=io.selendroid blablabalb");
-        lines.add("android:targetPackage=\"io.selendroid.testapp\" />");
-        lines.add("android:icon=\"@drawable/selenium_icon\"");
+    private File tempFile;
 
-        List<String> filtered1 = SelendroidRebuilder.Replacer.replace(lines, "package=io.selendroid", "package=io.selendroid_1");
-        List<String> filtered2 = SelendroidRebuilder.Replacer.replace(filtered1, "io.selendroid.testapp", "my.test.app");
-        List<String> filtered3 = SelendroidRebuilder.Replacer.replace(filtered2, "android:icon=\"@drawable/selenium_icon\"", "");
-
-        Assert.assertTrue(contains(filtered3, "xyz package=io.selendroid_1 blablabalb"));
-        Assert.assertTrue(contains(filtered3, "android:targetPackage=\"my.test.app\" />"));
-        Assert.assertFalse(contains(filtered3, "icon"));
+    @BeforeClass
+    public static void setup() {
+        Tasks.setDefaultExecutionServiceFactory(new DefaultExecutionServiceFactory());
     }
 
-    private boolean contains(List<String> list, String toFind) {
-        for (String line : list) {
-            if (line.contains(toFind)) {
-                return true;
+    @Before
+    public void before() throws IOException {
+        tempFile = File.createTempFile("droidium-test-", null);
+    }
+
+    @After
+    public void after() throws Exception {
+        if (tempFile != null && tempFile.exists()) {
+            if (!tempFile.delete()) {
+                throw new IllegalStateException("Unable to delete file: " + tempFile.getCanonicalPath());
             }
         }
-        return false;
     }
+
+    @Test
+    public void testReplacer() throws IOException {
+        String content = "xyz package=io.selendroid blablabalb\n" +
+            "android:targetPackage=\"io.selendroid.testapp\" />\n" +
+            "android:icon=\"@drawable/selenium_icon\"\n";
+
+        File tempFile = File.createTempFile("droidium-test-", null);
+
+        Map<File, String> map = new HashMap<File, String>();
+        map.put(tempFile, content);
+
+        Tasks.chain(map, FileWriter.class).execute().await();
+
+        Tasks.prepare(StringReplacementTool.class).in(tempFile)
+            .replace("package=io.selendroid").with("package=io.selendroid_1")
+            .replace("io.selendroid.testapp").with("my.test.app")
+            .replace("android:icon=\"@drawable/selenium_icon\"").with("")
+            .execute().await();
+
+        String replaced = Tasks.chain(Arrays.asList(tempFile), FileReader.class).execute().await().entrySet().iterator().next().getValue();
+
+        Assert.assertTrue(replaced.contains("xyz package=io.selendroid_1 blablabalb"));
+        Assert.assertTrue(replaced.contains("android:targetPackage=\"my.test.app\" />"));
+        Assert.assertFalse(replaced.contains("icon"));
+    }
+
 }
