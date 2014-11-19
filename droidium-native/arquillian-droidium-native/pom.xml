@@ -30,10 +30,6 @@
 
     <!-- Properties -->
     <properties>
-        <!-- Selendroid -->
-        <version.selendroid>0.12.0</version.selendroid>
-
-        <!-- Other versions -->
         <version.mockito>1.9.5</version.mockito>
     </properties>
 
@@ -80,7 +76,7 @@
         <dependency>
             <groupId>io.selendroid</groupId>
             <artifactId>selendroid-client</artifactId>
-            <version>${version.selendroid}</version>
+            <version>${version.io.selendroid}</version>
         </dependency>
 
         <!-- Arquillian dependencies -->

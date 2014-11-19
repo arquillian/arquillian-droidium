@@ -62,22 +62,17 @@ import org.openqa.selenium.WebElement;
 @RunAsClient
 public class SelendroidTestAppTestCase {
 
-    @Instrumentable
-    // tells that this deployment will be instrumented by Arquillian Droidium
-        @Deployment(name = "selendroid")
-        // name is the must, you can not deploy two deployments with the same default name
-        @TargetsContainer("android")
-        // does not have to be here since we have just one container present
-        public static
-        Archive<?> createSelendroidDeployment() {
-        return ShrinkWrap.createFromZipFile(JavaArchive.class,
-            new File("selendroid-test-app-" + System.getProperty("selendroid.version", "0.9.0") + ".apk"));
+    @Instrumentable // tells that this deployment will be instrumented by Arquillian Droidium
+    @Deployment(name = "selendroid") // name is the must, you can not deploy two deployments with the same default name
+    @TargetsContainer("android") // does not have to be here since we have just one container present
+    public static Archive<?> createSelendroidDeployment() {
+        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File(System.getProperty("selendroid.test.app")));
     }
 
     // second deployment, it does not matter which one it is, shown here just for completeness, this apk is not used in the test
     @Deployment(name = "aerogear")
     public static Archive<?> createAeroGearDeployment2() {
-        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("aerogear-test-android.apk"));
+        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File(System.getProperty("aerogear.android.test.app")));
     }
 
     /**

@@ -43,21 +43,19 @@ public class MultipleContainersTestCase {
     @Deployment(name = "android_1a")
     @TargetsContainer("android_1")
     public static Archive<?> createAndroidDeployment_1a() {
-        return ShrinkWrap.createFromZipFile(JavaArchive.class,
-            new File("selendroid-test-app-" + System.getProperty("selendroid.version", "0.9.0") + ".apk"));
+        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File(System.getProperty("selendroid.test.app")));
     }
 
     @Deployment(name = "android_1b")
     @TargetsContainer("android_1")
     public static Archive<?> createAndroidDeployment_1b() {
-        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("aerogear-test-android.apk"));
+        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File(System.getProperty("aerogear.android.test.app")));
     }
 
     @Deployment(name = "android_2")
     @TargetsContainer("android_2")
     public static Archive<?> createAndroidDeployment_2() {
-        return ShrinkWrap.createFromZipFile(JavaArchive.class,
-            new File("selendroid-test-app-" + System.getProperty("selendroid.version", "0.9.0") + ".apk"));
+        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File(System.getProperty("selendroid.test.app")));
     }
 
     @Test

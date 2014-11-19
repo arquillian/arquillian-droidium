@@ -32,6 +32,8 @@
     <properties>
         <!-- known to work with Android 2.3 -->
         <version.android>2.3</version.android>
+        
+        <version.commons.io>2.4</version.commons.io>
     </properties>
 
     <!-- Dependencies -->
@@ -134,7 +136,6 @@
             <artifactId>arquillian-container-impl-base</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- Added -->
         <dependency>
              <groupId>org.jboss.arquillian.test</groupId>
             <artifactId>arquillian-test-impl-base</artifactId>
@@ -165,6 +166,7 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
+            <version>2.4</version>
         </dependency>
     </dependencies>
 

@@ -26,6 +26,10 @@
         </container>
     </group>
 
+    <extension qualifier="droidium-native">
+        <property name="serverApk">${selendroid.server.apk}</property>
+    </extension>
+
     <!-- Arquillian Reporter and screenshooter setup -->
     <!-- https://github.com/arquillian/arquillian-recorder -->
     <!-- https://github.com/arquillian/arquillian-droidium/tree/master/droidium-screenshooter -->

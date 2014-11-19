@@ -169,9 +169,22 @@ public class DroidiumPlatformConfiguration {
             TMP_DIR_ENV = System.getenv("TMP");
         }
 
-        String TMP_DIR_PROPERTY = System.getProperty("java.io.tmpdir");
+        if (TMP_DIR_ENV != null) {
+            TMP_DIR_ENV = TMP_DIR_ENV.trim();
+        }
 
-        return checkSlash(TMP_DIR_PROPERTY == null ? TMP_DIR_ENV : TMP_DIR_PROPERTY);
+        String TMP_DIR_PROPERTY = System.getProperty("droidium.tmpdir");
+
+        if (TMP_DIR_PROPERTY != null) {
+            TMP_DIR_PROPERTY = TMP_DIR_PROPERTY.trim();
+        }
+
+        if (TMP_DIR_ENV == null && TMP_DIR_PROPERTY == null) {
+            return checkSlash(System.getProperty("java.io.tmpdir"));
+        } else {
+            return checkSlash(TMP_DIR_PROPERTY == null ? TMP_DIR_ENV : TMP_DIR_PROPERTY);
+        }
+
     }
 
     public void setProperties(Map<String, String> properties) {

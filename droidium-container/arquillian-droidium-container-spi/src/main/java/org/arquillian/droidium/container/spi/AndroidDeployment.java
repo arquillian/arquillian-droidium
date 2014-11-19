@@ -63,8 +63,9 @@ public class AndroidDeployment extends DroidiumDeployment {
         return deploymentName;
     }
 
-    public void setDeploymentName(String deploymentName) {
+    public AndroidDeployment setDeploymentName(String deploymentName) {
         this.deploymentName = deploymentName;
+        return this;
     }
 
     /**

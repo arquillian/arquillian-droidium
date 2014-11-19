@@ -88,7 +88,8 @@ public class AndroidDeploymentInstaller {
             .setDeployApk(deployApk)
             .setResignedApk(resignedApk)
             .setApplicationBasePackage(androidApplicationHelper.get().getApplicationBasePackage(resignedApk))
-            .setDeploymentName(description.getName());
+            .setDeploymentName(description.getName())
+            .setApplicationMainActivity(androidApplicationHelper.get().getApplicationMainActivity(resignedApk));
 
         androidDeploymentRegister.get().add(deployment);
         androidApplicationManager.get().install(deployment);

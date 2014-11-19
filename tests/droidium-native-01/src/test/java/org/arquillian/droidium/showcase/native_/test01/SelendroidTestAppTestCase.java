@@ -56,14 +56,13 @@ public class SelendroidTestAppTestCase {
     @Deployment(name = "selendroid-test-app")
     @Instrumentable
     public static Archive<?> SelendroidDeployment() {
-        return ShrinkWrap.createFromZipFile(JavaArchive.class,
-            new File("selendroid-test-app-" + System.getProperty("selendroid.version", "0.9.0") + ".apk"));
+        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File(System.getProperty("selendroid.test.app")));
     }
 
     @Deployment(name = "aerogear-test-app")
     @Instrumentable(viaPort = 8082)
     public static Archive<?> createAerogeadDepoyment() {
-        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("aerogear-test-android.apk"));
+        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File(System.getProperty("aerogear.android.test.app")));
     }
 
     @Test

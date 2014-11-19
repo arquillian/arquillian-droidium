@@ -34,8 +34,12 @@
         </container>
     </group>
 
+    <extension qualifier="droidium-native">
+        <property name="serverApk">${selendroid.server.apk}</property>
+    </extension>
+
     <!-- on 8080 port is JBoss AS -->
-    
+
     <extension qualifier="webdriver-selendroid">
         <property name="browser">android</property>
         <property name="remoteAddress">http://localhost:8081/wd/hub</property>

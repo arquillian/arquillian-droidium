@@ -3,16 +3,35 @@
 This project shows various use cases of Arquillian Droidium container 
 possibly cooperating with native and web extensions.
 
-All necessary configuration needed in order to execute tests can be 
-found in every project README separately.
+All necessary configuration which is needed in order to execute every test project alone can be 
+found in their respective README files.
 
-In order to test all test projects in this directory, execute +test_all.sh+ script like this;
+In order to test all test projects in this directory in one batch in an automated manner, 
+execute Gradle build script like this:
 
 ----
-$ ./test_all.sh android-4.2.2 android-4.2.2b 192.168.0.1 true
+$ ./gradlew test
 ----
 
-It will use two emulators which have given AVD names and sets +-Darquillian.debug+ to true.
+If you want to execute only one test, do it like this:
+
+----
+$ ./gradlew test -PsingleTest=<test project dir>
+----
+
+You can run test suite against different version of Selendroid server. Server is being built
+dynamically (cloned from GitHub and built directly in Gradle script before tests' executions).
+
+In order to run tests agains different Selendroid, use these properties, where _selendroidVersion_
+is a version of Selendroid of that commit, e.g. "0.13.0-SNAPSHOT".
+
+----
+$ ./gradlew test -PselendroidCommit=<sha of commit> -PselendroidVersion=<version>
+----
+
+There is no need to download Android SDK and start emulators because test script does this all for you automatically. 
+
+Test script uses https://github.com/arquillian/arquillian-spacelift-gradle-plugin[Arquillian Spacelift Gradle Plugin].
 
 It contains these modules as standalone projects:
 

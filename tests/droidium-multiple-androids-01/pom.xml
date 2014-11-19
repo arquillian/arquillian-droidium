@@ -27,7 +27,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <version.arquillian.core>1.1.5.Final</version.arquillian.core>
-
+        <version.droidium>1.0.0.Beta1-SNAPSHOT</version.droidium>
         <version.junit>4.11</version.junit>
 
         <maven.compiler.source>1.6</maven.compiler.source>
@@ -35,6 +35,9 @@
 
 		<android.avd.name_1>testingEmulator_1</android.avd.name_1>
 		<android.avd.name_2>testingEmulator_2</android.avd.name_2>
+
+        <aerogear.android.test.app>aerogear-test-android.apk</aerogear.android.test.app>
+        <selendroid.test.app>selendroid-test-app-0.12.0.apk</selendroid.test.app>
     </properties>
 
     <!-- Dependency Management -->
@@ -50,7 +53,7 @@
             <dependency>
                 <groupId>org.arquillian.container</groupId>
                 <artifactId>arquillian-droidium-container</artifactId>
-                <version>${project.version}</version>
+                <version>${version.droidium}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -87,7 +90,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>2.6</version>
+                <version>2.7</version>
                 <executions>
                     <execution>
                         <phase>process-test-resources</phase>
@@ -97,10 +100,21 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>3.2</version>
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.18</version>
+                <configuration>
+                    <systemPropertyVariables>
+                        <aerogear.android.test.app>${aerogear.android.test.app}</aerogear.android.test.app>
+                        <selendroid.test.app>${selendroid.test.app}</selendroid.test.app>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
         </plugins>

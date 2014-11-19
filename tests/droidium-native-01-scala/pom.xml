@@ -28,7 +28,7 @@
 
         <version.org.jboss.arquillian.drone>2.0.0.Alpha2</version.org.jboss.arquillian.drone>
         <version.arquillian.core>1.1.5.Final</version.arquillian.core>
-
+        <version.droidium>1.0.0.Beta1-SNAPSHOT</version.droidium>
         <version.junit>4.11</version.junit>
         <version.selenium>2.42.2</version.selenium>
         <maven.compiler.source>1.6</maven.compiler.source>
@@ -42,8 +42,9 @@
         <org.specs2.version>1.13</org.specs2.version>
 
         <android.avd.name>testingEmulator</android.avd.name>
-        <android.emulator.options></android.emulator.options>
-        <selendroid.version>0.11.0</selendroid.version>
+        <android.emulator.options/>
+        <selendroid.test.app>selendroid-test-app-0.12.0.apk</selendroid.test.app>
+        <selendroid.server.apk>selendroid-server-0.12.0.apk</selendroid.server.apk>
     </properties>
 
     <!-- Dependency Management -->
@@ -97,13 +98,13 @@
             <dependency>
                 <groupId>org.arquillian.container</groupId>
                 <artifactId>arquillian-droidium-container</artifactId>
-                <version>${project.version}</version>
+                <version>${version.droidium}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.arquillian.extension</groupId>
                 <artifactId>arquillian-droidium-native</artifactId>
-                <version>${project.version}</version>
+                <version>${version.droidium}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
@@ -128,6 +129,7 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+
         <!-- Scala -->
         <dependency>
             <groupId>org.scala-lang</groupId>
@@ -144,6 +146,7 @@
             <artifactId>scalatest_${scala.tools.version}</artifactId>
             <scope>test</scope>
         </dependency>
+
         <!-- Droidium -->
         <dependency>
             <groupId>org.arquillian.container</groupId>
@@ -166,7 +169,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>2.6</version>
+                <version>2.7</version>
                 <executions>
                     <execution>
                         <phase>process-test-resources</phase>
@@ -176,15 +179,26 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>3.2</version>
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
                 </configuration>
             </plugin>
             <plugin>
-                <!-- see http://davidb.github.com/scala-maven-plugin -->
-                <!-- Scala Maven plugin -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.18</version>
+                <configuration>
+                    <useFile>false</useFile>
+                    <disableXmlReport>true</disableXmlReport>
+                    <systemPropertyVariables>
+                        <selendroid.test.app>${selendroid.test.app}</selendroid.test.app>
+                        <selendroid.server.apk>${selendroid.server.apk}</selendroid.server.apk>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
                 <version>${scala.maven.plugin.version}</version>
@@ -203,17 +217,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.16</version>
-                <configuration>
-                    <useFile>false</useFile>
-                    <disableXmlReport>true</disableXmlReport>
-                    <!-- If you have classpath issue like NoDefClassError,... -->
-                    <!-- useManifestOnlyJar>false</useManifestOnlyJar -->
-                </configuration>
             </plugin>
         </plugins>
         <testResources>

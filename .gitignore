@@ -26,3 +26,9 @@ transaction.log
 
 # Scala
 .cache
+
+# gradle
+.ws/
+.gradle/
+arquillian.xml.backup*
+pom.xml.backup*

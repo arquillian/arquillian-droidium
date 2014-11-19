@@ -88,6 +88,9 @@
         <!-- Screenshooter -->
         <version.recorder.screenshooter>1.0.0.Alpha4</version.recorder.screenshooter>
 
+        <!-- Selendroid -->
+        <version.selendroid>0.12.0</version.selendroid>
+
         <!-- Other versions -->
         <version.maven.animal.sniffer>1.12</version.maven.animal.sniffer>
         <version.httpclient>4.3.4</version.httpclient>

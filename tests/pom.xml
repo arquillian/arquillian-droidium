@@ -38,8 +38,8 @@
 
     <!-- Modules -->
     <modules>
-		<module>droidium-multiple-androids-01</module>
-		<module>droidium-multiple-androids-02</module>
+        <module>droidium-multiple-androids-01</module>
+        <module>droidium-multiple-androids-02</module>
         <module>droidium-multiple-androids-with-jboss-01</module>
         <module>droidium-multiple-containers-01</module>
         <module>droidium-multiple-containers-02</module>

@@ -82,6 +82,14 @@ Specifies where to do all repackaging operaions with Selendroid server and _aut_
 resigning and storing of APKs is done there. From the implementation point of view, all packages and 
 directories are random UUID identifiers.
 
+There are three ways how to specify this directory:
+
+* via _TMPDIR_, _TEMP_ or _TMP_ environment properties 
+* via _droidium.tmpdir_ system property
+* if both ways above leads to not resolved directory, _java.io.tmpdir_ is used
+
+System property _droidium.tmpdir_ has precedence over environment properties.
+
 This directory is deleted by default where tests are finished. It can be changed via `removeTmpDir` 
 property.
 

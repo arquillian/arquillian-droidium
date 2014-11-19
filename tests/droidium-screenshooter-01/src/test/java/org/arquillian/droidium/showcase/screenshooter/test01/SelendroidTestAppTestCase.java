@@ -56,8 +56,7 @@ public class SelendroidTestAppTestCase {
     @Deployment
     @Instrumentable
     public static Archive<?> createDeployment() {
-        return ShrinkWrap.createFromZipFile(JavaArchive.class,
-            new File("selendroid-test-app-" + System.getProperty("selendroid.version", "0.11.0") + ".apk"));
+        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File(System.getProperty("selendroid.test.app")));
     }
 
     private static final String USER_NAME = "john";
