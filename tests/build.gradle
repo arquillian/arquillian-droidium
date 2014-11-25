@@ -32,6 +32,8 @@ ext {
     grapheneVersion = "2.1.0.Alpha1"
     seleniumVersion = "2.42.2"
 
+    singleTest = ""
+
     droidiumTestProjects = [
         'droidium-multiple-androids-with-jboss-01',
         'droidium-multiple-androids-01',
@@ -102,12 +104,8 @@ spacelift {
                         'version.droidium': "${project.droidiumVersion}",
                         'version.arquillian.core': "${project.coreVersion}",
                         'version.arquillian.drone': "${project.droneVersion}",
-                        'version.org.jboss.arquillian.drone': "${project.droneVersion}",
                         'version.arquillian.graphene': "${project.grapheneVersion}",
-                        'version.droidium': "${project.droidiumVersion}",
                         'version.selendroid': "${project.selendroidVersion}",
-                        'version.spacelift': "${project.spaceliftVersion}",
-                        'version.ddmlib': "${project.ddmlibVersion}",
                         'version.selenium': "${project.seleniumVersion}",
                         'version.recorder.screenshooter' : "${project.recorderScreenshooterVersion}"
                     ], PomXmlUpdater).dir(project.rootDir).execute().await()
@@ -212,7 +210,7 @@ spacelift {
         droidiumTests {
 
             dataProvider {
-                project.singleTest ? [ project.singleTest ] : project.droidiumTestProjects
+                !project.singleTest.isEmpty() ? [ project.singleTest ] : project.droidiumTestProjects
             }
 
             beforeSuite {

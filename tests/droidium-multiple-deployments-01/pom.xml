@@ -25,7 +25,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <version.org.jboss.arquillian.drone>2.0.0.Alpha2</version.org.jboss.arquillian.drone>
+        <version.arquillian.drone>2.0.0.Alpha2</version.arquillian.drone>
         <version.arquillian.core>1.1.5.Final</version.arquillian.core>
         <version.droidium>1.0.0.Beta1-SNAPSHOT</version.droidium>
         <version.junit>4.11</version.junit>
@@ -61,7 +61,7 @@
             <dependency>
                 <groupId>org.jboss.arquillian.extension</groupId>
                 <artifactId>arquillian-drone-webdriver-depchain</artifactId>
-                <version>${version.org.jboss.arquillian.drone}</version>
+                <version>${version.arquillian.drone}</version>
                 <type>pom</type>
                 <scope>test</scope>
             </dependency>
