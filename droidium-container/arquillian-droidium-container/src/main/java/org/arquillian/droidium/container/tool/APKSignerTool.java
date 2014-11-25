@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.arquillian.droidium.container.configuration.AndroidSDK;
+import org.arquillian.droidium.container.task.CheckKeyStoreTask;
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.arquillian.spacelift.execution.Tasks;
 import org.arquillian.spacelift.process.Command;
@@ -54,6 +55,8 @@ public class APKSignerTool extends Tool<File, File> {
         if (toSign == null || !toSign.exists()) {
             throw new IllegalStateException("File to be signed is either null or it does not exists");
         }
+
+        Tasks.prepare(CheckKeyStoreTask.class).sdk(androidSDK).execute().await();
 
         File signed = new File(androidSDK.getPlatformConfiguration().getTmpDir(), DroidiumFileUtils.getRandomAPKFileName());
 

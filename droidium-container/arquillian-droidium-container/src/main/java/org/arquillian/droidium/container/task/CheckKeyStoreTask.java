@@ -22,16 +22,15 @@ import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Validate;
 import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
 import org.arquillian.spacelift.execution.Task;
+import org.arquillian.spacelift.execution.Tasks;
 
 /**
- * Checks if some keystore from {@link DroidiumPlatformConfiguration} is valid.
- *
- * When this task is to be chained, it returns {@link File} as keystore to create or null if it is already present.
+ * Checks if some keystore from {@link DroidiumPlatformConfiguration} is valid, if not, it is created.
  *
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
-public class CheckKeyStoreTask extends Task<Object, File> {
+public class CheckKeyStoreTask extends Task<Object, Void> {
 
     private AndroidSDK androidSDK;
 
@@ -41,13 +40,21 @@ public class CheckKeyStoreTask extends Task<Object, File> {
     }
 
     @Override
-    protected File process(Object input) throws Exception {
+    protected Void process(Object input) throws Exception {
+
+        if (androidSDK == null) {
+            throw new IllegalStateException("You have to set androidSdk via setter.");
+        }
+
         if (!Validate.isReadable(new File(androidSDK.getPlatformConfiguration().getKeystore()))) {
             File defaultKeyStore = new File(getDefaultKeyStorePath());
             if (!Validate.isReadable(defaultKeyStore)) {
-                return defaultKeyStore;
+                Tasks.prepare(CreateKeyStoreTask.class).keyStoreToCreate(defaultKeyStore).sdk(androidSDK).execute().await();
+            } else {
+                androidSDK.getPlatformConfiguration().setProperty("keystore", defaultKeyStore.getAbsolutePath());
             }
         }
+
         return null;
     }
 

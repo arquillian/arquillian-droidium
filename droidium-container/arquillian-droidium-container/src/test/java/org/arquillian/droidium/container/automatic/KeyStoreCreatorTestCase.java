@@ -19,7 +19,6 @@ package org.arquillian.droidium.container.automatic;
 import java.io.File;
 
 import org.arquillian.droidium.container.api.FileType;
-import org.arquillian.droidium.container.api.IdentifierGenerator;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.task.CreateKeyStoreTask;
@@ -60,9 +59,15 @@ public class KeyStoreCreatorTestCase {
     @Before
     public void before() {
         configuration = new AndroidContainerConfiguration();
+        configuration.validate();
+
         platformConfiguration = new DroidiumPlatformConfiguration();
+        platformConfiguration.validate();
+
         androidSDK = new AndroidSDK(platformConfiguration);
         androidSDK.setupWith(configuration);
+
+        keyStoreToCreate = new File(platformConfiguration.getTmpDir(), new AndroidIdentifierGenerator().getIdentifier(FileType.FILE));
     }
 
     @After
@@ -77,10 +82,6 @@ public class KeyStoreCreatorTestCase {
 
     @Test
     public void createKeyStoreTest() {
-        IdentifierGenerator<FileType> aig = new AndroidIdentifierGenerator();
-        keyStoreToCreate = new File(
-            System.getProperty("java.io.tmpdir") + System.getProperty("file.separator") + aig.getIdentifier(FileType.FILE));
-
         Tasks.chain(keyStoreToCreate, CreateKeyStoreTask.class).sdk(androidSDK).execute().await();
         Assert.assertTrue(keyStoreToCreate.exists());
     }

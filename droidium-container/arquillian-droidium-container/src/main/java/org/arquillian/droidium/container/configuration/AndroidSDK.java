@@ -34,6 +34,9 @@ import java.io.File;
 import java.text.MessageFormat;
 import java.util.Arrays;
 
+import org.arquillian.droidium.container.configuration.target.TargetParser;
+import org.arquillian.droidium.container.configuration.target.TargetPicker;
+import org.arquillian.droidium.container.configuration.target.TargetRegistry;
 import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
 
 /**
@@ -41,10 +44,8 @@ import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
  *
  * @author <a href="mailto:kpiwko@redhat.com">Karel Piwko</a>
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
- * @author hugo.josefson@jayway.com
- * @author Manfred Moser <manfred@simpligility.com>
  */
-public class AndroidSDK {
+public final class AndroidSDK {
 
     /**
      * folder name for the SDK sub folder that contains the different platform versions
@@ -71,75 +72,42 @@ public class AndroidSDK {
      */
     public static final String ADD_ONS_FOLDER_NAME = "add-ons";
 
+    private final TargetRegistry targetRegistry;
+
     private final DroidiumPlatformConfiguration platformConfiguration;
 
     private AndroidContainerConfiguration containerConfiguration;
 
-    private final File sdkPath;
-    private final File javaPath;
-
     private Platform currentPlatform;
-
-    private static final String defaultAndroidHome;
-
-    static {
-        String home = System.getProperty("android.home");
-        if (home == null) {
-            home = System.getenv("ANDROID_HOME");
-        }
-        if (home == null) {
-            home = System.getenv("HOME");
-        }
-        defaultAndroidHome = home;
-    }
 
     public AndroidSDK(DroidiumPlatformConfiguration platformConfiguration) {
         Validate.notNull(platformConfiguration, "Droidium platform configuration can not be a null object!");
 
         this.platformConfiguration = platformConfiguration;
 
-        this.sdkPath = new File(this.platformConfiguration.getAndroidHome());
-        this.javaPath = new File(this.platformConfiguration.getJavaHome());
-
-        this.currentPlatform = Platform.getAvailablePlatforms(new File(defaultAndroidHome)).iterator().next();
+        currentPlatform = Platform.getAvailablePlatforms(platformConfiguration.getAndroidHome()).iterator().next();
+        targetRegistry = new TargetRegistry();
     }
 
     public void setupWith(AndroidContainerConfiguration containerConfiguration) {
-
-        Validate.notNull(containerConfiguration, "AndroidSDK configuration must be provided");
-
+        Validate.notNull(containerConfiguration, "Container configuration must be provided");
         this.containerConfiguration = containerConfiguration;
 
-        // get the latest available platform by default
-        this.currentPlatform = Platform.getAvailablePlatforms(sdkPath).iterator().next();
-
-        // if serialID is not defined, let's try figure out by target
-        if (containerConfiguration.getSerialId() == null) {
-
-            Target currentTarget = null;
-
-            // check whether there was target defined in configuration
-            String targetId = containerConfiguration.getTarget();
-            if (targetId != null && !"".equals(targetId)) {
-                currentTarget = Target.findMatchingTarget(getAndroidPath(), targetId);
-                this.currentPlatform = Platform.findPlatformByTarget(sdkPath, currentTarget);
-                // update runtime configuration
-                containerConfiguration.setTarget(currentTarget.getName());
-            }
-            // get target based on latest platform
-            else {
-                currentTarget = Target.findMatchingTarget(getAndroidPath(), this.currentPlatform.getApiLevel());
-                // update runtime configuration
-                containerConfiguration.setTarget(currentTarget.getName());
-            }
-
-            // we have select target and platform, lets try to get system image
-            SystemImage image = SystemImage.getSystemImageForTarget(sdkPath, currentTarget, containerConfiguration.getAbi());
-            containerConfiguration.setAbi(image.getAbi());
+        if (this.containerConfiguration.getSerialId() != null) {
+            return;
         }
 
+        initializeTargetRegistry();
+        new TargetPicker(targetRegistry, getAndroidContainerConfiguration()).pick();
+
         System.out.println("Droidium runtime configuration: ");
-        System.out.println(containerConfiguration.toString());
+        System.out.println(getAndroidContainerConfiguration().toString());
+    }
+
+    private void initializeTargetRegistry() {
+        if (targetRegistry.getTargets().size() == 0) {
+            targetRegistry.addTargets(new TargetParser(this, getPlatformConfiguration()).parse());
+        }
     }
 
     /**
@@ -147,7 +115,7 @@ public class AndroidSDK {
      * @return current container configuration
      * @throws IllegalStateException if you have not called {@link AndroidSDK#setupWith(AndroidContainerConfiguration)} yet.
      */
-    public AndroidContainerConfiguration getConfiguration() {
+    public AndroidContainerConfiguration getAndroidContainerConfiguration() {
         if (containerConfiguration == null) {
             throw new IllegalStateException("You have not called AndroidSDK.setupWith(AndroidContainerConfiguration) method");
         }
@@ -159,6 +127,8 @@ public class AndroidSDK {
     }
 
     public String getPathForJavaTool(String tool) {
+
+        File javaPath = new File(platformConfiguration.getJavaHome());
 
         File[] possiblePaths = { new File(javaPath, MessageFormat.format("bin/{0}", tool)),
             new File(javaPath, MessageFormat.format("bin/{0}.exe", tool)),
@@ -193,6 +163,10 @@ public class AndroidSDK {
      */
     public String getPathForTool(String tool) {
 
+        File sdkPath = new File(getPlatformConfiguration().getAndroidHome());
+
+        String platformDirName = getPlatformDirectory().getName();
+
         File[] possiblePaths = { new File(sdkPath, MessageFormat.format("tools/{0}", tool)),
             new File(sdkPath, MessageFormat.format("tools/{0}.exe", tool)),
             new File(sdkPath, MessageFormat.format("tools/{0}.bat", tool)),
@@ -205,15 +179,15 @@ public class AndroidSDK {
             new File(sdkPath, MessageFormat.format("{0}/tools/{1}", PLATFORMS_FOLDER_NAME, tool)),
             new File(sdkPath, MessageFormat.format("{0}/tools/{1}.exe", PLATFORMS_FOLDER_NAME, tool)),
             new File(sdkPath, MessageFormat.format("{0}/tools/{1}.bat", PLATFORMS_FOLDER_NAME, tool)),
-            new File(sdkPath, MessageFormat.format("{0}/tools/{1}", getPlatformName(), tool)),
-            new File(sdkPath, MessageFormat.format("{0}/tools/{1}.exe", getPlatformName(), tool)),
-            new File(sdkPath, MessageFormat.format("{0}/tools/{1}.bat", getPlatformName(), tool)),
+            new File(sdkPath, MessageFormat.format("{0}/tools/{1}", platformDirName, tool)),
+            new File(sdkPath, MessageFormat.format("{0}/tools/{1}.exe", platformDirName, tool)),
+            new File(sdkPath, MessageFormat.format("{0}/tools/{1}.bat", platformDirName, tool)),
             new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}", PLATFORMS_FOLDER_NAME, tool)),
             new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}.exe", PLATFORMS_FOLDER_NAME, tool)),
             new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}.bat", PLATFORMS_FOLDER_NAME, tool)),
-            new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}", getPlatformName(), tool)),
-            new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}.exe", getPlatformName(), tool)),
-            new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}.bat", getPlatformName(), tool)),
+            new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}", platformDirName, tool)),
+            new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}.exe", platformDirName, tool)),
+            new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}.bat", platformDirName, tool)),
             new File(sdkPath, MessageFormat.format("{0}/{1}", PLATFORM_TOOLS_FOLDER_NAME, tool)),
             new File(sdkPath, MessageFormat.format("{0}/{1}.exe", PLATFORM_TOOLS_FOLDER_NAME, tool)),
             new File(sdkPath, MessageFormat.format("{0}/{1}.bat", PLATFORM_TOOLS_FOLDER_NAME, tool)), };
@@ -293,11 +267,15 @@ public class AndroidSDK {
 
     private String getBuildTool(String tool) {
 
+        File sdkPath = new File(getPlatformConfiguration().getAndroidHome());
+
+        String platformDirName = getPlatformDirectory().getName();
+
         // look only into android-sdks/platforms/android-{number}/tools/aapt
         File[] possiblePlatformPaths = {
-            new File(sdkPath, MessageFormat.format("{0}/{1}/tools/{2}", PLATFORMS_FOLDER_NAME, getPlatformName(), tool)),
-            new File(sdkPath, MessageFormat.format("{0}/{1}/tools/{2}.exe", PLATFORMS_FOLDER_NAME, getPlatformName(), tool)),
-            new File(sdkPath, MessageFormat.format("{0}/{1}/tools/{2}.bat", PLATFORMS_FOLDER_NAME, getPlatformName(), tool)) };
+            new File(sdkPath, MessageFormat.format("{0}/{1}/tools/{2}", PLATFORMS_FOLDER_NAME, platformDirName, tool)),
+            new File(sdkPath, MessageFormat.format("{0}/{1}/tools/{2}.exe", PLATFORMS_FOLDER_NAME, platformDirName, tool)),
+            new File(sdkPath, MessageFormat.format("{0}/{1}/tools/{2}.bat", PLATFORMS_FOLDER_NAME, platformDirName, tool)) };
 
         for (File candidate : possiblePlatformPaths) {
             if (candidate.exists() && candidate.isFile() && candidate.canExecute()) {
@@ -322,7 +300,4 @@ public class AndroidSDK {
         throw new RuntimeException("Could not find tool '" + tool + ".");
     }
 
-    private String getPlatformName() {
-        return currentPlatform.getPath().getName();
-    }
 }

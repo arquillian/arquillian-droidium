@@ -276,8 +276,8 @@ If left blank, an unique +avdName+ will be generated.
 ==== abi
 ===== default: `x86`
 
-Pretty straightforward. Which ABI your container should use. When you are going to create an AVD dynamically for a
-+target+ and there is not such ABI available for that level, whatever comes first among +x86+, +armeabi-v7a+, +android-wear/armeabi-v7a+ or +mips+ is used.
+ABI your container should use. It is automatically prepended with _default/_ when not specified. Be sure such abi is available for 
+your selected target.
 
 ----
 <configuration>
@@ -291,15 +291,13 @@ Pretty straightforward. Which ABI your container should use. When you are going 
 
 Sets your target you want to use when you are going to create emulator from scratch. Possible values for this property 
 are the same as the output of +android list targets -c+. You can use integer value of API level you want to target as well. When you 
-do not specify +abi+ property, it tries to match whatever available comes first among +x86+, +armeabi-v7a+, +android-wear/armeabi-v7a+  or +mips+ 
-for that target. In case you use Google API target, it has ABI specified in it. When it is not there, it uses arm.
+do not specify +abi+ property, it tries to match default abi.
 
 ----
 <configuration>
     <property name="target">18</property> // is the same as android-18
     <property name="target">android-18</property>
-    <property name="target">Google Inc.:Google APIs:19</property> // uses armeabi-v7a
-    <property name="target">Google Inc.:Google APIs x86:19</property> // uses x86
+    <property name="target">Google Inc.:Google APIs:19</property>
 </configuration>
 ----
 
@@ -461,7 +459,7 @@ If you set level to `V`, everything will be logged, if `W` then only warnings an
 ----
 
 ==== logType
-===== default: output
+===== default: disable
 
 Used to define what should be done with the logs read from logcat.
 

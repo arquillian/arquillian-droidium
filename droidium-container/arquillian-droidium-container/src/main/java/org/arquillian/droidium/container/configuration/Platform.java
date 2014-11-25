@@ -27,8 +27,10 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.arquillian.droidium.container.configuration.target.Target;
+
 /**
- * Abstraction of a platform in Android SDK
+ * Abstraction of a platform in Android SDK.
  *
  * @author <a href="kpiwko@redhat.com">Karel Piwko</a>
  *
@@ -56,14 +58,10 @@ class Platform {
     private final int apiLevel;
     private final File path;
 
-    private Platform(String name, String apiLevel, File path) throws AndroidContainerConfigurationException {
+    private Platform(String name, int apiLevel, File path) {
         this.name = name;
         this.path = path;
-        try {
-            this.apiLevel = Integer.parseInt(apiLevel);
-        } catch (NumberFormatException e) {
-            throw new AndroidContainerConfigurationException("Unable to identify API level of platform, was: " + apiLevel);
-        }
+        this.apiLevel = apiLevel;
     }
 
     public String getName() {
@@ -78,6 +76,12 @@ class Platform {
         return path;
     }
 
+    /**
+     *
+     * @param sdkPath
+     * @param target
+     * @return
+     */
     public static Platform findPlatformByTarget(File sdkPath, Target target) {
 
         for (Platform platform : getAvailablePlatforms(sdkPath)) {
@@ -86,8 +90,11 @@ class Platform {
             }
         }
 
-        throw new AndroidContainerConfigurationException(
-            String.format("Platform you are trying to find for target '%s' is unknown.", target));
+        return null;
+    }
+
+    public static List<Platform> getAvailablePlatforms(String sdkPath) {
+        return getAvailablePlatforms(new File(sdkPath));
     }
 
     /**
@@ -100,24 +107,15 @@ class Platform {
     public static List<Platform> getAvailablePlatforms(File sdkPath) throws AndroidContainerConfigurationException {
         List<Platform> platforms = new ArrayList<Platform>();
 
-        List<File> platformDirectories = getPlatformDirectories(sdkPath);
-        for (File pDir : platformDirectories) {
-            File propFile = new File(pDir, SOURCE_PROPERTIES_FILENAME);
-            Properties properties = new Properties();
-            try {
-                properties.load(new FileInputStream(propFile));
-            } catch (IOException e) {
-                throw new AndroidContainerConfigurationException(
-                    "Unable to read platform directory details from its configuration file " + propFile.getAbsoluteFile());
-            }
+        for (File platformDir : getPlatformDirs(sdkPath)) {
+            Properties properties = loadProperties(new File(platformDir, SOURCE_PROPERTIES_FILENAME));
 
             if (properties.containsKey(PLATFORM_VERSION_PROPERTY) && properties.containsKey(API_LEVEL_PROPERTY)) {
-                String platform = properties.getProperty(PLATFORM_VERSION_PROPERTY);
+                String platformVersion = properties.getProperty(PLATFORM_VERSION_PROPERTY);
                 String apiLevel = properties.getProperty(API_LEVEL_PROPERTY);
-                Platform p = new Platform(platform, apiLevel, pDir);
-                platforms.add(p);
-                log.log(Level.FINE, "Found available platform {0}", p);
-
+                Platform platform = new Platform(platformVersion, Integer.parseInt(apiLevel), platformDir);
+                platforms.add(platform);
+                log.log(Level.FINE, "Found available platform {0}", platform);
             }
         }
 
@@ -138,26 +136,31 @@ class Platform {
         return platforms;
     }
 
-    /**
-     * Gets the source properties files from all locally installed platforms.
-     *
-     * @return list of platform directories
-     */
-    private static List<File> getPlatformDirectories(File sdkPath) {
-        List<File> foundPlatformDirs = new ArrayList<File>();
+    private static Properties loadProperties(File propertyFile) {
+        Properties properties = new Properties();
 
-        final File platformsDirectory = new File(sdkPath, AndroidSDK.PLATFORMS_FOLDER_NAME);
-        if (!Validate.isReadableDirectory(platformsDirectory)) {
-            throw new IllegalArgumentException("Unable to read Android SDK Platforms directory from directory "
-                + platformsDirectory);
+        try {
+            properties.load(new FileInputStream(propertyFile));
+        } catch (IOException e) {
+            throw new IllegalStateException(
+                "Unable to read platform directory details from its configuration file " + propertyFile.getAbsoluteFile());
         }
 
-        final File[] platformDirectories = platformsDirectory.listFiles();
-        for (File file : platformDirectories) {
-            // only looking in android- folder so only works on reasonably new
-            // sdk revisions..
-            if (file.isDirectory() && file.getName().startsWith("android-")) {
-                foundPlatformDirs.add(file);
+        return properties;
+    }
+
+    private static List<File> getPlatformDirs(File sdkPath) {
+        List<File> foundPlatformDirs = new ArrayList<File>();
+
+        final File platformDirs = new File(sdkPath, AndroidSDK.PLATFORMS_FOLDER_NAME);
+        if (!Validate.isReadableDirectory(platformDirs)) {
+            throw new IllegalArgumentException("Unable to read Android SDK Platforms directory from directory "
+                + platformDirs);
+        }
+
+        for (File platformDir : platformDirs.listFiles()) {
+            if (platformDir.isDirectory() && platformDir.canRead() && platformDir.getName().startsWith("android-")) {
+                foundPlatformDirs.add(platformDir);
             }
         }
         return foundPlatformDirs;

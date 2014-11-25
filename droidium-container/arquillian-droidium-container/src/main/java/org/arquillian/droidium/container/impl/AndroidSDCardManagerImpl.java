@@ -32,6 +32,7 @@ import org.arquillian.droidium.container.spi.event.AndroidSDCardCreate;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardCreated;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardDelete;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardDeleted;
+import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
 import org.arquillian.spacelift.execution.ExecutionException;
 import org.arquillian.spacelift.execution.Tasks;
 import org.arquillian.spacelift.process.Command;
@@ -68,6 +69,9 @@ public class AndroidSDCardManagerImpl implements AndroidSDCardManager {
     private Instance<AndroidContainerConfiguration> configuration;
 
     @Inject
+    private Instance<DroidiumPlatformConfiguration> droidiumPlatformConfiguration;
+
+    @Inject
     private Instance<AndroidSDK> androidSDK;
 
     @Inject
@@ -78,9 +82,6 @@ public class AndroidSDCardManagerImpl implements AndroidSDCardManager {
 
     @Inject
     private Event<AndroidSDCardDeleted> androidSDCardDeleted;
-
-    private static final String SD_CARD_DEFAULT_DIR_PATH = System.getProperty("java.io.tmpdir")
-        + System.getProperty("file.separator");
 
     public void createSDCard(@Observes AndroidSDCardCreate event) throws AndroidExecutionException {
 
@@ -99,7 +100,9 @@ public class AndroidSDCardManagerImpl implements AndroidSDCardManager {
 
         if (sdCard.isGenerated()) {
             if (sdCard.getFileName() == null) {
-                String sdCardName = SD_CARD_DEFAULT_DIR_PATH + idGenerator.get().getIdentifier(FileType.SD_CARD);
+                String sdCardName = new File(droidiumPlatformConfiguration.get().getTmpDir(),
+                    idGenerator.get().getIdentifier(FileType.SD_CARD)).getAbsolutePath();
+
                 sdCard.setFileName(sdCardName);
                 configuration.setSdCard(sdCardName);
                 createSDCard(sdCard);

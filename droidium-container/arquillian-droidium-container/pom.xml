@@ -9,7 +9,8 @@
     License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
     OF ANY KIND, either express or implied. See the License for the specific
     language governing permissions and limitations under the License. -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <!-- Model Version -->
     <modelVersion>4.0.0</modelVersion>
@@ -32,7 +33,7 @@
     <properties>
         <!-- known to work with Android 2.3 -->
         <version.android>2.3</version.android>
-        
+
         <version.commons.io>2.4</version.commons.io>
     </properties>
 
@@ -137,10 +138,10 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-             <groupId>org.jboss.arquillian.test</groupId>
+            <groupId>org.jboss.arquillian.test</groupId>
             <artifactId>arquillian-test-impl-base</artifactId>
             <scope>test</scope>
-        </dependency>        
+        </dependency>
 
         <dependency>
             <groupId>org.jboss.as</groupId>
@@ -166,7 +167,7 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.4</version>
+            <version>${version.commons.io}</version>
         </dependency>
     </dependencies>
 
@@ -222,25 +223,13 @@
             </build>
         </profile>
         <profile>
-            <!-- Be sure that:
-                1)
-                you started Android Virtual Device (emulator) prior to test with:
+            <!--
+                Be sure that you started Android Virtual Device (emulator) prior to test with:
                 a) AVD name test01
                 b) its console port is 5554
-                2)
-                a) your port 5556 is free, it will be used when the testing
-                of startup of container takes place
-                b) you have AVD of name test01 at your system
-                3)
-                You can specify emulator timeout by setting -Demulator.startup.timeout=number.
-                Default is 600 seconds.
 
-                Regarding of 1)
                 AVD name can be supressed by setting -Demulator.running.avd.name=your_value
                 Console port can be supressed by setting -Demulator.running.console.port=your_value
-                Regarding of 2)
-                AVD name can be suppressed by -Demulator.to.run.avd.name=your_value
-                Console port can be supressed by setting -Demulator.to.run.console.port=your_value
             -->
             <id>android-manual-emulator</id>
             <activation>

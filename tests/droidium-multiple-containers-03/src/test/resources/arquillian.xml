@@ -26,7 +26,6 @@
                 <property name="avdName">${android.avd.name}</property>
                 <property name="emulatorOptions">${android.emulator.options}</property>
                 <property name="emulatorBootupTimeoutInSeconds">600</property>
-                <property name="logType">disable</property>
             </configuration>
         </container>
 
@@ -38,8 +37,7 @@
         </container>
     </group>
 
-    <!-- Configuration of webdriver extension for firefox -->
     <extension qualifier="webdriver">
-        <property name="browser">firefox</property>
+        <property name="browser">${browser}</property>
     </extension>
 </arquillian>

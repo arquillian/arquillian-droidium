@@ -40,10 +40,10 @@ import org.arquillian.spacelift.execution.impl.DefaultExecutionServiceFactory;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.container.test.AbstractContainerTestBase;
+import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -69,7 +69,6 @@ import static org.junit.Assert.assertNotNull;
  *
  */
 @RunWith(MockitoJUnitRunner.class)
-@Ignore("Not stable on Cloudbees")
 public class AndroidDeviceSelectorEmulatorRunningTestCase extends AbstractContainerTestBase {
 
     private AndroidContainerConfiguration configuration;
@@ -101,13 +100,16 @@ public class AndroidDeviceSelectorEmulatorRunningTestCase extends AbstractContai
         configuration.validate();
 
         platformConfiguration = new DroidiumPlatformConfiguration();
+        platformConfiguration.validate();
+
         androidSDK = new AndroidSDK(platformConfiguration);
         androidSDK.setupWith(configuration);
 
         getManager().getContext(ContainerContext.class).activate("doesnotmatter");
 
         bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration);
-        bind(ContainerScoped.class, AndroidSDK.class, androidSDK);
+        bind(ApplicationScoped.class, DroidiumPlatformConfiguration.class, platformConfiguration);
+        bind(ApplicationScoped.class, AndroidSDK.class, androidSDK);
     }
 
     @After
@@ -121,6 +123,9 @@ public class AndroidDeviceSelectorEmulatorRunningTestCase extends AbstractContai
         fire(new AndroidContainerStart());
 
         AndroidBridge bridge = getManager().getContext(ContainerContext.class).getObjectStore().get(AndroidBridge.class);
+
+        assertNotNull("AndroidBridge is null object!", bridge);
+
         bind(ContainerScoped.class, AndroidBridge.class, bridge);
 
         AndroidDevice runningDevice = getManager().getContext(ContainerContext.class)

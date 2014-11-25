@@ -18,13 +18,11 @@
         <container qualifier="android_1" default="true">
             <configuration>
                 <property name="avdName">${android.avd.name_1}</property>
-                <property name="logType">disable</property>
             </configuration>
         </container>
         <container qualifier="android_2">
             <configuration>
                 <property name="avdName">${android.avd.name_2}</property>
-                <property name="logType">disable</property>
             </configuration>
         </container>
     </group>

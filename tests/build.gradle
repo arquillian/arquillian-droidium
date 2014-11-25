@@ -19,20 +19,30 @@ ext {
     defaultEmulatorTimeout = "300"
     defaultAndroidSdkVersion = "23"
     defaultAndroidTarget = "android-19"
-    defaultAndroidTargetSelendroid = "android-16"
+    defaultAndroidAbi = "default/x86"
+    defaultBrowser = "phantomjs"
+    defaultDeviceSerialId = ""
 
     droidiumVersion = "1.0.0.Beta1-SNAPSHOT"
     selendroidCommit = "cd07b1aaf1c34c085b27aa0b33bf24d2767a9865"
     selendroidVersion = "0.13.0-SNAPSHOT"
     recorderScreenshooterVersion = "1.0.0.Alpha4"
     spaceliftVersion = "1.0.0.Alpha3"
-    ddmlibVersion = "23.1.3"
     coreVersion = "1.1.5.Final"
     droneVersion = "2.0.0.Alpha2"
     grapheneVersion = "2.1.0.Alpha1"
-    seleniumVersion = "2.42.2"
+    seleniumVersion = "2.43.1"
 
-    singleTest = ""
+    additionalAndroidTargets = [
+        'android-10',
+        'android-16', // Selendroid needs that
+        'Google Inc.:Google APIs:19',
+        'Google Inc.:Google APIs (x86 System Image):19',
+    ]
+
+    // specify this from outside as -PsingleTest=test_dir 
+    // to test only specific project
+    defaultSingleTest = ""
 
     droidiumTestProjects = [
         'droidium-multiple-androids-with-jboss-01',
@@ -87,12 +97,27 @@ spacelift {
 
     profiles {
         'default' {
-            enabledInstallations 'droidium', 'androidSdk', 'selendroid'
             tests 'droidiumTests'
-        }
-        'deviceSelection' {
             enabledInstallations 'droidium', 'androidSdk', 'selendroid'
+        }
+
+        'deviceSelection' {
             tests 'deviceSelectionTest'
+            enabledInstallations 'droidium', 'androidSdk', 'selendroid'
+        }
+
+        'droidiumInternal' {
+            tests (
+                'droidiumInternalTestsAutomatic',
+                'droidiumInternalTestsManualEmulator',
+                'droidiumInternalTestsConfiguration',
+            )
+            enabledInstallations 'androidSdk'
+        }
+
+        'droidiumInternalPhysical' {
+            tests 'droidiumInternalTestsPhyiscalDevice'
+            enabledInstallations 'androidSdk'
         }
     }
 
@@ -116,7 +141,7 @@ spacelift {
                         'version.selendroid': "${project.selendroidVersion}",
                         'version.selenium': "${project.seleniumVersion}",
                         'version.recorder.screenshooter' : "${project.recorderScreenshooterVersion}"
-                    ], PomXmlUpdater).dir(project.rootDir).execute().await()
+                    ], PomXmlUpdater).dir(dir: project.rootDir, excludes: [ ".ws/**" ]).execute().await()
             }
         }
 
@@ -128,10 +153,10 @@ spacelift {
 
             postActions {
                 if (!new File(home, "selendroid-server/target").exists()) {
-                    Tasks.prepare(MavenExecutor).pom("${home}/pom.xml")
+                    Tasks.prepare(MavenExecutor).pom("${home.absolutePath}/pom.xml")
                         .goal('install')
                         .property('maven.test.skip=true')
-                        .env([ANDROID_HOME : project.spacelift.workspace.absolutePath + "/android-sdk-linux"])
+                        .env([ANDROID_HOME : androidSdk.home.absolutePath])
                         .env([ANDROID_SDK_HOME : project.spacelift.workspace.absolutePath])
                         .execute().await()
                 }
@@ -140,52 +165,37 @@ spacelift {
                         'selendroid.test.app': "${home}/selendroid-test-app/target/selendroid-test-app-${project.selendroidVersion}.apk",
                         'selendroid.server.apk': "${home}/selendroid-server/target/selendroid-server-${project.selendroidVersion}.apk",
                         'selendroid.driver.apk': "${home}/android-driver/target/android-driver-app-${project.selendroidVersion}.apk"
-                    ], PomXmlUpdater).dir(project.rootDir).execute().await()
+                    ], PomXmlUpdater).dir(dir: project.rootDir, excludes: [ ".ws/**" ]).execute().await()
             }
         }
 
         androidSdk {
             product 'androidSdk'
             version { project.androidSdkVersion }
-
-            remoteUrl ([
-                linux: { "http://dl.google.com/android/android-sdk_r${project.androidSdkVersion}-linux.tgz" },
-                windows: { "http://dl.google.com/android/android-sdk_r${project.androidSdkVersion}-windows.zip" },
-                mac: { "http://dl.google.com/android/android-sdk_r${project.androidSdkVersion}-macosx.zip" },
-                solaris: { "http://dl.google.com/android/android-sdk_r${project.androidSdkVersion}-linux.tgz" }
-            ])
-
-            home ([
-                linux: "android-sdk-linux",
-                windows:"android-sdk-windows",
-                mac: "android-sdk-macosx",
-                solaris: "android-sdk-linux"
-            ])
+            remoteUrl { "http://dl.google.com/android/android-sdk_r${project.androidSdkVersion}-linux.tgz" }
+            home "android-sdk-linux"
 
             tools {
                 android {
-                    command ([
-                        linux: [ "${home}/tools/android" ],
-                         mac: [ "${home}/tools/android" ],
-                         windows: [ "cmd.exe", "/C", "${home}/tools/android.bat" ],
-                         solaris: [ "${home}/tools/android" ]
-                    ])
+                    command {
+                        Tasks.prepare(CommandTool).programName("${androidSdk.home.absolutePath}/tools/android")
+                            .addEnvironment("ANDROID_HOME", androidSdk.home.absolutePath)
+                            .addEnvironment("ANDROID_SDK_HOME", project.spacelift.workspace.absolutePath)
+                    }
                 }
                 adb {
-                    command ([
-                        linux: [ "${home}/platform-tools/adb" ],
-                        mac: [ "${home}/platform-tools/adb" ],
-                        windows: [ "cmd.exe", "/C", "${home}/platform-tools/adb.bat" ],
-                        solaris: [ "${home}/platform-tools/adb" ]
-                    ])
+                    command {
+                        Tasks.prepare(CommandTool).programName("${androidSdk.home.absolutePath}/platform-tools/adb")
+                            .addEnvironment("ANDROID_HOME", androidSdk.home.absolutePath)
+                            .addEnvironment("ANDROID_SDK_HOME", project.spacelift.workspace.absolutePath)
+                    }
                 }
                 emulator {
-                    command ([
-                        linux: [ "${home}/tools/emulator" ],
-                        mac: [ "${home}/tools/emulator" ],
-                        windows: [ "cmd.exe", "/C", "${home}/tools/emulator.bat" ],
-                        solaris: [ "${home}/tools/emulator" ]
-                   ])
+                    command {
+                        Tasks.prepare(CommandTool).programName("${androidSdk.home.absolutePath}/tools/emulator")
+                            .addEnvironment("ANDROID_HOME", androidSdk.home.absolutePath)
+                            .addEnvironment("ANDROID_SDK_HOME", project.spacelift.workspace.absolutePath)
+                    }
                 }
             }
 
@@ -193,23 +203,12 @@ spacelift {
                 project.ant.chmod(dir: "${home}/tools", perm:"a+x", includes:"*", excludes:"*.txt")
 
                 Tasks.prepare(AndroidSdkUpdater).target(project.androidTarget).execute().await()
-                Tasks.prepare(AndroidSdkUpdater).target(project.androidTargetSelendroid).execute().await()
+
+                project.additionalAndroidTargets.each { target ->
+                    Tasks.prepare(AndroidSdkUpdater).target(target).execute().await()
+                }
 
                 Tasks.prepare(AndroidSdkOptForStats).execute().await()
-
-                Tasks.prepare(AVDCreator)
-                    .target(project.androidTarget)
-                    .abi("default/x86")
-                    .name(project.android_avd_1)
-                    .force()
-                    .execute().await()
-
-                Tasks.prepare(AVDCreator)
-                    .target(project.androidTarget)
-                    .abi("default/x86")
-                    .name(project.android_avd_2)
-                    .force()
-                    .execute().await()
             }
         }
     }
@@ -222,6 +221,20 @@ spacelift {
             }
 
             beforeSuite {
+                Tasks.prepare(AVDCreator)
+                    .target(project.androidTarget)
+                    .abi(project.androidAbi)
+                    .name(project.android_avd_1)
+                    .force()
+                    .execute().await()
+
+                Tasks.prepare(AVDCreator)
+                    .target(project.androidTarget)
+                    .abi(project.androidAbi)
+                    .name(project.android_avd_2)
+                    .force()
+                    .execute().await()
+
                 Tasks.prepare(AndroidEmulatorStarter)
                     .avd(project.android_avd_1)
                     .parameters(['-no-audio', '-memory', project.emulatorMemory])
@@ -252,7 +265,8 @@ spacelift {
                     .property("android.avd.name_1=${project.android_avd_1}")
                     .property("android.avd.name_2=${project.android_avd_2}")
                     .property("arquillian.debug=${project.arquillian_debug}")
-                    .env([ANDROID_HOME : project.spacelift.workspace.absolutePath + "/android-sdk-linux"])
+                    .property("browser=${project.browser}")
+                    .env([ANDROID_HOME : androidSdk.home.absolutePath ])
                     .env([ANDROID_SDK_HOME : project.spacelift.workspace.absolutePath])
                     .env([TMPDIR : project.spacelift.workspace.absolutePath + "/.droidium_tmp"])
                     .execute().await()
@@ -263,6 +277,7 @@ spacelift {
                     File projectDir = new File(project.rootDir, droidiumTest)
                     project.ant.delete(file: new File(projectDir, "aerogear-test-android.apk"), failonerror: false)
                 }
+                project.ant.delete(dir: project.spacelift.workspace.absolutePath + "/.droidium_tmp", failonerror: false)
             }
 
             afterSuite {
@@ -287,40 +302,160 @@ spacelift {
         }
 
         deviceSelectionTest {
+
             dataProvider {
                 project.droidiumDeviceSelectionProjects
             }
+
             beforeTest {
+                Tasks.prepare(AVDCreator)
+                    .target(project.androidTarget)
+                    .abi(project.androidAbi)
+                    .name(project.android_avd_1)
+                    .force()
+                    .execute().await()
+
                 Tasks.prepare(AndroidEmulatorStarter)
                     .avd(project.android_avd_1)
-                    .parameters(['-no-audio', '-memory', project.emulatorMemory])
+                    .parameters(['-no-audio', '-no-window', '-memory', project.emulatorMemory])
                     .timeout(project.emulatorTimeout)
                     .execute().await()
             }
+
             execute { droidiumTest ->
                 Tasks.prepare(MavenExecutor).pom("${project.rootDir}/${droidiumTest}/pom.xml")
                     .goals('clean', 'test')
                     .property("arquillian.debug=${project.arquillian_debug}")
-                    .env([ANDROID_HOME : project.spacelift.workspace.absolutePath + "/android-sdk-linux"])
+                    .env([ANDROID_HOME : androidSdk.home.absolutePath])
                     .env([ANDROID_SDK_HOME : project.spacelift.workspace.absolutePath])
                     .env([TMPDIR : project.spacelift.workspace.absolutePath + "/.droidium_tmp"])
                     .execute().await()
             }
+
             afterTest {
                 Tasks.prepare(AndroidEmulatorStopper).execute().await()
+                project.ant.delete(dir: project.spacelift.workspace.absolutePath + "/.droidium_tmp", failonerror: false)
             }
         }
+
+        // execution of integration tests of Droidium itself
+
+        droidiumInternalTestsAutomatic {
+
+            beforeTest {
+                Tasks.prepare(AVDCreator)
+                    .target(project.androidTarget)
+                    .abi(project.androidAbi)
+                    .name(project.android_avd_1)
+                    .force()
+                    .execute().await()
+            }
+
+            execute {
+                Tasks.prepare(MavenExecutor).pom("${project.rootDir.parent}")
+                    .goals('clean', 'test')
+                    .profile("android-automatic")
+                    .env([ANDROID_HOME : androidSdk.home.absolutePath])
+                    .env([ANDROID_SDK_HOME : project.spacelift.workspace.absolutePath])
+                    .env([TMPDIR : project.spacelift.workspace.absolutePath + "/.droidium_tmp"])
+                    .property("arquillian.debug=${project.arquillian_debug}")
+                    .property("emulator.startup.abi=${project.androidAbi}")
+                    .property("emulator.startup.target=${project.androidTarget}")
+                    .property("emulator.to.run.avd.name=${project.android_avd_1}")
+                    .property("emulator.to.run.console.port=5556")
+                    .execute().await()
+            }
+
+            afterTest {
+                project.ant.delete(dir: project.spacelift.workspace.absolutePath + "/.droidium_tmp", failonerror: false)
+            }
+        }
+
+        droidiumInternalTestsManualEmulator {
+
+            beforeTest {
+
+                Tasks.prepare(AVDCreator)
+                    .target(project.androidTarget)
+                    .abi(project.androidAbi)
+                    .name(project.android_avd_1)
+                    .force()
+                    .execute().await()
+
+                Tasks.prepare(AndroidEmulatorStarter)
+                    .avd(project.android_avd_1)
+                    .parameters(['-no-audio', '-no-window', '-memory', project.emulatorMemory])
+                    .timeout(project.emulatorTimeout)
+                    .port(5554)
+                    .execute().await()
+            }
+
+            execute {
+                Tasks.prepare(MavenExecutor).pom("${project.rootDir.parent}")
+                    .goals('clean', 'test')
+                    .profile("android-manual-emulator")
+                    .env([ANDROID_HOME : androidSdk.home.absolutePath])
+                    .env([ANDROID_SDK_HOME : project.spacelift.workspace.absolutePath])
+                    .env([TMPDIR : project.spacelift.workspace.absolutePath + "/.droidium_tmp"])
+                    .property("arquillian.debug=${project.arquillian_debug}")
+                    .property("emulator.running.avd.name=${project.android_avd_1}")
+                    .property("emulator.running.console.port=5554")
+                    .execute().await()
+            }
+
+            afterTest {
+                Tasks.prepare(AndroidEmulatorStopper).execute().await()
+                project.ant.delete(dir: project.spacelift.workspace.absolutePath + "/.droidium_tmp", failonerror: false)
+            }
+        }
+
+        droidiumInternalTestsConfiguration {
+
+            execute {
+                Tasks.prepare(MavenExecutor).pom("${project.rootDir.parent}")
+                    .goals('clean', 'test')
+                    .profile("android-manual-configuration")
+                    .env([ANDROID_HOME : androidSdk.home.absolutePath])
+                    .env([ANDROID_SDK_HOME : project.spacelift.workspace.absolutePath])
+                    .env([TMPDIR : project.spacelift.workspace.absolutePath + "/.droidium_tmp"])
+                    .execute().await()
+            }
+
+            afterTest {
+                project.ant.delete(dir: project.spacelift.workspace.absolutePath + "/.droidium_tmp", failonerror: false)
+            }
+        }
+
+        droidiumInternalTestsPhyiscalDevice {
+
+            // please specify -PdeviceSerialId=_serial_id_ of connected physical device
+
+            execute {
+                Tasks.prepare(MavenExecutor).pom("${project.rootDir.parent}")
+                    .goals('clean', 'test')
+                    .profile("android-manual-real")
+                    .env([ANDROID_HOME : androidSdk.home.absolutePath])
+                    .env([ANDROID_SDK_HOME : project.spacelift.workspace.absolutePath])
+                    .env([TMPDIR : project.spacelift.workspace.absolutePath + "/.droidium_tmp"])
+                    .property("device.serial.id=${project.deviceSerialId}")
+                    .execute().await()
+            }
+
+            afterTest {
+                project.ant.delete(dir: project.spacelift.workspace.absolutePath + "/.droidium_tmp", failonerror: false)
+            }
+        }
+
     }
 }
 
 buildscript {
     repositories {
-        mavenLocal()
         mavenCentral()
     }
 
     dependencies {
-        classpath 'org.arquillian.spacelift.gradle:arquillian-spacelift-gradle:1.0.0-alpha-3'
+        classpath 'org.arquillian.spacelift.gradle:arquillian-spacelift-gradle:1.0.0-alpha-4'
         classpath 'commons-io:commons-io:2.4'
     }
 }

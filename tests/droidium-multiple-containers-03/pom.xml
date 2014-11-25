@@ -31,6 +31,8 @@
         <version.droidium>1.0.0.Beta1-SNAPSHOT</version.droidium>
         <version.junit>4.11</version.junit>
         <version.org.jboss.as>7.1.1.Final</version.org.jboss.as>
+        <version.selenium>2.43.1</version.selenium>
+        <browser>phantomjs</browser>
 
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
@@ -46,6 +48,13 @@
                 <groupId>org.jboss.arquillian</groupId>
                 <artifactId>arquillian-bom</artifactId>
                 <version>${version.arquillian.core}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian.selenium</groupId>
+                <artifactId>selenium-bom</artifactId>
+                <version>${version.selenium}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

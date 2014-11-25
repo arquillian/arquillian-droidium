@@ -68,7 +68,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 /**
- * Tests creating of AVD name from scratch and staring of emulator of newly created AVD.
+ * Tests creating of AVD from scratch and staring of emulator of newly created AVD.
  *
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *
@@ -124,6 +124,7 @@ public class AndroidEmulatorStartupAVDtoBeCreatedTestCase extends AbstractContai
         configuration.validate();
 
         platformConfiguration = new DroidiumPlatformConfiguration();
+        platformConfiguration.validate();
 
         androidSDK = new AndroidSDK(platformConfiguration);
         androidSDK.setupWith(configuration);

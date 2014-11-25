@@ -68,7 +68,7 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
 
     private String logLevel = LogLevel.DEFAULT;
 
-    private String logType = LogType.DEFAULT;
+    private String logType = LogType.DISABLE;
 
     private String logFilePath = "target" + fileSeparator + "logcat.log";
 

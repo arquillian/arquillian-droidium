@@ -22,7 +22,6 @@
                 <property name="avdName">${android.avd.name}</property>
                 <property name="emulatorOptions">${android.emulator.options}</property>
                 <property name="emulatorBootupTimeoutInSeconds">600</property>
-                <property name="logType">disable</property>
             </configuration>
         </container>
     </group>

@@ -23,6 +23,7 @@ import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
 import org.arquillian.spacelift.execution.Tasks;
 import org.arquillian.spacelift.execution.impl.DefaultExecutionServiceFactory;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -30,7 +31,7 @@ import org.junit.rules.ExpectedException;
 
 /**
  *
- * Requires having installed full android-10 and android-19 platforms in your Android SDK.
+ * Requires having installed full android-10 and android-19 (with Google API) platforms in your Android SDK.
  *
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *
@@ -41,13 +42,11 @@ public class AndroidSDKTestCase {
 
     private static final String LATEST_TARGET = "android-19";
 
-    private static final String GOOGLE_LATEST_TARGET_ARMEABI_V7A = "Google Inc.:Google APIs:19";
+    private static final String LATEST_TARGET_GOOGLE = "Google Inc.:Google APIs (x86 System Image):19";
 
-    private static final String GOOGLE_LATEST_TARGET_X86 = "Google Inc.:Google APIs x86:19";
+    private DroidiumPlatformConfiguration platformConfiguration;
 
-    private static final String ANDROID_WEAR_ABI = "android-wear/armeabi-v7a";
-
-    private DroidiumPlatformConfiguration platformConfiguration = new DroidiumPlatformConfiguration();
+    private AndroidContainerConfiguration configuration;
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
@@ -57,184 +56,149 @@ public class AndroidSDKTestCase {
         Tasks.setDefaultExecutionServiceFactory(new DefaultExecutionServiceFactory());
     }
 
+    @Before
+    public void setup() {
+        configuration = new AndroidContainerConfiguration();
+        platformConfiguration = new DroidiumPlatformConfiguration();
+        platformConfiguration.validate();
+    }
+
+    @Test
+    public void testLatestTargetAndroidAPI() {
+        configuration.setAbi(null);
+        configuration.setTarget(LATEST_TARGET_GOOGLE);
+
+        AndroidSDK sdk = new AndroidSDK(platformConfiguration);
+        sdk.setupWith(configuration);
+
+        Assert.assertEquals("default/x86", sdk.getAndroidContainerConfiguration().getAbi());
+        Assert.assertEquals(LATEST_TARGET_GOOGLE, sdk.getAndroidContainerConfiguration().getTarget());
+    }
+
+    @Test
+    public void testLatestTargetAndroidAPI_2() {
+        configuration.setAbi("default/x86");
+        configuration.setTarget(LATEST_TARGET_GOOGLE);
+
+        AndroidSDK sdk = new AndroidSDK(platformConfiguration);
+        sdk.setupWith(configuration);
+
+        Assert.assertEquals("default/x86", sdk.getAndroidContainerConfiguration().getAbi());
+        Assert.assertEquals(LATEST_TARGET_GOOGLE, sdk.getAndroidContainerConfiguration().getTarget());
+    }
+
     @Test
     public void testAbiNullTargetNull() {
-        AndroidContainerConfiguration configuration = new AndroidContainerConfiguration();
-
         configuration.setAbi(null);
         configuration.setTarget(null);
 
         AndroidSDK sdk = new AndroidSDK(platformConfiguration);
         sdk.setupWith(configuration);
 
-        Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
-        Assert.assertEquals(LATEST_TARGET, sdk.getConfiguration().getTarget());
+        Assert.assertEquals("default/x86", sdk.getAndroidContainerConfiguration().getAbi());
+        Assert.assertEquals(LATEST_TARGET, sdk.getAndroidContainerConfiguration().getTarget());
     }
 
     @Test
     public void testAbiNullTargetSet() {
-        AndroidContainerConfiguration configuration = new AndroidContainerConfiguration();
-
         configuration.setAbi(null);
-        configuration.setTarget(null);
+        configuration.setTarget(LATEST_TARGET);
 
         AndroidSDK sdk = new AndroidSDK(platformConfiguration);
         sdk.setupWith(configuration);
 
-        Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
-        Assert.assertEquals(LATEST_TARGET, sdk.getConfiguration().getTarget());
+        Assert.assertEquals("default/x86", sdk.getAndroidContainerConfiguration().getAbi());
+        Assert.assertEquals(LATEST_TARGET, sdk.getAndroidContainerConfiguration().getTarget());
+    }
+
+    @Test
+    public void testAbiSetTargetNull() {
+        configuration.setAbi("x86");
+
+        AndroidSDK sdk = new AndroidSDK(platformConfiguration);
+        sdk.setupWith(configuration);
+
+        Assert.assertEquals("default/x86", sdk.getAndroidContainerConfiguration().getAbi());
+        Assert.assertEquals(LATEST_TARGET, sdk.getAndroidContainerConfiguration().getTarget());
     }
 
     @Test
     public void testAbi_x86_TargetSet() {
-        AndroidContainerConfiguration configuration = new AndroidContainerConfiguration();
-
         configuration.setAbi("x86");
         configuration.setTarget(LATEST_TARGET);
 
         AndroidSDK sdk = new AndroidSDK(platformConfiguration);
         sdk.setupWith(configuration);
 
-        Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
-        Assert.assertEquals(LATEST_TARGET, sdk.getConfiguration().getTarget());
-    }
-
-    @Test
-    public void testAbiSetTargetNull() {
-        AndroidContainerConfiguration configuration = new AndroidContainerConfiguration();
-
-        configuration.setAbi("x86");
-
-        AndroidSDK sdk = new AndroidSDK(platformConfiguration);
-        sdk.setupWith(configuration);
-
-        Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
-        Assert.assertEquals(LATEST_TARGET, sdk.getConfiguration().getTarget());
+        Assert.assertEquals("default/x86", sdk.getAndroidContainerConfiguration().getAbi());
+        Assert.assertEquals(LATEST_TARGET, sdk.getAndroidContainerConfiguration().getTarget());
     }
 
     @Test
     public void testAbiSetTargetNumber() {
-        AndroidContainerConfiguration configuration = new AndroidContainerConfiguration();
-
         configuration.setAbi("x86");
         configuration.setTarget("19");
 
         AndroidSDK sdk = new AndroidSDK(platformConfiguration);
         sdk.setupWith(configuration);
 
-        Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
-        Assert.assertEquals(LATEST_TARGET, sdk.getConfiguration().getTarget());
+        Assert.assertEquals("default/x86", sdk.getAndroidContainerConfiguration().getAbi());
+        Assert.assertEquals(LATEST_TARGET, sdk.getAndroidContainerConfiguration().getTarget());
     }
 
     @Test
     public void testAbiSetTargetFullAndroid() {
-        AndroidContainerConfiguration configuration = new AndroidContainerConfiguration();
-
         configuration.setAbi("x86");
-        configuration.setTarget("android-19");
-
-        AndroidSDK sdk = new AndroidSDK(platformConfiguration);
-        sdk.setupWith(configuration);
-
-        Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
-        Assert.assertEquals(LATEST_TARGET, sdk.getConfiguration().getTarget());
-    }
-
-    @Test
-    public void testAbiNullTargetFullGoogleAPI_ARM() {
-        AndroidContainerConfiguration configuration = new AndroidContainerConfiguration();
-
-        configuration.setTarget(GOOGLE_LATEST_TARGET_ARMEABI_V7A);
-
-        AndroidSDK sdk = new AndroidSDK(platformConfiguration);
-        sdk.setupWith(configuration);
-
-        Assert.assertEquals("default/armeabi-v7a", sdk.getConfiguration().getAbi());
-        Assert.assertEquals(GOOGLE_LATEST_TARGET_ARMEABI_V7A, sdk.getConfiguration().getTarget());
-    }
-
-    @Test
-    public void testAbiNullTargetFullGoogleAPI_X86() {
-        AndroidContainerConfiguration configuration = new AndroidContainerConfiguration();
-
-        configuration.setTarget(GOOGLE_LATEST_TARGET_X86);
-
-        AndroidSDK sdk = new AndroidSDK(platformConfiguration);
-        sdk.setupWith(configuration);
-
-        Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
-        Assert.assertEquals(GOOGLE_LATEST_TARGET_X86, sdk.getConfiguration().getTarget());
-    }
-
-    @Test
-    public void testAbiSetTargetFullGoogleAPI_X86() {
-        AndroidContainerConfiguration configuration = new AndroidContainerConfiguration();
-
-        configuration.setAbi("x86");
-        configuration.setTarget(GOOGLE_LATEST_TARGET_X86);
-
-        AndroidSDK sdk = new AndroidSDK(platformConfiguration);
-        sdk.setupWith(configuration);
-
-        Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
-        Assert.assertEquals(GOOGLE_LATEST_TARGET_X86, sdk.getConfiguration().getTarget());
-    }
-
-    @Test
-    public void testAndroidWearTargetNotSet() {
-        // android-19 will be picked as the latest one
-        AndroidContainerConfiguration configuration = new AndroidContainerConfiguration();
-
-        configuration.setAbi(ANDROID_WEAR_ABI);
-
-        AndroidSDK sdk = new AndroidSDK(platformConfiguration);
-        sdk.setupWith(configuration);
-
-        Assert.assertEquals(ANDROID_WEAR_ABI, sdk.getConfiguration().getAbi());
-        Assert.assertEquals(LATEST_TARGET, sdk.getConfiguration().getTarget());
-    }
-
-    @Test
-    public void testLongAbiFormLatestTarget() {
-        AndroidContainerConfiguration configuration = new AndroidContainerConfiguration();
-
         configuration.setTarget(LATEST_TARGET);
-        configuration.setAbi("default/x86");
 
         AndroidSDK sdk = new AndroidSDK(platformConfiguration);
         sdk.setupWith(configuration);
 
-        Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
-        Assert.assertEquals(LATEST_TARGET, sdk.getConfiguration().getTarget());
-    }
-
-    // negative tests
-
-    @Test
-    public void testNonExistingAbi() {
-        // there is not mips for android-10, it guesses x86
-
-        AndroidContainerConfiguration configuration = new AndroidContainerConfiguration();
-
-        configuration.setAbi("mips");
-        configuration.setTarget(LOWEST_TARGET);
-
-        AndroidSDK sdk = new AndroidSDK(platformConfiguration);
-        sdk.setupWith(configuration);
-
-        Assert.assertEquals("default/x86", sdk.getConfiguration().getAbi());
-        Assert.assertEquals(LOWEST_TARGET, sdk.getConfiguration().getTarget());
+        Assert.assertEquals("default/x86", sdk.getAndroidContainerConfiguration().getAbi());
+        Assert.assertEquals(LATEST_TARGET, sdk.getAndroidContainerConfiguration().getTarget());
     }
 
     @Test
     public void testNonExistingTarget() {
         expectedException.expect(AndroidContainerConfigurationException.class);
-        expectedException.expectMessage("There is not any target with target name 'android-100'");
-
-        AndroidContainerConfiguration configuration = new AndroidContainerConfiguration();
+        expectedException.expectMessage("Unable to resolve target: android-100");
 
         configuration.setAbi("default/x86");
         configuration.setTarget("android-100");
+
+        new AndroidSDK(platformConfiguration).setupWith(configuration);
+    }
+
+    @Test
+    public void testAbiSetTargetSetLowestPlatformFullTarget() {
+        configuration.setAbi("default/armeabi");
+        configuration.setTarget("android-10");
+
+        AndroidSDK sdk = new AndroidSDK(platformConfiguration);
+        sdk.setupWith(configuration);
+
+        Assert.assertEquals("default/armeabi", sdk.getAndroidContainerConfiguration().getAbi());
+        Assert.assertEquals(LOWEST_TARGET, sdk.getAndroidContainerConfiguration().getTarget());
+    }
+
+    @Test
+    public void testAbiSetTargetSetLowestPlatformShortTarget() {
+        configuration.setAbi("default/armeabi");
+        configuration.setTarget("10");
+
+        AndroidSDK sdk = new AndroidSDK(platformConfiguration);
+        sdk.setupWith(configuration);
+
+        Assert.assertEquals("default/armeabi", sdk.getAndroidContainerConfiguration().getAbi());
+        Assert.assertEquals(LOWEST_TARGET, sdk.getAndroidContainerConfiguration().getTarget());
+    }
+
+    // google tests
+
+    @Test
+    public void testGoogleTarget() {
+        configuration.setAbi("default/x86");
+        configuration.setTarget(LATEST_TARGET_GOOGLE);
 
         new AndroidSDK(platformConfiguration).setupWith(configuration);
     }

@@ -19,7 +19,6 @@
             <configuration>
                 <!-- there is not specified serialId, nor avdName nor console port 
                      but we are able to use connected (physical) device anyway -->
-                <property name="logType">disable</property>
             </configuration>
         </container>
     </group>

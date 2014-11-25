@@ -67,6 +67,8 @@ public class AndroidBridgeConnectorTestCase extends AbstractContainerTestTestBas
 
     private AndroidSDK androidSDK;
 
+    private static final String EMULATOR_OPTIONS = "-no-skin -no-audio -no-window -wipe-data -no-snapshot-save -no-snapstorage";
+
     @Override
     protected void addExtensions(List<Class<?>> extensions) {
         extensions.add(AndroidBridgeConnector.class);
@@ -80,6 +82,7 @@ public class AndroidBridgeConnectorTestCase extends AbstractContainerTestTestBas
     @org.junit.Before
     public void setup() {
         configuration = new AndroidContainerConfiguration();
+        configuration.setEmulatorOptions(EMULATOR_OPTIONS);
         platformConfiguration = new DroidiumPlatformConfiguration();
         androidSDK = new AndroidSDK(platformConfiguration);
         androidSDK.setupWith(configuration);

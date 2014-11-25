@@ -11,6 +11,8 @@ To execute the test:
 
 `mvn clean test`
 
+By default, it uses phantomjs browser. Override this by `-Dbrowser=firefox` to use Firefox instead.
+
 JBoss AS container is automatically downloaded for you into `target` so you do not have to 
 manage your JBoss instance on your own. Please be sure there is not any JBoss AS container already 
 running before execution of tests.
