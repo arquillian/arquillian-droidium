@@ -1,0 +1,6 @@
+== Arquillian Droidium device selection
+
+Execute this test only if there is one device started before the test execution.
+
+This test shows that even there is not specified serialId nor avdName in arquillian.xml,
+device is selected automatically when it is connected.

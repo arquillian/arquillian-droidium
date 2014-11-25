@@ -49,6 +49,10 @@ ext {
         'droidium-screenshooter-01',
     ]
 
+    droidiumDeviceSelectionProjects = [
+        'droidium-device-selection'
+    ]
+
     needAndroidTestApk = [
         'droidium-multiple-androids-01',
         'droidium-multiple-androids-02',
@@ -85,6 +89,10 @@ spacelift {
         'default' {
             enabledInstallations 'droidium', 'androidSdk', 'selendroid'
             tests 'droidiumTests'
+        }
+        'deviceSelection' {
+            enabledInstallations 'droidium', 'androidSdk', 'selendroid'
+            tests 'deviceSelectionTest'
         }
     }
 
@@ -275,6 +283,31 @@ spacelift {
                         }
                     }   
                 }
+            }
+        }
+
+        deviceSelectionTest {
+            dataProvider {
+                project.droidiumDeviceSelectionProjects
+            }
+            beforeTest {
+                Tasks.prepare(AndroidEmulatorStarter)
+                    .avd(project.android_avd_1)
+                    .parameters(['-no-audio', '-memory', project.emulatorMemory])
+                    .timeout(project.emulatorTimeout)
+                    .execute().await()
+            }
+            execute { droidiumTest ->
+                Tasks.prepare(MavenExecutor).pom("${project.rootDir}/${droidiumTest}/pom.xml")
+                    .goals('clean', 'test')
+                    .property("arquillian.debug=${project.arquillian_debug}")
+                    .env([ANDROID_HOME : project.spacelift.workspace.absolutePath + "/android-sdk-linux"])
+                    .env([ANDROID_SDK_HOME : project.spacelift.workspace.absolutePath])
+                    .env([TMPDIR : project.spacelift.workspace.absolutePath + "/.droidium_tmp"])
+                    .execute().await()
+            }
+            afterTest {
+                Tasks.prepare(AndroidEmulatorStopper).execute().await()
             }
         }
     }

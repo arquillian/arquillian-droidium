@@ -50,6 +50,7 @@
         <module>droidium-hybrid-01</module>
         <module>droidium-screenshooter-01</module>
         <module>droidium-multiple-deployments-01</module>
+        <module>droidium-device-selection</module>
     </modules>
 
     <!-- Build -->

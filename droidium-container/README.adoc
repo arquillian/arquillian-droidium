@@ -540,6 +540,8 @@ before the extension (e.g. target/logcat.log will change to target/logcat.serial
 ** If we fail to connect, AndroidExecutionException is thrown.
 * If AVD name was specified but console port was not, we try to connect to the first running emulator of such AVD name.
 * If both AVD name and console port were specified, we try to connect to this combination.
+* If you do not specify serialId, avdName nor consolePort and if there is just one device connected, we return that device.
+* If there are more than one device, it fails because we do not know to which device to connect. If there are zero devices connected, we continue with below steps.
 * If we fail to get device in all above steps:
 ** If AVD name was not specified, random AVD identifier is generated.
 ** If AVD is among erroneous AVDs, it will be deleted, created from scratch, started and deleted after test.

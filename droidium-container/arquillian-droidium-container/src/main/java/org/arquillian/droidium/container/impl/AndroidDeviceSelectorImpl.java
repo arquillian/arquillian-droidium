@@ -56,7 +56,10 @@ import org.jboss.arquillian.core.api.annotation.Observes;
  * If we fails to connect, {@link AndroidExecutionException} is thrown. <br>
  * 2. If AVD name was specified but console port was not, we try to connect to the first running emulator of such AVD name. <br>
  * 3. If both AVD name and console port were specified, we try to connect to this combination. <br>
- * 4. If we fail to get device in all above steps:
+ * 4. If you do not specify serialId, avdName nor consolePort and if there is just one device connected, we return that device.
+ * If there are more than one device, it fails because we do not know to which device to connect. If there are zero devices
+ * connected, we continue with below steps.<br>
+ * 5. If we fail to get device in all above steps:
  * <ol>
  * <li>If AVD name was not specified, random AVD identifier is generated.</li>
  * <li>If AVD is among erroneous AVDs, it will be deleted, created from scratch, started and deleted after test.</li>
@@ -137,17 +140,6 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
             }
         }
 
-        final List<String> androidListAVDOutput = getAndroidListAVDOutput(false);
-        final List<String> compactAndroidListAVDOutput = getAndroidListAVDOutput(true);
-
-        if (logger.isLoggable(Level.INFO)) {
-            StringBuilder sb = new StringBuilder();
-            for (String line : androidListAVDOutput) {
-                sb.append(line).append("\n");
-            }
-            System.out.print(sb.toString());
-        }
-
         if (isConnectingToVirtualDevice()) {
             device = getVirtualDevice();
             if (device != null) {
@@ -159,10 +151,39 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
             }
         }
 
+        // serialId, console port nor avd name is defined, lets guess it
+        List<AndroidDevice> devices = getDevices();
+
+        // if there is zero devices connected, we need to start some emulator
+        // if there is just one device, lets connect to it
+        // if there is more then one device, we do not know which we should connect to
+        if (devices.size() == 1) {
+            device = devices.get(0);
+            device.setAlreadyRuns(true);
+            setDronePorts(device);
+            androidDevice.set(device);
+            androidDeviceReady.fire(new AndroidDeviceReady(device));
+            return;
+        } else if (devices.size() > 1) {
+            throw new IllegalStateException("The selection of Android device is ambiguous. There are multiple devices and it is "
+                + "not able to recognize which one to choose.");
+        }
+
         if (configuration.getAvdName() == null) {
             String generatedAvdName = idGenerator.get().getIdentifier(FileType.AVD);
             configuration.setAvdName(generatedAvdName);
             configuration.setAvdGenerated(true);
+        }
+
+        final List<String> androidListAVDOutput = getAndroidListAVDOutput(false);
+        final List<String> compactAndroidListAVDOutput = getAndroidListAVDOutput(true);
+
+        if (logger.isLoggable(Level.INFO)) {
+            StringBuilder sb = new StringBuilder();
+            for (String line : androidListAVDOutput) {
+                sb.append(line).append("\n");
+            }
+            System.out.print(sb.toString());
         }
 
         if (isInCompactAVDList(compactAndroidListAVDOutput, configuration.getAvdName())) {
@@ -230,6 +251,10 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
 
     private boolean isOnlyAvdNameAvailable() {
         return isAvdNameDefined() && !isConsolePortDefined();
+    }
+
+    private List<AndroidDevice> getDevices() {
+        return androidBridge.get().getDevices();
     }
 
     private AndroidDevice getVirtualDevice() {
