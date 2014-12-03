@@ -113,12 +113,12 @@ spacelift {
                 'droidiumInternalTestsManualEmulator',
                 'droidiumInternalTestsConfiguration',
             )
-            enabledInstallations 'androidSdk'
+            enabledInstallations 'arquillianRecorder', 'androidSdk'
         }
 
         'droidiumInternalPhysical' {
             tests 'droidiumInternalTestsPhyiscalDevice'
-            enabledInstallations 'androidSdk'
+            enabledInstallations 'arquillianRecorder', 'androidSdk'
         }
     }
 

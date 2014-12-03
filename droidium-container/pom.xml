@@ -47,7 +47,7 @@
         <module>arquillian-droidium-container-spi</module>
         <module>arquillian-droidium-container</module>
         <module>arquillian-droidium-multiple-containers</module>
-        <!--module>arquillian-protocol-android</module-->
+        <module>arquillian-protocol-android</module>
     </modules>
 
 </project>
