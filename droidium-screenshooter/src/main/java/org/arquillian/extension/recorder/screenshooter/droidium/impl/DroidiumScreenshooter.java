@@ -53,6 +53,8 @@ public class DroidiumScreenshooter implements Screenshooter {
 
     private TakenResourceRegister takenResourceRegister;
 
+    private String message;
+    
     /**
      *
      * @param takenResourceRegister
@@ -161,6 +163,11 @@ public class DroidiumScreenshooter implements Screenshooter {
         screenshot.setWidth(rawImage.width);
         screenshot.setResourceType(screenshotType);
 
+        if (message != null && !message.isEmpty()) {
+            screenshot.setMessage(message);
+            message = null;
+        }
+
         takenResourceRegister.addTaken(screenshot);
 
         return screenshot;
@@ -168,22 +175,25 @@ public class DroidiumScreenshooter implements Screenshooter {
     }
 
     @Override
-    public void setScreenshotTargetDir(String screenshotTargetDir) {
+    public Screenshooter setScreenshotTargetDir(String screenshotTargetDir) {
         Validate.notNullOrEmpty(screenshotTargetDir, "Screenshot target directory can not be a null object or an empty string");
         setScreenshotTargetDir(new File(screenshotTargetDir));
+        return this;
     }
 
     @Override
-    public void setScreenshotTargetDir(File screenshotTargetDir) {
+    public Screenshooter setScreenshotTargetDir(File screenshotTargetDir) {
         Validate.notNull(screenshotTargetDir, "File is a null object!");
         RecorderFileUtils.createDirectory(screenshotTargetDir);
         this.screenshotTargetDir = screenshotTargetDir;
+        return this;
     }
 
     @Override
-    public void setScreenshotType(ScreenshotType screenshotType) {
+    public Screenshooter setScreenshotType(ScreenshotType screenshotType) {
         Validate.notNull(screenshotType, "Screenshot type is a null object!");
         this.screenshotType = screenshotType;
+        return this;
     }
 
     @Override
@@ -194,6 +204,12 @@ public class DroidiumScreenshooter implements Screenshooter {
     public void setDevice(AndroidDevice device) {
         Validate.notNull(device, "Android device to set to take screenshots is a null object!");
         this.device = device;
+    }
+
+    @Override
+    public Screenshooter setMessage(String message) {
+        this.message = message;
+        return this;
     }
 
 }

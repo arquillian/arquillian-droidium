@@ -95,7 +95,7 @@ public class SelendroidTestAppTestCase {
         driver.findElement(By.id("startUserRegistration")).click();
 
         // take it as GIF, by default, it is taken as PNG
-        screenshooter.takeScreenshot(ScreenshotType.GIF);
+        screenshooter.setMessage("taking gif").takeScreenshot(ScreenshotType.GIF);
 
         // enter nick
         WebElement userName = driver.findElement(By.id("inputUserName"));

@@ -26,7 +26,8 @@ ext {
     droidiumVersion = "1.0.0.Beta1-SNAPSHOT"
     selendroidCommit = "cd07b1aaf1c34c085b27aa0b33bf24d2767a9865"
     selendroidVersion = "0.13.0-SNAPSHOT"
-    recorderScreenshooterVersion = "1.0.0.Alpha4"
+    recorderScreenshooterVersion = "1.0.0.Beta1-SNAPSHOT"
+    recorderCommit = "master"
     spaceliftVersion = "1.0.0.Alpha3"
     coreVersion = "1.1.5.Final"
     droneVersion = "2.0.0.Alpha2"
@@ -98,12 +99,12 @@ spacelift {
     profiles {
         'default' {
             tests 'droidiumTests'
-            enabledInstallations 'droidium', 'androidSdk', 'selendroid'
+            enabledInstallations 'arquillianRecorder', 'droidium', 'androidSdk', 'selendroid'
         }
 
         'deviceSelection' {
             tests 'deviceSelectionTest'
-            enabledInstallations 'droidium', 'androidSdk', 'selendroid'
+            enabledInstallations 'arquillianRecorder', 'droidium', 'androidSdk', 'selendroid'
         }
 
         'droidiumInternal' {
@@ -142,6 +143,20 @@ spacelift {
                         'version.selenium': "${project.seleniumVersion}",
                         'version.recorder.screenshooter' : "${project.recorderScreenshooterVersion}"
                     ], PomXmlUpdater).dir(dir: project.rootDir, excludes: [ ".ws/**" ]).execute().await()
+            }
+        }
+
+        arquillianRecorder {
+            product 'recorder'
+            version project.recorderCommit
+            remoteUrl "https://github.com/arquillian/arquillian-recorder/archive/${version}.zip"
+            home "arquillian-recorder-${version}"
+
+            postActions {
+                Tasks.prepare(MavenExecutor).pom("${home.absolutePath}/pom.xml")
+                    .goal('install')
+                    .property('maven.test.skip=true')
+                    .execute().await()
             }
         }
 

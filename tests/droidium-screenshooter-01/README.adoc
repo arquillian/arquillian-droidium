@@ -44,8 +44,14 @@ You can set the format of screenshots you want to take explicitly. From that poi
 all screenshots will be of that format when not specified otherwise.
 
 ----
-screenshooter.setScreensthotType(ScreenshotType.BMP);
+screenshooter.setScreenshotType(ScreenshotType.BMP);
 // all screenshots will be by default BMP images from now on
+----
+
+Every taken screenshot can be accompanied by a message which appears in the resulting report:
+
+----
+screenshooter.setMessage("this is screenshot of my login screen").takeScreenshot("loginScreenshot");
 ----
 
 When you are executing tests, you have to set name of (possibly started) AVD
