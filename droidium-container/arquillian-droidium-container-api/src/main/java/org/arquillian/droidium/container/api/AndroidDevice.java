@@ -44,13 +44,6 @@ public interface AndroidDevice {
     String getAvdName();
 
     /**
-     * Returns a map of properties available for the device. These properties are cached.
-     *
-     * @return A properties map
-     */
-    Map<String, String> getProperties();
-
-    /**
      * Returns a value of property with given name
      *
      * @param name A key

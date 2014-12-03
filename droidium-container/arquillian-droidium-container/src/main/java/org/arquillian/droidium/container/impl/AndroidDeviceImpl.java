@@ -18,7 +18,7 @@ package org.arquillian.droidium.container.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -96,20 +96,13 @@ public class AndroidDeviceImpl implements AndroidDevice {
     }
 
     @Override
-    public Map<String, String> getProperties() {
-        return delegate.getProperties();
-    }
-
-    @Override
     public String getProperty(String name) throws IOException, AndroidExecutionException {
         try {
-            return delegate.getPropertyCacheOrSync(name);
-        } catch (TimeoutException e) {
-            throw new AndroidExecutionException("Unable to get property '" + name + "' value in given timeout", e);
-        } catch (AdbCommandRejectedException e) {
-            throw new AndroidExecutionException("Unable to get property '" + name + "' value, command was rejected", e);
-        } catch (ShellCommandUnresponsiveException e) {
-            throw new AndroidExecutionException("Unable to get property '" + name + "' value, shell is not responsive", e);
+            return delegate.getSystemProperty(name).get();
+        } catch (ExecutionException e) {
+            throw new AndroidExecutionException("Unable to get property '" + name + "' value, not responsive", e);
+        } catch (InterruptedException e) {
+            throw new AndroidExecutionException("Unable to get property '" + name + "' value, not responsive", e);
         }
     }
 
