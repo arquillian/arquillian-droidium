@@ -50,11 +50,11 @@
             <artifactId>arquillian-droidium-container-spi</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!--dependency>
+        <dependency>
             <groupId>org.arquillian.protocol</groupId>
             <artifactId>arquillian-protocol-android</artifactId>
             <version>${project.version}</version>
-        </dependency-->
+        </dependency>
         <dependency>
             <groupId>org.arquillian.extension</groupId>
             <artifactId>arquillian-droidium-multiple-containers</artifactId>
