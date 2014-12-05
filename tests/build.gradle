@@ -34,18 +34,14 @@ ext {
     grapheneVersion = "2.1.0.Alpha1"
     seleniumVersion = "2.43.1"
 
-    additionalAndroidTargets = [
+    defaultAdditionalAndroidTargets = [
         'android-10',
         'android-16', // Selendroid needs that
         'Google Inc.:Google APIs:19',
         'Google Inc.:Google APIs (x86 System Image):19',
     ]
 
-    // specify this from outside as -PsingleTest=test_dir 
-    // to test only specific project
-    defaultSingleTest = ""
-
-    droidiumTestProjects = [
+    defaultDroidiumTestProjects = [
         'droidium-multiple-androids-with-jboss-01',
         'droidium-multiple-androids-01',
         'droidium-multiple-androids-02',
@@ -60,7 +56,7 @@ ext {
         'droidium-screenshooter-01',
     ]
 
-    droidiumDeviceSelectionProjects = [
+    defaultDroidiumDeviceSelectionProjects = [
         'droidium-device-selection'
     ]
 
@@ -232,7 +228,7 @@ spacelift {
         droidiumTests {
 
             dataProvider {
-                !project.singleTest.isEmpty() ? [ project.singleTest ] : project.droidiumTestProjects
+                project.droidiumTestProjects
             }
 
             beforeSuite {
@@ -470,7 +466,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'org.arquillian.spacelift.gradle:arquillian-spacelift-gradle:1.0.0-alpha-4'
+        classpath 'org.arquillian.spacelift.gradle:arquillian-spacelift-gradle:1.0.0-alpha-5'
         classpath 'commons-io:commons-io:2.4'
     }
 }

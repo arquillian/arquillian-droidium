@@ -13,10 +13,10 @@ execute Gradle build script like this:
 $ ./gradlew test
 ----
 
-If you want to execute only one test, do it like this:
+If you want to execute only few tests, do it like this:
 
 ----
-$ ./gradlew test -PsingleTest=<test project dir>
+$ ./gradlew test -PdroidiumTestProjects="list,of,test,dirs"
 ----
 
 You can run test suite against different version of Selendroid server. Server is being built
