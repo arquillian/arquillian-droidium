@@ -1,0 +1,46 @@
+== Arquillian Droidium recorder test
+
+This demo projects shows how to record videos of your devices while you are doing tests.
+
+It uses https://github.com/arquillian/arquillian-recorder[Arquillian Reporter extension].
+
+Videos can be taken automatically depending on how you setup 
+https://github.com/arquillian/arquillian-droidium/tree/master/resources/droidium-recorder[Arquillian Droidium screenshooter].
+
+Videos can be taken also manually as this test manifests. Videos are taken via 
+injected `Recorder` into test method (test class). `Recorder` is container 
+scoped so when injected, it will be covered by the instance of `AndroidDevice`. 
+
+You make videos like follows:
+
+----
+@ArqullianResource Recorder recorder;
+
+recorder.startRecording();
+----
+
+You stop video from recording by
+
+----
+recorder.stopRecording();
+----
+
+You can possibly span multiple test methods when you record videos, meaning starting in one method and stopping it in another.
+
+You should stick to automatic video recording according to properties of +recorder+ extension set in +arquillian.xml+. That 
+way of taking videos is more preferred.
+
+When you are executing tests, you have to set name of (possibly started) AVD
+you want to use for test executions. You _have to_ provide this information 
+for Maven otherwise tests will fail.
+
+`mvn clean test -Dandroid.avd.name=name_of_avd`
+
+This project can be run in a headless mode as well, typically in a CI service like Cloudbees.
+You are obliged to activate headless profile with `-Pheadless`. It adds the following switches to `emulator` command 
+upon its start: `-no-skin -no-audio -no-window -nocache -no-snapshot-save -no-snapstorage`.
+
+This tests uses Selendroid server APK from http://dominikdary.github.io/selendroid/[Selendroid] project.
+
+You have to have `jarsigner`, `keytool` and so on in your system. You are usually good with default JDK installation.
+You should have these commands in `$JAVA_HOME`.

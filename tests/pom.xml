@@ -49,6 +49,7 @@
         <module>droidium-native-01-scala</module>
         <module>droidium-hybrid-01</module>
         <module>droidium-screenshooter-01</module>
+        <module>droidium-recorder-01</module>
         <module>droidium-multiple-deployments-01</module>
         <module>droidium-device-selection</module>
     </modules>

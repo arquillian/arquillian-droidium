@@ -80,13 +80,13 @@
         <version.org.jboss.as>7.1.1.Final</version.org.jboss.as>
 
         <!-- ddmlib -->
-        <version.ddmlib>23.2.5</version.ddmlib>
+        <version.ddmlib>24.0.0</version.ddmlib>
 
         <!-- Spacelift -->
         <version.spacelift>1.0.0.Alpha3</version.spacelift>
 
-        <!-- Screenshooter -->
-        <version.recorder.screenshooter>1.0.0.Beta1-SNAPSHOT</version.recorder.screenshooter>
+        <!-- Arquillian Recorder-->
+        <version.recorder>1.0.0.Beta1-SNAPSHOT</version.recorder>
 
         <!-- Selendroid -->
         <version.selendroid>0.12.0</version.selendroid>
@@ -113,6 +113,7 @@
         <module>droidium-native</module>
         <module>archetypes</module>
         <module>droidium-screenshooter</module>
+        <module>droidium-recorder</module>
     </modules>
 
     <!-- Build -->

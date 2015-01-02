@@ -22,6 +22,8 @@
 
 package org.arquillian.droidium.container.manual.emulator;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import org.arquillian.droidium.container.api.AndroidBridge;
@@ -48,7 +50,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
 
 /**
  * Tests connecting to the running emulator of specific avd and console port.
@@ -81,6 +84,10 @@ public class AndroidDeviceSelectorEmulatorRunningTestCase extends AbstractContai
 
     private static final String RUNNING_EMULATOR_CONSOLE_PORT = System.getProperty("emulator.running.console.port", "5554");
 
+    private File pushFile1;
+
+    private File pushFile2;
+
     @Override
     protected void addExtensions(List<Class<?>> extensions) {
         extensions.add(AndroidBridgeConnector.class);
@@ -97,6 +104,7 @@ public class AndroidDeviceSelectorEmulatorRunningTestCase extends AbstractContai
         configuration = new AndroidContainerConfiguration();
         configuration.setAvdName(RUNNING_EMULATOR_AVD_NAME);
         configuration.setConsolePort(RUNNING_EMULATOR_CONSOLE_PORT);
+        configuration.setGenerateSDCard(true);
         configuration.validate();
 
         platformConfiguration = new DroidiumPlatformConfiguration();
@@ -110,34 +118,92 @@ public class AndroidDeviceSelectorEmulatorRunningTestCase extends AbstractContai
         bind(ContainerScoped.class, AndroidContainerConfiguration.class, configuration);
         bind(ApplicationScoped.class, DroidiumPlatformConfiguration.class, platformConfiguration);
         bind(ApplicationScoped.class, AndroidSDK.class, androidSDK);
+
+        pushFile1 = getTemporaryFile();
+        pushFile2 = getTemporaryFile();
     }
 
     @After
     public void disposeMocks() throws AndroidExecutionException {
         AndroidBridge bridge = getManager().getContext(ContainerContext.class).getObjectStore().get(AndroidBridge.class);
         bridge.disconnect();
+
+        if (!pushFile1.delete()) {
+            throw new RuntimeException("Unable to delete temporary file " + pushFile1.getAbsolutePath());
+        }
+
+        if (!pushFile2.delete()) {
+            throw new RuntimeException("Unable to delete temporary file " + pushFile2.getAbsolutePath());
+        }
     }
 
     @Test
     public void testGetRunningEmulator() {
+        getAndroidDevice();
+        executeAsserts();
+    }
+
+    @Test
+    public void testFileManipulation() throws Exception {
+        AndroidDevice device = getAndroidDevice();
+
+        File remoteFile1 = new File("/sdcard/", pushFile1.getName());
+        File remoteFile2 = new File("/sdcard/", pushFile2.getName());
+
+        device.push(pushFile1, remoteFile1);
+        device.push(pushFile2.getAbsolutePath(), "/sdcard/" + pushFile2.getName());
+
+        pushFile1.delete();
+        pushFile2.delete();
+
+        assertThat(pushFile1.exists(), is(false));
+        assertThat(pushFile2.exists(), is(false));
+
+        device.pull(remoteFile1, pushFile1);
+        device.pull(remoteFile2, pushFile2);
+
+        assertThat(pushFile1.exists(), is(true));
+        assertThat(pushFile2.exists(), is(true));
+
+        device.remove(remoteFile1);
+        device.remove(remoteFile2);
+
+        executeAsserts();
+    }
+
+    // helpers
+
+    private AndroidDevice getAndroidDevice() {
         fire(new AndroidContainerStart());
 
         AndroidBridge bridge = getManager().getContext(ContainerContext.class).getObjectStore().get(AndroidBridge.class);
-
         assertNotNull("AndroidBridge is null object!", bridge);
-
         bind(ContainerScoped.class, AndroidBridge.class, bridge);
 
-        AndroidDevice runningDevice = getManager().getContext(ContainerContext.class)
-            .getObjectStore().get(AndroidDevice.class);
+        AndroidDevice runningDevice = getManager().getContext(ContainerContext.class).getObjectStore().get(AndroidDevice.class);
+        assertNotNull("Android device is a null object!", runningDevice);
 
-        assertNotNull("Android device is null object!", runningDevice);
+        return runningDevice;
+    }
 
+    private void executeAsserts() {
         assertEventFired(AndroidContainerStart.class, 1);
         assertEventFired(AndroidBridgeInitialized.class, 1);
         assertEventFired(AndroidDeviceReady.class, 1);
         assertEventFiredInContext(AndroidContainerStart.class, ContainerContext.class);
         assertEventFiredInContext(AndroidBridgeInitialized.class, ContainerContext.class);
         assertEventFiredInContext(AndroidDeviceReady.class, ContainerContext.class);
+    }
+
+    private File getTemporaryFile() {
+        File tempFile;
+
+        try {
+            tempFile = File.createTempFile("droidium_push_file-", null, platformConfiguration.getTmpDir());
+        } catch (IOException ex) {
+            throw new RuntimeException("Unable to create temporary file for Droidium file manipulation test.");
+        }
+
+        return tempFile;
     }
 }

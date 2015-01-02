@@ -22,12 +22,14 @@ ext {
     defaultAndroidAbi = "default/x86"
     defaultBrowser = "phantomjs"
     defaultDeviceSerialId = ""
+    defaultRemoteVideoDir = "/sdcard/"
+    defaultAndroidBuildTools = "22.1.2"
 
     droidiumVersion = "1.0.0.Beta1-SNAPSHOT"
-    selendroidCommit = "cd07b1aaf1c34c085b27aa0b33bf24d2767a9865"
+    selendroidCommit = "c71a7ff66516c819b8c6488493c514a16a3aaba3"
     selendroidVersion = "0.13.0-SNAPSHOT"
     recorderScreenshooterVersion = "1.0.0.Beta1-SNAPSHOT"
-    recorderCommit = "master"
+    recorderCommit = "refactorings"
     spaceliftVersion = "1.0.0.Alpha3"
     coreVersion = "1.1.5.Final"
     droneVersion = "2.0.0.Alpha2"
@@ -54,6 +56,7 @@ ext {
         'droidium-native-02',
         //'droidium-hybrid-01',
         'droidium-screenshooter-01',
+        'droidium-recorder-01'
     ]
 
     defaultDroidiumDeviceSelectionProjects = [
@@ -153,6 +156,10 @@ spacelift {
                     .goal('install')
                     .property('maven.test.skip=true')
                     .execute().await()
+
+                Tasks.chain([
+                        'android.remote.video.dir': "${project.remoteVideoDir}"
+                    ], PomXmlUpdater).dir(dir: project.rootDir, excludes: [ ".ws/**" ]).execute().await()
             }
         }
 
@@ -161,6 +168,11 @@ spacelift {
             version project.selendroidCommit
             remoteUrl "https://github.com/selendroid/selendroid/archive/${version}.zip"
             home "selendroid-${version}"
+
+            extractMapper {
+                toDir(home)
+                cutdirs()
+            }
 
             postActions {
                 if (!new File(home, "selendroid-server/target").exists()) {
@@ -213,7 +225,7 @@ spacelift {
             postActions {
                 project.ant.chmod(dir: "${home}/tools", perm:"a+x", includes:"*", excludes:"*.txt")
 
-                Tasks.prepare(AndroidSdkUpdater).target(project.androidTarget).execute().await()
+                Tasks.prepare(AndroidSdkUpdater).buildTools(project.androidBuildTools).target(project.androidTarget).execute().await()
 
                 project.additionalAndroidTargets.each { target ->
                     Tasks.prepare(AndroidSdkUpdater).target(target).execute().await()

@@ -42,6 +42,7 @@
         <version.com.android.tools.ddms>${version.ddmlib}</version.com.android.tools.ddms>
         <version.arquillian.spacelift>${version.spacelift}</version.arquillian.spacelift>
         <version.io.selendroid>${version.selendroid}</version.io.selendroid>
+        <version.hamcrest>1.3</version.hamcrest>
 
         <!-- Other -->
         <version.maven.checkstyle.plugin>2.12.1</version.maven.checkstyle.plugin>
@@ -157,6 +158,11 @@
                 <artifactId>httpclient</artifactId>
                 <version>${version.httpclient}</version>
             </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-library</artifactId>
+                <version>${version.hamcrest}</version>
+            </dependency>             
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
