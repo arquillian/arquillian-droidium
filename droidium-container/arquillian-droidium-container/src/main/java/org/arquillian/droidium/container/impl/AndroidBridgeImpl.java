@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import org.arquillian.droidium.container.api.AndroidBridge;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
+import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Validate;
 
 import com.android.ddmlib.AndroidDebugBridge;
@@ -45,6 +46,8 @@ public class AndroidBridgeImpl implements AndroidBridge {
 
     private AndroidDebugBridge delegate;
 
+    private AndroidSDK androidSdk;
+
     public static final int ADB_TIMEOUT = 60 * 1000; // in milliseconds
 
     public static final int DDM_MINIMAL_TIMEOUT = 5 * 1000; // in milliseconds
@@ -57,13 +60,16 @@ public class AndroidBridgeImpl implements AndroidBridge {
 
     /**
      *
+     * @param androidSDK
      * @param adbLocation location of adb binary
      * @param forceNewBridge set to true if new bridge is created or to false if already existing one is reused
      * @param ddmsTimeOut timeout for shell commands, it is not possible to set it lower then {@link #DDM_MINIMAL_TIMEOUT}.
      * @throws IllegalArgumentException when {@code adbLocation} does not resent readable and existing adb binary
      *
      */
-    AndroidBridgeImpl(File adbLocation, boolean forceNewBridge, int ddmsTimeOut) throws IllegalArgumentException {
+    AndroidBridgeImpl(AndroidSDK androidSDK, File adbLocation, boolean forceNewBridge, int ddmsTimeOut) throws IllegalArgumentException {
+        Validate.notNull(androidSDK, "Android SDK is a null object!");
+
         if (!Validate.isReadable(adbLocation)) {
             throw new IllegalArgumentException("ADB location does not represent a readable file: " + adbLocation);
         }
@@ -75,6 +81,7 @@ public class AndroidBridgeImpl implements AndroidBridge {
             AndroidBridgeImpl.ddmsTimeOut = ddmsTimeOut;
         }
 
+        this.androidSdk = androidSDK;
         this.adbLocation = adbLocation;
         this.forceNewBridge = forceNewBridge;
     }
@@ -83,8 +90,8 @@ public class AndroidBridgeImpl implements AndroidBridge {
      * @param adbLocation location of adb binary
      * @param forceNewBridge set to true if new bridge is created or to false if already existing one is reused
      */
-    AndroidBridgeImpl(File adbLocation, boolean forceNewBridge) {
-        this(adbLocation, forceNewBridge, ddmsTimeOut);
+    AndroidBridgeImpl(AndroidSDK androidSDK, File adbLocation, boolean forceNewBridge) {
+        this(androidSDK, adbLocation, forceNewBridge, ddmsTimeOut);
     }
 
     @Override
@@ -136,7 +143,7 @@ public class AndroidBridgeImpl implements AndroidBridge {
 
         List<AndroidDevice> devices = new ArrayList<AndroidDevice>(idevices.length);
         for (IDevice d : idevices) {
-            devices.add(new AndroidDeviceImpl(d));
+            devices.add(new AndroidDeviceImpl(d, androidSdk));
         }
 
         return devices;
@@ -161,6 +168,10 @@ public class AndroidBridgeImpl implements AndroidBridge {
     public boolean hasDevices() {
         Validate.notNull(delegate, "Android debug bridge must be set. Please call connect() method before execution");
         return delegate.getDevices().length != 0;
+    }
+
+    public AndroidSDK getAndroidSDK() {
+        return androidSdk;
     }
 
     /**

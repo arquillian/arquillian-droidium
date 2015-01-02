@@ -1,0 +1,106 @@
+= Arquillian Droidium Recorder
+
+Droidium recorder is an extension to Arquillian platform which provides the possibility to record videos of your Android tests. The emulator window or device's display is recorded.
+
+NOTE: This extension can be used with success only using Android of API level 19 (4.4) where screen recording was introduced.
+
+== Making it part of your project
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.arquillian.extension</groupId>
+    <artifactId>arquillian-droidium-recorder</artifactId>
+    <version>${version.droidium}</version>
+</dependency>
+----
+
+== Example configuration
+
+Put this in +arquillian.xml+.
+
+[source,xml]
+----
+<extension qualifier="recorder">
+    <property name="startBeforeClass">true</property>
+</extension>
+----
+
+== Settings
+
+Following +arquillian.xml+ properties are supported within *recorder* qualifier:
+
+|===
+|Configuration Property|Description|Default Value
+
+|+rootDir+
+|Folder where all videos will be saved
+|target/videos
+|+videoType+
+|In which format you want to save videos. Right now the only supported format.
+|MP4
+|+startBeforeTest+
+|Tells if video recording should start before test method is executed.
+|false
+|+startBeforeClass+
+|Tells if video recording should start before all test methods so there will be video of one test class.
+|false
+|+startBeforeSuite+
+|Takes video of whole test suite.
+|false
+|+takeOnlyOnFail+
+|Video is recorded for a test and it is not deleted when the test method fails. When test method finishes with success, video is not saved.
+|true
+|+videoName+
+|Default name of video file.
+|record
+|+bitrate+
+|Bitrate of recorded Android video. Follows screenrecorder's default in Mbps.
+|4
+|+remoteVideoDir+
+|Directory on Android device where all videos will be saved before they are moved to hosting computer.
+|+/sdcard/+
+|===
+
+NOTE: Please be sure you have enough storage capacity to save videos on Android device. They are automatically saved to +/sdcard/+ when not specified otherwise so check you have mounted SD card for your Android device or emulator or create a SD card dynamically via +generateSDCard+ property in Android container descriptor in +arquillian.xml+.
+
+INFO: Due to limitation in screenrecorder binary in Android device, you can not record more then 180 seconds of video. If your recording video session lasts more then 3 minutes, it will be automatically stopped  
+
+== Usage
+
+[source,java]
+----
+@ArquillianResource Recorder recorder;
+----
+
+You can then start and stop recording as you wish directly in your test via +startRecording()+ and +stopRecording()+ methods. Feel free to explore. You can not start recording when you have already started to do so and you can not stop recording when you have not started to record yet.
+
+When you want to record manually by injecting Recorder into test, you can not record by automatic manner because Recorder is able to record only one video in some particular moment. In order not to record videos automatically, all +start*+ properties and +takeOnlyOnFail+ property _have to_ be set to false in order to successfully inject Recorder as +@ArquillianResource+.
+
+You can record videos which span multiple test methods, like this:
+
+----
+@ArquillianResource
+private Recorder recorder;
+
+@Test
+@InSequence(1)
+public void test1()
+{
+    recorder.startRecording();
+}
+
+@Test
+@InSequence(2)
+public void test2()
+{
+    // we are still recording, whatever happens here is recorded
+}
+
+@Test
+@InSequence(3)
+public void test3()
+{
+    recorder.stopRecording();
+}
+----

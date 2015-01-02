@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2013, Red Hat, Inc. and/or its affiliates, and individual
+ * Copyright 2015, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
  * distribution for a full listing of individual contributors.
  *
@@ -14,13 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.extension.recorder.screenshooter.droidium.impl;
+package org.arquillian.extension.recorder.video.droidium.impl;
 
-import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
-import org.arquillian.extension.recorder.screenshooter.Screenshooter;
-import org.arquillian.extension.recorder.screenshooter.ScreenshooterConfiguration;
-import org.arquillian.extension.recorder.screenshooter.event.ScreenshooterExtensionConfigured;
+import org.arquillian.extension.recorder.video.Recorder;
+import org.arquillian.extension.recorder.video.VideoConfiguration;
+import org.arquillian.extension.recorder.video.droidium.configuration.DroidiumVideoConfiguration;
+import org.arquillian.extension.recorder.video.event.VideoExtensionConfigured;
 import org.arquillian.recorder.reporter.impl.TakenResourceRegister;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.InstanceProducer;
@@ -29,55 +29,35 @@ import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;
 
 /**
- * Observes:
- * <ul>
- * <li>{@link ScreenshooterExtensionConfigured}</li>
- * </ul>
- * Creates {@link ApplicationScoped}:
- * <ul>
- * <li>{@link Screenshooter}</li>
- * <li>{@link TakenResourceRegister}</li>
- * </ul>
- * 
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
-public class DroidiumScreenshooterCreator {
+public class DroidiumVideoRecorderCreator {
 
     @Inject
     @ApplicationScoped
-    private InstanceProducer<Screenshooter> screenshooter;
+    private InstanceProducer<Recorder> recorder;
 
     @Inject
     @ApplicationScoped
     private InstanceProducer<TakenResourceRegister> takenResourceRegister;
 
     @Inject
-    private Instance<ScreenshooterConfiguration> configuration;
+    private Instance<VideoConfiguration> configuration;
 
-    /**
-     * Creates {@link Screenshooter} instance.
-     *
-     * @param event
-     */
-    public void onScreenshooterExtensionConfigured(@Observes ScreenshooterExtensionConfigured event) {
+    public void onVideoRecorderExtensionConfigured(@Observes VideoExtensionConfigured event) {
 
         if (takenResourceRegister.get() == null) {
             this.takenResourceRegister.set(new TakenResourceRegister());
         }
 
-        Screenshooter screenshooter = new DroidiumScreenshooter(takenResourceRegister.get());
-        screenshooter.init(configuration.get());
+        Recorder recorder = new DroidiumVideoRecorder(takenResourceRegister.get());
+        recorder.init((DroidiumVideoConfiguration) configuration.get());
 
-        this.screenshooter.set(screenshooter);
+        this.recorder.set(recorder);
     }
 
-    /**
-     * Sets {@link AndroidDevice} to created {@link Screenshooter} instance.
-     *
-     * @param event
-     */
-    public void onAndroidDeviceAvailable(@Observes AndroidDeviceReady event) {
-        ((DroidiumScreenshooter) screenshooter.get()).setAndroidDevice(event.getDevice());
+    public void onAndroidDeviceReady(@Observes AndroidDeviceReady event) {
+        ((DroidiumVideoRecorder) recorder.get()).setAndroidDevice(event.getDevice());
     }
 }

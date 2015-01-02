@@ -94,6 +94,7 @@ public class AndroidBridgeConnector {
         long start = System.currentTimeMillis();
 
         AndroidBridge bridge = new AndroidBridgeImpl(
+            androidSDK.get(),
             new File(androidSDK.get().getAdbPath()),
             configuration.get().isForceNewBridge(),
             Integer.parseInt(configuration.get().getDdmlibCommandTimeout()));

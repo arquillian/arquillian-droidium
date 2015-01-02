@@ -49,7 +49,7 @@ public class DroidiumScreenshooter implements Screenshooter {
 
     private ScreenshooterConfiguration configuration;
 
-    private AndroidDevice device;
+    private AndroidDevice androidDevice;
 
     private TakenResourceRegister takenResourceRegister;
 
@@ -77,6 +77,15 @@ public class DroidiumScreenshooter implements Screenshooter {
         }
     }
 
+    /**
+     *
+     * @param androidDevice sets Android device which will record videos.
+     */
+    public void setAndroidDevice(AndroidDevice androidDevice) {
+        Validate.notNull(androidDevice, "Android device to set to take screenshots is a null object!");
+        this.androidDevice = androidDevice;
+    }    
+
     @Override
     public Screenshot takeScreenshot() {
         return takeScreenshot(screenshotType);
@@ -88,7 +97,7 @@ public class DroidiumScreenshooter implements Screenshooter {
         ScreenshotMetaData metaData = new ScreenshotMetaData();
         metaData.setResourceType(type);
         return takeScreenshot(
-            new File(DefaultFileNameBuilder.getInstance().withMetaData(metaData).build()),
+            new File(new DefaultFileNameBuilder().withMetaData(metaData).build()),
             type);
     }
 
@@ -120,7 +129,7 @@ public class DroidiumScreenshooter implements Screenshooter {
 
         file = RecorderFileUtils.checkFileExtension(file, type);
 
-        if (!device.isOnline()) {
+        if (!androidDevice.isOnline()) {
             throw new RuntimeException("Android device is not online, can not take any screenshots.");
         }
 
@@ -130,7 +139,7 @@ public class DroidiumScreenshooter implements Screenshooter {
         RawImage rawImage = null;
 
         try {
-            rawImage = device.getScreenshot().getRawImage();
+            rawImage = androidDevice.getScreenshot().getRawImage();
         } catch (Exception e) {
             throw new RuntimeException("Unable to get screenshot of underlying Android device.", e);
         }
@@ -199,11 +208,6 @@ public class DroidiumScreenshooter implements Screenshooter {
     @Override
     public ScreenshotType getScreenshotType() {
         return screenshotType;
-    }
-
-    public void setDevice(AndroidDevice device) {
-        Validate.notNull(device, "Android device to set to take screenshots is a null object!");
-        this.device = device;
     }
 
     @Override

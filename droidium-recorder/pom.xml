@@ -9,7 +9,8 @@
     License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
     OF ANY KIND, either express or implied. See the License for the specific
     language governing permissions and limitations under the License. -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <!-- Model Version -->
     <modelVersion>4.0.0</modelVersion>
@@ -24,9 +25,9 @@
 
     <!-- Artifact Configuration -->
     <groupId>org.arquillian.extension</groupId>
-    <artifactId>arquillian-droidium-screenshooter</artifactId>
-    <name>Arquillian Droidium Screenshooter</name>
-    <description>Arquillian Droidium Screenshooter</description>
+    <artifactId>arquillian-droidium-recorder</artifactId>
+    <name>Arquillian Droidium Recorder</name>
+    <description>Arquillian Droidium Recorder</description>
 
     <!-- Developers -->
     <developers>
@@ -37,16 +38,19 @@
     </developers>
 
     <properties>
-        <version.screenshooter>${version.recorder}</version.screenshooter>
+        <version.videorecorder>${version.recorder}</version.videorecorder>
     </properties>
 
     <!-- Dependencies -->
     <dependencies>
+        <!-- Recorder -->
         <dependency>
             <groupId>org.arquillian.extension</groupId>
-            <artifactId>arquillian-recorder-screenshooter-impl-base</artifactId>
-            <version>${version.screenshooter}</version>
+            <artifactId>arquillian-recorder-video-impl-base</artifactId>
+            <version>${version.videorecorder}</version>
         </dependency>
+        
+        <!-- Droidium -->
         <dependency>
             <groupId>org.arquillian.container</groupId>
             <artifactId>arquillian-droidium-container-api</artifactId>

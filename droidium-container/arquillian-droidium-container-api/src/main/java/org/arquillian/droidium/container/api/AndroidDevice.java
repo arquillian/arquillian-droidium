@@ -18,7 +18,8 @@ package org.arquillian.droidium.container.api;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
+
+import com.android.ddmlib.ScreenRecorderOptions;
 
 /**
  * Representation of Android Device
@@ -118,6 +119,16 @@ public interface AndroidDevice {
     void installPackage(File packageFilePath, boolean reinstall, String... extraArgs) throws AndroidExecutionException;
 
     /**
+     * Installs an Android application on device. This is a helper method that combines the syncPackageToDevice,
+     * installRemotePackage, and removePackage steps
+     *
+     * @param packageFilePath the absolute file system path to file on local host to install
+     * @param reinstall set to {@code true}if re-install of app should be performed
+     * @param extraArgs optional extra arguments to pass. See 'adb shell pm install --help' for available options.
+     */
+    void installPackage(String packageFilePath, boolean reinstall, String... extraArgs) throws AndroidExecutionException;
+
+    /**
      * Uninstalls an package from the device.
      *
      * @param packageName the Android application package name to uninstall
@@ -196,4 +207,120 @@ public interface AndroidDevice {
      * @return true if Android device is already running prior to test execution, false otherwise
      */
     boolean getAlreadyRuns();
+
+    /**
+     * Pulls file from mobile phone to computer.
+     *
+     * @param remoteFilePath remote file to pull
+     * @param localFilePath local file to save pulled file to
+     * @throws Exception
+     */
+    void pull(String remoteFilePath, String localFilePath) throws Exception;
+
+    /**
+     * Pulls file from mobile phone to computer.
+     *
+     * @param remoteFile remote file to pull
+     * @param localFile local file to save pulled file to
+     * @throws Exception
+     */
+    void pull(File remoteFile, File localFile) throws Exception;
+
+    /**
+     * Pushes file from computer to mobile phone.
+     *
+     * @param localFilePath local file to push
+     * @param remoteFilePath remote file to save pushed file to
+     * @throws Exception
+     */
+    void push(String localFilePath, String remoteFilePath) throws Exception;
+
+    /**
+     * Pushes file from computer to mobile phone.
+     *
+     * @param localFile local file to push
+     * @param remoteFile remote file to save pushed file to
+     * @throws Exception
+     */
+    void push(File localFile, File remoteFile) throws Exception;
+
+    /**
+     * Removes file on Android device.
+     *
+     * @param remoteFilePath file path to remove
+     * @throws Exception
+     */
+    void remove(String remoteFilePath) throws Exception;
+
+    /**
+     * Removes file on Android device.
+     *
+     * @param remoteFile file to remove
+     * @throws Exception
+     */
+    void remove(File remoteFile) throws Exception;
+
+    /**
+     * Starts video recording.
+     *
+     * You have to use Android device of API level 19 (4.4) and above in order to use this with success.
+     *
+     * @param remoteFilePath path on mobile phone to save the recorded video to
+     * @param options
+     * @since 1.0.0.Alpha6
+     */
+    void startRecording(String remoteFilePath, ScreenrecordOptions options) throws Exception;
+
+    /**
+     * Starts video recording.
+     *
+     * You have to use Android device of API level 19 (4.4) and above in order to use this with success.
+     *
+     * @param remoteFilePath path on mobile phone to save the recorded video to
+     * @param options
+     * @since 1.0.0.Alpha6
+     */
+    void startRecording(File remoteFilePath, ScreenrecordOptions options) throws Exception;
+
+    /**
+     * Starts video recording.
+     *
+     * Recorded video will be automatically saved somewhere to {@code /sdcard} on a mobile phone.
+     *
+     * @param options
+     * @throws Exception
+     * @since 1.0.0.Alpha6
+     */
+    void startRecording(ScreenrecordOptions options) throws Exception;
+
+    /**
+     * Checks if this Android device records some video.
+     *
+     * @return true if device records some video, false otherwise
+     */
+    boolean isRecording();
+
+    /**
+     * Stops Android device from recording a video. Returned video is in fact pulled from device dynamically to the host
+     * computer.
+     *
+     * You have to use Android device of API level 19 (4.4) and above in order to use this with success.
+     *
+     * @return recorded video of Android device
+     * @param localFilePath path on computer host where to save recorded file by {@link #startRecording(ScreenRecorderOptions)}
+     * @since 1.0.0.Alpha6
+     */
+    Video stopRecording(String localFilePath) throws Exception;
+
+    /**
+     * Stops Android device from recording a video. Returned video is in fact pulled from device dynamically to the host
+     * computer.
+     *
+     * You have to use Android device of API level 19 (4.4) and above in order to use this with success.
+     *
+     * @return recorded video of Android device
+     * @param localFilePath path on computer host where to save recorded file by {@link #startRecording(ScreenRecorderOptions)}
+     * @since 1.0.0.Alpha6
+     */
+    Video stopRecording(File localFilePath) throws Exception;
 }
