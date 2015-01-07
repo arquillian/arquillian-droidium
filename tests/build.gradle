@@ -26,10 +26,11 @@ ext {
     defaultAndroidBuildTools = "22.1.2"
 
     droidiumVersion = "1.0.0.Beta1-SNAPSHOT"
-    selendroidCommit = "c71a7ff66516c819b8c6488493c514a16a3aaba3"
+    selendroidOrganization = "selendroid"
+    selendroidCommit = "master"
     selendroidVersion = "0.13.0-SNAPSHOT"
     recorderScreenshooterVersion = "1.0.0.Beta1-SNAPSHOT"
-    recorderCommit = "refactorings"
+    recorderCommit = "video"
     spaceliftVersion = "1.0.0.Alpha3"
     coreVersion = "1.1.5.Final"
     droneVersion = "2.0.0.Alpha2"
@@ -166,7 +167,7 @@ spacelift {
         selendroid {
             product 'selendroid'
             version project.selendroidCommit
-            remoteUrl "https://github.com/selendroid/selendroid/archive/${version}.zip"
+            remoteUrl "https://github.com/${project.selendroidOrganization}/selendroid/archive/${version}.zip"
             home "selendroid-${version}"
 
             extractMapper {
@@ -232,6 +233,8 @@ spacelift {
                 }
 
                 Tasks.prepare(AndroidSdkOptForStats).execute().await()
+
+                project.ant.delete(dir: "${project.spacelift.workspace}/.android/avd/", failonerror: false)
             }
         }
     }

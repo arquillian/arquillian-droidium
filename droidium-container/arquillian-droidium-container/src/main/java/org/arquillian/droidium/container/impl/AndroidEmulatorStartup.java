@@ -114,7 +114,7 @@ public class AndroidEmulatorStartup {
         Tasks.chain(deviceDiscovery, EmulatorIsOnlineTask.class)
             .execute().until(watch, EmulatorIsOnlineTask.isOnlineCondition);
 
-        AndroidDevice androidDevice = deviceDiscovery.getDiscoveredDevice();
+        AndroidDevice androidDevice = deviceDiscovery.getDevice();
 
         Tasks.prepare(EmulatorStatusCheckTask.class)
             .execution(emulatorExecution)

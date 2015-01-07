@@ -32,35 +32,43 @@ public class DeviceDiscovery implements IDeviceChangeListener {
 
     private static final Logger logger = Logger.getLogger(DeviceDiscovery.class.getName());
 
-    private IDevice discoveredDevice;
+    private IDevice delegate;
+
+    private AndroidDevice device;
 
     private boolean online;
 
     private boolean offline;
 
-    private AndroidDevice device;
-
     @Override
-    public void deviceChanged(IDevice device, int changeMask) {
-        if (discoveredDevice.equals(device) && (changeMask & IDevice.CHANGE_STATE) == 1) {
+    public void deviceChanged(IDevice delegate, int changeMask) {
+        if (this.delegate.equals(delegate) && (changeMask & IDevice.CHANGE_STATE) == 1) {
             if (device.isOnline()) {
-                this.online = true;
+                online = true;
             }
         }
     }
 
     @Override
-    public void deviceConnected(IDevice device) {
-        this.discoveredDevice = device;
+    public void deviceConnected(IDevice delegate) {
+        this.delegate = delegate;
+        device = new AndroidDeviceImpl(delegate);
         logger.log(Level.INFO, "Discovered an emulator device id={0} connected to ADB bus", device.getSerialNumber());
     }
 
     @Override
-    public void deviceDisconnected(IDevice device) {
-        if (device.getAvdName().equals(this.device.getAvdName())) {
-            this.offline = true;
+    public void deviceDisconnected(IDevice delegate) {
+        if (delegate.isEmulator()) {
+            if (delegate.getAvdName().equals(this.device.getAvdName())) {
+                offline = true;
+                logger.fine("Device id=" + delegate.getAvdName() + " disconnected from ADB bus.");
+            }
+        } else {
+            if (delegate.getSerialNumber().equals(this.device.getSerialNumber())) {
+                offline = true;
+                logger.fine("Device id=" + delegate.getSerialNumber() + " disconnected from ADB bus.");
+            }
         }
-        logger.fine("Discovered an emulator device id=" + device.getSerialNumber() + " disconnected from ADB bus");
     }
 
     public DeviceDiscovery setDevice(AndroidDevice device) {
@@ -68,8 +76,17 @@ public class DeviceDiscovery implements IDeviceChangeListener {
         return this;
     }
 
-    public AndroidDevice getDiscoveredDevice() {
-        return new AndroidDeviceImpl(discoveredDevice);
+    public AndroidDevice getDevice() {
+        return device;
+    }
+
+    public DeviceDiscovery setDelegate(IDevice delegate) {
+        this.delegate = delegate;
+        return this;
+    }
+
+    public IDevice getDelegate() {
+        return delegate;
     }
 
     public boolean isOnline() {

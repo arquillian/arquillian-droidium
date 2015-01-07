@@ -28,6 +28,7 @@ import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.impl.DeviceDiscovery;
 import org.arquillian.spacelift.execution.CountDownWatch;
+import org.arquillian.spacelift.execution.ExecutionCondition;
 import org.arquillian.spacelift.execution.ExecutionException;
 import org.arquillian.spacelift.execution.Task;
 
@@ -39,17 +40,17 @@ import com.android.ddmlib.AndroidDebugBridge;
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
-public class EmulatorShutdownTask extends Task<AndroidDevice, Void> {
+public class EmulatorShutdownTask extends Task<AndroidDevice, Boolean> {
 
     private CountDownWatch countdown;
 
-    public Task<AndroidDevice, Void> countdown(CountDownWatch countdown) {
+    public Task<AndroidDevice, Boolean> countdown(CountDownWatch countdown) {
         this.countdown = countdown;
         return this;
     }
 
     @Override
-    protected Void process(AndroidDevice device) throws Exception {
+    protected Boolean process(AndroidDevice device) throws Exception {
 
         final DeviceDiscovery deviceDiscovery = new DeviceDiscovery();
         deviceDiscovery.setDevice(device);
@@ -63,21 +64,30 @@ public class EmulatorShutdownTask extends Task<AndroidDevice, Void> {
                 + "successfully in 10 seconds.", device.getSerialNumber()), ex);
         }
 
+        boolean shuttedDown = false;
+
         try {
-            getExecutionService().execute(new Callable<Boolean>() {
+            shuttedDown = getExecutionService().execute(new Callable<Boolean>() {
 
                 @Override
                 public Boolean call() throws Exception {
                     return deviceDiscovery.isOffline();
                 }
-            }).awaitAtMost(countdown);
+            }).reexecuteEvery(1, TimeUnit.SECONDS).until(60, TimeUnit.SECONDS, new ExecutionCondition<Boolean>() {
+
+                @Override
+                public boolean satisfiedBy(Boolean offline) throws ExecutionException {
+                    return offline;
+                }
+            });
+
         } catch (ExecutionException ex) {
             throw new AndroidExecutionException(String.format("Unable to get the emulator {0} down", device.getSerialNumber()), ex);
         }
 
         AndroidDebugBridge.removeDeviceChangeListener(deviceDiscovery);
 
-        return null;
+        return shuttedDown;
 
     }
 

@@ -89,6 +89,7 @@ public class AndroidDeviceImpl implements AndroidDevice {
 
     public AndroidDeviceImpl(IDevice delegate) {
         Validate.notNull(delegate, "delegate to set for Android device can not be a null object");
+        this.delegate = delegate;
     }
 
     public AndroidDeviceImpl(IDevice delegate, AndroidSDK androidSdk) {
