@@ -127,7 +127,7 @@ class Validate {
      * @throws IllegalArgumentException Thrown if path is empty, null or invalid
      */
     public static void isReadableDirectory(final String path, final String message) throws IllegalArgumentException {
-        notNullOrEmpty(path, "Directory to check against readability is null object or empty string.");
+        notNullOrEmpty(path, message);
 
         File file = new File(path);
         isReadableDirectory(file, message);
@@ -141,7 +141,7 @@ class Validate {
      * @throws IllegalArgumentException Thrown if file is null or invalid
      */
     public static boolean isReadable(final File file, final String message) throws IllegalArgumentException {
-        notNull(file, "File to check against readability is null object.");
+        notNull(file, message);
 
         if (!file.exists() || !file.canRead()) {
             throw new IllegalArgumentException(message);
