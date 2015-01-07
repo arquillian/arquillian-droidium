@@ -251,7 +251,7 @@ public class DroidiumPlatformConfiguration {
                 + "\"android.sdk.home\". When this property is not specified anywhere, it defaults to \"" + resolveUserHome()
                 + "\"");
 
-        Validate.isReadableDirectory(androidHome,
+        Validate.isReadableDirectory(getAndroidHome(),
             "You must provide Android home directory. The value you have provided is not valid. "
                 + "You can either set it via environment variable ANDROID_HOME or via "
                 + "property called \"androidHome\" in Arquillian configuration or you can set it as system property "
