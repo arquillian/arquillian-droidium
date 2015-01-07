@@ -95,7 +95,9 @@ public class Monkey implements AndroidDeviceOutputReciever {
 
     public static void wait(AndroidDevice device, Monkey monkey, String command) {
 
-        for (int i = 0; i < 5; i++) {
+        final int retries = 5;
+
+        for (int i = 0; i < retries; i++) {
             device.executeShellCommand(command, monkey);
             if (monkey.isActive()) {
                 return;
@@ -106,6 +108,7 @@ public class Monkey implements AndroidDeviceOutputReciever {
                 e.printStackTrace();
             }
         }
-        throw new AndroidExecutionException("Waiting for monkey timeouted.");
+        throw new AndroidExecutionException(String.format("Waiting for monkey executing command \"%s\" timeouted in %d seconds.",
+            command, retries));
     }
 }
