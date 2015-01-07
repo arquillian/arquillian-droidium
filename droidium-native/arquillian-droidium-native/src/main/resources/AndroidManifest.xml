@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Taken from Selendroid project -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="0.9.0" package="io.selendroid">
+<!-- 
+    Taken from Selendroid project and modified
+    All parameters in ${} are replaced with real values 
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="${selendroidVersion}" package="${mainPackage}">
 
     <uses-sdk android:minSdkVersion="10"/>
 
-    <instrumentation android:name="io.selendroid.ServerInstrumentation" android:targetPackage="io.selendroid.testapp"/>
+    <instrumentation android:name="${instrumentationClassName}" android:targetPackage="${targetPackage}"/>
+    <instrumentation android:name="${lwInstrumentationClassName}" android:targetPackage="${targetPackage}"/>
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"/>
     <uses-permission android:name="android.permission.INJECT_EVENTS"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.WRITE_CALL_LOG"/>
 
-    <application android:debuggable="true" android:icon="@drawable/selenium_icon" android:label="Selendroid">
+    <application android:debuggable="true" android:label="Selendroid">
         <uses-library android:name="android.test.runner"/>
     </application>
 

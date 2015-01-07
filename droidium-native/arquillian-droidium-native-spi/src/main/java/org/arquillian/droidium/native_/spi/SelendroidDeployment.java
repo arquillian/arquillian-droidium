@@ -47,6 +47,8 @@ public class SelendroidDeployment extends DroidiumDeployment {
 
     private String selendroidPackageName;
 
+    private String selendroidVersion;
+
     /**
      *
      * @param selendroidWorkingCopy
@@ -192,11 +194,24 @@ public class SelendroidDeployment extends DroidiumDeployment {
         return this.selendroidPackageName;
     }
 
+    public String getSelendroidVersion() {
+        return selendroidVersion;
+    }
+
+    public SelendroidDeployment setSelendroidVersion(String selendroidVersion) {
+        Validate.notNullOrEmpty(selendroidVersion, "Selendroid version to set can not be a null object nor an empty string!");
+        this.selendroidVersion = selendroidVersion;
+        return this;
+    }
+
+
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((selendroidPackageName == null) ? 0 : selendroidPackageName.hashCode());
+        result = prime * result + ((selendroidVersion == null) ? 0 : selendroidVersion.hashCode());
         result = prime * result + ((serverBasePackage == null) ? 0 : serverBasePackage.hashCode());
         return result;
     }
@@ -214,6 +229,11 @@ public class SelendroidDeployment extends DroidiumDeployment {
             if (other.selendroidPackageName != null)
                 return false;
         } else if (!selendroidPackageName.equals(other.selendroidPackageName))
+            return false;
+        if (selendroidVersion == null) {
+            if (other.selendroidVersion != null)
+                return false;
+        } else if (!selendroidVersion.equals(other.selendroidVersion))
             return false;
         if (serverBasePackage == null) {
             if (other.serverBasePackage != null)

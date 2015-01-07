@@ -145,6 +145,9 @@ public class SelendroidServerManager {
         int port = Integer.parseInt(deployment.getInstrumentationConfiguration().getPort());
         createPortForwarding(port, port);
 
+        // compose component name for instrumentation based on instrumented application and Selendroid runner location
+        String instrumentedComponent = String.format("%s/%s.ServerInstrumentation", deployment.getServerBasePackage(), deployment.getSelendroidPackageName());
+
         Command startApplicationInstrumentationCommand = new CommandBuilder("am")
             .parameter("instrument")
             .parameter("-e").parameter("main_activity")
@@ -152,7 +155,7 @@ public class SelendroidServerManager {
             .parameter("-e")
             .parameter("server_port")
             .parameter(deployment.getInstrumentationConfiguration().getPort())
-            .parameter(deployment.getServerBasePackage() + "/io.selendroid.ServerInstrumentation")
+            .parameter(instrumentedComponent)
             .build();
 
         logger.fine(startApplicationInstrumentationCommand.toString());

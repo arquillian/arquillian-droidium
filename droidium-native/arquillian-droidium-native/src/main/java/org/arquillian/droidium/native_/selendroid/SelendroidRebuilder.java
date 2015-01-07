@@ -22,9 +22,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
@@ -56,20 +59,12 @@ public class SelendroidRebuilder {
 
     private final AndroidSDK androidSDK;
 
-    /**
-     * Name of Selendroid server package.
-     */
-    public static final String SELENDROID_PACKAGE_NAME = "package=\"io.selendroid\"";
-
-    /**
-     * String in AndroidManifest.xml for Selendroid server to be replaced with target package of application under test.
-     */
-    public static final String SELENDROID_TEST_PACKAGE = "io.selendroid.testapp";
-
-    /**
-     * Needs to be deleted from AndroidManifest.xml since such resource is not present and aapt dump fails because of this.
-     */
-    public static final String ICON = "android:icon=\"@drawable/selenium_icon\"";
+    // that are replaced in AndroidManifest.xml template taken from Selendroid project
+    private static final String SELENDROID_VERSION_KEY = "${selendroidVersion}";
+    private static final String MAIN_PACKAGE_KEY = "${mainPackage}";
+    private static final String SERVER_INSTRUMENTATION_CLASSNAME_KEY = "${instrumentationClassName}";
+    private static final String LIGHTWEIGHT_INSTRUMENTATION_CLASSNAME_KEY = "${lwInstrumentationClassName}";
+    private static final String TARGET_PACKAGE_KEY = "${targetPackage}";
 
     /**
      *
@@ -93,12 +88,17 @@ public class SelendroidRebuilder {
      * @throws SelendroidRebuilderException if rebuilding fails
      */
     @SuppressWarnings("resource")
-    public File rebuild(File selendroidWorkingCopy, String selendroidPackageName, String applicationBasePackage) {
+    public File rebuild(File selendroidWorkingCopy, String selendroidPackageName, String modifiedSelendroidPackageName, String applicationBasePackage, String selendroidVersion) {
         Validate.notNull(selendroidWorkingCopy, "Working copy of Selendroid server to rebuild can not be a null object!");
         Validate.notNullOrEmpty(selendroidPackageName,
             "Selendroid package name for rebuilding of Selendroid server can not be a null object nor an empty string!");
+        Validate.notNullOrEmpty(modifiedSelendroidPackageName,
+            "Selendroid package name for rebuilding of Selendroid server can not be a null object nor an empty string!");
         Validate.notNullOrEmpty(applicationBasePackage,
             "Application base package for rebuilding of Selendroid server can not be a null object nor an empty string!");
+        Validate.notNull(applicationBasePackage,
+            "Selendroid version for rebuilding of Selendroid server can not be a null object!");
+
 
         final File tmpDir = androidSDK.getPlatformConfiguration().getTmpDir();
 
@@ -129,7 +129,14 @@ public class SelendroidRebuilder {
         closeStream(finalAndroidManifestStream);
         closeStream(androidManifestStream);
 
-        filter(finalAndroidManifest, selendroidPackageName, applicationBasePackage);
+        Map<String, String> replacementMapping = new HashMap<String, String>(4);
+        replacementMapping.put(Pattern.quote(SELENDROID_VERSION_KEY), selendroidVersion);
+        replacementMapping.put(Pattern.quote(MAIN_PACKAGE_KEY), modifiedSelendroidPackageName);
+        replacementMapping.put(Pattern.quote(TARGET_PACKAGE_KEY), applicationBasePackage);
+        replacementMapping.put(Pattern.quote(SERVER_INSTRUMENTATION_CLASSNAME_KEY), selendroidPackageName + ".ServerInstrumentation");
+        replacementMapping.put(Pattern.quote(LIGHTWEIGHT_INSTRUMENTATION_CLASSNAME_KEY), selendroidPackageName + ".LightweightInstrumentation");
+
+        modifyManifest(finalAndroidManifest, replacementMapping);
 
         // create dummy package in order to get compiled AndroidManifest.xml
         createDummyAPK(dummyAPK, finalAndroidManifest);
@@ -174,24 +181,22 @@ public class SelendroidRebuilder {
     }
 
     /**
-     * Filters {@code toBeReplaced} manifest and writes it, after filtering, to {@code finalManifest}.
+     * Modifies original manifest file by replacing {@code ${}} occurences in the templace
      *
-     * @param manifest manifest file after the filtering
-     * @param selendroidPackageName Selendroid package name to set in {@code finalManifest} instead of the old one
-     * @param applicationBasePackage application base package to set in {@code finalManifest} instead of the old one
+     * @return modified file
      */
-    private void filter(File manifest, String selendroidPackageName, String applicationBasePackage) {
-
-        Tasks.prepare(StringReplacementTool.class).in(manifest)
-            .replace(SELENDROID_PACKAGE_NAME).with("package=\"" + selendroidPackageName + "\"")
-            .replace(SELENDROID_TEST_PACKAGE).with(applicationBasePackage)
-            .replace(ICON).with("").execute().await();
-
-        if (logger.isLoggable(Level.FINE)) {
-            String replaced = Tasks.chain(Arrays.asList(manifest), FileReader.class)
-                .execute().await().entrySet().iterator().next().getValue();
-            System.out.println(replaced);
+    private File modifyManifest(File manifest, Map<String, String> replacementMapping) {
+        StringReplacementTool sed = Tasks.prepare(StringReplacementTool.class).in(manifest);
+        for(Map.Entry<String, String> replacement:replacementMapping.entrySet()) {
+            sed.replace(replacement.getKey()).with(replacement.getValue());
         }
+
+        List<File> newManifest = sed.execute().await();
+        if (logger.isLoggable(Level.FINE)) {
+            logger.log(Level.FINE, Tasks.chain(newManifest, FileReader.class).execute().await().entrySet().iterator().next().getValue());
+        }
+
+        return newManifest.iterator().next();
     }
 
     /**

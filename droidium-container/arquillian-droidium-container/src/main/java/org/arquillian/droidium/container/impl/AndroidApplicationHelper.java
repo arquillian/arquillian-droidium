@@ -60,12 +60,7 @@ public class AndroidApplicationHelper {
      * @return name of main activity of application
      */
     public String getApplicationMainActivity(File apk) {
-        try {
-            return parseProperty(getAAPTBadgingOutput(apk), "launchable-activity");
-        } catch (AndroidExecutionException e) {
-            logger.log(Level.SEVERE, "Execution exception while getting name of main application activity occured.", e);
-            return null;
-        }
+        return getAAPTBadgingOutput(apk).getSingleProperty("launchable-activity", "name");
     }
 
     /**
@@ -83,12 +78,16 @@ public class AndroidApplicationHelper {
      * @return name of application base package
      */
     public String getApplicationBasePackage(File apk) {
-        try {
-            return parseProperty(getAAPTBadgingOutput(apk), "package");
-        } catch (AndroidExecutionException e) {
-            logger.log(Level.SEVERE, "Execution exception while getting name of main application package occured.", e);
-            return null;
-        }
+        return getAAPTBadgingOutput(apk).getSingleProperty("package", "name");
+    }
+
+    /**
+     *
+     * @param apk apk file to get the name of application base package of
+     * @return name of application base package
+     */
+    public String getApplicationVersion(File apk) {
+        return getAAPTBadgingOutput(apk).getSingleProperty("package", "versionName");
     }
 
     /**
@@ -125,18 +124,18 @@ public class AndroidApplicationHelper {
         return getApplicationBasePackage(new File(apk));
     }
 
-    private List<String> getAAPTBadgingOutput(File apk) {
+    private BadgingOutput getAAPTBadgingOutput(File apk) {
         final Command command = new CommandBuilder(sdk.getAaptPath())
             .parameter("dump")
             .parameter("badging")
             .parameter(apk.getAbsolutePath())
             .build();
 
-        return Tasks.prepare(CommandTool.class)
+        return new BadgingOutput(Tasks.prepare(CommandTool.class)
             .command(command)
             .execute()
             .await()
-            .output();
+            .output());
     }
 
     private List<String> getAAPTXmlTreeOutput(File apkFile) {
@@ -203,30 +202,93 @@ public class AndroidApplicationHelper {
     }
 
     /**
-     * Parses property value from list of lines, returns the first parsed result. Property to parse is somewhere at line in form
-     * {@code property .... name=stringToGet}
+     * A wrapper on top of aapt d badging output
+     * @author kpiwko
      *
-     * @param lines list of lines to get property value from
-     * @param property property to get, is situated at the beginning of line
-     * @return stringToGet
      */
-    private String parseProperty(List<String> lines, String property) {
-        if (lines == null || lines.size() == 0) {
-            return null;
+    static final class BadgingOutput {
+
+        private final List<String> badgingOutput;
+
+        public BadgingOutput(List<String> output) {
+            this.badgingOutput = output;
         }
 
-        Pattern packagePattern = Pattern.compile("name=[\'\"]([^\'\"]+)[\'\"]");
-        Matcher m;
+        /**
+         * Retrieves all properties that start with given propertyName. Output is expected in format:
+         * propertyName:? value
+         * @param propertyName
+         * @return Returns a collection with all values that matched output
+         */
+        public List<String> getProperty(String propertyName) {
 
-        for (String line : lines) {
-            if (line.contains(property)) {
-                m = packagePattern.matcher(line);
-                while (m.find()) {
-                    return m.group(1);
+            List<String> output = new ArrayList<String>();
+
+            Pattern propertyPattern = Pattern.compile("^(\\s*)" + propertyName + "(:?)(.*)$");
+            for (String line : badgingOutput) {
+                Matcher m = propertyPattern.matcher(line);
+                if (m.find()) {
+                    output.add(m.group(3));
                 }
             }
+
+            return output;
+
         }
-        return null;
+
+        /**
+         * Retrieves all properties that start with given propertyName and parses all values there that start with propertySubName. Output is expected in format:
+         * propertyName:? propertySubName='value'
+         * @param propertyName
+         * @param propertySubName
+         * @return Returns a collection with all values that matched output
+         */
+        public List<String> getProperty(String propertyName, String propertySubName) {
+            List<String> partialResults = getProperty(propertyName);
+            List<String> output = new ArrayList<String>(partialResults.size());
+
+            Pattern subPropertyPattern = Pattern.compile(propertySubName + "=[\'\"]([^\'\"]+)[\'\"]");
+            for (String line : partialResults) {
+                Matcher m = subPropertyPattern.matcher(line);
+                if (m.find()) {
+                    output.add(m.group(1));
+                }
+            }
+
+            return output;
+        }
+
+        /**
+         * Transforms list of properties to a single list or returns empty string if the list was empty
+         * @param propertyName
+         * @return
+         */
+        @SuppressWarnings("unused")
+        public String getSingleProperty(String propertyName) {
+            List<String> output = getProperty(propertyName);
+            if (output.size() > 0) {
+                return output.iterator().next();
+            }
+
+            logger.log(Level.SEVERE, "Unable to get {0} from aapt output: {1}", new Object[] {propertyName, badgingOutput});
+            return "";
+        }
+
+        /**
+         * Transforms list of properties to a single list or returns empty string if the list was empty
+         * @param propertyName
+         * @param propertySubName
+         * @return
+         */
+        public String getSingleProperty(String propertyName, String propertySubName) {
+            List<String> output = getProperty(propertyName, propertySubName);
+            if (output.size() > 0) {
+                return output.iterator().next();
+            }
+
+            logger.log(Level.SEVERE, "Unable to get {0}:{1} from aapt output: {2}", new Object[] {propertyName, propertySubName, badgingOutput});
+            return "";
+        }
     }
 
 }

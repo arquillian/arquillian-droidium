@@ -96,19 +96,24 @@ public class InstrumentationPerformer {
         AndroidDeployment instrumentedDeployment = androidDeploymentRegister.get().get(event.getDeploymentName());
 
         File selendroidWorkingCopy = getSelendroidWorkingCopy();
-        String selendroidPackageName = getSelendroidPackageName(selendroidWorkingCopy);
+        String selendroidPackageName = applicationHelper.get().getApplicationBasePackage(selendroidWorkingCopy);
+        // relocate package of the selendroid so we can instrument multiple applications
+        String modifiedSelendroidPackageName = String.format("%s_%d", selendroidPackageName, ++counter);
         String applicationBasePackage = instrumentedDeployment.getApplicationBasePackage();
+        String selendroidVersion = applicationHelper.get().getApplicationVersion(selendroidWorkingCopy);
 
-        File selendroidRebuilt = selendroidRebuilder.get().rebuild(selendroidWorkingCopy, selendroidPackageName, applicationBasePackage);
+        File selendroidRebuilt = selendroidRebuilder.get().rebuild(selendroidWorkingCopy, selendroidPackageName, modifiedSelendroidPackageName, applicationBasePackage, selendroidVersion);
 
         File selendroidResigned = getSelendroidResigned(selendroidRebuilt);
 
         final SelendroidDeployment selendroidDeployment = new SelendroidDeployment();
+
         selendroidDeployment.setWorkingCopy(selendroidWorkingCopy)
             .setRebuilt(selendroidRebuilt)
             .setResigned(selendroidResigned)
-            .setServerBasePackage(applicationHelper.get().getApplicationBasePackage(selendroidResigned))
+            .setServerBasePackage(modifiedSelendroidPackageName)
             .setSelendroidPackageName(selendroidPackageName)
+            .setSelendroidVersion(selendroidVersion)
             .setInstrumentedDeployment(instrumentedDeployment)
             .setDeploymentName(event.getDeploymentName())
             .setInstrumentationConfiguration(event.getConfiguration());
@@ -138,10 +143,6 @@ public class InstrumentationPerformer {
         return DroidiumFileUtils.copyFileToDirectory(
             configuration.get().getServerApk(),
             sdk.get().getPlatformConfiguration().getTmpDir());
-    }
-
-    private String getSelendroidPackageName(File selendroidWorkingCopy) {
-        return applicationHelper.get().getApplicationBasePackage(selendroidWorkingCopy) + "_" + ++counter;
     }
 
 }
