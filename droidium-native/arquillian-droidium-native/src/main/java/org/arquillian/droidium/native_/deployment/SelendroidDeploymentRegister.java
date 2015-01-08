@@ -28,10 +28,10 @@ import org.arquillian.droidium.native_.spi.SelendroidDeployment;
 public class SelendroidDeploymentRegister extends DeploymentRegister<SelendroidDeployment> {
 
     @Override
-    public SelendroidDeployment get(String selendroidPackageName) {
+    public SelendroidDeployment get(String instrumentationTestPackageName) {
 
         for (SelendroidDeployment selendroidDeployment : getAll()) {
-            if (selendroidDeployment.getSelendroidPackageName().equals(selendroidPackageName)) {
+            if (selendroidDeployment.getInstrumenationTestPackageName().equals(instrumentationTestPackageName)) {
                 return selendroidDeployment;
             }
         }

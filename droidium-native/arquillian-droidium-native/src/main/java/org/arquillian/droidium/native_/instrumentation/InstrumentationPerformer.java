@@ -98,11 +98,11 @@ public class InstrumentationPerformer {
         File selendroidWorkingCopy = getSelendroidWorkingCopy();
         String selendroidPackageName = applicationHelper.get().getApplicationBasePackage(selendroidWorkingCopy);
         // relocate package of the selendroid so we can instrument multiple applications
-        String modifiedSelendroidPackageName = String.format("%s_%d", selendroidPackageName, ++counter);
+        String instrumentationTestPackageName = String.format("%s_%d", selendroidPackageName, ++counter);
         String applicationBasePackage = instrumentedDeployment.getApplicationBasePackage();
         String selendroidVersion = applicationHelper.get().getApplicationVersion(selendroidWorkingCopy);
 
-        File selendroidRebuilt = selendroidRebuilder.get().rebuild(selendroidWorkingCopy, selendroidPackageName, modifiedSelendroidPackageName, applicationBasePackage, selendroidVersion);
+        File selendroidRebuilt = selendroidRebuilder.get().rebuild(selendroidWorkingCopy, selendroidPackageName, instrumentationTestPackageName, applicationBasePackage, selendroidVersion);
 
         File selendroidResigned = getSelendroidResigned(selendroidRebuilt);
 
@@ -111,7 +111,7 @@ public class InstrumentationPerformer {
         selendroidDeployment.setWorkingCopy(selendroidWorkingCopy)
             .setRebuilt(selendroidRebuilt)
             .setResigned(selendroidResigned)
-            .setServerBasePackage(modifiedSelendroidPackageName)
+            .setInstrumentationTestPackageName(instrumentationTestPackageName)
             .setSelendroidPackageName(selendroidPackageName)
             .setSelendroidVersion(selendroidVersion)
             .setInstrumentedDeployment(instrumentedDeployment)
@@ -122,10 +122,10 @@ public class InstrumentationPerformer {
 
         // which exactly Selendroid deployment is this instrumented Android deployment backed by?
         droneContext.get().get(event.getDronePoint())
-            .setMetadata(DroidiumMetadataKey.SELENDROID_PACKAGE_NAME.class, selendroidDeployment.getSelendroidPackageName());
+            .setMetadata(DroidiumMetadataKey.INSTRUMENTATION_TEST_PACKAGE_NAME.class, selendroidDeployment.getInstrumenationTestPackageName());
 
         droneContext.get().get(event.getDronePoint())
-            .setMetadata(DroidiumMetadataKey.ANDROID_PACKAGE_NAME.class, instrumentedDeployment.getApplicationBasePackage());
+            .setMetadata(DroidiumMetadataKey.TESTED_APP_PACKAGE_NAME.class, instrumentedDeployment.getApplicationBasePackage());
 
         selendroidDeploy.fire(new SelendroidDeploy(selendroidDeployment));
 

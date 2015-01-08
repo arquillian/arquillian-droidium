@@ -62,10 +62,10 @@ public class InstrumentationRemoveDecider {
         final DronePointContext<?> dronePointContext = droneContext.get(event.getDronePoint());
 
         if (dronePointContext.hasMetadata(DroidiumMetadataKey.DEPLOYMENT.class)
-            && dronePointContext.hasMetadata(DroidiumMetadataKey.SELENDROID_PACKAGE_NAME.class)
-            && dronePointContext.hasMetadata(DroidiumMetadataKey.ANDROID_PACKAGE_NAME.class)) {
+            && dronePointContext.hasMetadata(DroidiumMetadataKey.INSTRUMENTATION_TEST_PACKAGE_NAME.class)
+            && dronePointContext.hasMetadata(DroidiumMetadataKey.TESTED_APP_PACKAGE_NAME.class)) {
 
-            final String selendroidDeploymentName = dronePointContext.getMetadata(DroidiumMetadataKey.SELENDROID_PACKAGE_NAME.class);
+            final String selendroidDeploymentName = dronePointContext.getMetadata(DroidiumMetadataKey.INSTRUMENTATION_TEST_PACKAGE_NAME.class);
 
             final SelendroidDeployment selendroidDeployment = selendroidDeploymentRegister.get().get(selendroidDeploymentName);
 

@@ -59,7 +59,7 @@ public class NativeActivityManager implements ActivityManager {
         DronePoint<WebDriver> dronePoint = dronePoints.get(0);
 
         if (activity.startsWith(".")) {
-            activity = droneContext.get(dronePoint).getMetadata(DroidiumMetadataKey.ANDROID_PACKAGE_NAME.class) + activity;
+            activity = droneContext.get(dronePoint).getMetadata(DroidiumMetadataKey.TESTED_APP_PACKAGE_NAME.class) + activity;
         }
 
         WebDriver instance = droneContext.get(dronePoint).getInstance();
@@ -106,14 +106,14 @@ public class NativeActivityManager implements ActivityManager {
             final DronePointContext<?> dronePointContext = droneContext.get(dronePoint);
 
             if (!dronePointContext.hasMetadata(DroidiumMetadataKey.ACTIVITIES.class)
-                || !dronePointContext.hasMetadata(DroidiumMetadataKey.SELENDROID_PACKAGE_NAME.class)
-                || !dronePointContext.hasMetadata(DroidiumMetadataKey.ANDROID_PACKAGE_NAME.class)) {
+                || !dronePointContext.hasMetadata(DroidiumMetadataKey.INSTRUMENTATION_TEST_PACKAGE_NAME.class)
+                || !dronePointContext.hasMetadata(DroidiumMetadataKey.TESTED_APP_PACKAGE_NAME.class)) {
                 continue;
             }
 
             final List<String> activities = dronePointContext.getMetadata(DroidiumMetadataKey.ACTIVITIES.class);
 
-            final String androidPackageName = dronePointContext.getMetadata(DroidiumMetadataKey.ANDROID_PACKAGE_NAME.class);
+            final String androidPackageName = dronePointContext.getMetadata(DroidiumMetadataKey.TESTED_APP_PACKAGE_NAME.class);
 
             if (activityToStart.startsWith(".")) {
 

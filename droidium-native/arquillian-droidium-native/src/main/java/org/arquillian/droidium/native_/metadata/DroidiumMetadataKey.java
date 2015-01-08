@@ -30,26 +30,27 @@ import org.jboss.arquillian.drone.spi.DronePointContext.MetadataKey;
 public interface DroidiumMetadataKey {
 
     /**
-     * Under this key, a name of Android package deployed via {@code @Deployment} method is saved to {@link DronePoint}
-     * metadata.
+     * Representation of package name of Android application under tests.
      *
-     * This key differs from {@link DEPLOYMENT} key which reflects {@code @Deployment} name itself.
+     * Under this key, a name of Android package deployed via {@code @Deployment} method is saved to {@link DronePoint}
+     * metadata. This key differs from {@link DEPLOYMENT} key which reflects {@code @Deployment} name itself.
      */
-    public interface ANDROID_PACKAGE_NAME extends MetadataKey<String> {
+    public interface TESTED_APP_PACKAGE_NAME extends MetadataKey<String> {
     }
 
     /**
-     * Under this key, a name of Selendroid deployment package name is saved to {@link DronePoint} metadata.
+     * Representation modified package name of original Selendroid deployment that is used to identify deployment on Android Device.
      *
+     * This key must be unique across all deployments and it is used to retrieve additional information to @{link DronePoint}.
      */
-    interface SELENDROID_PACKAGE_NAME extends MetadataKey<String> {
+    interface INSTRUMENTATION_TEST_PACKAGE_NAME extends MetadataKey<String> {
     }
 
     /**
      * Under this key, a deployment name from {@code @Deployment} method is saved as value to {@link DronePoint} metadata on
      * which some particular {@link DronePoint} operates.
      *
-     * This key differs from {@link ANDROID_PACKAGE_NAME} which reflects name of Android APK package itself.
+     * This key differs from {@link TESTED_APP_PACKAGE_NAME} which reflects name of Android APK package itself.
      */
     interface DEPLOYMENT extends MetadataKey<String> {
     }

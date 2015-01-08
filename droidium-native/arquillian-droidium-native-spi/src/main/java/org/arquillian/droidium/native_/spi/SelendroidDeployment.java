@@ -37,11 +37,11 @@ public class SelendroidDeployment extends DroidiumDeployment {
 
     private File resigned;
 
-    private String serverBasePackage;
-
     private AndroidDeployment instrumentedDeployment;
 
     private InstrumentationConfiguration configuration;
+
+    private String instrumentationTestPackageName;
 
     private String androidDeploymentName;
 
@@ -101,20 +101,22 @@ public class SelendroidDeployment extends DroidiumDeployment {
     }
 
     /**
+     * Sets instrumentation test package name, that is based on original Selendroid package name that
+     * was made unique for purposes of multiple application testing
      *
-     * @param serverBasePackage
-     * @throws IllegalArgumentException if {@code serverBasePackage} is a null object or an empty string
+     * @param instrumentationTestPackageName
+     * @throws IllegalArgumentException if {@code instrumentationTestPackageName} is a null object or an empty string
      * @return this
      */
-    public SelendroidDeployment setServerBasePackage(String serverBasePackage) {
-        Validate.notNullOrEmpty(serverBasePackage,
+    public SelendroidDeployment setInstrumentationTestPackageName(String instrumentationTestPackageName) {
+        Validate.notNullOrEmpty(instrumentationTestPackageName,
             "Selendroid server base package to set can not be a null object nor an empty string!");
-        this.serverBasePackage = serverBasePackage;
+        this.instrumentationTestPackageName = instrumentationTestPackageName;
         return this;
     }
 
-    public String getServerBasePackage() {
-        return serverBasePackage;
+    public String getInstrumenationTestPackageName() {
+        return instrumentationTestPackageName;
     }
 
     @Override
@@ -179,6 +181,7 @@ public class SelendroidDeployment extends DroidiumDeployment {
     }
 
     /**
+     * Sets original SelendroidPackage name that is used to find various classes from Selendroid package.
      *
      * @param selendroidPackageName name of the Selendroid package as in its AndroidManifest.xml
      * @return this
@@ -212,7 +215,7 @@ public class SelendroidDeployment extends DroidiumDeployment {
         int result = 1;
         result = prime * result + ((selendroidPackageName == null) ? 0 : selendroidPackageName.hashCode());
         result = prime * result + ((selendroidVersion == null) ? 0 : selendroidVersion.hashCode());
-        result = prime * result + ((serverBasePackage == null) ? 0 : serverBasePackage.hashCode());
+        result = prime * result + ((instrumentationTestPackageName == null) ? 0 : instrumentationTestPackageName.hashCode());
         return result;
     }
 
@@ -235,10 +238,10 @@ public class SelendroidDeployment extends DroidiumDeployment {
                 return false;
         } else if (!selendroidVersion.equals(other.selendroidVersion))
             return false;
-        if (serverBasePackage == null) {
-            if (other.serverBasePackage != null)
+        if (instrumentationTestPackageName == null) {
+            if (other.instrumentationTestPackageName != null)
                 return false;
-        } else if (!serverBasePackage.equals(other.serverBasePackage))
+        } else if (!instrumentationTestPackageName.equals(other.instrumentationTestPackageName))
             return false;
         return true;
     }

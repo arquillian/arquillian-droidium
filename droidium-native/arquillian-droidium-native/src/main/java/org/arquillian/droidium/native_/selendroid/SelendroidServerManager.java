@@ -107,8 +107,8 @@ public class SelendroidServerManager {
             .parameter(deployment.getResigned().getAbsolutePath())
             .build();
 
-        if (device.isPackageInstalled(deployment.getSelendroidPackageName())) {
-            device.uninstallPackage(deployment.getSelendroidPackageName());
+        if (device.isPackageInstalled(deployment.getInstrumenationTestPackageName())) {
+            device.uninstallPackage(deployment.getInstrumenationTestPackageName());
         }
 
         logger.fine("Selendroid server installation command: " + selendroidInstallCommand.toString());
@@ -120,7 +120,7 @@ public class SelendroidServerManager {
                 processResult.exitValue());
         }
 
-        if (!device.isPackageInstalled(deployment.getServerBasePackage())) {
+        if (!device.isPackageInstalled(deployment.getInstrumenationTestPackageName())) {
             throw new AndroidExecutionException("Modified Selendroid server was not installed on device.");
         }
     }
@@ -146,7 +146,7 @@ public class SelendroidServerManager {
         createPortForwarding(port, port);
 
         // compose component name for instrumentation based on instrumented application and Selendroid runner location
-        String instrumentedComponent = String.format("%s/%s.ServerInstrumentation", deployment.getServerBasePackage(), deployment.getSelendroidPackageName());
+        String instrumentedComponent = String.format("%s/%s.ServerInstrumentation", deployment.getInstrumenationTestPackageName(), deployment.getSelendroidPackageName());
 
         Command startApplicationInstrumentationCommand = new CommandBuilder("am")
             .parameter("instrument")
@@ -187,11 +187,11 @@ public class SelendroidServerManager {
         try {
             device.executeShellCommand(new CommandBuilder("pm")
                 .parameter("disable")
-                .parameter(deployment.getServerBasePackage())
+                .parameter(deployment.getInstrumenationTestPackageName())
                 .build()
                 .toString());
         } catch (AndroidExecutionException ex) {
-            throw new AndroidExecutionException("Unable to disable Selendroid deployment " + deployment.getServerBasePackage(), ex);
+            throw new AndroidExecutionException("Unable to disable Selendroid deployment " + deployment.getInstrumenationTestPackageName(), ex);
         }
     }
 
@@ -207,7 +207,7 @@ public class SelendroidServerManager {
         try {
             device.executeShellCommand(new CommandBuilder("pm")
                 .parameter("uninstall")
-                .parameter(deployment.getServerBasePackage())
+                .parameter(deployment.getInstrumenationTestPackageName())
                 .build()
                 .toString());
         } catch (AndroidExecutionException ex) {
