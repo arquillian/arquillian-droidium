@@ -2,24 +2,33 @@
 
 This is the home of the following extensions for Arquillian testing platform:
 
-=== Arquillian Droidium container
+=== https://github.com/arquillian/arquillian-droidium/tree/master/droidium-container[Arquillian Droidium container]
 
-Implementation of Arquillian container abstraction for Android devices.
+Implementation of Arquillian container abstraction for Android devices. By this Arquillian container adapter, you can execute tests 
+dealing with Android devices where Android device is view just as another Arquillian container.
 
-https://github.com/arquillian/arquillian-droidium/blob/master/droidium-container/README.adoc[Droidium container documentation]
-
-=== Arquillian Droidium platform
+=== https://github.com/arquillian/arquillian-droidium/tree/master/droidium-platform[Arquillian Droidium platform]
 
 This tiny extension provides core Android platform configuration on which Droidium container depends.
 
-=== Arquillian Droidium Native
+=== https://github.com/arquillian/arquillian-droidium/blob/master/droidium-native/[Arquillian Droidium Native]
 
 Extension for supporting testing of native applications for Droidium container. You 
 need this extension when you want to functionally test your native Android application.
 Native extension relies on http://dominikdary.github.io/selendroid/[Selendroid] project 
 from where it takes Selendroid server APK.
 
-https://github.com/arquillian/arquillian-droidium/blob/master/droidium-native/README.adoc[Droidium native plugin documentation]
+=== https://github.com/arquillian/arquillian-droidium/tree/master/droidium-recorder[Arquillian Droidium Recorder]
+
+By this extension, you can make videos of Android devices while you are executing tests.
+
+=== https://github.com/arquillian/arquillian-droidium/tree/master/droidium-screenshooter[Arquillian Droidium Screenshooter]
+
+By this extension, you can take screenshots of Android devices while you are executing tests.
+
+=== https://github.com/arquillian/arquillian-recorder[Arquillian Recorder integration]
+
+This extension builds on top of https://github.com/arquillian/arquillian-recorder[Arquillian Recorder] so by using above recorder and screenshooter extensions, these resources will appear in resulting exporter report in e.g. html file.
 
 === Runtime dependencies
 

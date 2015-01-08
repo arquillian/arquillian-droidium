@@ -1,0 +1,10 @@
+== Arquillian Droidium recorder test
+
+This demo project shows how to record videos of your devices while you are doing tests by Arquillian Droidium Recorder extension.
+
+In order to try this test, you have you use physical device because at the 
+time of the writing of this, there is not support of video recording of emulators.
+
+Additionally, you have to use Android device of version 4.4+.
+
+You can possibly span multiple test methods when you record videos, meaning starting in one method and stopping it in another.

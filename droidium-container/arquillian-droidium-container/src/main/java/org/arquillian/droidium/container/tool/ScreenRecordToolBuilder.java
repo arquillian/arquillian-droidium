@@ -45,18 +45,28 @@ public class ScreenRecordToolBuilder {
      * The set value of timeLimit field will be ignored and timeLimit will default to 180 seconds.
      *
      * @param options
-     * @return
+     * @return this
      */
     public ScreenRecordToolBuilder options(ScreenrecordOptions options) {
         this.options = options;
         return this;
     }
 
+    /**
+     *
+     * @param remoteFilePath file path of video on Android device
+     * @return this
+     */
     public ScreenRecordToolBuilder remoteFilePath(String remoteFilePath) {
         this.remoteFilePath = remoteFilePath;
         return this;
     }
 
+    /**
+     *
+     * @param remoteFile file of video on Android device
+     * @return this
+     */
     public ScreenRecordToolBuilder remoteFile(File remoteFile) {
         return remoteFilePath(remoteFile.getAbsolutePath());
     }

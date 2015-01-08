@@ -57,7 +57,11 @@ ext {
         'droidium-native-02',
         //'droidium-hybrid-01',
         'droidium-screenshooter-01',
-        'droidium-recorder-01'
+    ]
+
+    defaultDroidiumRecorderTestProjects = [
+        'droidium-recorder-01',
+        'droidium-recorder-02'
     ]
 
     defaultDroidiumDeviceSelectionProjects = [
@@ -104,6 +108,11 @@ spacelift {
 
         'deviceSelection' {
             tests 'deviceSelectionTest'
+            enabledInstallations 'arquillianRecorder', 'droidium', 'androidSdk', 'selendroid'
+        }
+
+        'droidiumRecorder' {
+            tests 'droidiumRecorderTests'
             enabledInstallations 'arquillianRecorder', 'droidium', 'androidSdk', 'selendroid'
         }
 
@@ -360,6 +369,27 @@ spacelift {
 
             afterTest {
                 Tasks.prepare(AndroidEmulatorStopper).execute().await()
+                project.ant.delete(dir: project.spacelift.workspace.absolutePath + "/.droidium_tmp", failonerror: false)
+            }
+        }
+
+        droidiumRecorderTests {
+
+            dataProvider {
+                project.droidiumRecorderTestProjects
+            }
+
+            execute { droidiumTest ->
+                Tasks.prepare(MavenExecutor).pom("${project.rootDir}/${droidiumTest}/pom.xml")
+                    .goals('clean', 'test')
+                    .property("arquillian.debug=${project.arquillian_debug}")
+                    .env([ANDROID_HOME : androidSdk.home.absolutePath])
+                    .env([ANDROID_SDK_HOME : project.spacelift.workspace.absolutePath])
+                    .env([TMPDIR : project.spacelift.workspace.absolutePath + "/.droidium_tmp"])
+                    .execute().await()
+            }
+
+            afterTest {
                 project.ant.delete(dir: project.spacelift.workspace.absolutePath + "/.droidium_tmp", failonerror: false)
             }
         }

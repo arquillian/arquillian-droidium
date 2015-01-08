@@ -55,8 +55,8 @@ Following +arquillian.xml+ properties are supported within *recorder* qualifier:
 |Default name of video file.
 |record
 |+bitrate+
-|Bitrate of recorded Android video. Follows screenrecorder's default in Mbps.
-|4
+|Bitrate of recorded Android video.
+|4000000, minimum 100000, maximum 200000000
 |+remoteVideoDir+
 |Directory on Android device where all videos will be saved before they are moved to hosting computer.
 |+/sdcard/+
@@ -64,7 +64,7 @@ Following +arquillian.xml+ properties are supported within *recorder* qualifier:
 
 NOTE: Please be sure you have enough storage capacity to save videos on Android device. They are automatically saved to +/sdcard/+ when not specified otherwise so check you have mounted SD card for your Android device or emulator or create a SD card dynamically via +generateSDCard+ property in Android container descriptor in +arquillian.xml+.
 
-INFO: Due to limitation in screenrecorder binary in Android device, you can not record more then 180 seconds of video. If your recording video session lasts more then 3 minutes, it will be automatically stopped  
+NOTE: Due to limitation in screenrecorder binary in Android device, you can not record more then 180 seconds of video. If your recording video session lasts more then 3 minutes, it will be automatically stopped  
 
 == Usage
 
@@ -73,9 +73,9 @@ INFO: Due to limitation in screenrecorder binary in Android device, you can not 
 @ArquillianResource Recorder recorder;
 ----
 
-You can then start and stop recording as you wish directly in your test via +startRecording()+ and +stopRecording()+ methods. Feel free to explore. You can not start recording when you have already started to do so and you can not stop recording when you have not started to record yet.
+If automatic recording (defined in arquillian.xml via +recorder+ extension properties) is not enough for you and you want to have fine-graned control over recording process, you can start and stop recording as you wish directly in your test via +startRecording()+ and +stopRecording()+ methods. You can not start recording when you have already started to do so and you can not stop recording when you have not started to record yet. You can record via +AndroidDevice+ injection as well. +Recorder+ injection is only a convenient wrapper for it.
 
-When you want to record manually by injecting Recorder into test, you can not record by automatic manner because Recorder is able to record only one video in some particular moment. In order not to record videos automatically, all +start*+ properties and +takeOnlyOnFail+ property _have to_ be set to false in order to successfully inject Recorder as +@ArquillianResource+.
+When you want to record manually by injecting +Recorder+ into test, you can not record by automatic manner because +Recorder+ is able to record only one video in some particular moment. In order not to record videos automatically, all +start*+ properties and +takeOnlyOnFail+ property _have to_ be set to false in order to successfully inject +Recorder+ as +@ArquillianResource+.
 
 You can record videos which span multiple test methods, like this:
 

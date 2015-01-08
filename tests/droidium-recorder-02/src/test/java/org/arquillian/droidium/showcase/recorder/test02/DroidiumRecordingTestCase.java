@@ -14,12 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.showcase.screenshooter.test01;
+package org.arquillian.droidium.showcase.recorder.test02;
 
 import java.io.File;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.native_.api.Instrumentable;
@@ -39,8 +36,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import com.android.ddmlib.ScreenRecorderOptions;
-
 /**
  *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
@@ -50,16 +45,13 @@ import com.android.ddmlib.ScreenRecorderOptions;
 @RunAsClient
 public class DroidiumRecordingTestCase {
 
-    private static final Logger logger = Logger.getLogger(DroidiumRecordingTestCase.class.getName());
-
     @Drone
     private WebDriver driver;
 
     @Deployment
     @Instrumentable
     public static Archive<?> createDeployment() {
-        // return ShrinkWrap.createFromZipFile(JavaArchive.class, new File(System.getProperty("selendroid.test.app")));
-        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("selendroid-test-app-0.12.0.apk"));
+        return ShrinkWrap.createFromZipFile(JavaArchive.class, new File(System.getProperty("selendroid.test.app")));
     }
 
     private static final String USER_NAME = "john";
@@ -74,24 +66,11 @@ public class DroidiumRecordingTestCase {
 
     private static final String USER_PRGRAMMING_LANGUAGE = "Scala";
 
-    /**
-     * Simple test which tries to register some user.
-     *
-     * @param screenshooter takes screenshots of {@code device}
-     * @param device Android device itself, it is not needed in tests as such since we interact only with {@code WebDriver}
-     *        injection.
-     * @param driver {@code WebDriver} injection which sends commands to Selendroid server installed on the Android device.
-     */
     @Test
     @InSequence(1)
     public void test01(@ArquillianResource AndroidDevice device) throws Exception {
 
         device.getActivityManager().startActivity("io.selendroid.testapp.HomeScreenActivity");
-
-        //
-        // starts recording of video on Android
-        //
-        device.startRecording(new ScreenRecorderOptions.Builder().setBitRate(4000000).setTimeLimit(3, TimeUnit.MINUTES).build());
 
         // Go to user registration
         driver.findElement(By.id("startUserRegistration")).click();
@@ -110,6 +89,11 @@ public class DroidiumRecordingTestCase {
         WebElement inputPassword = driver.findElement(By.id("inputPassword"));
         inputPassword.sendKeys(USER_PASSWORD);
         Assert.assertEquals(inputPassword.getText(), USER_PASSWORD);
+    }
+
+    @Test
+    @InSequence(2)
+    public void test02() throws Exception {
 
         // check value in name field, clear it and write new one
         WebElement inputName = driver.findElement(By.id("inputName"));
@@ -130,10 +114,5 @@ public class DroidiumRecordingTestCase {
 
         // register
         driver.findElement(By.id("btnRegisterUser")).click();
-
-        //
-        // stops recording of video on Android
-        //
-        device.stopRecording(new File("/tmp/" + UUID.randomUUID().toString() + ".mp4"));
     }
 }

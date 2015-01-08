@@ -1,19 +1,18 @@
 == Tests for Arquillian Droidium
 
-This project shows various use cases of Arquillian Droidium container 
-possibly cooperating with native and web extensions.
+This project shows various use cases of Arquillian Droidium container.
 
 All necessary configuration which is needed in order to execute every test project alone can be 
-found in their respective README files.
+found in their respective README.adoc files.
 
-In order to test all test projects in this directory in one batch in an automated manner, 
+In order to test all test projects on default profile in this directory in one batch in an automated manner, 
 execute Gradle build script like this:
 
 ----
 $ ./gradlew test
 ----
 
-If you want to execute only few tests, do it like this:
+If you want to execute only few tests in default profile, do it like this:
 
 ----
 $ ./gradlew test -PdroidiumTestProjects="list,of,test,dirs"
@@ -21,19 +20,55 @@ $ ./gradlew test -PdroidiumTestProjects="list,of,test,dirs"
 
 You can run test suite against different version of Selendroid server. Server is being built
 dynamically (cloned from GitHub and built directly in Gradle script before tests' executions).
+In order to build Selendroid server from other then https://github.com/selendroid/selendroid[Selendroid repository],
+replace +selendroidOrganization+ to other GitHub organization name instead of "selendroid". If you want to use 
+different branch from "master", please replace +selendroidCommit+ to according branch name. This works with commit hash value as well.
+In case the version of Selendroid changes from one version to another, rename +selendroidVersion+ to appropriate value.
+It is sufficient to replace just the value of +selendroidVersion+ if organization and branch is not to be changed.
 
-In order to run tests agains different Selendroid, use these properties, where _selendroidVersion_
-is a version of Selendroid of that commit, e.g. "0.13.0-SNAPSHOT".
+NOTE: There is no need to download Android SDK and start emulators because test script does this all for you automatically. 
+
+NOTE: Test script uses https://github.com/arquillian/arquillian-spacelift-gradle-plugin[Arquillian Spacelift Gradle Plugin].
+
+== Arquillian Spacelift Gradle plugin profiles
+
+You select different profile from default to be executed like this (for example Droidium internal tests):
 
 ----
-$ ./gradlew test -PselendroidCommit=<sha of commit> -PselendroidVersion=<version>
+./gradlew -PdroidiumInternal test
 ----
 
-There is no need to download Android SDK and start emulators because test script does this all for you automatically. 
+----
+Profiles and related test projects:
 
-Test script uses https://github.com/arquillian/arquillian-spacelift-gradle-plugin[Arquillian Spacelift Gradle Plugin].
+default
+    droidium-multiple-androids-with-jboss-01
+    droidium-multiple-androids-01
+    droidium-multiple-androids-02
+    droidium-multiple-containers-01
+    droidium-multiple-containers-02
+    droidium-multiple-containers-03
+    droidium-multiple-deployments-01
+    droidium-native-01
+    droidium-native-01-scala
+    droidium-native-02
+    droidium-screenshooter-01
+    
+deviceSelection
+    droidium-device-selection
 
-It contains these modules as standalone projects:
+droidiumRecorder
+    droidium-recorder-01
+    droidium-recorder-02
+
+droidiumInternal
+    droidiumInternalTestsAutomatic
+    droidiumInternalTestsManualEmulator
+    droidiumInternalTestsConfiguration
+
+droidiumInternalPhysical
+    droidiumInternalTestsPhyiscalDevice
+----
 
 === droidium-multiple-androids-01
 
@@ -126,7 +161,23 @@ screenshooting!
 
 === droidium-device-selection-test
 
-Execute this test only if there is one device started before the test execution.
+NOTE: Execute this test only if there is one device started before the test execution.
 
 This test shows that even there is not specified serialId nor avdName in arquillian.xml,
-device is selected automatically when it is connected.
+device is selected automatically when it is connected
+
+NOTE: Following recorder tests execute only after you have connected physical device to your computer with API level 19+ (4.4+).
+
+=== droidium-recorder-01
+
+This test shows have you can record videos of your Android device in test methods. Recording can span 
+multiple test methods or can be started and stopped in one method as well. You can in theory start 
+and stop recording in +@Before+ and +@After+ fixture methods respectively.
+
+NOTE: This project does not use any Arquillian Recorder extension and it shows usage of AndroidDevice recording API.
+
+=== droidium-recorder-02
+
+This test shows how to integrate Droidium Recorder extension which records your tests in an automated way.
+
+Recorded videos are reported to html report for viewing in _target_ via https://github.com/arquillian/arquillian-recorder[Arquillian Recorder extension].

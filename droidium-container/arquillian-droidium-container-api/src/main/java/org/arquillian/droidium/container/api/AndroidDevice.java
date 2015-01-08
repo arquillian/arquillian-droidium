@@ -307,7 +307,7 @@ public interface AndroidDevice {
      * You have to use Android device of API level 19 (4.4) and above in order to use this with success.
      *
      * @return recorded video of Android device
-     * @param localFilePath path on computer host where to save recorded file by {@link #startRecording(ScreenRecorderOptions)}
+     * @param localFilePath path on computer host where to save recorded file by {@link #startRecording(ScreenrecordOptions)}
      * @since 1.0.0.Alpha6
      */
     Video stopRecording(String localFilePath) throws Exception;
@@ -319,7 +319,7 @@ public interface AndroidDevice {
      * You have to use Android device of API level 19 (4.4) and above in order to use this with success.
      *
      * @return recorded video of Android device
-     * @param localFilePath path on computer host where to save recorded file by {@link #startRecording(ScreenRecorderOptions)}
+     * @param localFilePath path on computer host where to save recorded file by {@link #startRecording(ScreenrecordOptions)}
      * @since 1.0.0.Alpha6
      */
     Video stopRecording(File localFilePath) throws Exception;
