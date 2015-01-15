@@ -26,11 +26,20 @@ ext {
     defaultAndroidBuildTools = "22.1.2"
 
     droidiumVersion = "1.0.0.Beta1-SNAPSHOT"
+
+    // downloads from GitHub
     selendroidOrganization = "selendroid"
-    selendroidCommit = "master"
     selendroidVersion = "0.13.0-SNAPSHOT"
-    recorderScreenshooterVersion = "1.0.0.Beta1-SNAPSHOT"
-    recorderCommit = "video"
+    selendroidCommit = "master"
+
+    // propagates to poms
+    recorderVersion = "1.0.0.Beta1"
+    recorderScreenshooterVersion = "1.0.0.Beta1"
+    recorderVideoVersion = "1.0.0.Beta1"
+
+    // downloads from GitHub
+    recorderCommit = "1.0.0.Beta1"
+
     spaceliftVersion = "1.0.0.Alpha3"
     coreVersion = "1.1.5.Final"
     droneVersion = "2.0.0.Alpha2"
@@ -103,17 +112,17 @@ spacelift {
     profiles {
         'default' {
             tests 'droidiumTests'
-            enabledInstallations 'arquillianRecorder', 'droidium', 'androidSdk', 'selendroid'
+            enabledInstallations 'androidSdk', 'arquillianRecorder', 'selendroid', 'droidium'
         }
 
         'deviceSelection' {
             tests 'deviceSelectionTest'
-            enabledInstallations 'arquillianRecorder', 'droidium', 'androidSdk', 'selendroid'
+            enabledInstallations 'androidSdk', 'arquillianRecorder', 'selendroid', 'droidium'
         }
 
         'droidiumRecorder' {
             tests 'droidiumRecorderTests'
-            enabledInstallations 'arquillianRecorder', 'droidium', 'androidSdk', 'selendroid'
+            enabledInstallations 'androidSdk', 'arquillianRecorder', 'selendroid', 'droidium'
         }
 
         'droidiumInternal' {
@@ -150,7 +159,9 @@ spacelift {
                         'version.arquillian.graphene': "${project.grapheneVersion}",
                         'version.selendroid': "${project.selendroidVersion}",
                         'version.selenium': "${project.seleniumVersion}",
-                        'version.recorder.screenshooter' : "${project.recorderScreenshooterVersion}"
+                        'version.recorder' : '${project.recorderVersion}',
+                        'version.screenshooter' : "${project.recorderScreenshooterVersion}",
+                        'version.videorecorder' : "${project.recorderVideoVersion}"
                     ], PomXmlUpdater).dir(dir: project.rootDir, excludes: [ ".ws/**" ]).execute().await()
             }
         }
