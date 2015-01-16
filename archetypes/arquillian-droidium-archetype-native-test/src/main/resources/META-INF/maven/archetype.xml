@@ -20,6 +20,5 @@
     </testResources>
     <resources>
         <resource>README.adoc</resource>
-        <resource>selendroid-server-0.9.0.apk</resource>
     </resources>
 </archetype>

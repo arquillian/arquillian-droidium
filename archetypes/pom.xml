@@ -40,7 +40,6 @@
     <!-- Modules -->
     <modules>
         <module>arquillian-droidium-archetype-native-test</module>
-        <module>arquillian-droidium-archetype-web-test</module>
     </modules>
 
     <build>

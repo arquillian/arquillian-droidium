@@ -3,28 +3,11 @@
     xsi:schemaLocation="http://jboss.org/schema/arquillian
     http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
 
-    <!-- Container configuration -->
     <group qualifier="containers" default="true">
         <container qualifier="android" default="true">
-            <configuration>
-                <!-- Name of Android container to start or use during tests. This property is filtered 
-                    meaning it is set in profile in pom.xml under the same name of the property. -->
-                <property name="avdName">${android.avd.name}</property>
-                <property name="emulatorOptions">${android.emulator.options}</property>
-                <property name="emulatorBootupTimeoutInSeconds">600</property>
-                <property name="logType">disable</property>
-            </configuration>
         </container>
     </group>
 
-    <!-- Support for Arquillian Droidium Native extension 
-        for testing native Android applications via Selendroid -->
-    <extension qualifier="droidium-native">
-        <!-- path you your selendroid-server.apk -->
-        <property name="serverApk">selendroid-server-0.9.0.apk</property>
-    </extension>
-
-    <!-- Support for Graphene WebDriver which is injected into test while using Selendroid -->
     <extension qualifier="webdriver">
         <property name="browser">android</property>
         <property name="remoteAddress">http://localhost:8080/wd/hub</property>

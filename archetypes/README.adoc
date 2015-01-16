@@ -1,15 +1,11 @@
 == Arquillian Droidium Archetypes
 
 Archetypes provide fast and easy way how to bootstrap your mobile testing project. You are welcome 
-to generate your own project based on archetypes provided here. There are two projects present:
+to generate your own project based on archetypes provided here. There are these projects present:
 
 * native archetype
-* web archetype
 
 You can generate native project from native archetype, meaning you want to test pure native Android application. 
-On the other hand, when you generate your project from web archetype, there will be prepared project for testing 
-web application (war) which is meant to be deployed to JBoss AS container and it will be functionally tested 
-from Android point of view.
 
 === Project generation
 
@@ -39,8 +35,5 @@ package: net.joe.doe
 -------------------------------------
 
 and you are done.
-
-The similar process holds for the web project. There is already bundled Selendroid server (or Android server from Selenium respectively) 
-for you so you just need to deliver your own applications under test on the class path and modify `@Deployment` method in test class accordingly.
 
 Happy testing!

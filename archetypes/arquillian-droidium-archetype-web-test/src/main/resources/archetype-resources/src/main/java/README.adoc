@@ -1,2 +1,0 @@
-Code your web app here, this web app will be deployed to JBoss AS container and then 
-it is tested by tests written in src/test/java for your Android device.

@@ -25,12 +25,11 @@
                 <include>**/*.xml</include>
             </includes>
         </fileSet>
-        <!-- README.adoc and selendroid server -->
+        <!-- README.adoc -->
         <fileSet filtered="false" encoding="UTF-8">
             <directory></directory>
             <includes>
                 <include>README.adoc</include>
-                <include>selendroid-server-0.9.0.apk</include>
             </includes>
         </fileSet>
     </fileSets>

@@ -5,9 +5,7 @@ import java.io.File;
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.native_.api.Instrumentable;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.container.test.api.TargetsContainer;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
@@ -25,10 +23,15 @@ import org.openqa.selenium.WebDriver;
  */
 @RunWith(Arquillian.class)
 @RunAsClient
-public class SelendroidTestAppTestCase {
+public class DroidiumTestCase {
 
-    @Deployment(name = "android")
-    @TargetsContainer("android")
+    @Drone
+    private WebDriver driver;
+
+    @ArquillianResource
+    private AndroidDevice device;
+    
+    @Deployment
     @Instrumentable
     public static Archive<?> createDeployment() {
         return ShrinkWrap.createFromZipFile(JavaArchive.class, new File("your-apk-under-test"));
@@ -36,8 +39,7 @@ public class SelendroidTestAppTestCase {
 
     @Test
     @InSequence(1)
-    @OperateOnDeployment("android")
-    public void test01(@ArquillianResource AndroidDevice android, @Drone WebDriver driver) {
+    public void test01() {
         // your tests
     }
 }
