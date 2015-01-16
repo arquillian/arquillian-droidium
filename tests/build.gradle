@@ -29,8 +29,8 @@ ext {
 
     // downloads from GitHub
     selendroidOrganization = "selendroid"
-    selendroidVersion = "0.13.0-SNAPSHOT"
-    selendroidCommit = "master"
+    selendroidVersion = "0.13.0"
+    selendroidCommit = "0.13.0"
 
     // propagates to poms
     recorderVersion = "1.0.0.Beta1"

@@ -16,7 +16,7 @@
  */
 package org.arquillian.droidium.native_.webdriver;
 
-import io.selendroid.SelendroidDriver;
+import io.selendroid.client.SelendroidDriver;
 
 import java.net.URL;
 

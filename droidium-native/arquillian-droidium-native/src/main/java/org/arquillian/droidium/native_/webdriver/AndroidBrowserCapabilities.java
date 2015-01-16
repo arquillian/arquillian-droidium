@@ -16,7 +16,7 @@
  */
 package org.arquillian.droidium.native_.webdriver;
 
-import io.selendroid.SelendroidCapabilities;
+import io.selendroid.common.SelendroidCapabilities;
 
 import java.util.Map;
 
