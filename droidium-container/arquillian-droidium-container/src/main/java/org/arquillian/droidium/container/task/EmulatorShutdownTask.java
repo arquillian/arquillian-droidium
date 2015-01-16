@@ -42,7 +42,7 @@ import com.android.ddmlib.AndroidDebugBridge;
  */
 public class EmulatorShutdownTask extends Task<AndroidDevice, Boolean> {
 
-    private CountDownWatch countdown;
+    private CountDownWatch countdown = new CountDownWatch(60, TimeUnit.SECONDS);
 
     public Task<AndroidDevice, Boolean> countdown(CountDownWatch countdown) {
         this.countdown = countdown;
@@ -73,7 +73,7 @@ public class EmulatorShutdownTask extends Task<AndroidDevice, Boolean> {
                 public Boolean call() throws Exception {
                     return deviceDiscovery.isOffline();
                 }
-            }).reexecuteEvery(1, TimeUnit.SECONDS).until(60, TimeUnit.SECONDS, new ExecutionCondition<Boolean>() {
+            }).reexecuteEvery(1, TimeUnit.SECONDS).until(countdown, new ExecutionCondition<Boolean>() {
 
                 @Override
                 public boolean satisfiedBy(Boolean offline) throws ExecutionException {

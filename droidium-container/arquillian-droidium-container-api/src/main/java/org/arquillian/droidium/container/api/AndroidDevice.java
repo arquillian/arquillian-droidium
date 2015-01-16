@@ -19,8 +19,6 @@ package org.arquillian.droidium.container.api;
 import java.io.File;
 import java.io.IOException;
 
-import com.android.ddmlib.ScreenRecorderOptions;
-
 /**
  * Representation of Android Device
  *

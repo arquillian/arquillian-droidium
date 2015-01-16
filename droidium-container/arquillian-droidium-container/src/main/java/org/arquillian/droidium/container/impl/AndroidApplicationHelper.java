@@ -263,7 +263,6 @@ public class AndroidApplicationHelper {
          * @param propertyName
          * @return
          */
-        @SuppressWarnings("unused")
         public String getSingleProperty(String propertyName) {
             List<String> output = getProperty(propertyName);
             if (output.size() > 0) {
