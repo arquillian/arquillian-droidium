@@ -80,7 +80,7 @@
         <version.org.jboss.as>7.1.1.Final</version.org.jboss.as>
 
         <!-- ddmlib -->
-        <version.ddmlib>24.0.0</version.ddmlib>
+        <version.ddmlib>24.0.1</version.ddmlib>
 
         <!-- Spacelift -->
         <version.spacelift>1.0.0.Alpha3</version.spacelift>
