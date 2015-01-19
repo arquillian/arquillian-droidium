@@ -83,7 +83,7 @@
         <version.ddmlib>24.0.1</version.ddmlib>
 
         <!-- Spacelift -->
-        <version.spacelift>1.0.0.Alpha3</version.spacelift>
+        <version.spacelift>1.0.0.Alpha4</version.spacelift>
 
         <!-- Arquillian Recorder-->
         <version.recorder>1.0.0.Beta1</version.recorder>
