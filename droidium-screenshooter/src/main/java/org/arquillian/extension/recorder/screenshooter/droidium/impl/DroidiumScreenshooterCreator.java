@@ -38,7 +38,7 @@ import org.jboss.arquillian.core.api.annotation.Observes;
  * <li>{@link Screenshooter}</li>
  * <li>{@link TakenResourceRegister}</li>
  * </ul>
- * 
+ *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */

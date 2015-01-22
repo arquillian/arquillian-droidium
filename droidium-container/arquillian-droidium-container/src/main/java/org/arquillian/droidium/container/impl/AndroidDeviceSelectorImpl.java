@@ -157,16 +157,18 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
         // if there is zero devices connected, we need to start some emulator
         // if there is just one device, lets connect to it
         // if there is more then one device, we do not know which we should connect to
-        if (devices.size() == 1) {
-            device = devices.get(0);
-            device.setAlreadyRuns(true);
-            setDronePorts(device);
-            androidDevice.set(device);
-            androidDeviceReady.fire(new AndroidDeviceReady(device));
-            return;
-        } else if (devices.size() > 1) {
-            throw new IllegalStateException("The selection of Android device is ambiguous. There are multiple devices and it is "
-                + "not able to recognize which one to choose.");
+        if (configuration.getAvdName() == null && configuration.getSerialId() == null) {
+            if (devices.size() == 1) {
+                device = devices.get(0);
+                device.setAlreadyRuns(true);
+                setDronePorts(device);
+                androidDevice.set(device);
+                androidDeviceReady.fire(new AndroidDeviceReady(device));
+                return;
+            } else if (devices.size() > 1) {
+                throw new IllegalStateException("The selection of Android device is ambiguous. There are multiple devices and it is "
+                    + "not able to recognize which one to choose.");
+            }
         }
 
         if (configuration.getAvdName() == null) {

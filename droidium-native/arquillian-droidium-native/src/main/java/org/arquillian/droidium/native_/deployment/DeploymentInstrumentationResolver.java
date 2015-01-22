@@ -42,13 +42,13 @@ public class DeploymentInstrumentationResolver {
     private Instance<DeploymentInstrumentationMapper> deploymentInstrumentationMapper;
 
     /**
-     * Precedence is set here higher then the one in {@code DroneConfigurator} in order to be treated firstly in BeforeClass
+     * Precedence is set here higher then the one in {@code DroneLifecycleManager} in order to be treated firstly in BeforeClass
      * context because once Drones get configured, we need this structure to be already initialized for further processing. We
      * can not hook just to {@code BeforeClass} nor {@code GenerateDeployment} because the order of these executions is random.
      *
      * @param event
      */
-    public void resolveInstrumentationDeploymentMap(@Observes(precedence = 20) BeforeClass event) {
+    public void resolveInstrumentationDeploymentMap(@Observes(precedence = 80) BeforeClass event) {
         Map<String, InstrumentationConfiguration> resolvedInstrumentation = InstrumentationScanner.scan(event.getTestClass());
         deploymentInstrumentationMapper.get().set(resolvedInstrumentation);
     }

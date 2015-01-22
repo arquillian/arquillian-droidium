@@ -17,7 +17,7 @@
 
     <groupId>org.arquillian.droidium.tests</groupId>
     <artifactId>arquillian-droidium-multiple-deployments-test-01</artifactId>
-    <version>1.0.0.Beta1-SNAPSHOT</version>
+    <version>1.0.0.Alpha6</version>
 
     <description>Proof-of-concept Arquillian Droidium multiple deployment test</description>
 
@@ -25,9 +25,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <version.arquillian.drone>2.0.0.Alpha2</version.arquillian.drone>
-        <version.arquillian.core>1.1.5.Final</version.arquillian.core>
-        <version.droidium>1.0.0.Beta1-SNAPSHOT</version.droidium>
+        <version.arquillian.drone>2.0.0.Alpha3</version.arquillian.drone>
+        <version.arquillian.core>1.1.6.Final</version.arquillian.core>
+        <version.droidium>1.0.0.Alpha6</version.droidium>
         <version.junit>4.11</version.junit>
         <version.selenium>2.43.1</version.selenium>
 
@@ -36,8 +36,8 @@
 
         <android.avd.name>testingEmulator</android.avd.name>
         <android.emulator.options />
-        <selendroid.test.app>selendroid-test-app-0.12.0.apk</selendroid.test.app>
-        <selendroid.server.apk>selendroid-server-0.12.0.apk</selendroid.server.apk>
+        <selendroid.test.app>selendroid-test-app-0.13.0.apk</selendroid.test.app>
+        <selendroid.server.apk>selendroid-server-0.13.0.apk</selendroid.server.apk>
         <aerogear.android.test.app>aerogear-test-android.apk</aerogear.android.test.app>
     </properties>
 

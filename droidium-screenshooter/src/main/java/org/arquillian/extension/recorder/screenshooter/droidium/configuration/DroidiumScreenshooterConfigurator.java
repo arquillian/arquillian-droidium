@@ -46,7 +46,7 @@ import org.jboss.arquillian.core.api.annotation.Observes;
  * <ul>
  * <li>{@link ScreenshooterExtensionConfigured}</li>
  * </ul>
- * 
+ *
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */

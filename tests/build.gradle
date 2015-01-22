@@ -25,7 +25,7 @@ ext {
     defaultRemoteVideoDir = "/sdcard/"
     defaultAndroidBuildTools = "22.1.2"
 
-    droidiumVersion = "1.0.0.Beta1-SNAPSHOT"
+    droidiumVersion = "1.0.0.Alpha6"
 
     // downloads from GitHub
     selendroidOrganization = "selendroid"
@@ -38,13 +38,19 @@ ext {
     recorderVideoVersion = "1.0.0.Beta1"
 
     // downloads from GitHub
+    recorderOrganization = "arquillian"
+    recorderVersion = "1.0.0.Beta1"
     recorderCommit = "1.0.0.Beta1"
 
-    spaceliftVersion = "1.0.0.Alpha3"
-    coreVersion = "1.1.5.Final"
-    droneVersion = "2.0.0.Alpha2"
+    spaceliftVersion = "1.0.0.Alpha4"
+    coreVersion = "1.1.6.Final"
     grapheneVersion = "2.1.0.Alpha1"
     seleniumVersion = "2.43.1"
+
+    // Arquillian Drone
+    droneOrganization = "arquillian"
+    droneVersion = "2.0.0.Alpha3"
+    droneCommit = "2.0.0.Alpha3"
 
     defaultAdditionalAndroidTargets = [
         'android-10',
@@ -97,13 +103,19 @@ spacelift {
             command {
                 def m2 = System.getenv("M2")
                 def m2_home = System.getenv("M2_HOME")
+                def maven_path = System.getenv("MAVEN_PATH")
 
+                def enableStaging = [ "-Pjboss-staging-repository-group" ]
+
+                if (maven_path != null && !maven_path.isEmpty()) {
+                    return Tasks.prepare(CommandTool).command(new CommandBuilder(maven_path).parameters(enableStaging))
+                }
                 if (m2 != null && !m2.isEmpty()) {
-                    return Tasks.prepare(CommandTool).command(new CommandBuilder("${m2}/mvn"))
+                    return Tasks.prepare(CommandTool).command(new CommandBuilder("${m2}/mvn").parameters(enableStaging))
                 } else if (m2_home != null && !m2_home.isEmpty()) {
-                    return Tasks.prepare(CommandTool).command(new CommandBuilder("${m2_home}/bin/mvn"))
+                    return Tasks.prepare(CommandTool).command(new CommandBuilder("${m2_home}/bin/mvn").parameters(enableStaging))
                 } else {
-                    return Tasks.prepare(CommandTool).command(new CommandBuilder("mvn"))
+                    return Tasks.prepare(CommandTool).command(new CommandBuilder("mvn").parameters(enableStaging))
                 }
             }
         }
@@ -112,7 +124,7 @@ spacelift {
     profiles {
         'default' {
             tests 'droidiumTests'
-            enabledInstallations 'androidSdk', 'arquillianRecorder', 'selendroid', 'droidium'
+            enabledInstallations 'androidSdk', 'arquillianRecorder', 'selendroid', 'drone', 'droidium'
         }
 
         'deviceSelection' {
@@ -122,7 +134,7 @@ spacelift {
 
         'droidiumRecorder' {
             tests 'droidiumRecorderTests'
-            enabledInstallations 'androidSdk', 'arquillianRecorder', 'selendroid', 'droidium'
+            enabledInstallations 'androidSdk', 'arquillianRecorder', 'selendroid', 'drone', 'droidium'
         }
 
         'droidiumInternal' {
@@ -166,17 +178,39 @@ spacelift {
             }
         }
 
+        drone {
+            product 'drone'
+            version project.droneCommit
+            remoteUrl "https://github.com/${project.droneOrganization}/arquillian-extension-drone/archive/${version}.zip"
+            home "arquillian-extension-drone-${version}"
+
+            postActions {
+                if (! new File(project.spacelift.workspace, ".repository/org/jboss/arquillian/extension/arquillian-drone-aggregator/${project.droneVersion}").exists()) {
+                    Tasks.prepare(MavenExecutor).pom("${home.absolutePath}/pom.xml")
+                        .goal('install')
+                        .property('maven.test.skip=true')
+                        .execute().await()
+                }
+
+                Tasks.chain([
+                        'version.arquillian.drone': "${project.droneVersion}"
+                    ], PomXmlUpdater).dir(dir: project.rootDir, excludes: [ ".ws/**" ]).execute().await()
+            }
+        }
+
         arquillianRecorder {
             product 'recorder'
             version project.recorderCommit
-            remoteUrl "https://github.com/arquillian/arquillian-recorder/archive/${version}.zip"
+            remoteUrl "https://github.com/${project.recorderOrganization}/arquillian-recorder/archive/${version}.zip"
             home "arquillian-recorder-${version}"
 
             postActions {
-                Tasks.prepare(MavenExecutor).pom("${home.absolutePath}/pom.xml")
-                    .goal('install')
-                    .property('maven.test.skip=true')
-                    .execute().await()
+                if (! new File(project.spacelift.workspace, ".repository/org/arquillian/extension/arquillian-recorder/${project.recorderVersion}").exists()) {
+                    Tasks.prepare(MavenExecutor).pom("${home.absolutePath}/pom.xml")
+                        .goal('install')
+                        .property('maven.test.skip=true')
+                        .execute().await()
+                }
 
                 Tasks.chain([
                         'android.remote.video.dir': "${project.remoteVideoDir}"
@@ -196,7 +230,7 @@ spacelift {
             }
 
             postActions {
-                if (!new File(home, "selendroid-server/target").exists()) {
+                if (! new File(project.spacelift.workspace, ".repository/io/selendroid/selendroid/${project.selendroidVersion}").exists()) {
                     Tasks.prepare(MavenExecutor).pom("${home.absolutePath}/pom.xml")
                         .goal('install')
                         .property('maven.test.skip=true')

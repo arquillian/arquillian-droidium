@@ -16,11 +16,11 @@
  */
 package org.arquillian.droidium.showcase.hybrid.test01.fragment;
 
+import org.arquillian.droidium.native_.webdriver.AndroidDriver;
 import org.arquillian.droidium.showcase.hybrid.test01.utils.Language;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.graphene.Graphene;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
@@ -33,7 +33,7 @@ import org.openqa.selenium.support.FindBy;
 public class RegistrationFragment {
 
     @Drone
-    private WebDriver driver;
+    private AndroidDriver driver;
 
     @FindBy(id = "inputUserName")
     private WebElement inputUserName;

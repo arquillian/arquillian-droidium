@@ -20,6 +20,7 @@ import java.io.File;
 
 import org.arquillian.droidium.container.api.AndroidDevice;
 import org.arquillian.droidium.native_.api.Instrumentable;
+import org.arquillian.droidium.native_.webdriver.AndroidDriver;
 import org.arquillian.droidium.showcase.hybrid.test01.fragment.HomeScreenFragment;
 import org.arquillian.droidium.showcase.hybrid.test01.fragment.RegistrationFragment;
 import org.arquillian.droidium.showcase.hybrid.test01.fragment.VerificationFragment;
@@ -36,11 +37,8 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.Select;
 
 /**
  * Android Droidium hybrid testing with {@code WebDriver} - proof of concept.
@@ -56,7 +54,7 @@ public class SelendroidHybridTestAppTestCase {
     private AndroidDevice android;
 
     @Drone
-    private WebDriver driver;
+    private AndroidDriver driver;
 
     @Deployment
     @Instrumentable
@@ -104,19 +102,18 @@ public class SelendroidHybridTestAppTestCase {
 
     @Test
     @InSequence(2)
-    public void webViewTest() {
+    public void webViewTest() throws InterruptedException {
         homeFragment.startWebView();
 
-        driver.switchTo().window("WEBVIEW");
+        Thread.sleep(5000);
 
-        WebElement inputField = driver.findElement(By.id("name_input"));
+        driver.context("WEBVIEW");
+
+        Thread.sleep(5000);
+
+        WebElement inputField = driver.findElementById("name_input");
+
         Assert.assertNotNull(inputField);
-        inputField.clear();
-        inputField.sendKeys(USER_REAL_NAME);
-
-        WebElement car = driver.findElement(By.name("car"));
-        Select preferedCar = new Select(car);
-        preferedCar.selectByValue(CAR);
-        inputField.submit();
+        inputField.click();
     }
 }

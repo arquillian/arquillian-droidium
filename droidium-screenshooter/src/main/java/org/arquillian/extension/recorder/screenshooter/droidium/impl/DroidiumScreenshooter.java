@@ -54,7 +54,7 @@ public class DroidiumScreenshooter implements Screenshooter {
     private TakenResourceRegister takenResourceRegister;
 
     private String message;
-    
+
     /**
      *
      * @param takenResourceRegister
@@ -84,7 +84,7 @@ public class DroidiumScreenshooter implements Screenshooter {
     public void setAndroidDevice(AndroidDevice androidDevice) {
         Validate.notNull(androidDevice, "Android device to set to take screenshots is a null object!");
         this.androidDevice = androidDevice;
-    }    
+    }
 
     @Override
     public Screenshot takeScreenshot() {

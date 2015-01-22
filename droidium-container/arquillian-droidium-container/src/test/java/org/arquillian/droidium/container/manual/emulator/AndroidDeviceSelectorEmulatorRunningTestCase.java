@@ -46,12 +46,13 @@ import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.core.Is.*;
 
 /**
  * Tests connecting to the running emulator of specific avd and console port.
@@ -144,6 +145,7 @@ public class AndroidDeviceSelectorEmulatorRunningTestCase extends AbstractContai
     }
 
     @Test
+    @Ignore
     public void testFileManipulation() throws Exception {
         AndroidDevice device = getAndroidDevice();
 

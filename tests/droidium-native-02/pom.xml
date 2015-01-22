@@ -18,7 +18,7 @@
     <!-- Artifact configuration -->
     <groupId>org.arquillian.droidium.tests</groupId>
     <artifactId>arquillian-droidium-native-test-02</artifactId>
-    <version>1.0.0.Beta1-SNAPSHOT</version>
+    <version>1.0.0.Alpha6</version>
 
     <description>Proof-of-concept Arquillian Droidium tests - activity management without native plugin</description>
 
@@ -26,8 +26,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <version.arquillian.core>1.1.5.Final</version.arquillian.core>
-        <version.droidium>1.0.0.Beta1-SNAPSHOT</version.droidium>
+        <version.arquillian.core>1.1.6.Final</version.arquillian.core>
+        <version.droidium>1.0.0.Alpha6</version.droidium>
         <version.junit>4.11</version.junit>
 
         <maven.compiler.source>1.6</maven.compiler.source>
@@ -35,7 +35,7 @@
 
         <android.avd.name>testingEmulator</android.avd.name>
         <android.emulator.options/>
-        <selendroid.test.app>selendroid-test-app-0.12.0.apk</selendroid.test.app>
+        <selendroid.test.app>selendroid-test-app-0.13.0.apk</selendroid.test.app>
     </properties>
 
     <!-- Dependency Management -->

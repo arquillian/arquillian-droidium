@@ -15,7 +15,7 @@
     <!-- Properties -->
     <properties>
         <!-- Arquillian Core -->
-        <version.arquillian.core>1.1.5.Final</version.arquillian.core>
+        <version.arquillian.core>1.1.6.Final</version.arquillian.core>
 
         <!-- JBoss AS -->
         <version.jbossas>7.1.1.Final</version.jbossas>
@@ -24,10 +24,10 @@
         <version.droidium>1.0.0.Alpha6</version.droidium>
 
         <!-- Arquillian Drone -->
-        <version.org.jboss.arquillian.drone>2.0.0.Alpha2</version.org.jboss.arquillian.drone>
+        <version.org.jboss.arquillian.drone>2.0.0.Alpha3</version.org.jboss.arquillian.drone>
 
         <!-- Arquillian Graphene -->
-        <version.org.jboss.arquillian.graphene2>2.1.0.Alpha1</version.org.jboss.arquillian.graphene2>
+        <version.org.jboss.arquillian.graphene2>2.1.0.Alpha2</version.org.jboss.arquillian.graphene2>
 
         <!-- JUnit -->
         <version.junit>4.11</version.junit>

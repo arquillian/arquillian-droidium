@@ -273,8 +273,6 @@ public class AndroidContainerConfiguration implements ContainerConfiguration {
         if (avdName != null && serialId != null) {
             logger.warning("Both \"avdName\" and \"serialId\" properties are defined, the device "
                 + "specified by \"serialId\" will get priority if connected.");
-        } else if (avdName == null) {
-            avdName = UUID.randomUUID().toString();
         }
 
         if (consolePort != null) {

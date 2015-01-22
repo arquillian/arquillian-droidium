@@ -17,6 +17,7 @@
 package org.arquillian.droidium.showcase.hybrid.test01.fragment;
 
 import org.jboss.arquillian.graphene.Graphene;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
@@ -42,5 +43,6 @@ public class HomeScreenFragment {
     public void startWebView() {
         startWebViewButton.click();
         Graphene.waitGui().until().element(startWebViewButton).is().not().visible();
+        Graphene.waitGui().until().element(By.id("goBack")).is().visible();
     }
 }
