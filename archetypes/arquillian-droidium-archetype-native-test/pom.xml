@@ -18,7 +18,7 @@
     <parent>
         <groupId>org.arquillian.droidium.archetype</groupId>
         <artifactId>arquillian-droidium-archetype-parent</artifactId>
-        <version>1.0.0.Alpha6</version>
+        <version>1.0.0.Beta1-SNAPSHOT</version>
     </parent>
 
     <!-- Artifact configuration -->
