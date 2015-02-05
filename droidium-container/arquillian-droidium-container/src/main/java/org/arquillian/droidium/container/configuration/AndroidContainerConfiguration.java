@@ -17,7 +17,6 @@
  */
 package org.arquillian.droidium.container.configuration;
 
-import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.arquillian.droidium.container.log.LogLevel;

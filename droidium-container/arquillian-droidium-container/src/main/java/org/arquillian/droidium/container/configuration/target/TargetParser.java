@@ -18,10 +18,8 @@ package org.arquillian.droidium.container.configuration.target;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
@@ -53,12 +51,8 @@ public class TargetParser {
 
     public List<Target> parse() {
 
-        Map<String, String> androidEnvironment = new HashMap<String, String>();
-        androidEnvironment.put("ANDROID_HOME", platformConfiguration.getAndroidHome());
-        androidEnvironment.put("ANDROID_SDK_HOME", platformConfiguration.getAndroidSdkHome());
-
         List<String> output = Spacelift.task(CommandTool.class)
-            .addEnvironment(androidEnvironment)
+            .addEnvironment(platformConfiguration.getAndroidSystemEnvironmentProperties())
             .programName(androidSdk.getAndroidPath())
             .parameters("list", "target")
             .execute().await()

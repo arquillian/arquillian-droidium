@@ -119,6 +119,7 @@ public class AndroidEmulatorStartup {
         Spacelift.task(EmulatorStatusCheckTask.class)
             .execution(emulatorExecution)
             .then(CommandTool.class)
+            .addEnvironment(sdk.getPlatformConfiguration().getAndroidSystemEnvironmentProperties())
             .command(new CommandBuilder(androidSDK.get().getAdbPath())
                 .parameters("-s", androidDevice.getSerialNumber(), "shell", "getprop"))
             .execute().until(watch, EmulatorStatusCheckTask.isBootedCondition);
@@ -186,6 +187,7 @@ public class AndroidEmulatorStartup {
         // start emulator but does not wait for its termination here
         try {
             return Spacelift.task(CommandTool.class)
+                .addEnvironment(sdk.getPlatformConfiguration().getAndroidSystemEnvironmentProperties())
                 .command(command)
                 .interaction(interactions.build())
                 .execute();

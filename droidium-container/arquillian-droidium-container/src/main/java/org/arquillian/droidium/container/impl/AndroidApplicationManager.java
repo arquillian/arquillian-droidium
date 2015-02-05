@@ -98,6 +98,7 @@ public class AndroidApplicationManager {
 
         try {
             processDetails = Spacelift.task(CommandTool.class)
+                .addEnvironment(sdk.getPlatformConfiguration().getAndroidSystemEnvironmentProperties())
                 .command(installCommand)
                 .execute()
                 .await();

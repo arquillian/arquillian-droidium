@@ -40,6 +40,14 @@ public class DroidiumPlatformConfiguration {
 
     private String androidSdkHome = resolveAndroidSdkHome();
 
+    private String androidSdkRoot = resolveAndroidSdkRoot();
+
+    private String androidTools = resolveAndroidTools();
+
+    private String androidPlatformTools = resolveAndroidPlatformTools();
+
+    private String adbHome = resolveAdbHome();
+
     private String javaHome = resolveJavaHome();
 
     private String ddmlibCommandTimeout = "20000";
@@ -68,12 +76,40 @@ public class DroidiumPlatformConfiguration {
         return Boolean.parseBoolean(getProperty("forceNewBridge", forceNewBridge));
     }
 
+    /**
+     *
+     * @return installation dir of SDK
+     */
     public String getAndroidHome() {
         return getProperty("androidHome", androidHome);
     }
 
+    /**
+     *
+     * @return installation dir of SDK
+     */
+    public String getAndroidSdkRoot() {
+        return getProperty("androidSdkRoot", androidSdkRoot);
+    }
+
+    /**
+     *
+     * @return location of SDK-related user files, defaults to ~/.android/ on Unix.
+     */
     public String getAndroidSdkHome() {
         return getProperty("androidSdkHome", androidSdkHome);
+    }
+
+    public String getAndroidTools() {
+        return getProperty("androidTools", androidTools);
+    }
+
+    public String getAndroidPlatformTools() {
+        return getProperty("androidPlatformTools", androidPlatformTools);
+    }
+
+    public String getAdbHome() {
+        return getProperty("adbHome", adbHome);
     }
 
     public String getJavaHome() {
@@ -148,9 +184,42 @@ public class DroidiumPlatformConfiguration {
         String ANDROID_SDK_HOME_ENV = System.getenv("ANDROID_SDK_HOME");
         String ANDROID_SDK_HOME_PROPERTY = System.getProperty("android.sdk.home");
 
-        return checkSlash(ANDROID_SDK_HOME_PROPERTY == null ?
+        String androidSdkHome =  checkSlash(ANDROID_SDK_HOME_PROPERTY == null ?
             (ANDROID_SDK_HOME_ENV == null ? resolveUserHome() : ANDROID_SDK_HOME_ENV)
             : ANDROID_SDK_HOME_PROPERTY);
+
+        return androidSdkHome;
+    }
+
+    public String resolveAndroidSdkRoot() {
+        return resolveAndroidHome();
+    }
+
+    public String resolveAndroidTools() {
+        String ANDROID_TOOLS_ENV = System.getenv("ANDROID_TOOLS");
+        String ANDROID_TOOLS_PROPERTY = System.getenv("android.tools");
+
+        return checkSlash(ANDROID_TOOLS_PROPERTY == null ?
+            (ANDROID_TOOLS_ENV == null ? resolveAndroidHome() + "tools" : ANDROID_TOOLS_ENV)
+            : ANDROID_TOOLS_PROPERTY);
+    }
+
+    public String resolveAndroidPlatformTools() {
+        String ANDROID_PLATFORM_TOOLS_ENV = System.getenv("ANDROID_PLATFORM_TOOLS");
+        String ANDROID_PLATFORM_TOOLS_PROPERTY = System.getenv("android.platform.tools");
+
+        return checkSlash(ANDROID_PLATFORM_TOOLS_PROPERTY == null ?
+            (ANDROID_PLATFORM_TOOLS_ENV == null ? resolveAndroidHome() + "platform-tools" : ANDROID_PLATFORM_TOOLS_ENV)
+            : ANDROID_PLATFORM_TOOLS_PROPERTY);
+    }
+
+    public String resolveAdbHome() {
+        String ADB_HOME_ENV = System.getenv("ADB_HOME");
+        String ADB_HOME_PROPERTY = System.getenv("adb.home");
+
+        return checkSlash(ADB_HOME_PROPERTY == null ?
+            (ADB_HOME_ENV == null ? resolveAndroidPlatformTools() + "adb" : ADB_HOME_ENV)
+            : ADB_HOME_PROPERTY);
     }
 
     public String resolveUserHome() {
@@ -269,7 +338,7 @@ public class DroidiumPlatformConfiguration {
         }
 
         if (keystore == null) {
-            keystore = getAndroidSdkHome() + ".android" + fileSeparator + "debug.keystore";
+            keystore = getAndroidSdkHome() + fileSeparator + "debug.keystore";
             setProperty("keystore", keystore);
         }
 
@@ -297,8 +366,12 @@ public class DroidiumPlatformConfiguration {
         Map<String, String> androidEnvironmentProperties = new HashMap<String, String>();
 
         androidEnvironmentProperties.put("ANDROID_HOME", getAndroidHome());
+        androidEnvironmentProperties.put("ANDROID_SDK_ROOT", getAndroidSdkRoot());
         androidEnvironmentProperties.put("ANDROID_SDK_HOME", getAndroidSdkHome());
         androidEnvironmentProperties.put("ANDROID_ADB_SERVER_PORT", getAdbServerPort());
+        androidEnvironmentProperties.put("ANDROID_TOOLS", getAndroidTools());
+        androidEnvironmentProperties.put("ANDROID_PLATFORM_TOOLS", getAndroidPlatformTools());
+        androidEnvironmentProperties.put("ADB_HOME", getAdbHome());
 
         return androidEnvironmentProperties;
     }
@@ -330,7 +403,11 @@ public class DroidiumPlatformConfiguration {
         sb.append(String.format("%-40s %s\n", "HOME", resolveUserHome()));
         sb.append(String.format("%-40s %s\n", "JAVA_HOME", getJavaHome()));
         sb.append(String.format("%-40s %s\n", "ANDROID_HOME", getAndroidHome()));
+        sb.append(String.format("%-40s %s\n", "ANDROID_SDK_ROOT", getAndroidSdkRoot()));
         sb.append(String.format("%-40s %s\n", "ANDROID_SDK_HOME", getAndroidSdkHome()));
+        sb.append(String.format("%-40s %s\n", "ANDROID_TOOLS", getAndroidTools()));
+        sb.append(String.format("%-40s %s\n", "ANDROID_PLATFORM_TOOLS", getAndroidPlatformTools()));
+        sb.append(String.format("%-40s %s\n", "ADB_HOME", getAdbHome()));
         sb.append(String.format("%-40s %s\n", "adbServerPort", getAdbServerPort()));
         sb.append(String.format("%-40s %s\n", "keystore", getKeystore()));
         sb.append(String.format("%-40s %s\n", "keypass", getKeypass()));
@@ -345,3 +422,4 @@ public class DroidiumPlatformConfiguration {
         return sb.toString();
     }
 }
+

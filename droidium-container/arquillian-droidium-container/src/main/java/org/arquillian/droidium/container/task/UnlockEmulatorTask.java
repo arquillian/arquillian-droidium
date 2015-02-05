@@ -54,7 +54,8 @@ public class UnlockEmulatorTask extends Task<Object, Void> {
     protected Void process(Object input) throws Exception {
 
         try {
-            CommandTool ct = Spacelift.task(CommandTool.class);
+            CommandTool ct = Spacelift.task(CommandTool.class)
+                .addEnvironment(sdk.getPlatformConfiguration().getAndroidSystemEnvironmentProperties());
 
             ct.command(new CommandBuilder(sdk.getAdbPath())
                 .parameters("-s", serialNumber, "shell", "input", "keyevent", "82"))

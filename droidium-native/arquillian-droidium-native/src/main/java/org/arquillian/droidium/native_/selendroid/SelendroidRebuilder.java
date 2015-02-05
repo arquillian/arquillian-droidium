@@ -172,7 +172,9 @@ public class SelendroidRebuilder {
             .parameter(dummyAPK.getAbsolutePath())
             .build();
 
-        ProcessResult processResult = Spacelift.task(CommandTool.class).command(createDummyPackage).execute().await();
+        ProcessResult processResult = Spacelift.task(CommandTool.class)
+            .addEnvironment(androidSDK.getPlatformConfiguration().getAndroidSystemEnvironmentProperties())
+            .command(createDummyPackage).execute().await();
 
         if (processResult != null && processResult.exitValue() != 0) {
             throw new SelendroidRebuilderException("Command failed to execute: "

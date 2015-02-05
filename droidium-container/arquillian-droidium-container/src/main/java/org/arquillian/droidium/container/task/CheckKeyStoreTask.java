@@ -60,7 +60,7 @@ public class CheckKeyStoreTask extends Task<Object, Void> {
 
     private String getDefaultKeyStorePath() {
         String separator = System.getProperty("file.separator");
-        return androidSDK.getPlatformConfiguration().getAndroidSdkHome() + ".android" + separator + "debug.keystore";
+        return androidSDK.getPlatformConfiguration().getAndroidSdkHome() + "debug.keystore";
     }
 
 }

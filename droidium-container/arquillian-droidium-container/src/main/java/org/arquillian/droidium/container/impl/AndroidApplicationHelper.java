@@ -132,6 +132,7 @@ public class AndroidApplicationHelper {
             .build();
 
         return new BadgingOutput(Spacelift.task(CommandTool.class)
+            .addEnvironment(sdk.getPlatformConfiguration().getAndroidSystemEnvironmentProperties())
             .command(command)
             .execute()
             .await()
@@ -147,6 +148,7 @@ public class AndroidApplicationHelper {
             .build();
 
         return Spacelift.task(CommandTool.class)
+            .addEnvironment(sdk.getPlatformConfiguration().getAndroidSystemEnvironmentProperties())
             .command(command)
             .execute()
             .await()

@@ -79,7 +79,9 @@ public class CreateKeyStoreTask extends Task<File, File> {
             .parameter(androidSDK.getPlatformConfiguration().getKeyalg())
             .build();
 
-        Spacelift.task(CommandTool.class).command(createKeyStoreCommand).execute().await();
+        Spacelift.task(CommandTool.class)
+            .addEnvironment(androidSDK.getPlatformConfiguration().getAndroidSystemEnvironmentProperties())
+            .command(createKeyStoreCommand).execute().await();
 
         return keyStoreToCreate;
     }

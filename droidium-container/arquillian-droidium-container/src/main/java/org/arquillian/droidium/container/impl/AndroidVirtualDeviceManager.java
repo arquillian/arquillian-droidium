@@ -104,7 +104,9 @@ public class AndroidVirtualDeviceManager {
                 .parameter(avdName)
                 .build();
 
-            Spacelift.task(CommandTool.class).command(deleteAvdCommand).execute().await();
+            Spacelift.task(CommandTool.class)
+                .addEnvironment(sdk.getPlatformConfiguration().getAndroidSystemEnvironmentProperties())
+                .command(deleteAvdCommand).execute().await();
 
             logger.log(Level.INFO, "Android Virtual Device {0} deleted.", avdName);
 
@@ -153,7 +155,9 @@ public class AndroidVirtualDeviceManager {
                 when("Do you wish to create a custom hardware profile \\[no\\]")
                 .replyWith("no" + System.getProperty("line.separator")).build();
 
-            Spacelift.task(CommandTool.class).command(cb).interaction(interaction).execute().await();
+            Spacelift.task(CommandTool.class)
+                .addEnvironment(androidSDK.get().getPlatformConfiguration().getAndroidSystemEnvironmentProperties())
+                .command(cb).interaction(interaction).execute().await();
 
             configuration.setAvdGenerated(true);
 

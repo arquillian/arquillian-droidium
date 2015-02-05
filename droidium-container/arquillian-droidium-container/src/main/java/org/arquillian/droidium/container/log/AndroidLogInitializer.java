@@ -258,7 +258,9 @@ public class AndroidLogInitializer {
                     .parameter("ps")
                     .build();
 
-                List<String> runningProcesses = Spacelift.task(CommandTool.class).command(command).execute().await().output();
+                List<String> runningProcesses = Spacelift.task(CommandTool.class)
+                    .addEnvironment(androidSDK.getPlatformConfiguration().getAndroidSystemEnvironmentProperties())
+                    .command(command).execute().await().output();
 
                 Pattern pattern = Pattern
                     .compile(".*?\\s+([0-9]+)\\s+[0-9]+\\s+[0-9]+\\s+[0-9]+\\s+[0-9a-f]+\\s+[0-9a-f]+\\s.?\\s(.*)");

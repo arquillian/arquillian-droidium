@@ -113,7 +113,9 @@ public class SelendroidServerManager {
 
         logger.fine("Selendroid server installation command: " + selendroidInstallCommand.toString());
 
-        ProcessResult processResult = Spacelift.task(CommandTool.class).command(selendroidInstallCommand).execute().await();
+        ProcessResult processResult = Spacelift.task(CommandTool.class)
+            .addEnvironment(sdk.getPlatformConfiguration().getAndroidSystemEnvironmentProperties())
+            .command(selendroidInstallCommand).execute().await();
 
         if (processResult.exitValue() != 0) {
             throw new AndroidExecutionException("Unable to execute Selendroid installation process, exit value: " +

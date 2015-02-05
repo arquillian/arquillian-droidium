@@ -47,7 +47,8 @@ public class AndroidProcessRunningTask extends Task<String, Boolean> {
         Validate.notNullOrEmpty(processName, "Process name to get running status of is a null object or it is an empty string!");
         Validate.notNull(androidSdk, "AndroidSDK is null object!");
 
-        List<String> psOutput = Spacelift.task(CommandTool.class).programName(androidSdk.getAdbPath())
+        List<String> psOutput = Spacelift.task(CommandTool.class)
+            .programName(androidSdk.getAdbPath())
             .addEnvironment(androidSdk.getPlatformConfiguration().getAndroidSystemEnvironmentProperties())
             .parameter("shell")
             .parameter("ps")

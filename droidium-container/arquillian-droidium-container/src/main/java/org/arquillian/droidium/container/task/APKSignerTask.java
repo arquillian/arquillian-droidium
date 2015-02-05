@@ -62,7 +62,9 @@ public class APKSignerTask extends Task<File, File> {
             .parameter(androidSDK.getPlatformConfiguration().getAlias())
             .build();
 
-        Spacelift.task(CommandTool.class).command(jarSignerCommand).execute().await();
+        Spacelift.task(CommandTool.class)
+            .addEnvironment(androidSDK.getPlatformConfiguration().getAndroidSystemEnvironmentProperties())
+            .command(jarSignerCommand).execute().await();
 
         return signed;
     }

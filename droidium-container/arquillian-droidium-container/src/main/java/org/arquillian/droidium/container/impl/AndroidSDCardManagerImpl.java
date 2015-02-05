@@ -176,7 +176,9 @@ public class AndroidSDCardManagerImpl implements AndroidSDCardManager {
             .build();
 
         try {
-            Spacelift.task(CommandTool.class).command(command).execute().await();
+            Spacelift.task(CommandTool.class)
+                .addEnvironment(androidSDK.get().getPlatformConfiguration().getAndroidSystemEnvironmentProperties())
+                .command(command).execute().await();
         } catch (ExecutionException ex) {
             throw new AndroidExecutionException("Unable to create SD card", ex);
         }
