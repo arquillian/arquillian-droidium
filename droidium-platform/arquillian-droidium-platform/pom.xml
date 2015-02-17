@@ -54,13 +54,6 @@
             <groupId>org.jboss.arquillian.config</groupId>
             <artifactId>arquillian-config-api</artifactId>
         </dependency>
-
-        <!-- Arquillian Spacelift -->
-        <dependency>
-            <groupId>org.arquillian.spacelift</groupId>
-            <artifactId>arquillian-spacelift-spi</artifactId>
-            <version>${version.spacelift}</version>
-        </dependency>
     </dependencies>
 
 </project>

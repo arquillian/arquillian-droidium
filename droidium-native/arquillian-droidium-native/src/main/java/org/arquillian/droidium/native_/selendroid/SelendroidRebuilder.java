@@ -34,13 +34,13 @@ import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Validate;
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.arquillian.droidium.native_.exception.SelendroidRebuilderException;
-import org.arquillian.spacelift.execution.Tasks;
+import org.arquillian.spacelift.Spacelift;
 import org.arquillian.spacelift.process.Command;
 import org.arquillian.spacelift.process.CommandBuilder;
 import org.arquillian.spacelift.process.ProcessResult;
-import org.arquillian.spacelift.process.impl.CommandTool;
 import org.arquillian.spacelift.task.io.FileReader;
-import org.arquillian.spacelift.tool.basic.StringReplacementTool;
+import org.arquillian.spacelift.task.os.CommandTool;
+import org.arquillian.spacelift.task.text.StringReplacementTool;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -172,7 +172,7 @@ public class SelendroidRebuilder {
             .parameter(dummyAPK.getAbsolutePath())
             .build();
 
-        ProcessResult processResult = Tasks.prepare(CommandTool.class).command(createDummyPackage).execute().await();
+        ProcessResult processResult = Spacelift.task(CommandTool.class).command(createDummyPackage).execute().await();
 
         if (processResult != null && processResult.exitValue() != 0) {
             throw new SelendroidRebuilderException("Command failed to execute: "
@@ -186,14 +186,14 @@ public class SelendroidRebuilder {
      * @return modified file
      */
     private File modifyManifest(File manifest, Map<String, String> replacementMapping) {
-        StringReplacementTool sed = Tasks.prepare(StringReplacementTool.class).in(manifest);
+        StringReplacementTool sed = Spacelift.task(StringReplacementTool.class).in(manifest);
         for(Map.Entry<String, String> replacement:replacementMapping.entrySet()) {
             sed.replace(replacement.getKey()).with(replacement.getValue());
         }
 
         List<File> newManifest = sed.execute().await();
         if (logger.isLoggable(Level.FINE)) {
-            logger.log(Level.FINE, Tasks.chain(newManifest, FileReader.class).execute().await().entrySet().iterator().next().getValue());
+            logger.log(Level.FINE, Spacelift.task(newManifest, FileReader.class).execute().await().entrySet().iterator().next().getValue());
         }
 
         return newManifest.iterator().next();

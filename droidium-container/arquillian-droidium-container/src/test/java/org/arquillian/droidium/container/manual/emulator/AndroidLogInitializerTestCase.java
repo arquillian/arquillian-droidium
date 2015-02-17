@@ -17,14 +17,11 @@ import org.arquillian.droidium.container.spi.event.AndroidContainerStart;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
 import org.arquillian.droidium.container.utils.AndroidIdentifierGenerator;
 import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
-import org.arquillian.spacelift.execution.Tasks;
-import org.arquillian.spacelift.execution.impl.DefaultExecutionServiceFactory;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.container.test.test.AbstractContainerTestTestBase;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,16 +51,6 @@ public class AndroidLogInitializerTestCase extends AbstractContainerTestTestBase
     protected void addExtensions(List<Class<?>> extensions) {
         extensions.add(AndroidBridgeConnector.class);
         extensions.add(AndroidDeviceSelectorImpl.class);
-    }
-
-    @BeforeClass
-    public static void beforeClass() {
-        Tasks.setDefaultExecutionServiceFactory(new DefaultExecutionServiceFactory());
-    }
-
-    @BeforeClass
-    public static void initializateExecutionService() {
-        Tasks.setDefaultExecutionServiceFactory(new DefaultExecutionServiceFactory());
     }
 
     @Before

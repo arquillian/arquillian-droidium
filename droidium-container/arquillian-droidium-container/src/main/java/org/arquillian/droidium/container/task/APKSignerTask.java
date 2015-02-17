@@ -14,20 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.container.tool;
+package org.arquillian.droidium.container.task;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.Collection;
 
 import org.arquillian.droidium.container.configuration.AndroidSDK;
-import org.arquillian.droidium.container.task.CheckKeyStoreTask;
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;
-import org.arquillian.spacelift.execution.Tasks;
+import org.arquillian.spacelift.Spacelift;
 import org.arquillian.spacelift.process.Command;
 import org.arquillian.spacelift.process.CommandBuilder;
-import org.arquillian.spacelift.process.impl.CommandTool;
-import org.arquillian.spacelift.tool.Tool;
+import org.arquillian.spacelift.task.Task;
+import org.arquillian.spacelift.task.os.CommandTool;
 
 /**
  * Signs APKs.
@@ -35,18 +32,13 @@ import org.arquillian.spacelift.tool.Tool;
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
-public class APKSignerTool extends Tool<File, File> {
+public class APKSignerTask extends Task<File, File> {
 
     protected AndroidSDK androidSDK;
 
-    public APKSignerTool sdk(AndroidSDK androidSDK) {
+    public APKSignerTask sdk(AndroidSDK androidSDK) {
         this.androidSDK = androidSDK;
         return this;
-    }
-
-    @Override
-    protected Collection<String> aliases() {
-        return Arrays.asList("apk_signer");
     }
 
     @Override
@@ -56,7 +48,7 @@ public class APKSignerTool extends Tool<File, File> {
             throw new IllegalStateException("File to be signed is either null or it does not exists");
         }
 
-        Tasks.prepare(CheckKeyStoreTask.class).sdk(androidSDK).execute().await();
+        Spacelift.task(CheckKeyStoreTask.class).sdk(androidSDK).execute().await();
 
         File signed = new File(androidSDK.getPlatformConfiguration().getTmpDir(), DroidiumFileUtils.getRandomAPKFileName());
 
@@ -70,7 +62,7 @@ public class APKSignerTool extends Tool<File, File> {
             .parameter(androidSDK.getPlatformConfiguration().getAlias())
             .build();
 
-        Tasks.prepare(CommandTool.class).command(jarSignerCommand).execute().await();
+        Spacelift.task(CommandTool.class).command(jarSignerCommand).execute().await();
 
         return signed;
     }

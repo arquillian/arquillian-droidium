@@ -25,9 +25,9 @@ import org.arquillian.droidium.container.spi.AndroidDeployment;
 import org.arquillian.droidium.container.spi.event.AfterAndroidDeploymentDeployed;
 import org.arquillian.droidium.container.spi.event.AndroidDeploy;
 import org.arquillian.droidium.container.spi.event.BeforeAndroidDeploymentDeployed;
-import org.arquillian.droidium.container.tool.APKResignerTool;
+import org.arquillian.droidium.container.task.APKResignerTask;
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;
-import org.arquillian.spacelift.execution.Tasks;
+import org.arquillian.spacelift.Spacelift;
 import org.jboss.arquillian.container.spi.client.deployment.DeploymentDescription;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Instance;
@@ -80,7 +80,7 @@ public class AndroidDeploymentInstaller {
         File deployApk = new File(androidSDK.get().getPlatformConfiguration().getTmpDir(), DroidiumFileUtils.getRandomAPKFileName());
         DroidiumFileUtils.export(archive, deployApk);
 
-        final File resignedApk = Tasks.chain(deployApk, APKResignerTool.class).sdk(androidSDK.get()).execute().await();
+        final File resignedApk = Spacelift.task(deployApk, APKResignerTask.class).sdk(androidSDK.get()).execute().await();
 
         final AndroidDeployment deployment = new AndroidDeployment();
 

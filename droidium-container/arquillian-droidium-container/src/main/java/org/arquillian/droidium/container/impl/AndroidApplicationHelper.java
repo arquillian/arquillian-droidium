@@ -27,10 +27,10 @@ import java.util.regex.Pattern;
 import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Validate;
-import org.arquillian.spacelift.execution.Tasks;
+import org.arquillian.spacelift.Spacelift;
 import org.arquillian.spacelift.process.Command;
 import org.arquillian.spacelift.process.CommandBuilder;
-import org.arquillian.spacelift.process.impl.CommandTool;
+import org.arquillian.spacelift.task.os.CommandTool;
 
 /**
  * Provides various helper methods for Android packages.
@@ -131,7 +131,7 @@ public class AndroidApplicationHelper {
             .parameter(apk.getAbsolutePath())
             .build();
 
-        return new BadgingOutput(Tasks.prepare(CommandTool.class)
+        return new BadgingOutput(Spacelift.task(CommandTool.class)
             .command(command)
             .execute()
             .await()
@@ -146,7 +146,7 @@ public class AndroidApplicationHelper {
             .parameter("AndroidManifest.xml")
             .build();
 
-        return Tasks.prepare(CommandTool.class)
+        return Spacelift.task(CommandTool.class)
             .command(command)
             .execute()
             .await()

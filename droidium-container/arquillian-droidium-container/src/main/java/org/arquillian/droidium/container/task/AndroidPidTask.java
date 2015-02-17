@@ -14,17 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.container.tool;
-
-import java.util.Arrays;
-import java.util.Collection;
+package org.arquillian.droidium.container.task;
 
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Validate;
-import org.arquillian.spacelift.execution.Tasks;
+import org.arquillian.spacelift.Spacelift;
 import org.arquillian.spacelift.process.ProcessResult;
-import org.arquillian.spacelift.process.impl.CommandTool;
-import org.arquillian.spacelift.tool.Tool;
+import org.arquillian.spacelift.task.Task;
+import org.arquillian.spacelift.task.os.CommandTool;
+
 
 /**
  * Returns PID of some Android process according to its name appeared in Android "ps" output.
@@ -34,19 +32,14 @@ import org.arquillian.spacelift.tool.Tool;
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
-public class AndroidPidTool extends Tool<String, Integer> {
+public class AndroidPidTask extends Task<String, Integer> {
 
     private AndroidSDK androidSdk;
 
-    public AndroidPidTool androidSdk(AndroidSDK androidSdk) {
+    public AndroidPidTask androidSdk(AndroidSDK androidSdk) {
         Validate.notNull(androidSdk, "Android SDK is null object.");
         this.androidSdk = androidSdk;
         return this;
-    }
-
-    @Override
-    protected Collection<String> aliases() {
-        return Arrays.asList(new String[] { "android_pid" });
     }
 
     @Override
@@ -54,7 +47,7 @@ public class AndroidPidTool extends Tool<String, Integer> {
         Validate.notNullOrEmpty(androidProcessName, "Android process name to get PID of is a null object or an empty string.");
         Validate.notNull(androidSdk, "Android SDK is a null object!");
 
-        ProcessResult psResult = Tasks.prepare(CommandTool.class).programName(androidSdk.getAdbPath())
+        ProcessResult psResult = Spacelift.task(CommandTool.class).programName(androidSdk.getAdbPath())
             .addEnvironment(androidSdk.getPlatformConfiguration().getAndroidSystemEnvironmentProperties())
             .parameter("shell")
             .parameter("ps")

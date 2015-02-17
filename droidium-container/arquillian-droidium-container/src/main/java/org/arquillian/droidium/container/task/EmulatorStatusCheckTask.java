@@ -20,8 +20,8 @@ import org.arquillian.droidium.container.api.AndroidExecutionException;
 import org.arquillian.spacelift.execution.Execution;
 import org.arquillian.spacelift.execution.ExecutionCondition;
 import org.arquillian.spacelift.execution.ExecutionException;
-import org.arquillian.spacelift.execution.Task;
 import org.arquillian.spacelift.process.ProcessResult;
+import org.arquillian.spacelift.task.Task;
 
 /**
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>

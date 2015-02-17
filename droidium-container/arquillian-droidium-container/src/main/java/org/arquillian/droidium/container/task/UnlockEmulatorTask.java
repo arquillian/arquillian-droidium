@@ -20,11 +20,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.arquillian.droidium.container.configuration.AndroidSDK;
+import org.arquillian.spacelift.Spacelift;
 import org.arquillian.spacelift.execution.ExecutionException;
-import org.arquillian.spacelift.execution.Task;
-import org.arquillian.spacelift.execution.Tasks;
 import org.arquillian.spacelift.process.CommandBuilder;
-import org.arquillian.spacelift.process.impl.CommandTool;
+import org.arquillian.spacelift.task.Task;
+import org.arquillian.spacelift.task.os.CommandTool;
 
 /**
  * Unlocks emulator.
@@ -54,7 +54,7 @@ public class UnlockEmulatorTask extends Task<Object, Void> {
     protected Void process(Object input) throws Exception {
 
         try {
-            CommandTool ct = Tasks.prepare(CommandTool.class);
+            CommandTool ct = Spacelift.task(CommandTool.class);
 
             ct.command(new CommandBuilder(sdk.getAdbPath())
                 .parameters("-s", serialNumber, "shell", "input", "keyevent", "82"))

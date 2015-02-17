@@ -20,11 +20,8 @@ import org.arquillian.droidium.container.configuration.AndroidContainerConfigura
 import org.arquillian.droidium.container.configuration.AndroidContainerConfigurationException;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
-import org.arquillian.spacelift.execution.Tasks;
-import org.arquillian.spacelift.execution.impl.DefaultExecutionServiceFactory;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -50,11 +47,6 @@ public class AndroidSDKTestCase {
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
-
-    @BeforeClass
-    public static void initializateExecutionService() {
-        Tasks.setDefaultExecutionServiceFactory(new DefaultExecutionServiceFactory());
-    }
 
     @Before
     public void setup() {

@@ -33,14 +33,14 @@ import org.arquillian.droidium.container.api.Screenshot;
 import org.arquillian.droidium.container.api.Video;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Validate;
-import org.arquillian.droidium.container.tool.AndroidKillTool;
-import org.arquillian.droidium.container.tool.AndroidPidTool;
-import org.arquillian.droidium.container.tool.ScreenRecordToolBuilder;
+import org.arquillian.droidium.container.task.AndroidKillTask;
+import org.arquillian.droidium.container.task.AndroidPidTask;
+import org.arquillian.droidium.container.task.ScreenRecordToolBuilder;
+import org.arquillian.spacelift.Spacelift;
 import org.arquillian.spacelift.execution.Execution;
 import org.arquillian.spacelift.execution.ExecutionCondition;
-import org.arquillian.spacelift.execution.Tasks;
 import org.arquillian.spacelift.process.ProcessResult;
-import org.arquillian.spacelift.process.impl.CommandTool;
+import org.arquillian.spacelift.task.os.CommandTool;
 
 import com.android.ddmlib.AdbCommandRejectedException;
 import com.android.ddmlib.IDevice;
@@ -343,16 +343,16 @@ public class AndroidDeviceImpl implements AndroidDevice {
         }
 
         // get screenrecord pid and send SIGKILL to it, all is done on Android side via adb
-        Integer screenrecordPid = Tasks.chain("screenrecord", AndroidPidTool.class).androidSdk(androidSdk).execute().await();
+        Integer screenrecordPid = Spacelift.task("screenrecord", AndroidPidTask.class).androidSdk(androidSdk).execute().await();
 
         // if it is lower then 0, then it is not running anymore so it was recording 180 seconds and we reached this method
         // after it, so there is nothing to send SIGINT to hence it is not necessary to wait for its termination neither.
         if (screenrecordPid > 0) {
-            Tasks.chain(screenrecordPid, AndroidKillTool.class).androidSdk(androidSdk).signum(2).execute().await();
+            Spacelift.task(screenrecordPid, AndroidKillTask.class).androidSdk(androidSdk).signum(2).execute().await();
 
             // reexecution of task which checks if screenrecorder is still running until it is not
             // we do not check PID because it could be meanwhile reused by other process
-            Tasks.chain("screenrecord", AndroidProcessRunningTask.class)
+            Spacelift.task("screenrecord", AndroidProcessRunningTask.class)
                 .androidSdk(androidSdk)
                 .execute()
                 .reexecuteEvery(1, TimeUnit.SECONDS)

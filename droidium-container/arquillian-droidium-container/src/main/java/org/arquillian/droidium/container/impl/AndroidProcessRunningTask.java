@@ -20,9 +20,9 @@ import java.util.List;
 
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Validate;
-import org.arquillian.spacelift.execution.Task;
-import org.arquillian.spacelift.execution.Tasks;
-import org.arquillian.spacelift.process.impl.CommandTool;
+import org.arquillian.spacelift.Spacelift;
+import org.arquillian.spacelift.task.Task;
+import org.arquillian.spacelift.task.os.CommandTool;
 
 /**
  * Checks if some process on Android device is running or not, looking at its output from 'ps' command on Android.
@@ -47,7 +47,7 @@ public class AndroidProcessRunningTask extends Task<String, Boolean> {
         Validate.notNullOrEmpty(processName, "Process name to get running status of is a null object or it is an empty string!");
         Validate.notNull(androidSdk, "AndroidSDK is null object!");
 
-        List<String> psOutput = Tasks.prepare(CommandTool.class).programName(androidSdk.getAdbPath())
+        List<String> psOutput = Spacelift.task(CommandTool.class).programName(androidSdk.getAdbPath())
             .addEnvironment(androidSdk.getPlatformConfiguration().getAndroidSystemEnvironmentProperties())
             .parameter("shell")
             .parameter("ps")

@@ -14,11 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.container.tool;
+package org.arquillian.droidium.container.task;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.Collection;
 
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.jboss.shrinkwrap.api.Archive;
@@ -31,12 +29,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
-public class APKResignerTool extends APKSignerTool {
-
-    @Override
-    protected Collection<String> aliases() {
-        return Arrays.asList("apk_resigner");
-    }
+public class APKResignerTask extends APKSignerTask {
 
     @Override
     protected File process(File toResign) throws Exception {

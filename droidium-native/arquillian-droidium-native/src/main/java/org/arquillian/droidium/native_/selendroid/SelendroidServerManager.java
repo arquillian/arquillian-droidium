@@ -36,11 +36,11 @@ import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.arquillian.droidium.container.utils.Monkey;
 import org.arquillian.droidium.native_.exception.InvalidSelendroidPortException;
 import org.arquillian.droidium.native_.spi.SelendroidDeployment;
-import org.arquillian.spacelift.execution.Tasks;
+import org.arquillian.spacelift.Spacelift;
 import org.arquillian.spacelift.process.Command;
 import org.arquillian.spacelift.process.CommandBuilder;
 import org.arquillian.spacelift.process.ProcessResult;
-import org.arquillian.spacelift.process.impl.CommandTool;
+import org.arquillian.spacelift.task.os.CommandTool;
 
 /**
  * Manages deployment and undeployment of Selendroid servers which instrument Android packages. There is strict one-to-one
@@ -113,7 +113,7 @@ public class SelendroidServerManager {
 
         logger.fine("Selendroid server installation command: " + selendroidInstallCommand.toString());
 
-        ProcessResult processResult = Tasks.prepare(CommandTool.class).command(selendroidInstallCommand).execute().await();
+        ProcessResult processResult = Spacelift.task(CommandTool.class).command(selendroidInstallCommand).execute().await();
 
         if (processResult.exitValue() != 0) {
             throw new AndroidExecutionException("Unable to execute Selendroid installation process, exit value: " +

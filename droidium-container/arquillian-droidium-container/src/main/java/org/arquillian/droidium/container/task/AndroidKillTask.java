@@ -14,19 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.container.tool;
+package org.arquillian.droidium.container.task;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Validate;
-import org.arquillian.spacelift.execution.Tasks;
+import org.arquillian.spacelift.Spacelift;
 import org.arquillian.spacelift.process.ProcessResult;
-import org.arquillian.spacelift.process.impl.CommandTool;
-import org.arquillian.spacelift.tool.Tool;
+import org.arquillian.spacelift.task.Task;
+import org.arquillian.spacelift.task.os.CommandTool;
+
 
 /**
  * Calls Android's kill binary and kills processes on Android side.
@@ -41,21 +40,21 @@ import org.arquillian.spacelift.tool.Tool;
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
-public class AndroidKillTool extends Tool<Integer, ProcessResult> {
+public class AndroidKillTask extends Task<Integer, ProcessResult> {
 
-    private static final Logger logger = Logger.getLogger(AndroidKillTool.class.getName());
+    private static final Logger logger = Logger.getLogger(AndroidKillTask.class.getName());
 
     private AndroidSDK androidSdk;
 
     private int signum = 9; // default is SIGKILL
 
-    public AndroidKillTool androidSdk(AndroidSDK androidSdk) {
+    public AndroidKillTask androidSdk(AndroidSDK androidSdk) {
         Validate.notNull(androidSdk, "Android Sdk is null object.");
         this.androidSdk = androidSdk;
         return this;
     }
 
-    public AndroidKillTool signum(int signum) {
+    public AndroidKillTask signum(int signum) {
         if (signum > 0) {
             this.signum = signum;
         } else {
@@ -65,7 +64,7 @@ public class AndroidKillTool extends Tool<Integer, ProcessResult> {
         return this;
     }
 
-    public AndroidKillTool signum(String signum) {
+    public AndroidKillTask signum(String signum) {
         Validate.notNullOrEmpty(signum, "Signal number is a null object or an empty string!");
 
         try {
@@ -78,11 +77,6 @@ public class AndroidKillTool extends Tool<Integer, ProcessResult> {
     }
 
     @Override
-    protected Collection<String> aliases() {
-        return Arrays.asList(new String[] { "android_kill" });
-    }
-
-    @Override
     protected ProcessResult process(Integer pid) throws Exception {
         Validate.notNull(pid, "PID for process to kill is a null object!");
         Validate.notNull(androidSdk, "Android SDK is a null object!");
@@ -91,7 +85,7 @@ public class AndroidKillTool extends Tool<Integer, ProcessResult> {
             throw new IllegalStateException("PID to kill is lower then 0.");
         }
 
-        ProcessResult processResult = Tasks.prepare(CommandTool.class)
+        ProcessResult processResult = Spacelift.task(CommandTool.class)
             .programName(androidSdk.getAdbPath())
             .addEnvironment(androidSdk.getPlatformConfiguration().getAndroidSystemEnvironmentProperties())
             .parameters("shell", "kill", "-" + signum, pid.toString())

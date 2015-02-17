@@ -19,11 +19,11 @@ package org.arquillian.droidium.container.task;
 import java.io.File;
 
 import org.arquillian.droidium.container.configuration.AndroidSDK;
-import org.arquillian.spacelift.execution.Task;
-import org.arquillian.spacelift.execution.Tasks;
+import org.arquillian.spacelift.Spacelift;
 import org.arquillian.spacelift.process.Command;
 import org.arquillian.spacelift.process.CommandBuilder;
-import org.arquillian.spacelift.process.impl.CommandTool;
+import org.arquillian.spacelift.task.Task;
+import org.arquillian.spacelift.task.os.CommandTool;
 
 /**
  * Creates keystore by keytool command.
@@ -79,7 +79,7 @@ public class CreateKeyStoreTask extends Task<File, File> {
             .parameter(androidSDK.getPlatformConfiguration().getKeyalg())
             .build();
 
-        Tasks.prepare(CommandTool.class).command(createKeyStoreCommand).execute().await();
+        Spacelift.task(CommandTool.class).command(createKeyStoreCommand).execute().await();
 
         return keyStoreToCreate;
     }

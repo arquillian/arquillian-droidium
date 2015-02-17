@@ -22,15 +22,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.arquillian.spacelift.execution.Tasks;
-import org.arquillian.spacelift.execution.impl.DefaultExecutionServiceFactory;
+import org.arquillian.spacelift.Spacelift;
 import org.arquillian.spacelift.task.io.FileReader;
 import org.arquillian.spacelift.task.io.FileWriter;
-import org.arquillian.spacelift.tool.basic.StringReplacementTool;
+import org.arquillian.spacelift.task.text.StringReplacementTool;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -43,11 +41,6 @@ import org.junit.runners.JUnit4;
 public class SelendroidRebuilderTestCase {
 
     private File tempFile;
-
-    @BeforeClass
-    public static void setup() {
-        Tasks.setDefaultExecutionServiceFactory(new DefaultExecutionServiceFactory());
-    }
 
     @Before
     public void before() throws IOException {
@@ -74,15 +67,15 @@ public class SelendroidRebuilderTestCase {
         Map<File, String> map = new HashMap<File, String>();
         map.put(tempFile, content);
 
-        Tasks.chain(map, FileWriter.class).execute().await();
+        Spacelift.task(map, FileWriter.class).execute().await();
 
-        Tasks.prepare(StringReplacementTool.class).in(tempFile)
+        Spacelift.task(StringReplacementTool.class).in(tempFile)
             .replace("package=io.selendroid").with("package=io.selendroid_1")
             .replace("io.selendroid.testapp").with("my.test.app")
             .replace("android:icon=\"@drawable/selenium_icon\"").with("")
             .execute().await();
 
-        String replaced = Tasks.chain(Arrays.asList(tempFile), FileReader.class).execute().await().entrySet().iterator().next().getValue();
+        String replaced = Spacelift.task(Arrays.asList(tempFile), FileReader.class).execute().await().entrySet().iterator().next().getValue();
 
         Assert.assertTrue(replaced.contains("xyz package=io.selendroid_1 blablabalb"));
         Assert.assertTrue(replaced.contains("android:targetPackage=\"my.test.app\" />"));

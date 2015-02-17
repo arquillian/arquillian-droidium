@@ -34,11 +34,11 @@ import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceAvailable;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceCreate;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceDelete;
+import org.arquillian.spacelift.Spacelift;
 import org.arquillian.spacelift.execution.ExecutionException;
-import org.arquillian.spacelift.execution.Tasks;
 import org.arquillian.spacelift.process.Command;
 import org.arquillian.spacelift.process.CommandBuilder;
-import org.arquillian.spacelift.process.impl.CommandTool;
+import org.arquillian.spacelift.task.os.CommandTool;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Instance;
@@ -385,7 +385,7 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
 
             Command command = cb.build();
 
-            return Tasks.prepare(CommandTool.class).command(command).execute().await().output();
+            return Spacelift.task(CommandTool.class).command(command).execute().await().output();
         } catch (ExecutionException ex) {
             throw new AndroidExecutionException(ex, "Unable to get list of AVDs");
         }

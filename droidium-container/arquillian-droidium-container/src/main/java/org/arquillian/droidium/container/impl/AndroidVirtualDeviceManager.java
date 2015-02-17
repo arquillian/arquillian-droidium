@@ -35,13 +35,13 @@ import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceAvailable
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceCreate;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceDelete;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceDeleted;
+import org.arquillian.spacelift.Spacelift;
 import org.arquillian.spacelift.execution.ExecutionException;
-import org.arquillian.spacelift.execution.Tasks;
 import org.arquillian.spacelift.process.Command;
 import org.arquillian.spacelift.process.CommandBuilder;
 import org.arquillian.spacelift.process.ProcessInteraction;
 import org.arquillian.spacelift.process.ProcessInteractionBuilder;
-import org.arquillian.spacelift.process.impl.CommandTool;
+import org.arquillian.spacelift.task.os.CommandTool;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;
@@ -104,7 +104,7 @@ public class AndroidVirtualDeviceManager {
                 .parameter(avdName)
                 .build();
 
-            Tasks.prepare(CommandTool.class).command(deleteAvdCommand).execute().await();
+            Spacelift.task(CommandTool.class).command(deleteAvdCommand).execute().await();
 
             logger.log(Level.INFO, "Android Virtual Device {0} deleted.", avdName);
 
@@ -153,7 +153,7 @@ public class AndroidVirtualDeviceManager {
                 when("Do you wish to create a custom hardware profile \\[no\\]")
                 .replyWith("no" + System.getProperty("line.separator")).build();
 
-            Tasks.prepare(CommandTool.class).command(cb).interaction(interaction).execute().await();
+            Spacelift.task(CommandTool.class).command(cb).interaction(interaction).execute().await();
 
             configuration.setAvdGenerated(true);
 

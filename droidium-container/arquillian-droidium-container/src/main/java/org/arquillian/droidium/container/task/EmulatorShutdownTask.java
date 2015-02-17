@@ -30,7 +30,7 @@ import org.arquillian.droidium.container.impl.DeviceDiscovery;
 import org.arquillian.spacelift.execution.CountDownWatch;
 import org.arquillian.spacelift.execution.ExecutionCondition;
 import org.arquillian.spacelift.execution.ExecutionException;
-import org.arquillian.spacelift.execution.Task;
+import org.arquillian.spacelift.task.Task;
 
 import com.android.ddmlib.AndroidDebugBridge;
 

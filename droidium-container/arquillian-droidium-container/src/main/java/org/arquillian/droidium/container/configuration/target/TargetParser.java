@@ -25,8 +25,8 @@ import java.util.Map;
 
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
-import org.arquillian.spacelift.execution.Tasks;
-import org.arquillian.spacelift.process.impl.CommandTool;
+import org.arquillian.spacelift.Spacelift;
+import org.arquillian.spacelift.task.os.CommandTool;
 import org.jboss.arquillian.core.spi.Validate;
 
 /**
@@ -57,7 +57,7 @@ public class TargetParser {
         androidEnvironment.put("ANDROID_HOME", platformConfiguration.getAndroidHome());
         androidEnvironment.put("ANDROID_SDK_HOME", platformConfiguration.getAndroidSdkHome());
 
-        List<String> output = Tasks.prepare(CommandTool.class)
+        List<String> output = Spacelift.task(CommandTool.class)
             .addEnvironment(androidEnvironment)
             .programName(androidSdk.getAndroidPath())
             .parameters("list", "target")

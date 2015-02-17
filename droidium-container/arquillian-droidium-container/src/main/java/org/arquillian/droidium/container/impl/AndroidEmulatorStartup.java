@@ -29,16 +29,16 @@ import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceAvailable;
 import org.arquillian.droidium.container.task.EmulatorIsOnlineTask;
 import org.arquillian.droidium.container.task.EmulatorStatusCheckTask;
+import org.arquillian.droidium.container.task.FreePortTask;
 import org.arquillian.droidium.container.task.UnlockEmulatorTask;
-import org.arquillian.droidium.container.tool.FreePortTool;
+import org.arquillian.spacelift.Spacelift;
 import org.arquillian.spacelift.execution.CountDownWatch;
 import org.arquillian.spacelift.execution.Execution;
 import org.arquillian.spacelift.execution.ExecutionException;
-import org.arquillian.spacelift.execution.Tasks;
 import org.arquillian.spacelift.process.CommandBuilder;
 import org.arquillian.spacelift.process.ProcessResult;
 import org.arquillian.spacelift.process.ProcessInteractionBuilder;
-import org.arquillian.spacelift.process.impl.CommandTool;
+import org.arquillian.spacelift.task.os.CommandTool;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Instance;
@@ -111,19 +111,19 @@ public class AndroidEmulatorStartup {
 
         CountDownWatch watch = new CountDownWatch(configuration.getEmulatorBootupTimeoutInSeconds(), TimeUnit.SECONDS);
 
-        Tasks.chain(deviceDiscovery, EmulatorIsOnlineTask.class)
+        Spacelift.task(deviceDiscovery, EmulatorIsOnlineTask.class)
             .execute().until(watch, EmulatorIsOnlineTask.isOnlineCondition);
 
         AndroidDevice androidDevice = deviceDiscovery.getDevice();
 
-        Tasks.prepare(EmulatorStatusCheckTask.class)
+        Spacelift.task(EmulatorStatusCheckTask.class)
             .execution(emulatorExecution)
             .then(CommandTool.class)
             .command(new CommandBuilder(androidSDK.get().getAdbPath())
                 .parameters("-s", androidDevice.getSerialNumber(), "shell", "getprop"))
             .execute().until(watch, EmulatorStatusCheckTask.isBootedCondition);
 
-        Tasks.prepare(UnlockEmulatorTask.class)
+        Spacelift.task(UnlockEmulatorTask.class)
             .serialNumber(androidDevice.getSerialNumber())
             .sdk(sdk)
             .execute().await();
@@ -152,14 +152,14 @@ public class AndroidEmulatorStartup {
         }
 
         if (configuration.getConsolePort() != null) {
-            if (!Tasks.prepare(FreePortTool.class).port(configuration.getConsolePort()).execute().await()) {
+            if (!Spacelift.task(FreePortTask.class).port(configuration.getConsolePort()).execute().await()) {
                 throw new AndroidExecutionException("It seems there is already something which listens on specified "
                     + "console port " + configuration.getConsolePort() + " so Droidium can not start emulator there.");
             }
         }
 
         if (configuration.getAdbPort() != null) {
-            if (!Tasks.prepare(FreePortTool.class).port(configuration.getAdbPort()).execute().await()) {
+            if (!Spacelift.task(FreePortTask.class).port(configuration.getAdbPort()).execute().await()) {
                 throw new AndroidExecutionException("It seems there is already something which listens on specified "
                     + "adb port " + configuration.getAdbPort() + " so Droidium can not start emulator there.");
             }
@@ -185,7 +185,7 @@ public class AndroidEmulatorStartup {
 
         // start emulator but does not wait for its termination here
         try {
-            return Tasks.prepare(CommandTool.class)
+            return Spacelift.task(CommandTool.class)
                 .command(command)
                 .interaction(interactions.build())
                 .execute();

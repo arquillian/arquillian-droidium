@@ -14,15 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.container.tool;
+package org.arquillian.droidium.container.task;
 
 import java.io.File;
 
 import org.arquillian.droidium.container.api.ScreenrecordOptions;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Validate;
-import org.arquillian.spacelift.execution.Tasks;
-import org.arquillian.spacelift.process.impl.CommandTool;
+import org.arquillian.spacelift.Spacelift;
+import org.arquillian.spacelift.task.os.CommandTool;
 
 /**
  * @author <a href="mailto:smikloso@redhat.com">Stefan Miklosovic</a>
@@ -81,7 +81,7 @@ public class ScreenRecordToolBuilder {
         Validate.notNull(options, "You have not set options.");
         Validate.notNullOrEmpty(remoteFilePath, "You have not set remote file path or it is empty string.");
 
-        CommandTool screenRecorderTool = Tasks.prepare(CommandTool.class)
+        CommandTool screenRecorderTool = Spacelift.task(CommandTool.class)
             .programName(androidSdk.getAdbPath())
             .addEnvironment(androidSdk.getPlatformConfiguration().getAndroidSystemEnvironmentProperties())
             .parameter("shell")

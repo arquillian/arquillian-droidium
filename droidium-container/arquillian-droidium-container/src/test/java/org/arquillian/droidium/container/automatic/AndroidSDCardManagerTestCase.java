@@ -39,8 +39,6 @@ import org.arquillian.droidium.container.spi.event.AndroidSDCardCreated;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardDelete;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardDeleted;
 import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
-import org.arquillian.spacelift.execution.Tasks;
-import org.arquillian.spacelift.execution.impl.DefaultExecutionServiceFactory;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.container.test.test.AbstractContainerTestTestBase;
@@ -88,7 +86,6 @@ public class AndroidSDCardManagerTestCase extends AbstractContainerTestTestBase 
 
     @BeforeClass
     public static void initializateExecutionService() {
-        Tasks.setDefaultExecutionServiceFactory(new DefaultExecutionServiceFactory());
 
         configuration.validate();
         platformConfiguration.validate();

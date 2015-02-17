@@ -52,15 +52,12 @@ import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceCreate;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceDelete;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceDeleted;
 import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
-import org.arquillian.spacelift.execution.Tasks;
-import org.arquillian.spacelift.execution.impl.DefaultExecutionServiceFactory;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.container.test.AbstractContainerTestBase;
 import org.jboss.arquillian.core.api.annotation.ApplicationScoped;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -105,11 +102,6 @@ public class AndroidEmulatorStartupAVDtoBeCreatedTestCase extends AbstractContai
         extensions.add(AndroidEmulatorShutdown.class);
         extensions.add(AndroidVirtualDeviceManager.class);
         extensions.add(AndroidDeviceContext.class);
-    }
-
-    @BeforeClass
-    public static void initializateExecutionService() {
-        Tasks.setDefaultExecutionServiceFactory(new DefaultExecutionServiceFactory());
     }
 
     @Before

@@ -26,12 +26,13 @@ import org.arquillian.droidium.container.configuration.Validate;
 import org.arquillian.droidium.container.spi.AndroidDeployment;
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.arquillian.droidium.container.utils.Monkey;
+import org.arquillian.spacelift.Spacelift;
 import org.arquillian.spacelift.execution.ExecutionException;
-import org.arquillian.spacelift.execution.Tasks;
 import org.arquillian.spacelift.process.Command;
 import org.arquillian.spacelift.process.CommandBuilder;
 import org.arquillian.spacelift.process.ProcessResult;
-import org.arquillian.spacelift.process.impl.CommandTool;
+import org.arquillian.spacelift.task.os.CommandTool;
+
 
 /**
  * Manages deployment and undeployment of Android applications. It installs, uninstalls and disables running applications on
@@ -96,7 +97,7 @@ public class AndroidApplicationManager {
         ProcessResult processDetails = null;
 
         try {
-            processDetails = Tasks.prepare(CommandTool.class)
+            processDetails = Spacelift.task(CommandTool.class)
                 .command(installCommand)
                 .execute()
                 .await();

@@ -14,17 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.arquillian.droidium.container.tool;
+package org.arquillian.droidium.container.task;
 
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.Collection;
 
 import org.arquillian.droidium.container.configuration.Validate;
-import org.arquillian.spacelift.tool.Tool;
+import org.arquillian.spacelift.task.Task;
 
 /**
  * Checks if some port is free or not to hook to.
@@ -32,7 +30,7 @@ import org.arquillian.spacelift.tool.Tool;
  * @author <a href="smikloso@redhat.com">Stefan Miklosovic</a>
  *
  */
-public class FreePortTool extends Tool<Object, Boolean> {
+public class FreePortTask extends Task<Object, Boolean> {
 
     private int port = -1;
 
@@ -44,7 +42,7 @@ public class FreePortTool extends Tool<Object, Boolean> {
      * @throws NumberFormatException if {@code port} is not a number
      * @return this
      */
-    public FreePortTool port(String port) {
+    public FreePortTask port(String port) {
         if (port == null || port.isEmpty()) {
             throw new IllegalArgumentException("Port to check can not be a null object nor an empty string");
         }
@@ -101,11 +99,6 @@ public class FreePortTool extends Tool<Object, Boolean> {
         }
 
         return false;
-    }
-
-    @Override
-    protected Collection<String> aliases() {
-        return Arrays.asList("free_port");
     }
 
     @Override

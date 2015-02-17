@@ -35,8 +35,6 @@ import org.arquillian.droidium.container.impl.AndroidBridgeConnector;
 import org.arquillian.droidium.container.spi.event.AndroidBridgeInitialized;
 import org.arquillian.droidium.container.spi.event.AndroidContainerStart;
 import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
-import org.arquillian.spacelift.execution.Tasks;
-import org.arquillian.spacelift.execution.impl.DefaultExecutionServiceFactory;
 import org.jboss.arquillian.container.spi.context.ContainerContext;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.container.test.test.AbstractContainerTestTestBase;
@@ -72,11 +70,6 @@ public class AndroidBridgeConnectorTestCase extends AbstractContainerTestTestBas
     @Override
     protected void addExtensions(List<Class<?>> extensions) {
         extensions.add(AndroidBridgeConnector.class);
-    }
-
-    @org.junit.BeforeClass
-    public static void initializateExecutionService() {
-        Tasks.setDefaultExecutionServiceFactory(new DefaultExecutionServiceFactory());
     }
 
     @org.junit.Before

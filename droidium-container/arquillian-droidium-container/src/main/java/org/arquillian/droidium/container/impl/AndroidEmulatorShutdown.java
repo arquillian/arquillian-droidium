@@ -42,8 +42,8 @@ import org.arquillian.droidium.container.spi.event.AndroidContainerStop;
 import org.arquillian.droidium.container.spi.event.AndroidEmulatorShuttedDown;
 import org.arquillian.droidium.container.spi.event.AndroidVirtualDeviceDelete;
 import org.arquillian.droidium.container.task.EmulatorShutdownTask;
+import org.arquillian.spacelift.Spacelift;
 import org.arquillian.spacelift.execution.CountDownWatch;
-import org.arquillian.spacelift.execution.Tasks;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;
@@ -99,7 +99,7 @@ public class AndroidEmulatorShutdown {
 
             logger.info("Waiting " + countdown.timeout() + " seconds for emulator " + device.getAvdName() + " to be disconnected and shutdown.");
 
-            Tasks.chain(device, EmulatorShutdownTask.class).countdown(countdown).execute().await();
+            Spacelift.task(device, EmulatorShutdownTask.class).countdown(countdown).execute().await();
 
             logger.info("Device " + device.getAvdName() + " on port " + device.getConsolePort() + " was disconnected in " + countdown.timeElapsed() + " seconds.");
 

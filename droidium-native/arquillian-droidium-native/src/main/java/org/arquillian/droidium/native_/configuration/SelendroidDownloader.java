@@ -23,10 +23,10 @@ import java.util.logging.Logger;
 import org.arquillian.droidium.container.configuration.Validate;
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.arquillian.droidium.native_.spi.event.DroidiumNativeConfigured;
-import org.arquillian.spacelift.execution.Tasks;
+import org.arquillian.spacelift.Spacelift;
 import org.arquillian.spacelift.execution.TimeoutExecutionException;
-import org.arquillian.spacelift.tool.basic.DownloadTool;
-import org.arquillian.spacelift.tool.basic.UnzipTool;
+import org.arquillian.spacelift.task.archive.UnzipTool;
+import org.arquillian.spacelift.task.net.DownloadTool;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.core.api.annotation.Observes;
@@ -69,7 +69,7 @@ public class SelendroidDownloader {
                     + "downloaded for you automatically right now.");
 
                 try {
-                    File unzipped = Tasks.prepare(DownloadTool.class)
+                    File unzipped = Spacelift.task(DownloadTool.class)
                         .from(SELENDROID_SERVER_URL)
                         .to(SELENDROID_SERVER_HOME)
                         .then(UnzipTool.class)

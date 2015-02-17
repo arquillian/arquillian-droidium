@@ -19,7 +19,7 @@ package org.arquillian.droidium.container.task;
 import org.arquillian.droidium.container.impl.DeviceDiscovery;
 import org.arquillian.spacelift.execution.ExecutionCondition;
 import org.arquillian.spacelift.execution.ExecutionException;
-import org.arquillian.spacelift.execution.Task;
+import org.arquillian.spacelift.task.Task;
 
 /**
  * Checks if an emulator is online. If an emulator is online, it does not automatically mean it is fully booted and prepared.

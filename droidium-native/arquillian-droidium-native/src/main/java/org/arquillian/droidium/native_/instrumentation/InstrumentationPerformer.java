@@ -24,7 +24,7 @@ import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.deployment.AndroidDeploymentRegister;
 import org.arquillian.droidium.container.impl.AndroidApplicationHelper;
 import org.arquillian.droidium.container.spi.AndroidDeployment;
-import org.arquillian.droidium.container.tool.APKResignerTool;
+import org.arquillian.droidium.container.task.APKResignerTask;
 import org.arquillian.droidium.container.utils.DroidiumFileUtils;
 import org.arquillian.droidium.native_.configuration.DroidiumNativeConfiguration;
 import org.arquillian.droidium.native_.deployment.SelendroidDeploymentRegister;
@@ -34,7 +34,7 @@ import org.arquillian.droidium.native_.selendroid.SelendroidServerManager;
 import org.arquillian.droidium.native_.spi.SelendroidDeployment;
 import org.arquillian.droidium.native_.spi.event.PerformInstrumentation;
 import org.arquillian.droidium.native_.spi.event.SelendroidDeploy;
-import org.arquillian.spacelift.execution.Tasks;
+import org.arquillian.spacelift.Spacelift;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;
@@ -136,7 +136,7 @@ public class InstrumentationPerformer {
     }
 
     private File getSelendroidResigned(File selendroidRebuilt) {
-        return Tasks.chain(selendroidRebuilt, APKResignerTool.class).sdk(sdk.get()).execute().await();
+        return Spacelift.task(selendroidRebuilt, APKResignerTask.class).sdk(sdk.get()).execute().await();
     }
 
     private File getSelendroidWorkingCopy() {

@@ -33,11 +33,11 @@ import org.arquillian.droidium.container.spi.event.AndroidSDCardCreated;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardDelete;
 import org.arquillian.droidium.container.spi.event.AndroidSDCardDeleted;
 import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
+import org.arquillian.spacelift.Spacelift;
 import org.arquillian.spacelift.execution.ExecutionException;
-import org.arquillian.spacelift.execution.Tasks;
 import org.arquillian.spacelift.process.Command;
 import org.arquillian.spacelift.process.CommandBuilder;
-import org.arquillian.spacelift.process.impl.CommandTool;
+import org.arquillian.spacelift.task.os.CommandTool;
 import org.jboss.arquillian.core.api.Event;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.annotation.Inject;
@@ -176,7 +176,7 @@ public class AndroidSDCardManagerImpl implements AndroidSDCardManager {
             .build();
 
         try {
-            Tasks.prepare(CommandTool.class).command(command).execute().await();
+            Spacelift.task(CommandTool.class).command(command).execute().await();
         } catch (ExecutionException ex) {
             throw new AndroidExecutionException("Unable to create SD card", ex);
         }

@@ -21,7 +21,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.arquillian.droidium.platform.event.DroidiumPlatformConfigured;
-import org.arquillian.spacelift.tool.event.ToolRegistryInitialized;
 import org.jboss.arquillian.config.descriptor.api.ArquillianDescriptor;
 import org.jboss.arquillian.config.descriptor.api.ExtensionDef;
 import org.jboss.arquillian.core.api.Event;
@@ -35,7 +34,7 @@ import org.jboss.arquillian.core.api.annotation.Observes;
  * <br>
  * Observes:
  * <ul>
- * <li>{@link ToolRegistryInitialized}</li>
+ * <li>{@link ArquillianDescriptor}</li>
  * </ul>
  * Produces ApplicationScoped:
  * <ul>
@@ -65,7 +64,7 @@ public class DroidiumPlatformConfigurator {
     @Inject
     private Event<DroidiumPlatformConfigured> platformConfigured;
 
-    public void configureDroidiumPlatofrm(@Observes ToolRegistryInitialized event, ArquillianDescriptor descriptor) {
+    public void configureDroidiumPlatofrm(@Observes ArquillianDescriptor descriptor) {
 
         logger.info("Configuring " + DROIDIUM_PLATFORM_EXTENSION_NAME);
 

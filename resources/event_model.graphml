@@ -17,8 +17,8 @@
     <node id="n0">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="30.0" x="27.553585434059812" y="15.975906162356864"/>
-          <y:Fill color="#FFCC00" transparent="false"/>
+          <y:Geometry height="30.0" width="30.0" x="285.78053029201993" y="257.96216266447044"/>
+          <y:Fill color="#000000" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="custom" textColor="#000000" visible="true" width="4.0" x="13.0" y="13.0">
             <y:LabelModel>
@@ -35,41 +35,6 @@
     <node id="n1">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="30.0" x="-82.44641456594019" y="-93.02409383764314"/>
-          <y:Fill color="#FFCC00" transparent="false"/>
-          <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="custom" textColor="#000000" visible="true" width="4.0" x="13.0" y="13.0">
-            <y:LabelModel>
-              <y:SmartNodeLabelModel distance="4.0"/>
-            </y:LabelModel>
-            <y:ModelParameter>
-              <y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/>
-            </y:ModelParameter>
-          </y:NodeLabel>
-          <y:Shape type="ellipse"/>
-        </y:ShapeNode>
-      </data>
-    </node>
-    <node id="n2">
-      <data key="d6">
-        <y:ShapeNode>
-          <y:Geometry height="30.0" width="30.0" x="120.27568452368854" y="104.40480444673528"/>
-          <y:Fill color="#FFFF00" transparent="false"/>
-          <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" modelName="custom" textColor="#000000" visible="true" width="296.763671875" x="-308.6259765625" y="8.03125">ArquillianSpaceliftBooter#onArquillianDescriptor<y:LabelModel>
-              <y:SmartNodeLabelModel distance="4.0"/>
-            </y:LabelModel>
-            <y:ModelParameter>
-              <y:SmartNodeLabelModelParameter labelRatioX="0.5" labelRatioY="0.5" nodeRatioX="-0.5" nodeRatioY="0.5" offsetX="-11.8623046875" offsetY="-4.0" upX="0.0" upY="-1.0"/>
-            </y:ModelParameter>
-          </y:NodeLabel>
-          <y:Shape type="ellipse"/>
-        </y:ShapeNode>
-      </data>
-    </node>
-    <node id="n3">
-      <data key="d6">
-        <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="394.0" y="369.0"/>
           <y:Fill color="#999999" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
@@ -84,24 +49,7 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n4">
-      <data key="d6">
-        <y:ShapeNode>
-          <y:Geometry height="30.0" width="30.0" x="414.69203305314613" y="141.51640808822035"/>
-          <y:Fill color="#FFCC00" transparent="false"/>
-          <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" modelName="custom" textColor="#000000" visible="true" width="128.9921875" x="39.68359375" y="6.015625">(A) ExecutionService<y:LabelModel>
-              <y:SmartNodeLabelModel distance="4.0"/>
-            </y:LabelModel>
-            <y:ModelParameter>
-              <y:SmartNodeLabelModelParameter labelRatioX="-0.5" labelRatioY="0.0" nodeRatioX="0.5" nodeRatioY="0.0" offsetX="9.68359375" offsetY="0.0" upX="0.0" upY="-1.0"/>
-            </y:ModelParameter>
-          </y:NodeLabel>
-          <y:Shape type="roundrectangle"/>
-        </y:ShapeNode>
-      </data>
-    </node>
-    <node id="n5">
+    <node id="n2">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="591.6666666666666" y="330.0"/>
@@ -118,7 +66,7 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n6">
+    <node id="n3">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="518.6666666666666" y="485.0"/>
@@ -135,7 +83,7 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n7">
+    <node id="n4">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="716.0" y="485.0"/>
@@ -152,7 +100,7 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n8">
+    <node id="n5">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="716.0" y="561.0"/>
@@ -169,7 +117,7 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n9">
+    <node id="n6">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="716.0" y="629.5"/>
@@ -186,7 +134,7 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n10">
+    <node id="n7">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="716.0" y="698.0"/>
@@ -203,7 +151,7 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n11">
+    <node id="n8">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="716.0" y="766.5"/>
@@ -220,7 +168,7 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n12">
+    <node id="n9">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="716.0" y="842.4"/>
@@ -237,7 +185,7 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n13">
+    <node id="n10">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="518.6666666666666" y="945.36"/>
@@ -254,7 +202,7 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n14">
+    <node id="n11">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="715.32" y="945.36"/>
@@ -271,7 +219,7 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n15">
+    <node id="n12">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="518.6666666666666" y="1164.24"/>
@@ -288,7 +236,7 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n16">
+    <node id="n13">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="715.32" y="1164.24"/>
@@ -305,7 +253,7 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n17">
+    <node id="n14">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="715.32" y="1267.5600000000002"/>
@@ -322,7 +270,7 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n18">
+    <node id="n15">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="715.32" y="1358.72"/>
@@ -339,7 +287,7 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n19">
+    <node id="n16">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="715.32" y="1449.8799999999999"/>
@@ -356,7 +304,7 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n20">
+    <node id="n17">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="715.32" y="1541.0399999999997"/>
@@ -373,7 +321,7 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n21">
+    <node id="n18">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="217.06671219052737" y="1739.7577368137781"/>
@@ -391,7 +339,7 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n22">
+    <node id="n19">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="341.3924831808395" y="1864.3298506458557"/>
@@ -408,7 +356,7 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n23">
+    <node id="n20">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="217.06671219052737" y="2008.4603767491924"/>
@@ -426,7 +374,7 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n24">
+    <node id="n21">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="341.3924831808395" y="2123.185492465016"/>
@@ -444,7 +392,7 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n25">
+    <node id="n22">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="476.8380395586653" y="2241.555629709366"/>
@@ -461,7 +409,7 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n26">
+    <node id="n23">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="341.3924831808395" y="2359.9698475062823"/>
@@ -478,7 +426,7 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n27">
+    <node id="n24">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="476.8380395586653" y="2498.028918191603"/>
@@ -495,7 +443,7 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n28">
+    <node id="n25">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="612.2703713670612" y="2636.876697165412"/>
@@ -512,7 +460,7 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n29">
+    <node id="n26">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="799.0311033369213" y="2636.876697165412"/>
@@ -529,7 +477,7 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n30">
+    <node id="n27">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="612.2703713670612" y="2855.872204879803"/>
@@ -546,7 +494,7 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n31">
+    <node id="n28">
       <data key="d4"/>
       <data key="d6">
         <y:UMLNoteNode>
@@ -564,7 +512,7 @@ if there is not native plugin<y:LabelModel>
         </y:UMLNoteNode>
       </data>
     </node>
-    <node id="n32">
+    <node id="n29">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="356.84927543057046" y="3012.7475923932566"/>
@@ -582,7 +530,7 @@ if there is not native plugin<y:LabelModel>
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n33">
+    <node id="n30">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="495.42490715823465" y="3135.0307543954104"/>
@@ -599,7 +547,7 @@ if there is not native plugin<y:LabelModel>
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n34">
+    <node id="n31">
       <data key="d4"/>
       <data key="d6">
         <y:UMLNoteNode>
@@ -619,7 +567,7 @@ Overrides manager above.
         </y:UMLNoteNode>
       </data>
     </node>
-    <node id="n35">
+    <node id="n32">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="211.40724615168992" y="3356.6474105981147"/>
@@ -637,7 +585,7 @@ Overrides manager above.
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n36">
+    <node id="n33">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="356.2921086788373" y="3471.380819348115"/>
@@ -655,7 +603,7 @@ Overrides manager above.
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n37">
+    <node id="n34">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="478.5391070506348" y="3565.362852622377"/>
@@ -672,7 +620,7 @@ Overrides manager above.
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n38">
+    <node id="n35">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="623.8236751432914" y="3676.7631943920114"/>
@@ -689,7 +637,7 @@ Overrides manager above.
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n39">
+    <node id="n36">
       <data key="d4"/>
       <data key="d6">
         <y:UMLNoteNode>
@@ -710,7 +658,7 @@ that manager with AndroidDevice outside of container scope.<y:LabelModel>
         </y:UMLNoteNode>
       </data>
     </node>
-    <node id="n40">
+    <node id="n37">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="475.84108381273114" y="3871.088197184482"/>
@@ -727,7 +675,7 @@ that manager with AndroidDevice outside of container scope.<y:LabelModel>
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n41">
+    <node id="n38">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="623.8236751432914" y="3999.4228688128824"/>
@@ -744,7 +692,7 @@ that manager with AndroidDevice outside of container scope.<y:LabelModel>
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n42">
+    <node id="n39">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="768.4379850636549" y="4108.744564420906"/>
@@ -761,7 +709,7 @@ that manager with AndroidDevice outside of container scope.<y:LabelModel>
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n43">
+    <node id="n40">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="768.4379850636549" y="4315.451824984761"/>
@@ -780,7 +728,7 @@ scans APK package and maps found activities to deployment names<y:LabelModel>
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n44">
+    <node id="n41">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="906.1594908897068" y="4398.045830685515"/>
@@ -791,7 +739,7 @@ scans APK package and maps found activities to deployment names<y:LabelModel>
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n45">
+    <node id="n42">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="906.1594908897068" y="4561.33398946002"/>
@@ -802,7 +750,7 @@ scans APK package and maps found activities to deployment names<y:LabelModel>
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n46">
+    <node id="n43">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="599.0267143020512" y="3398.747439030267"/>
@@ -821,7 +769,7 @@ scans test case and maps @Instrumentable to @Deployment<y:LabelModel>
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n47">
+    <node id="n44">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="1456.932399130491" y="3869.123104809886"/>
@@ -838,7 +786,7 @@ scans test case and maps @Instrumentable to @Deployment<y:LabelModel>
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n48">
+    <node id="n45">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="1604.914990461051" y="3991.3168627676732"/>
@@ -855,7 +803,7 @@ scans test case and maps @Instrumentable to @Deployment<y:LabelModel>
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n49">
+    <node id="n46">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="1749.5293003814145" y="4106.779472046309"/>
@@ -876,7 +824,7 @@ Deployment scoped Drones are destroyed in BeforeUnDeploy automatically<y:LabelMo
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n50">
+    <node id="n47">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="1604.914990461051" y="4326.063323807581"/>
@@ -894,7 +842,7 @@ Deployment scoped Drones are destroyed in BeforeUnDeploy automatically<y:LabelMo
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n51">
+    <node id="n48">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="1312.0475366033436" y="3356.647410598114"/>
@@ -912,7 +860,7 @@ Deployment scoped Drones are destroyed in BeforeUnDeploy automatically<y:LabelMo
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n52">
+    <node id="n49">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="1456.932399130491" y="3471.3808193481145"/>
@@ -930,7 +878,7 @@ Deployment scoped Drones are destroyed in BeforeUnDeploy automatically<y:LabelMo
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n53">
+    <node id="n50">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="1579.1793975022886" y="3565.3628526223765"/>
@@ -947,7 +895,7 @@ Deployment scoped Drones are destroyed in BeforeUnDeploy automatically<y:LabelMo
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n54">
+    <node id="n51">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="1724.4639655949452" y="3676.763194392011"/>
@@ -964,7 +912,7 @@ Deployment scoped Drones are destroyed in BeforeUnDeploy automatically<y:LabelMo
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n55">
+    <node id="n52">
       <data key="d4"/>
       <data key="d6">
         <y:UMLNoteNode>
@@ -981,7 +929,7 @@ Deployment scoped Drones are destroyed in BeforeUnDeploy automatically<y:LabelMo
         </y:UMLNoteNode>
       </data>
     </node>
-    <node id="n56">
+    <node id="n53">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="1881.7308471113026" y="4214.27966673154"/>
@@ -998,7 +946,7 @@ Deployment scoped Drones are destroyed in BeforeUnDeploy automatically<y:LabelMo
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n57">
+    <node id="n54">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="2029.6699878372438" y="4342.40368955522"/>
@@ -1015,7 +963,7 @@ Deployment scoped Drones are destroyed in BeforeUnDeploy automatically<y:LabelMo
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n58">
+    <node id="n55">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="2171.323647793326" y="4478.829232292788"/>
@@ -1033,7 +981,7 @@ Deployment scoped Drones are destroyed in BeforeUnDeploy automatically<y:LabelMo
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n59">
+    <node id="n56">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="2029.6699878372438" y="4546.997144456404"/>
@@ -1050,7 +998,7 @@ Deployment scoped Drones are destroyed in BeforeUnDeploy automatically<y:LabelMo
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n60">
+    <node id="n57">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="489.19206808324947" y="4697.164065320184"/>
@@ -1067,7 +1015,7 @@ Deployment scoped Drones are destroyed in BeforeUnDeploy automatically<y:LabelMo
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n61">
+    <node id="n58">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="603.265680428567" y="4826.786471079493"/>
@@ -1084,7 +1032,7 @@ Deployment scoped Drones are destroyed in BeforeUnDeploy automatically<y:LabelMo
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n62">
+    <node id="n59">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="708.8628602228174" y="4940.128944000218"/>
@@ -1101,7 +1049,7 @@ Deployment scoped Drones are destroyed in BeforeUnDeploy automatically<y:LabelMo
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n63">
+    <node id="n60">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="815.179765727185" y="5048.573643509411"/>
@@ -1118,7 +1066,7 @@ Deployment scoped Drones are destroyed in BeforeUnDeploy automatically<y:LabelMo
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n64">
+    <node id="n61">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="815.179765727185" y="5322.587065730889"/>
@@ -1137,7 +1085,7 @@ reached only in case emulators were not already running prior to tests<y:LabelMo
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n65">
+    <node id="n62">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="815.179765727185" y="5487.7228353382325"/>
@@ -1155,7 +1103,7 @@ reached only in case emulators were not already running prior to tests<y:LabelMo
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n66">
+    <node id="n63">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="1108.6708755730465" y="5191.806124955691"/>
@@ -1172,7 +1120,7 @@ reached only in case emulators were not already running prior to tests<y:LabelMo
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n67">
+    <node id="n64">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="1308.7100543448869" y="5363.31938741046"/>
@@ -1190,7 +1138,7 @@ reached only in case emulators were not already running prior to tests<y:LabelMo
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n68">
+    <node id="n65">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="1108.6708755730465" y="5466.000774486797"/>
@@ -1208,7 +1156,7 @@ reached only in case emulators were not already running prior to tests<y:LabelMo
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n69">
+    <node id="n66">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="638.9164951560817" y="5600.47562540366"/>
@@ -1226,7 +1174,7 @@ reached only in case emulators were not already running prior to tests<y:LabelMo
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n70">
+    <node id="n67">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="775.4730850376745" y="5723.98907212056"/>
@@ -1245,7 +1193,7 @@ deletes tmp directory used for both containers<y:LabelModel>
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n71">
+    <node id="n68">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="1908.707349838536" y="5625.95125080732"/>
@@ -1263,7 +1211,7 @@ deletes tmp directory used for both containers<y:LabelModel>
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n72">
+    <node id="n69">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="2045.2639397201287" y="5749.46469752422"/>
@@ -1282,7 +1230,7 @@ adds PORT and DEPLOYMENT metadata to Drone if it acts on some instrumentable dep
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n73">
+    <node id="n70">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="1881.7308471113026" y="4752.354600645857"/>
@@ -1300,7 +1248,7 @@ adds PORT and DEPLOYMENT metadata to Drone if it acts on some instrumentable dep
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n74">
+    <node id="n71">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="2018.2874369928952" y="4875.868047362757"/>
@@ -1317,7 +1265,7 @@ adds PORT and DEPLOYMENT metadata to Drone if it acts on some instrumentable dep
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n75">
+    <node id="n72">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="2151.457081868675" y="4985.809125890209"/>
@@ -1335,7 +1283,7 @@ adds PORT and DEPLOYMENT metadata to Drone if it acts on some instrumentable dep
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n76">
+    <node id="n73">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="2018.287436992895" y="5141.314348503776"/>
@@ -1346,7 +1294,7 @@ adds PORT and DEPLOYMENT metadata to Drone if it acts on some instrumentable dep
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n77">
+    <node id="n74">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="2151.457081868675" y="5141.314348503776"/>
@@ -1363,7 +1311,7 @@ adds PORT and DEPLOYMENT metadata to Drone if it acts on some instrumentable dep
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n78">
+    <node id="n75">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="2231.962001911733" y="5285.505125890204"/>
@@ -1380,7 +1328,7 @@ adds PORT and DEPLOYMENT metadata to Drone if it acts on some instrumentable dep
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n79">
+    <node id="n76">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="2408.8203156254035" y="5459.415801041981"/>
@@ -1398,7 +1346,7 @@ adds PORT and DEPLOYMENT metadata to Drone if it acts on some instrumentable dep
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n80">
+    <node id="n77">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="2231.962001911733" y="5459.415801041981"/>
@@ -1416,7 +1364,7 @@ adds PORT and DEPLOYMENT metadata to Drone if it acts on some instrumentable dep
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n81">
+    <node id="n78">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="30.0" x="765.1720951658314" y="2790.4152907133175"/>
@@ -1433,7 +1381,7 @@ adds PORT and DEPLOYMENT metadata to Drone if it acts on some instrumentable dep
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n82">
+    <node id="n79">
       <data key="d4"/>
       <data key="d6">
         <y:UMLNoteNode>
@@ -1454,106 +1402,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:UMLNoteNode>
       </data>
     </node>
-    <node id="n83">
-      <data key="d6">
-        <y:ShapeNode>
-          <y:Geometry height="30.0" width="30.0" x="208.4805032912172" y="188.1562307772857"/>
-          <y:Fill color="#FFFF00" transparent="false"/>
-          <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" modelName="custom" textColor="#000000" visible="true" width="304.650390625" x="-323.7144257305505" y="8.03125">ExecutionServiceCreator#createExecutionService<y:LabelModel>
-              <y:SmartNodeLabelModel distance="4.0"/>
-            </y:LabelModel>
-            <y:ModelParameter>
-              <y:SmartNodeLabelModelParameter labelRatioX="0.5" labelRatioY="0.5" nodeRatioX="-0.5" nodeRatioY="0.5" offsetX="-19.064035105550488" offsetY="-4.0" upX="0.0" upY="-1.0"/>
-            </y:ModelParameter>
-          </y:NodeLabel>
-          <y:Shape type="ellipse"/>
-        </y:ShapeNode>
-      </data>
-    </node>
-    <node id="n84">
-      <data key="d6">
-        <y:ShapeNode>
-          <y:Geometry height="30.0" width="30.0" x="301.26906900124357" y="281.48889691902457"/>
-          <y:Fill color="#FFFF00" transparent="false"/>
-          <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" modelName="custom" textColor="#000000" visible="true" width="207.619140625" x="-219.4814453125" y="8.03125">ToolRegistrar#createToolRegistry<y:LabelModel>
-              <y:SmartNodeLabelModel distance="4.0"/>
-            </y:LabelModel>
-            <y:ModelParameter>
-              <y:SmartNodeLabelModelParameter labelRatioX="0.5" labelRatioY="0.5" nodeRatioX="-0.5" nodeRatioY="0.5" offsetX="-11.8623046875" offsetY="-4.0" upX="0.0" upY="-1.0"/>
-            </y:ModelParameter>
-          </y:NodeLabel>
-          <y:Shape type="ellipse"/>
-        </y:ShapeNode>
-      </data>
-    </node>
-    <node id="n85">
-      <data key="d6">
-        <y:ShapeNode>
-          <y:Geometry height="30.0" width="30.0" x="496.0514715685198" y="236.8026310224326"/>
-          <y:Fill color="#FFCC00" transparent="false"/>
-          <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" modelName="custom" textColor="#000000" visible="true" width="100.3984375" x="39.68359375" y="6.015625">(A) ToolRegistry<y:LabelModel>
-              <y:SmartNodeLabelModel distance="4.0"/>
-            </y:LabelModel>
-            <y:ModelParameter>
-              <y:SmartNodeLabelModelParameter labelRatioX="-0.5" labelRatioY="0.0" nodeRatioX="0.5" nodeRatioY="0.0" offsetX="9.68359375" offsetY="0.0" upX="0.0" upY="-1.0"/>
-            </y:ModelParameter>
-          </y:NodeLabel>
-          <y:Shape type="roundrectangle"/>
-        </y:ShapeNode>
-      </data>
-    </node>
-    <edge id="e0" source="n1" target="n0">
-      <data key="d9"><![CDATA[ManagerStarted]]></data>
-      <data key="d10">
-        <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-          <y:EdgeLabel alignment="center" configuration="AutoFlippingLabel" distance="2.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" modelName="custom" preferredPlacement="anywhere" ratio="0.5" textColor="#000000" visible="true" width="100.9140625" x="55.0693834404566" y="10.725798685962708">ManagerStarted<y:LabelModel>
-              <y:SmartEdgeLabelModel autoRotationEnabled="false" defaultAngle="0.0" defaultDistance="10.0"/>
-            </y:LabelModel>
-            <y:ModelParameter>
-              <y:SmartEdgeLabelModelParameter angle="6.283185307179586" distance="60.27625339215825" distanceToCenter="true" position="left" ratio="0.6827615604211916" segment="-1"/>
-            </y:ModelParameter>
-            <y:PreferredPlacementDescriptor angle="0.0" angleOffsetOnRightSide="0" angleReference="absolute" angleRotationOnRightSide="co" distance="-1.0" frozen="true" placement="anywhere" side="anywhere" sideReference="relative_to_edge_flow"/>
-          </y:EdgeLabel>
-          <y:BendStyle smoothed="false"/>
-        </y:PolyLineEdge>
-      </data>
-    </edge>
-    <edge id="e1" source="n0" target="n2">
-      <data key="d10">
-        <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-          <y:EdgeLabel alignment="center" configuration="AutoFlippingLabel" distance="2.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" modelName="custom" preferredPlacement="anywhere" ratio="0.5" textColor="#000000" visible="true" width="122.998046875" x="38.2710783703686" y="0.8403463387203445">ArquillianDescriptor<y:LabelModel>
-              <y:SmartEdgeLabelModel autoRotationEnabled="false" defaultAngle="0.0" defaultDistance="10.0"/>
-            </y:LabelModel>
-            <y:ModelParameter>
-              <y:SmartEdgeLabelModelParameter angle="6.283185307179586" distance="61.74704775911276" distanceToCenter="true" position="left" ratio="0.8451567156543605" segment="-1"/>
-            </y:ModelParameter>
-            <y:PreferredPlacementDescriptor angle="0.0" angleOffsetOnRightSide="0" angleReference="absolute" angleRotationOnRightSide="co" distance="-1.0" frozen="true" placement="anywhere" side="anywhere" sideReference="relative_to_edge_flow"/>
-          </y:EdgeLabel>
-          <y:BendStyle smoothed="false"/>
-        </y:PolyLineEdge>
-      </data>
-    </edge>
-    <edge id="e2" source="n83" target="n4">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="343.2268296568079" y="177.81618644955216"/>
-          </y:Path>
-          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="e3" source="n3" target="n5">
+    <edge id="e0" source="n1" target="n2">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -1562,7 +1411,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e4" source="n3" target="n6">
+    <edge id="e1" source="n1" target="n3">
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -1580,7 +1429,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e5" source="n6" target="n7">
+    <edge id="e2" source="n3" target="n4">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -1589,7 +1438,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e6" source="n6" target="n8">
+    <edge id="e3" source="n3" target="n5">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -1598,7 +1447,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e7" source="n6" target="n9">
+    <edge id="e4" source="n3" target="n6">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -1607,7 +1456,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e8" source="n6" target="n10">
+    <edge id="e5" source="n3" target="n7">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -1616,7 +1465,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e9" source="n6" target="n11">
+    <edge id="e6" source="n3" target="n8">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
@@ -1627,7 +1476,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e10" source="n6" target="n12">
+    <edge id="e7" source="n3" target="n9">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
@@ -1638,7 +1487,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e11" source="n6" target="n13">
+    <edge id="e8" source="n3" target="n10">
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -1656,7 +1505,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e12" source="n13" target="n14">
+    <edge id="e9" source="n10" target="n11">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -1665,7 +1514,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e13" source="n13" target="n15">
+    <edge id="e10" source="n10" target="n12">
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -1683,7 +1532,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e14" source="n15" target="n16">
+    <edge id="e11" source="n12" target="n13">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -1692,7 +1541,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e15" source="n15" target="n17">
+    <edge id="e12" source="n12" target="n14">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -1701,7 +1550,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e16" source="n15" target="n18">
+    <edge id="e13" source="n12" target="n15">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -1710,7 +1559,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e17" source="n15" target="n19">
+    <edge id="e14" source="n12" target="n16">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -1719,7 +1568,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e18" source="n15" target="n20">
+    <edge id="e15" source="n12" target="n17">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -1728,7 +1577,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e19" source="n21" target="n22">
+    <edge id="e16" source="n18" target="n19">
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -1746,7 +1595,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e20" source="n23" target="n24">
+    <edge id="e17" source="n20" target="n21">
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -1764,7 +1613,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e21" source="n24" target="n25">
+    <edge id="e18" source="n21" target="n22">
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -1782,7 +1631,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e22" source="n24" target="n26">
+    <edge id="e19" source="n21" target="n23">
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -1792,7 +1641,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e23" source="n26" target="n27">
+    <edge id="e20" source="n23" target="n24">
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -1810,7 +1659,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e24" source="n27" target="n28">
+    <edge id="e21" source="n24" target="n25">
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -1828,7 +1677,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e25" source="n28" target="n29">
+    <edge id="e22" source="n25" target="n26">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -1837,7 +1686,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e26" source="n28" target="n30">
+    <edge id="e23" source="n25" target="n27">
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -1855,7 +1704,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e27" source="n31" target="n30">
+    <edge id="e24" source="n28" target="n27">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -1864,7 +1713,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e28" source="n32" target="n33">
+    <edge id="e25" source="n29" target="n30">
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -1882,7 +1731,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e29" source="n34" target="n33">
+    <edge id="e26" source="n31" target="n30">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -1891,7 +1740,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e30" source="n35" target="n36">
+    <edge id="e27" source="n32" target="n33">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -1910,7 +1759,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e31" source="n36" target="n37">
+    <edge id="e28" source="n33" target="n34">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -1930,7 +1779,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e32" source="n37" target="n38">
+    <edge id="e29" source="n34" target="n35">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -1949,7 +1798,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e33" source="n39" target="n38">
+    <edge id="e30" source="n36" target="n35">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -1958,7 +1807,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e34" source="n40" target="n41">
+    <edge id="e31" source="n37" target="n38">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -1977,7 +1826,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e35" source="n41" target="n42">
+    <edge id="e32" source="n38" target="n39">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -1997,7 +1846,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e36" source="n41" target="n43">
+    <edge id="e33" source="n38" target="n40">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2016,7 +1865,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e37" source="n43" target="n44">
+    <edge id="e34" source="n40" target="n41">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2035,7 +1884,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e38" source="n43" target="n45">
+    <edge id="e35" source="n40" target="n42">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2054,7 +1903,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e39" source="n35" target="n46">
+    <edge id="e36" source="n32" target="n43">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2073,7 +1922,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e40" source="n47" target="n48">
+    <edge id="e37" source="n44" target="n45">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2092,7 +1941,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e41" source="n48" target="n49">
+    <edge id="e38" source="n45" target="n46">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2111,7 +1960,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e42" source="n48" target="n50">
+    <edge id="e39" source="n45" target="n47">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2130,7 +1979,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e43" source="n51" target="n52">
+    <edge id="e40" source="n48" target="n49">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2149,7 +1998,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e44" source="n52" target="n53">
+    <edge id="e41" source="n49" target="n50">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2169,7 +2018,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e45" source="n53" target="n54">
+    <edge id="e42" source="n50" target="n51">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2188,7 +2037,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e46" source="n55" target="n54">
+    <edge id="e43" source="n52" target="n51">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -2197,7 +2046,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e47" source="n49" target="n56">
+    <edge id="e44" source="n46" target="n53">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -2214,7 +2063,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e48" source="n56" target="n57">
+    <edge id="e45" source="n53" target="n54">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2233,7 +2082,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e49" source="n57" target="n58">
+    <edge id="e46" source="n54" target="n55">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2252,7 +2101,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e50" source="n57" target="n59">
+    <edge id="e47" source="n54" target="n56">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2272,7 +2121,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e51" source="n62" target="n63">
+    <edge id="e48" source="n59" target="n60">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2291,7 +2140,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e52" source="n63" target="n64">
+    <edge id="e49" source="n60" target="n61">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2310,7 +2159,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e53" source="n64" target="n65">
+    <edge id="e50" source="n61" target="n62">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2329,7 +2178,7 @@ have no deployments but container can run anyway<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e54" source="n63" target="n66">
+    <edge id="e51" source="n60" target="n63">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2352,7 +2201,7 @@ this branch is treated firstly<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e55" source="n66" target="n67">
+    <edge id="e52" source="n63" target="n64">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2373,7 +2222,7 @@ this branch is treated firstly<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e56" source="n66" target="n68">
+    <edge id="e53" source="n63" target="n65">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2392,7 +2241,7 @@ this branch is treated firstly<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e57" source="n61" target="n62">
+    <edge id="e54" source="n58" target="n59">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2412,7 +2261,7 @@ this branch is treated firstly<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e58" source="n60" target="n61">
+    <edge id="e55" source="n57" target="n58">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2432,7 +2281,7 @@ this branch is treated firstly<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e59" source="n69" target="n70">
+    <edge id="e56" source="n66" target="n67">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2451,7 +2300,7 @@ this branch is treated firstly<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e60" source="n71" target="n72">
+    <edge id="e57" source="n68" target="n69">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2470,7 +2319,7 @@ this branch is treated firstly<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e61" source="n73" target="n74">
+    <edge id="e58" source="n70" target="n71">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2489,7 +2338,7 @@ this branch is treated firstly<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e62" source="n74" target="n75">
+    <edge id="e59" source="n71" target="n72">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2508,7 +2357,7 @@ this branch is treated firstly<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e63" source="n74" target="n76">
+    <edge id="e60" source="n71" target="n73">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2527,7 +2376,7 @@ this branch is treated firstly<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e64" source="n74" target="n77">
+    <edge id="e61" source="n71" target="n74">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2546,7 +2395,7 @@ this branch is treated firstly<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e65" source="n77" target="n78">
+    <edge id="e62" source="n74" target="n75">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2565,7 +2414,7 @@ this branch is treated firstly<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e66" source="n78" target="n80">
+    <edge id="e63" source="n75" target="n77">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2584,7 +2433,7 @@ this branch is treated firstly<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e67" source="n78" target="n79">
+    <edge id="e64" source="n75" target="n76">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2603,7 +2452,7 @@ this branch is treated firstly<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e68" source="n28" target="n81">
+    <edge id="e65" source="n25" target="n78">
       <data key="d9"><![CDATA[ManagerStarted]]></data>
       <data key="d10">
         <y:PolyLineEdge>
@@ -2622,7 +2471,7 @@ this branch is treated firstly<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e69" source="n82" target="n81">
+    <edge id="e66" source="n79" target="n78">
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -2641,75 +2490,18 @@ this branch is treated firstly<y:LabelModel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e70" source="n2" target="n83">
-      <data key="d9"><![CDATA[ManagerStarted]]></data>
+    <edge id="e67" source="n0" target="n1">
+      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
-          <y:EdgeLabel alignment="center" configuration="AutoFlippingLabel" distance="2.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" modelName="custom" preferredPlacement="anywhere" ratio="0.5" textColor="#000000" visible="true" width="114.6484375" x="46.506944619397984" y="6.485022030000948">SpaceliftBootstrap<y:LabelModel>
+          <y:EdgeLabel alignment="center" configuration="AutoFlippingLabel" distance="2.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" modelName="custom" preferredPlacement="anywhere" ratio="0.5" textColor="#000000" visible="true" width="122.998046875" x="61.47017832772485" y="14.523607422260795">ArquillianDescriptor<y:LabelModel>
               <y:SmartEdgeLabelModel autoRotationEnabled="false" defaultAngle="0.0" defaultDistance="10.0"/>
             </y:LabelModel>
             <y:ModelParameter>
-              <y:SmartEdgeLabelModelParameter angle="6.283185307179586" distance="60.27625339215825" distanceToCenter="true" position="left" ratio="1.0" segment="-1"/>
-            </y:ModelParameter>
-            <y:PreferredPlacementDescriptor angle="0.0" angleOffsetOnRightSide="0" angleReference="absolute" angleRotationOnRightSide="co" distance="-1.0" frozen="true" placement="anywhere" side="anywhere" sideReference="relative_to_edge_flow"/>
-          </y:EdgeLabel>
-          <y:BendStyle smoothed="false"/>
-        </y:PolyLineEdge>
-      </data>
-    </edge>
-    <edge id="e71" source="n83" target="n84">
-      <data key="d9"><![CDATA[ManagerStarted]]></data>
-      <data key="d10">
-        <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-          <y:EdgeLabel alignment="center" configuration="AutoFlippingLabel" distance="2.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" modelName="custom" preferredPlacement="anywhere" ratio="0.5" textColor="#000000" visible="true" width="165.443359375" x="53.51321070224054" y="9.850406084734317">ExecutionServiceInitialized<y:LabelModel>
-              <y:SmartEdgeLabelModel autoRotationEnabled="false" defaultAngle="0.0" defaultDistance="10.0"/>
-            </y:LabelModel>
-            <y:ModelParameter>
-              <y:SmartEdgeLabelModelParameter angle="6.283185307179586" distance="83.33460247581257" distanceToCenter="true" position="left" ratio="13.950974289139973" segment="-1"/>
-            </y:ModelParameter>
-            <y:PreferredPlacementDescriptor angle="0.0" angleOffsetOnRightSide="0" angleReference="absolute" angleRotationOnRightSide="co" distance="-1.0" frozen="true" placement="anywhere" side="anywhere" sideReference="relative_to_edge_flow"/>
-          </y:EdgeLabel>
-          <y:BendStyle smoothed="false"/>
-        </y:PolyLineEdge>
-      </data>
-    </edge>
-    <edge id="e72" source="n84" target="n3">
-      <data key="d9"><![CDATA[ManagerStarted]]></data>
-      <data key="d10">
-        <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-          <y:EdgeLabel alignment="center" configuration="AutoFlippingLabel" distance="2.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="17.96875" modelName="custom" preferredPlacement="anywhere" ratio="0.5" textColor="#000000" visible="true" width="136.849609375" x="39.767014800615925" y="10.238250003711983">ToolRegistryInitialized<y:LabelModel>
-              <y:SmartEdgeLabelModel autoRotationEnabled="false" defaultAngle="0.0" defaultDistance="10.0"/>
-            </y:LabelModel>
-            <y:ModelParameter>
-              <y:SmartEdgeLabelModelParameter angle="6.283185307179586" distance="60.27625339215825" distanceToCenter="true" position="left" ratio="1.0" segment="-1"/>
-            </y:ModelParameter>
-            <y:PreferredPlacementDescriptor angle="0.0" angleOffsetOnRightSide="0" angleReference="absolute" angleRotationOnRightSide="co" distance="-1.0" frozen="true" placement="anywhere" side="anywhere" sideReference="relative_to_edge_flow"/>
-          </y:EdgeLabel>
-          <y:BendStyle smoothed="false"/>
-        </y:PolyLineEdge>
-      </data>
-    </edge>
-    <edge id="e73" source="n84" target="n85">
-      <data key="d10">
-        <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-          <y:EdgeLabel alignment="center" configuration="AutoFlippingLabel" distance="2.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="custom" preferredPlacement="anywhere" ratio="0.5" textColor="#000000" visible="true" width="4.0" x="85.59891824963688" y="-81.46381919262836">
-            <y:LabelModel>
-              <y:SmartEdgeLabelModel autoRotationEnabled="false" defaultAngle="0.0" defaultDistance="10.0"/>
-            </y:LabelModel>
-            <y:ModelParameter>
-              <y:SmartEdgeLabelModelParameter angle="6.283185307179586" distance="57.863969531337226" distanceToCenter="true" position="left" ratio="0.6078192137361335" segment="-1"/>
+              <y:SmartEdgeLabelModelParameter angle="6.283185307179586" distance="71.65515477300536" distanceToCenter="true" position="left" ratio="0.8546929129866787" segment="-1"/>
             </y:ModelParameter>
             <y:PreferredPlacementDescriptor angle="0.0" angleOffsetOnRightSide="0" angleReference="absolute" angleRotationOnRightSide="co" distance="-1.0" frozen="true" placement="anywhere" side="anywhere" sideReference="relative_to_edge_flow"/>
           </y:EdgeLabel>

@@ -24,12 +24,10 @@ import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.task.CreateKeyStoreTask;
 import org.arquillian.droidium.container.utils.AndroidIdentifierGenerator;
 import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
-import org.arquillian.spacelift.execution.Tasks;
-import org.arquillian.spacelift.execution.impl.DefaultExecutionServiceFactory;
+import org.arquillian.spacelift.Spacelift;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -50,11 +48,6 @@ public class KeyStoreCreatorTestCase {
     private AndroidSDK androidSDK;
 
     private File keyStoreToCreate;
-
-    @BeforeClass
-    public static void initializateExecutionService() {
-        Tasks.setDefaultExecutionServiceFactory(new DefaultExecutionServiceFactory());
-    }
 
     @Before
     public void before() {
@@ -82,7 +75,7 @@ public class KeyStoreCreatorTestCase {
 
     @Test
     public void createKeyStoreTest() {
-        Tasks.chain(keyStoreToCreate, CreateKeyStoreTask.class).sdk(androidSDK).execute().await();
+        Spacelift.task(keyStoreToCreate, CreateKeyStoreTask.class).sdk(androidSDK).execute().await();
         Assert.assertTrue(keyStoreToCreate.exists());
     }
 }

@@ -25,7 +25,7 @@ ext {
     defaultRemoteVideoDir = "/sdcard/"
     defaultAndroidBuildTools = "22.1.2"
 
-    droidiumVersion = "1.0.0.Alpha6"
+    droidiumVersion = "1.0.0.Beta1-SNAPSHOT"
 
     // downloads from GitHub
     selendroidOrganization = "selendroid"

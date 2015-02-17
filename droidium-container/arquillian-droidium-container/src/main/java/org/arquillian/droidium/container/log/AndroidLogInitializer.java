@@ -35,13 +35,13 @@ import org.arquillian.droidium.container.configuration.AndroidContainerConfigura
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.spi.event.AndroidBridgeTerminated;
 import org.arquillian.droidium.container.spi.event.AndroidDeviceReady;
+import org.arquillian.spacelift.Spacelift;
 import org.arquillian.spacelift.execution.Execution;
 import org.arquillian.spacelift.execution.ExecutionException;
-import org.arquillian.spacelift.execution.Task;
-import org.arquillian.spacelift.execution.Tasks;
 import org.arquillian.spacelift.process.Command;
 import org.arquillian.spacelift.process.CommandBuilder;
-import org.arquillian.spacelift.process.impl.CommandTool;
+import org.arquillian.spacelift.task.Task;
+import org.arquillian.spacelift.task.os.CommandTool;
 import org.jboss.arquillian.container.spi.context.annotation.ContainerScoped;
 import org.jboss.arquillian.core.api.Instance;
 import org.jboss.arquillian.core.api.InstanceProducer;
@@ -79,7 +79,7 @@ public class AndroidLogInitializer {
             logcatHelper.set(new LogcatHelper(configuration.get(), androidDevice.get()));
         }
 
-        this.logcatExecution = Tasks.prepare(LogcatReader.class)
+        this.logcatExecution = Spacelift.task(LogcatReader.class)
             .androidSdk(androidSDK.get())
             .containerConfiguration(configuration.get())
             .androidDevice(androidDevice.get())
@@ -258,7 +258,7 @@ public class AndroidLogInitializer {
                     .parameter("ps")
                     .build();
 
-                List<String> runningProcesses = Tasks.prepare(CommandTool.class).command(command).execute().await().output();
+                List<String> runningProcesses = Spacelift.task(CommandTool.class).command(command).execute().await().output();
 
                 Pattern pattern = Pattern
                     .compile(".*?\\s+([0-9]+)\\s+[0-9]+\\s+[0-9]+\\s+[0-9]+\\s+[0-9a-f]+\\s+[0-9a-f]+\\s.?\\s(.*)");

@@ -21,8 +21,8 @@ import java.io.File;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.container.configuration.Validate;
 import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
-import org.arquillian.spacelift.execution.Task;
-import org.arquillian.spacelift.execution.Tasks;
+import org.arquillian.spacelift.Spacelift;
+import org.arquillian.spacelift.task.Task;
 
 /**
  * Checks if some keystore from {@link DroidiumPlatformConfiguration} is valid, if not, it is created.
@@ -49,7 +49,7 @@ public class CheckKeyStoreTask extends Task<Object, Void> {
         if (!Validate.isReadable(new File(androidSDK.getPlatformConfiguration().getKeystore()))) {
             File defaultKeyStore = new File(getDefaultKeyStorePath());
             if (!Validate.isReadable(defaultKeyStore)) {
-                Tasks.prepare(CreateKeyStoreTask.class).keyStoreToCreate(defaultKeyStore).sdk(androidSDK).execute().await();
+                Spacelift.task(CreateKeyStoreTask.class).keyStoreToCreate(defaultKeyStore).sdk(androidSDK).execute().await();
             } else {
                 androidSDK.getPlatformConfiguration().setProperty("keystore", defaultKeyStore.getAbsolutePath());
             }
