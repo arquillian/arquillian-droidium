@@ -29,8 +29,8 @@ ext {
 
     // downloads from GitHub
     selendroidOrganization = "selendroid"
-    selendroidVersion = "0.13.0"
-    selendroidCommit = "0.13.0"
+    selendroidVersion = "0.14.0"
+    selendroidCommit = "0.14.0"
 
     // propagates to poms
     recorderVersion = "1.0.0.Beta1"
@@ -231,6 +231,13 @@ spacelift {
 
             postActions {
                 if (! new File(project.spacelift.workspace, ".repository/io/selendroid/selendroid/${project.selendroidVersion}").exists()) {
+
+                    Tasks.prepare(MavenExecutor)
+                        .goal("install:install-file")
+                        .properties("file=${selendroid.home}/third-party/cordova-3.7.0/classes.jar",
+                            "groupId=org.apache.cordova", "artifactId=cordova", "version=3.7.0", "classifier=android", "packaging=jar")
+                        .execute().await()
+
                     Tasks.prepare(MavenExecutor).pom("${home.absolutePath}/pom.xml")
                         .goal('install')
                         .property('maven.test.skip=true')

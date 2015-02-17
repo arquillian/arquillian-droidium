@@ -33,7 +33,7 @@
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
 
-        <selendroid.test.app>selendroid-test-app-0.13.0.apk</selendroid.test.app>
+        <selendroid.test.app>selendroid-test-app-0.14.0.apk</selendroid.test.app>
     </properties>
 
     <!-- Dependency Management -->

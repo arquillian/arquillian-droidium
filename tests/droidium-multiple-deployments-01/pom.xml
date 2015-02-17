@@ -36,8 +36,9 @@
 
         <android.avd.name>testingEmulator</android.avd.name>
         <android.emulator.options />
-        <selendroid.test.app>selendroid-test-app-0.13.0.apk</selendroid.test.app>
-        <selendroid.server.apk>selendroid-server-0.13.0.apk</selendroid.server.apk>
+        <selendroid.test.app>selendroid-test-app-0.14.0.apk</selendroid.test.app>
+        <selendroid.server.apk>selendroid-server-0.14.0.apk</selendroid.server.apk>
+        <selendroid.driver.apk>android-driver-0.14.0.apk</selendroid.driver.apk>
         <aerogear.android.test.app>aerogear-test-android.apk</aerogear.android.test.app>
     </properties>
 
@@ -146,6 +147,7 @@
                     <systemPropertyVariables>
                         <selendroid.test.app>${selendroid.test.app}</selendroid.test.app>
                         <selendroid.server.apk>${selendroid.server.apk}</selendroid.server.apk>
+                        <selendroid.driver.apk>${selendroid.driver.apk}</selendroid.driver.apk>
                         <aerogear.android.test.app>${aerogear.android.test.app}</aerogear.android.test.app>
                     </systemPropertyVariables>
                 </configuration>

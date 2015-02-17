@@ -22,6 +22,7 @@
 
     <extension qualifier="droidium-native">
         <property name="serverApk">${selendroid.server.apk}</property>
+        <property name="driverApk">${selendroid.driver.apk}</property>
     </extension>
 
     <extension qualifier="webdriver">
