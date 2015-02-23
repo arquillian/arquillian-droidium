@@ -17,6 +17,8 @@
 package org.arquillian.droidium.container.configuration.target;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
 import org.arquillian.droidium.container.configuration.AndroidContainerConfigurationException;
@@ -27,6 +29,8 @@ import org.jboss.arquillian.core.spi.Validate;
  *
  */
 public class TargetPicker {
+
+    private static final Logger logger = Logger.getLogger(TargetPicker.class.getName());
 
     private final TargetRegistry targetRegistry;
 
@@ -43,7 +47,10 @@ public class TargetPicker {
     public Target pick() {
 
         if (targetRegistry.getTargets().isEmpty()) {
-            throw new AndroidContainerConfigurationException("There are no targets to choose from!");
+            logger.log(Level.INFO, "There are no targets to choose from! It means you are not able to deal with AVD creation "
+                + ", you are supposed to work only with physical Android device and you can deal only with Droidium container "
+                + "and not with any Droidium extensions using instrumentation.");
+            return null;
         }
 
         String target = configuration.getTarget();
@@ -88,7 +95,9 @@ public class TargetPicker {
 
         // we still failed to get the target
         if (pickedTarget == null) {
-            throw new AndroidContainerConfigurationException("Unable to resolve target: " + target);
+            logger.log(Level.INFO, "Unable to resolve target: {0}. You can operate only on a "
+                + "real physical device and you can not deal with emulators.", new Object[] { target });
+            return null;
         }
 
         // setting what we just resolved
@@ -96,34 +105,37 @@ public class TargetPicker {
 
         List<TagAbiPair> availableTagAbis = pickedTarget.getAbis();
 
-        if (availableTagAbis.isEmpty()) {
-            throw new AndroidContainerConfigurationException("There are not ABIs for the given platform!");
-        }
+        if (!availableTagAbis.isEmpty()) {
 
-        TagAbiPair resolvedTagAbiPair = TagAbiPair.construct(configuration.getAbi());
+            TagAbiPair resolvedTagAbiPair = TagAbiPair.construct(configuration.getAbi());
 
-        // you have put no abi into configuration
-        // or it does not have format "tag/abi"
-        if (resolvedTagAbiPair == null) {
-            // when you did not set abi in configuration, it will be
-            // "default/null" which resolves to TagAbi pair of Tag.DEFAULT, ABI.NOT_DEFINED
-            resolvedTagAbiPair = TagAbiPair.construct("default/" + configuration.getAbi());
-        }
-
-        // there is such pair for the given target
-        if (availableTagAbis.contains(resolvedTagAbiPair)) {
-            configuration.setAbi(resolvedTagAbiPair.toString());
-        } else {
-            // lets choose default
-            List<TagAbiPair> defaultAbis = pickedTarget.getDefaultAbis();
-
-            // there are not any default abis, so we have to pick whatever we have
-            if (defaultAbis.isEmpty()) {
-                configuration.setAbi(availableTagAbis.iterator().next().toString());
-            } else {
-                // otherwise pick some abi from these default ones
-                configuration.setAbi(defaultAbis.iterator().next().toString());
+            // you have put no abi into configuration
+            // or it does not have format "tag/abi"
+            if (resolvedTagAbiPair == null) {
+                // when you did not set abi in configuration, it will be
+                // "default/null" which resolves to TagAbi pair of Tag.DEFAULT, ABI.NOT_DEFINED
+                resolvedTagAbiPair = TagAbiPair.construct("default/" + configuration.getAbi());
             }
+
+            // there is such pair for the given target
+            if (availableTagAbis.contains(resolvedTagAbiPair)) {
+                configuration.setAbi(resolvedTagAbiPair.toString());
+            } else {
+                // lets choose default
+                List<TagAbiPair> defaultAbis = pickedTarget.getDefaultAbis();
+
+                // there are not any default abis, so we have to pick whatever we have
+                if (defaultAbis.isEmpty()) {
+                    configuration.setAbi(availableTagAbis.iterator().next().toString());
+                } else {
+                    // otherwise pick some abi from these default ones
+                    configuration.setAbi(defaultAbis.iterator().next().toString());
+                }
+            }
+        } else {
+            logger.log(Level.INFO, "Resolved target {0} does not contain any ABIs so you can operate only "
+                + "on real physical devices and you can not deal with emulators.", new Object[] { pickedTarget.getName() });
+            return null;
         }
 
         return pickedTarget;

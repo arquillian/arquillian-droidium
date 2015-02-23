@@ -129,10 +129,6 @@ class Platform {
             }
         });
 
-        if (platforms.size() == 0) {
-            throw new AndroidContainerConfigurationException("There are not any available platforms found on your system!");
-        }
-
         return platforms;
     }
 

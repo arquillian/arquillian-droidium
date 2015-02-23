@@ -188,17 +188,22 @@ public class AndroidDeviceSelectorImpl implements AndroidDeviceSelector {
             System.out.print(sb.toString());
         }
 
-        if (isInCompactAVDList(compactAndroidListAVDOutput, configuration.getAvdName())) {
-            androidVirtualDeviceAvailable.fire(new AndroidVirtualDeviceAvailable(configuration.getAvdName()));
-        } else if (isInRawAVDList(androidListAVDOutput, configuration.getAvdName())) {
-            logger.log(Level.INFO, "You want to start an emulator backed by AVD of name {0} which seems to be broken. "
-                + "This AVD will be deleted and AVD of the same name with configuration from arquillian.xml "
-                + "will be created and started afterwards.", new Object[] { configuration.getAvdName() });
+        if (androidSDK.get().getPlatformDirectory() != null) {
+            if (isInCompactAVDList(compactAndroidListAVDOutput, configuration.getAvdName())) {
+                androidVirtualDeviceAvailable.fire(new AndroidVirtualDeviceAvailable(configuration.getAvdName()));
+            } else if (isInRawAVDList(androidListAVDOutput, configuration.getAvdName())) {
+                logger.log(Level.INFO, "You want to start an emulator backed by AVD of name {0} which seems to be broken. "
+                    + "This AVD will be deleted and AVD of the same name with configuration from arquillian.xml "
+                    + "will be created and started afterwards.", new Object[] { configuration.getAvdName() });
 
-            androidDeviceDelete.fire(new AndroidVirtualDeviceDelete());
-            androidVirtualDeviceCreate.fire(new AndroidVirtualDeviceCreate());
+                androidDeviceDelete.fire(new AndroidVirtualDeviceDelete());
+                androidVirtualDeviceCreate.fire(new AndroidVirtualDeviceCreate());
+            } else {
+                androidVirtualDeviceCreate.fire(new AndroidVirtualDeviceCreate());
+            }
         } else {
-            androidVirtualDeviceCreate.fire(new AndroidVirtualDeviceCreate());
+            throw new RuntimeException("It seems your Android SDK does not contain any plaform. If you want to use emulators, "
+                + "you have to have some platform installed, otherwise you can use only physical devices.");
         }
 
     }

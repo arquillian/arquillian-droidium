@@ -32,7 +32,9 @@ package org.arquillian.droidium.container.configuration;
 
 import java.io.File;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.arquillian.droidium.container.configuration.target.TargetParser;
 import org.arquillian.droidium.container.configuration.target.TargetPicker;
@@ -85,7 +87,12 @@ public final class AndroidSDK {
 
         this.platformConfiguration = platformConfiguration;
 
-        currentPlatform = Platform.getAvailablePlatforms(platformConfiguration.getAndroidHome()).iterator().next();
+        List<Platform> platforms = Platform.getAvailablePlatforms(platformConfiguration.getAndroidHome());
+
+        if (platforms.size() > 0) {
+            currentPlatform = platforms.iterator().next();
+        }
+
         targetRegistry = new TargetRegistry();
     }
 
@@ -165,8 +172,6 @@ public final class AndroidSDK {
 
         File sdkPath = new File(getPlatformConfiguration().getAndroidHome());
 
-        String platformDirName = getPlatformDirectory().getName();
-
         File[] possiblePaths = { new File(sdkPath, MessageFormat.format("tools/{0}", tool)),
             new File(sdkPath, MessageFormat.format("tools/{0}.exe", tool)),
             new File(sdkPath, MessageFormat.format("tools/{0}.bat", tool)),
@@ -179,20 +184,38 @@ public final class AndroidSDK {
             new File(sdkPath, MessageFormat.format("{0}/tools/{1}", PLATFORMS_FOLDER_NAME, tool)),
             new File(sdkPath, MessageFormat.format("{0}/tools/{1}.exe", PLATFORMS_FOLDER_NAME, tool)),
             new File(sdkPath, MessageFormat.format("{0}/tools/{1}.bat", PLATFORMS_FOLDER_NAME, tool)),
-            new File(sdkPath, MessageFormat.format("{0}/tools/{1}", platformDirName, tool)),
-            new File(sdkPath, MessageFormat.format("{0}/tools/{1}.exe", platformDirName, tool)),
-            new File(sdkPath, MessageFormat.format("{0}/tools/{1}.bat", platformDirName, tool)),
             new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}", PLATFORMS_FOLDER_NAME, tool)),
             new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}.exe", PLATFORMS_FOLDER_NAME, tool)),
             new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}.bat", PLATFORMS_FOLDER_NAME, tool)),
-            new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}", platformDirName, tool)),
-            new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}.exe", platformDirName, tool)),
-            new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}.bat", platformDirName, tool)),
             new File(sdkPath, MessageFormat.format("{0}/{1}", PLATFORM_TOOLS_FOLDER_NAME, tool)),
             new File(sdkPath, MessageFormat.format("{0}/{1}.exe", PLATFORM_TOOLS_FOLDER_NAME, tool)),
-            new File(sdkPath, MessageFormat.format("{0}/{1}.bat", PLATFORM_TOOLS_FOLDER_NAME, tool)), };
+            new File(sdkPath, MessageFormat.format("{0}/{1}.bat", PLATFORM_TOOLS_FOLDER_NAME, tool)),
+        };
 
-        for (File candidate : possiblePaths) {
+        List<File> paths = new ArrayList<File>(Arrays.asList(possiblePaths));
+
+        File platformDir = getPlatformDirectory();
+
+        String platformDirName = null;
+
+        if (platformDir != null) {
+            platformDirName = platformDir.getName();
+        }
+
+        if (platformDirName != null) {
+
+            File[] possiblePlatformDirPaths = {
+                new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}", platformDirName, tool)),
+                new File(sdkPath, MessageFormat.format("{0}/tools/{1}", platformDirName, tool)),
+                new File(sdkPath, MessageFormat.format("{0}/tools/{1}.exe", platformDirName, tool)),
+                new File(sdkPath, MessageFormat.format("{0}/tools/{1}.bat", platformDirName, tool)),
+                new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}.exe", platformDirName, tool)),
+                new File(sdkPath, MessageFormat.format("{0}/tools/lib/{1}.bat", platformDirName, tool)) };
+
+            paths.addAll(Arrays.asList(possiblePlatformDirPaths));
+        }
+
+        for (File candidate : paths) {
             if (candidate.exists() && candidate.isFile() && candidate.canExecute()) {
                 return candidate.getAbsolutePath();
             }
@@ -259,27 +282,39 @@ public final class AndroidSDK {
 
     /**
      *
-     * @return directory for current platform
+     * @return directory for current platform or null if there is not any platform
      */
     public File getPlatformDirectory() {
-        return currentPlatform.getPath();
+        if (currentPlatform != null) {
+            return currentPlatform.getPath();
+        }
+
+        return null;
     }
 
     private String getBuildTool(String tool) {
 
         File sdkPath = new File(getPlatformConfiguration().getAndroidHome());
 
-        String platformDirName = getPlatformDirectory().getName();
+        File platformDirectory = getPlatformDirectory();
 
-        // look only into android-sdks/platforms/android-{number}/tools/aapt
-        File[] possiblePlatformPaths = {
-            new File(sdkPath, MessageFormat.format("{0}/{1}/tools/{2}", PLATFORMS_FOLDER_NAME, platformDirName, tool)),
-            new File(sdkPath, MessageFormat.format("{0}/{1}/tools/{2}.exe", PLATFORMS_FOLDER_NAME, platformDirName, tool)),
-            new File(sdkPath, MessageFormat.format("{0}/{1}/tools/{2}.bat", PLATFORMS_FOLDER_NAME, platformDirName, tool)) };
+        String platformDirName = null;
 
-        for (File candidate : possiblePlatformPaths) {
-            if (candidate.exists() && candidate.isFile() && candidate.canExecute()) {
-                return candidate.getAbsolutePath();
+        if (platformDirectory != null) {
+            platformDirName = getPlatformDirectory().getName();
+        }
+
+        if (platformDirName != null) {
+            // look only into android-sdks/platforms/android-{number}/tools/aapt
+            File[] possiblePlatformPaths = {
+                new File(sdkPath, MessageFormat.format("{0}/{1}/tools/{2}", PLATFORMS_FOLDER_NAME, platformDirName, tool)),
+                new File(sdkPath, MessageFormat.format("{0}/{1}/tools/{2}.exe", PLATFORMS_FOLDER_NAME, platformDirName, tool)),
+                new File(sdkPath, MessageFormat.format("{0}/{1}/tools/{2}.bat", PLATFORMS_FOLDER_NAME, platformDirName, tool)) };
+
+            for (File candidate : possiblePlatformPaths) {
+                if (candidate.exists() && candidate.isFile() && candidate.canExecute()) {
+                    return candidate.getAbsolutePath();
+                }
             }
         }
 
