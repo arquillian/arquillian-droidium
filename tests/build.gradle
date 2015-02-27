@@ -32,15 +32,10 @@ ext {
     selendroidVersion = "0.14.0"
     selendroidCommit = "0.14.0"
 
-    // propagates to poms
-    recorderVersion = "1.0.0.Beta1"
-    recorderScreenshooterVersion = "1.0.0.Beta1"
-    recorderVideoVersion = "1.0.0.Beta1"
-
     // downloads from GitHub
     recorderOrganization = "arquillian"
-    recorderVersion = "1.0.0.Beta1"
-    recorderCommit = "1.0.0.Beta1"
+    recorderVersion = "1.0.0.Final"
+    recorderCommit = "1.0.0.Final"
 
     spaceliftVersion = "1.0.0.Alpha4"
     coreVersion = "1.1.7.Final"
@@ -171,9 +166,6 @@ spacelift {
                         'version.arquillian.graphene': "${project.grapheneVersion}",
                         'version.selendroid': "${project.selendroidVersion}",
                         'version.selenium': "${project.seleniumVersion}",
-                        'version.recorder' : '${project.recorderVersion}',
-                        'version.screenshooter' : "${project.recorderScreenshooterVersion}",
-                        'version.videorecorder' : "${project.recorderVideoVersion}"
                     ], PomXmlUpdater).dir(dir: project.rootDir, excludes: [ ".ws/**" ]).execute().await()
             }
         }

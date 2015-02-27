@@ -86,7 +86,7 @@
         <version.spacelift>1.0.0.Alpha6</version.spacelift>
 
         <!-- Arquillian Recorder-->
-        <version.recorder>1.0.0.Beta1</version.recorder>
+        <version.recorder>1.0.0.Final</version.recorder>
 
         <!-- Selendroid -->
         <version.selendroid>0.14.0</version.selendroid>
