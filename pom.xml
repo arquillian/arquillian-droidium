@@ -89,7 +89,7 @@
         <version.recorder>1.0.0.Final</version.recorder>
 
         <!-- Selendroid -->
-        <version.selendroid>0.14.0</version.selendroid>
+        <version.selendroid>0.15.0</version.selendroid>
 
         <!-- Other versions -->
         <version.maven.animal.sniffer>1.12</version.maven.animal.sniffer>

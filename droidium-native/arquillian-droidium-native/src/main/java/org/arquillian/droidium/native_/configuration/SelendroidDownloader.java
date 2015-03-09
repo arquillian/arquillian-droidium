@@ -58,14 +58,13 @@ public class SelendroidDownloader {
 
         DroidiumNativeConfiguration configuration = this.configuration.get();
 
-        if (!Validate.isReadable(configuration.getServerApk()) || !Validate.isReadable(configuration.getDriverApk())) {
+        if (!Validate.isReadable(configuration.getServerApk())) {
             configuration.setProperty("serverApk", DroidiumNativeConfiguration.SERVER_HOME);
-            configuration.setProperty("driverApk", DroidiumNativeConfiguration.DRIVER_HOME);
 
-            if (!Validate.isReadable(configuration.getServerApk()) || !Validate.isReadable(configuration.getDriverApk())) {
+            if (!Validate.isReadable(configuration.getServerApk())) {
 
-                logger.info("You must provide a valid path both to Android Server APK and Android driver APK for Arquillian Droidium"
-                    + " native plugin. Please be sure you have the read access to specified files. Both APKs are going to be "
+                logger.info("You must provide a valid path to Selendroid server APK to Arquillian Droidium"
+                    + " native plugin. Please be sure you have the read access to specified file. APK is going to be "
                     + "downloaded for you automatically right now.");
 
                 try {
@@ -82,8 +81,6 @@ public class SelendroidDownloader {
                     DroidiumFileUtils.copyFileToDirectory(new File(unzipped, "/prebuild/selendroid-server-" + DroidiumNativeConfiguration.SELENDROID_VERSION + ".apk"),
                         new File(System.getProperty("user.home") + "/.droidium"));
 
-                    DroidiumFileUtils.copyFileToDirectory(new File(unzipped, "/prebuild/android-driver-app-" + DroidiumNativeConfiguration.SELENDROID_VERSION + ".apk"),
-                        new File(System.getProperty("user.home") + "/.droidium"));
                 } catch (TimeoutExecutionException ex) {
                     throw new TimeoutExecutionException(String.format("Unable to download Selendroid from "
                         + "%s in %s minutes.", SELENDROID_SERVER_URL, DOWNLOAD_TIMEOUT_IN_MINUTES));

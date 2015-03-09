@@ -30,24 +30,16 @@ import org.arquillian.droidium.container.configuration.Validate;
  */
 public class DroidiumNativeConfiguration {
 
-    public static final String SELENDROID_VERSION = "0.14.0";
+    public static final String SELENDROID_VERSION = "0.15.0";
 
     public static final String SERVER_HOME = System.getProperty("user.home") + "/.droidium/selendroid-server-" + SELENDROID_VERSION + ".apk";
 
-    public static final String DRIVER_HOME = System.getProperty("user.home") + "/.droidium/android-driver-app-" + SELENDROID_VERSION + ".apk";
-
     private String serverApk = SERVER_HOME;
-
-    private String driverApk = DRIVER_HOME;
 
     private Map<String, String> properties = new HashMap<String, String>();
 
     public File getServerApk() {
         return new File(getProperty("serverApk", serverApk));
-    }
-
-    public File getDriverApk() {
-        return new File(getProperty("driverApk", driverApk));
     }
 
     /**
@@ -106,7 +98,6 @@ public class DroidiumNativeConfiguration {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("%-40s %s\n", "serverApk", getServerApk()));
-        sb.append(String.format("%-40s %s\n", "driverApk", getDriverApk()));
         return sb.toString();
     }
 }
