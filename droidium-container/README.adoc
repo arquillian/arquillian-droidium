@@ -168,22 +168,8 @@ started and shut down. It treats device management of your emulator or physical 
 and it treats creation of AVD from scratch as well as management of Android SD cards which are used in 
 connection with Android emulator.
 
-=== Web testing
-When you want to test web application (bundled as war/ear and deployed into application container as JBoss AS), 
-you need to use plugin into Android container called *droidium-web* in this repository. Please consult README
-there in order to know more. By this plugin, you can functionaly test your web application via WebDriver 
-API from Selenium.
-
-The basic workflow is very easy. You configure two containers in `arquillian.xml`. The first one is 
-normal application container as JBoss AS, the second one is Android container. After that, you specify 
-`@Deployment` for application container. That application is deployed there and finally you use 
-WebDriver from Arquillian Graphene in order to do functional tests on your application but that application 
-is viewed not from your desktop browser but from browser in you Android device.
-
-Please consult README in *droidium-web* directory in order to get more information how to bootstrap your 
-functional testing on Android platform.
-
 === Native testing
+
 On the other hand, you can test your native Android application by writing some functional tests for it.
 You have to use *droidium-native* plugin in this repository. Details how to test functionally your native 
 Android application will be given in the README located in that plugin.

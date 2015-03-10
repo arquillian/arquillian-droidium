@@ -44,7 +44,7 @@ Example project which show various usecases of Droidium are the part of this pro
 
 https://github.com/arquillian/arquillian-droidium/tree/master/tests[Droidium demos]
 
-You can generate your own project via archetypes both for native and web testing. They can be found here
+You can generate your own project via archetypes. They can be found here
 
 https://github.com/arquillian/arquillian-droidium/tree/master/archetypes[Droidium archetypes]
 
@@ -52,11 +52,11 @@ https://github.com/arquillian/arquillian-droidium/tree/master/archetypes[Droidiu
 
 `mvn clean install`
 
-=== How to use Android container web and native testing?
+=== How to use Android container native application testing?
 
 Please find respective README and configuration documentation in its respective directory.
-You can find archetypes for native and web testing in archetype directory so you can boostrap your 
-testing process significantly. You can also take a look into _tests_ directory. There is bunch of 
+You can find archetypes for native testing in archetype directory so you can boostrap your 
+testing process significantly faster. You can also take a look into _tests_ directory. There is bunch of 
 example projects how to use it with very deep documentation.
 
 === How to generate Javadoc?
