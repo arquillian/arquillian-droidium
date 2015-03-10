@@ -15,16 +15,16 @@
     <!-- Properties -->
     <properties>
         <!-- Arquillian Core -->
-        <version.arquillian.core>1.1.6.Final</version.arquillian.core>
+        <version.arquillian.core>1.1.7.Final</version.arquillian.core>
 
         <!-- JBoss AS -->
         <version.jbossas>7.1.1.Final</version.jbossas>
 
         <!-- Droidium container -->
-        <version.droidium>1.0.0.Alpha6</version.droidium>
+        <version.droidium>1.0.0.Final</version.droidium>
 
         <!-- Arquillian Drone -->
-        <version.org.jboss.arquillian.drone>2.0.0.Alpha3</version.org.jboss.arquillian.drone>
+        <version.org.jboss.arquillian.drone>2.0.0.Alpha4</version.org.jboss.arquillian.drone>
 
         <!-- Arquillian Graphene -->
         <version.org.jboss.arquillian.graphene2>2.1.0.Alpha2</version.org.jboss.arquillian.graphene2>
@@ -33,7 +33,7 @@
         <version.junit>4.11</version.junit>
 
         <!-- Selenium -->
-        <version.selenium>2.43.1</version.selenium>
+        <version.selenium>2.45.0</version.selenium>
 
         <!-- maven-compiler-plugin -->
         <maven.compiler.target>1.6</maven.compiler.target>
