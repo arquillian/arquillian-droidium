@@ -18,7 +18,7 @@
     <!-- Artifact configuration -->
     <groupId>org.arquillian.droidium.tests</groupId>
     <artifactId>arquillian-droidium-native-test-02</artifactId>
-    <version>1.0.0.Alpha6</version>
+    <version>1.0.0.Final</version>
 
     <description>Proof-of-concept Arquillian Droidium tests - activity management without native plugin</description>
 
@@ -27,7 +27,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <version.arquillian.core>1.1.7.Final</version.arquillian.core>
-        <version.droidium>1.0.0.Alpha6</version.droidium>
+        <version.droidium>1.0.0.Final</version.droidium>
         <version.junit>4.11</version.junit>
 
         <maven.compiler.source>1.6</maven.compiler.source>

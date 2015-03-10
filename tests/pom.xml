@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.arquillian.droidium</groupId>
         <artifactId>arquillian-droidium-parent</artifactId>
-        <version>1.0.0.Alpha6</version>
+        <version>1.0.0.Final</version>
     </parent>
 
     <!-- Artifact Configuration -->
