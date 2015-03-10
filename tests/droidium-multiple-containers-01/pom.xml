@@ -36,7 +36,7 @@
 
         <android.avd.name>testingEmulator</android.avd.name>
         <android.emulator.options/>
-        <selendroid.test.app>selendroid-test-app-0.14.0.apk</selendroid.test.app>
+        <selendroid.test.app>selendroid-test-app-0.15.0.apk</selendroid.test.app>
     </properties>
 
     <!-- Dependency Management -->

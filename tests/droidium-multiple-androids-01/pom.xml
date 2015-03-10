@@ -37,7 +37,7 @@
 		<android.avd.name_2>testingEmulator_2</android.avd.name_2>
 
         <aerogear.android.test.app>aerogear-test-android.apk</aerogear.android.test.app>
-        <selendroid.test.app>selendroid-test-app-0.14.0.apk</selendroid.test.app>
+        <selendroid.test.app>selendroid-test-app-0.15.0.apk</selendroid.test.app>
     </properties>
 
     <!-- Dependency Management -->
