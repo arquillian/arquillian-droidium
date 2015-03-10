@@ -17,7 +17,6 @@
 package org.arquillian.droidium.container.manual.configuration;
 
 import org.arquillian.droidium.container.configuration.AndroidContainerConfiguration;
-import org.arquillian.droidium.container.configuration.AndroidContainerConfigurationException;
 import org.arquillian.droidium.container.configuration.AndroidSDK;
 import org.arquillian.droidium.platform.impl.DroidiumPlatformConfiguration;
 import org.junit.Assert;
@@ -148,17 +147,6 @@ public class AndroidSDKTestCase {
 
         Assert.assertEquals("default/x86", sdk.getAndroidContainerConfiguration().getAbi());
         Assert.assertEquals(LATEST_TARGET, sdk.getAndroidContainerConfiguration().getTarget());
-    }
-
-    @Test
-    public void testNonExistingTarget() {
-        expectedException.expect(AndroidContainerConfigurationException.class);
-        expectedException.expectMessage("Unable to resolve target: android-100");
-
-        configuration.setAbi("default/x86");
-        configuration.setTarget("android-100");
-
-        new AndroidSDK(platformConfiguration).setupWith(configuration);
     }
 
     @Test
