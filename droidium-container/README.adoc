@@ -1,8 +1,8 @@
 = Arquillian Droidium
 
 The aim of this document is to describe how to use Android container for Arquillian platform - Droidium. The reader can expect 
-various use cases of arquillian.xml configuration as well as all needed artifact dependecies for Maven in order to 
-be able to start some Android container successfuly.
+various use cases of `arquillian.xml` configuration as well as all needed artifact dependecies for Maven in order to 
+be able to start some Android container successfully.
 
 == Concepts
 
@@ -12,22 +12,22 @@ There is not the support for multiple container implementations in 1.x versions 
 so you are normally forced not to mix two different container adapter implementations together. This restriction is 
 overridden by module _arquillian-droidium-multiple-containers_ via which it is possible to use ordinary 
 container adapter e.g. JBoss AS with Android container adapter itself. Because of this, you can then deploy 
-your web application into JBoss AS container and you test it on your mobile phone (emulator or physical device).
+your backend application into JBoss AS container and you test it on your mobile phone (emulator or physical device).
 
 == How to prepare emulator for testing?
 
-In general, you can test against physical device or emulator. Regarding emulator, there are some useful tips how to 
+In general, you can test against physical device or emulator. Regarding of emulator, there are some useful tips how to 
 speed your testing experience.
 
-First of all, try to use emulator which uses x86 as ABI. When you do not need to test particulary against some ABI, consider 
+First of all, try to use emulator which uses x86 as ABI. When you do not need to test particularly against some ABI, consider 
 x86 as ABI of your choice. Emulator can be faster with "Use host GPU" check button enabled upon emulator creation as well. While having 
 GPU enabled gives you some more responsivity, there can be issues when you are taking screenshots with Droidium screenshooter since 
 having GPU enabled may lead to taken screenshots which are just black. This issue is known in upstream and it is not fault of Droidium itself.
 
 Secondly, try to strip all eye-candy effects like transitions. Go to Settings - Developer - Options and turn off all animation-scale-like options.
-You can experiment with other developer options according to your preferencies.
+You can experiment with other developer options according to your preferences.
 
-Additionally, try to consider turning off all sound effects in Settings - Sound when you do not need them. There is +-noaudio+ switch for +emulator+ 
+Additionally, consider turning off all sound effects in Settings - Sound when you do not need them. There is +-noaudio+ switch for +emulator+ 
 command you can pass to +emulatorOptions+ to Droidium when you have not set that directly in emulator itself.
 
 When emulator is started up dynamically upon test execution, Droidium will automatically unlock it so you do not have to do it 
@@ -65,7 +65,7 @@ In order to make the difference, Droidium tries to "guess" what container adapte
 First of all, Droidium just tries to "guess" which configuration stands for which container adapter.
 
 While guessing can be unsuccessful in the end, there is the ultimate solution how you can specify which container adapter 
-stands for which container configuration in arquillian.xml. There is a property `adapterImplClass` which tells Droidium 
+stands for which container configuration in `arquillian.xml`. There is a property `adapterImplClass` which tells Droidium 
 that container configuration is backed by container adapter which is implemented by that class. Let's see the example:
 
 ----

@@ -1,11 +1,11 @@
-== Arquillian Droidium extensions
+== Arquillian Droidium - ftesting of Android done right
 
 This is the home of the following extensions for Arquillian testing platform:
 
 === https://github.com/arquillian/arquillian-droidium/tree/master/droidium-container[Arquillian Droidium container]
 
 Implementation of Arquillian container abstraction for Android devices. By this Arquillian container adapter, you can execute tests 
-dealing with Android devices where Android device is view just as another Arquillian container.
+dealing with Android devices where Android device is considered to be just another Arquillian container.
 
 === https://github.com/arquillian/arquillian-droidium/tree/master/droidium-platform[Arquillian Droidium platform]
 
@@ -25,6 +25,85 @@ By this extension, you can make videos of Android devices while you are executin
 === https://github.com/arquillian/arquillian-droidium/tree/master/droidium-screenshooter[Arquillian Droidium Screenshooter]
 
 By this extension, you can take screenshots of Android devices while you are executing tests.
+
+=== Examples
+
+[source,java]
+----
+@RunWith(Arquillian.class)
+@RunAsClient
+public class AndroidContainerTest {
+
+    // injected abstraction of your Android device
+    @ArquillianResource
+    AndroidDevice android;
+
+    // APK will be deployed to android device
+    // upon Android container startup
+    @Deployment
+    public static Archive<?> createAndroidDeployment() {
+        return ShrinkWrap.createFromZipFile(
+            JavaArchive.class, new File(my.apk));
+    }   
+
+    @Test
+    public void test01() {
+        assertTrue(android != null);
+
+        String sn = android.getSerialNumber();
+        String avdName = android.getAvdName();
+        
+        Assert.assertTrue(android.isOnline());
+        Assert.assertFalse(android.isOffline());
+
+        boolean emulator = android.isEmulator();
+
+        // command and package management
+        android.executeShellCommand("execute on android");
+        android.createPortForwarding(localPort,remotePort);
+        android.installPackage();
+        android.uninstallPackage();
+        android.isPackageInstalled("package name");
+
+        // taking screenshots and record videos
+        Screenshot screenshot = android.getScreenshot();
+        
+        android.startRecording(remoteFilePath, options);
+        Video video = android.stopRecording(localFilePath);
+
+        // push, pull and remove file to and from device
+        android.push(localFilePath, remoteFilePath);
+        android.pull(remoteFilePath, localFilePath);
+        android.remove(remoteFilePath);
+    }   
+}
+----
+
+Complete information how to use Android container can be found https://github.com/arquillian/arquillian-droidium/blob/master/droidium-container/README.adoc[here].
+
+[source,java]
+----
+@RunAsClient
+@RunWith(Arquillian.class)
+public class NativeAndroidTestCase {
+
+    @Drone
+    AndroidDriver mobile;
+
+    @Deployment
+    @Instrumentable // instruments APK by Selendroid server
+    public static Archive<?> getDeployment() {
+        return ShrinkWrap.createFromZipFile(JavaArchive.class,
+            new File("my.apk"));
+    }
+
+    @Test
+    public void test() {
+        mobile.startActivity("my.fqcn.of.activity");
+    }
+----
+
+Complete information how to use Android Native plugin for ftesting can be found https://github.com/arquillian/arquillian-droidium/blob/master/droidium-native/README.adoc[here].
 
 === https://github.com/arquillian/arquillian-recorder[Arquillian Recorder integration]
 

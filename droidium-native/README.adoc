@@ -1,18 +1,18 @@
 == Arquillian Droidium Native
 
 Arquillian Droidium Native plugin for Arquillian Droidium container provides necessary infrastructure 
-for container implementation needed for testing of native application on Android device via 
-http://dominikdary.github.io/selendroid/[Selendroid] project. 
+for container implementation needed for testing of native applications on Android device via 
+https://github.com/selendroid/selendroid[Selendroid] project. 
 
 In a nutshell, it looks into your application you want to test (APK file) and it modifies 
-Selendroid server accordingly (to be more detailed, its AndroidManifest.xml). After these changes,
+Selendroid server accordingly (to be more specific, its `AndroidManifest.xml`). After these changes,
 it is resigned once again since the content of APK has changed and it installs modified Selendroid 
 server and application under test (_AUT_) into Android device. _AUT_ is instrumented by Selendroid 
-server.
+server. Android application you want to test is not modified at all and it is installed on a device as is.
 
 You can use good-old WebDriver from Selenium to carry out the tests since Selendroid implements 
-WebDriver API - the biggest advantage under the sun. From code point of view, you can use `WebDriver` 
-or `AndroidDriver` injections by Drone as will be shown in a moment.
+WebDriver AP. From the code point of view, you can use `WebDriver` or `AndroidDriver` injections by 
+Drone as will be shown in a moment.
 
 == Configuration
 
@@ -37,10 +37,13 @@ You have to register extension in `arquillian.xml` by putting this snippet into 
 </extension>
 ----
 
-You have to download Selendroid server APK from Selendroid project manually and put it 
-on classpath. It will be recognized by this extension then. Note the qualifier for 
-this extension - `droidium-native`. There is already Selendroid server saved for you in 
-`tests` directory. Just put that apk to your project, set extension as show above and you are done.
+INFO: You do not have to download the Selendroid server APK manually from the Internet. This server APK 
+is downloaded automatically for you in case it is not already found in `$HOME/.droidium` directory.
+Selendroid server of some particular version is downloaded from GitHub. Distribution JAR file 
+is extracted and Selendroid server is cached locally.
+
+However, if you ever want to use different version of Selendroid server from the version of the server 
+Droidium is shipped with, you have to set path ot that server APK file as shown above.
 
 When you put the extension artifact on the class path and you do not specify its configuration in 
 `arquillian.xml`, plugin will search for Selendroid server APK of name "selendroid-server.apk" automatically.
@@ -162,8 +165,7 @@ Starting of activities is done like this:
 @Test
 public void test(@ArquillianResource AndroidDevice device) {
 
-    android.getActivityManagerProvider()
-        .getActivityManager()
+    android.getActivityManager()
         .startActivity("io.selendroid.testapp.HomeScreenActivity");
 
     // operations via driver
@@ -299,6 +301,8 @@ public void someTest()
 [qanda]
 What happens if I put arquillian-droidium-container artifact into pom.xml and I set Android container in arquillian.xml and additionally I do the same for regular web container as JBoss AS / Wildfly and there is Drone on classpath as well but no extension in arquillian.xml has "browser" property set to "android"?::
   Your Android container will not be started at all.
+Do I need to specify +serialId+ or +avdName+ in case that device is already connected and running?
+  No, when you do not specifiy these properties, Droidium will try to connect to whatever it already connected.
 Do I have to somehow modify my application I want to test?::
   No but be sure you put permissions into AndroidManifest.xml as described above.
 When I have two deployments which are instrumented, how many Selendroid servers are installed on the device?::
