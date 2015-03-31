@@ -28,6 +28,9 @@ By this extension, you can take screenshots of Android devices while you are exe
 
 === Examples
 
+NOTE: You are welcome to look at intensive test scenarios in `tests` directory in this repository where every 
+possible scenario Droidium is able to do is shown with fully runnable examples.
+
 [source,java]
 ----
 @RunWith(Arquillian.class)
@@ -103,11 +106,95 @@ public class NativeAndroidTestCase {
     }
 ----
 
+[source,java]
+----
+@RunAsClient
+@RunWith(Arquillian.class)
+public class MultipleContainersTest {
+
+    @Drone
+    @FirstApp
+    AndroidDriver mobile_1;
+    
+    @Drone
+    @SecondApp
+    AndroidDriver mobile_2;
+
+    @Deployment
+    @Instrumentable // instruments APK by Selendroid server
+    @TargetsContainer("android-1")
+    public static Archive<?> getDeployment_1() {
+        return ShrinkWrap.createFromZipFile(JavaArchive.class,
+            new File("my_first.apk"));
+    }
+
+    @Deployment
+    @Instrumentable(port = 8081) // instruments APK by Selendroid server
+    @TargetsContainer("android-2")
+    public static Archive<?> getDeployment_2() {
+        return ShrinkWrap.createFromZipFile(JavaArchive.class,
+            new File("my_second.apk"));
+    }
+
+    @Test
+    @InSequence(1)
+    public void test() {
+        mobile_1.startActivity("my.fqcn.of.activity");
+    }
+    
+    @Test
+    @InSequence(2)
+    public void test_2() {
+        mobile_2.startActivity("my.fqcn.of.activity");
+    }
+----
+
+In your `arquillian.xml`, you just specify two containers and two Drones.
+
+[source,xml]
+----
+<arquillian>
+    <group qualifier="containers" default="true">
+        <container qualifier="android_1" default="true">
+            <configuration>
+                <property name="avdName">my_first_avd</property>
+            </configuration>
+        </container>
+        <container qualifier="android_2">
+            <configuration>
+                <property name="avdName">my_second_avd</property>
+            </configuration>
+        </container>
+    </group>
+    
+    <extension qualifier="webdriver-firstapp">
+        <property name="browser">android</property>
+        <property name="remoteAddress">http://localhost:8080/wd/hub</property>
+    </extension>
+
+    <extension qualifier="webdriver-secondapp">
+        <property name="browser">android</property>
+        <property name="remoteAddress">http://localhost:8081/wd/hub</property>
+    </extension>
+</arquillian>
+----
+
+Lastly you have to create two annotations - `FirstApp` and `SecondApp`. You find information how to create them https://docs.jboss.org/author/display/ARQ/Drone[here]
+
+What we done in the example above is that you deploy `my_first.apk` to `my_first_avd`, `my_second.apk` to `my_second_avd`, and you have two 
+Drones hence you control `my_first.apk` by Drone annotated with `FirstApp` and you control the second app by `SecondApp` Drone. Class scoped Drones 
+can be used in one test method together. Note that in case you do these Drones class scoped, Selendroids are deployed only once for the whole test case. However 
+in case you inject them as method scoped, underlying Selendroid server would be deployed and undeployed every test method hence performance-wise it would be little bit slower.
+
 Complete information how to use Android Native plugin for ftesting can be found https://github.com/arquillian/arquillian-droidium/blob/master/droidium-native/README.adoc[here].
 
 === https://github.com/arquillian/arquillian-recorder[Arquillian Recorder integration]
 
 This extension builds on top of https://github.com/arquillian/arquillian-recorder[Arquillian Recorder] so by using above recorder and screenshooter extensions, these resources will appear in resulting exporter report in e.g. html file.
+
+=== Cordova tests
+
+Droidium can run Cordova tests as well. Droidium is able to test everything Selendroid is able to test since it is based on it.
 
 === Runtime dependencies
 
