@@ -39,7 +39,7 @@ ext {
 
     coreVersion = "1.1.9.Final"
     grapheneVersion = "2.1.0.Alpha2"
-    seleniumVersion = "2.45.0"
+    seleniumVersion = "2.47.1"
 
     // Arquillian Drone
     droneOrganization = "arquillian"
