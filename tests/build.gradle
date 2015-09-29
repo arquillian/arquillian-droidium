@@ -43,8 +43,8 @@ ext {
 
     // Arquillian Drone
     droneOrganization = "arquillian"
-    droneVersion = "2.0.0.Alpha4"
-    droneCommit = "2.0.0.Alpha4"
+    droneVersion = "2.0.0.Alpha5"
+    droneCommit = "2.0.0.Alpha5"
 
     defaultAdditionalAndroidTargets = [
         'android-10',
