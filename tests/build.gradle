@@ -17,13 +17,13 @@ ext {
     defaultArquillian_debug = "true"
     defaultEmulatorMemory = "1024"
     defaultEmulatorTimeout = "300"
-    defaultAndroidSdkVersion = "23"
+    defaultAndroidSdkVersion = "24.4"
     defaultAndroidTarget = "android-19"
     defaultAndroidAbi = "default/x86"
     defaultBrowser = "phantomjs"
     defaultDeviceSerialId = ""
     defaultRemoteVideoDir = "/sdcard/"
-    defaultAndroidBuildTools = "22.1.2"
+    defaultAndroidBuildTools = "23.0.1"
 
     droidiumVersion = "1.0.0.Final"
 
@@ -227,6 +227,12 @@ spacelift {
                         .goal("install:install-file")
                         .properties("file=${selendroid.home}/third-party/cordova-3.7.0/classes.jar",
                             "groupId=org.apache.cordova", "artifactId=cordova", "version=3.7.0", "classifier=android", "packaging=jar")
+                        .execute().await()
+
+                    Tasks.prepare(MavenExecutor)
+                        .goal("install:install-file")
+                        .properties("file=${selendroid.home}/third-party/support-v4/classes.jar",
+                            "groupId=com.google.android", "artifactId=support-v4", "version=21.0.3", "packaging=jar")
                         .execute().await()
 
                     Tasks.prepare(MavenExecutor).pom("${home.absolutePath}/pom.xml")
