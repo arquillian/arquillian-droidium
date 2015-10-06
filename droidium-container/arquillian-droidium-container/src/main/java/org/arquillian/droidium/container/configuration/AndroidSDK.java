@@ -87,7 +87,7 @@ public final class AndroidSDK {
 
         this.platformConfiguration = platformConfiguration;
 
-        List<Platform> platforms = Platform.getAvailablePlatforms(platformConfiguration.getAndroidHome());
+        List<Platform> platforms = Platform.getAvailablePlatforms(platformConfiguration.getAndroidSdkHome());
 
         if (platforms.size() > 0) {
             currentPlatform = platforms.iterator().next();
@@ -170,7 +170,7 @@ public final class AndroidSDK {
      */
     public String getPathForTool(String tool) {
 
-        File sdkPath = new File(getPlatformConfiguration().getAndroidHome());
+        File sdkPath = new File(getPlatformConfiguration().getAndroidSdkHome());
 
         File[] possiblePaths = { new File(sdkPath, MessageFormat.format("tools/{0}", tool)),
             new File(sdkPath, MessageFormat.format("tools/{0}.exe", tool)),
@@ -224,7 +224,7 @@ public final class AndroidSDK {
         // construct error message
         StringBuilder exception = new StringBuilder("Could not find tool '")
             .append(tool)
-            .append("'. Please ensure you've set ANDROID_HOME environment property or androidHome property in arquillian.xml and this location contains all required packages")
+            .append("'. Please ensure you've set ANDROID_SDK_HOME environment property or androidSdkHome property in arquillian.xml and this location contains all required packages")
             .append("Searching at locations: ");
         String delimiter = "";
         for (File candidate : possiblePaths) {
@@ -294,7 +294,7 @@ public final class AndroidSDK {
 
     private String getBuildTool(String tool) {
 
-        File sdkPath = new File(getPlatformConfiguration().getAndroidHome());
+        File sdkPath = new File(getPlatformConfiguration().getAndroidSdkHome());
 
         File platformDirectory = getPlatformDirectory();
 

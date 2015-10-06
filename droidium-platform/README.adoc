@@ -12,27 +12,37 @@ you need to modify them, you have to register this extension as follows into +ar
 </extension>
 ----
 
+Roughly speaking, you should have your environment properties set like this:
+
+----
+ANDROID_HOME=/home/user/.android
+ANDROID_SDK_ROOT=/home/user/android-sdk
+ANDROID_SDK_PLATFORM_TOOLS=/home/user/android-sdk/platform-tools
+ANDROID_TOOLS=/home/user/android-sdk/tools
+ANDROID_SDK_HOME=/home/user/android-sdk
+----
+
 ==== androidHome
 ===== default: $ANDROID_HOME
 
-`androidHome` property holds the directory where your Android SDK is installed. It is not necessary to specify it 
-since it is automatically read from the system environment property `$ANDROID_HOME` which can be easily exported 
-as `export $ANDROID_HOME=/path/to/your/sdk` for the current shell or it can be put into `~/.bash_profile` to be 
-persisted. It can be specified in rutime via `android.home` System property.
+This property tells where are e.g. your AVDs stored. By default. When this property is not set, it defaults to `$HOME` in  
+`.android` directory. When you set this property e.g. to `target`, your AVDs will be created in `target` directory so  
+after you clean your test, there is not any sign there was some Android used.
 
 ----
-<property name="androidHome">/path/to/your/android/sdk</property>
+<property name="androidHome">/home/user/.android</property>
 ----
 
 ==== androidSdkHome
 ===== default: $ANDROID_SDK_HOME
 
-This property tells where are e.g. your AVDs stored. By default. When this property is not set, it defaults to `$HOME` in 
-`.android` directory. When you set this property e.g. to `target`, your AVDs will be created in `target` directory so 
-after you clean your test, there is not any sign there was some Android used. You can use system property `android.sdk.home` as well.
+`androidSdkHome` property holds the directory where your Android SDK is installed. It is not necessary to specify it 
+since it is automatically read from the system environment property `$ANDROID_SDK_HOME` which can be easily exported 
+as `export $ANDROID_SDK_HOME=/path/to/your/sdk` for the current shell or it can be put into `~/.bash_profile` to be 
+persisted. It can be specified in rutime via `android.sdk.home` system property.
 
 ----
-<property name="androidSdkHome">target</property>
+<property name="androidSdkHome">/home/user/android-sdk</property>
 ----
 
 ==== forceNewBridge

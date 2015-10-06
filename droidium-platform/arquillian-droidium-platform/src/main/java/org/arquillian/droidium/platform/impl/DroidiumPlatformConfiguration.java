@@ -192,7 +192,7 @@ public class DroidiumPlatformConfiguration {
     }
 
     public String resolveAndroidSdkRoot() {
-        return resolveAndroidHome();
+        return resolveAndroidSdkHome();
     }
 
     public String resolveAndroidTools() {
@@ -200,7 +200,7 @@ public class DroidiumPlatformConfiguration {
         String ANDROID_TOOLS_PROPERTY = System.getenv("android.tools");
 
         return checkSlash(ANDROID_TOOLS_PROPERTY == null ?
-            (ANDROID_TOOLS_ENV == null ? resolveAndroidHome() + "tools" : ANDROID_TOOLS_ENV)
+            (ANDROID_TOOLS_ENV == null ? resolveAndroidSdkHome() + "tools" : ANDROID_TOOLS_ENV)
             : ANDROID_TOOLS_PROPERTY);
     }
 
@@ -209,7 +209,7 @@ public class DroidiumPlatformConfiguration {
         String ANDROID_PLATFORM_TOOLS_PROPERTY = System.getenv("android.platform.tools");
 
         return checkSlash(ANDROID_PLATFORM_TOOLS_PROPERTY == null ?
-            (ANDROID_PLATFORM_TOOLS_ENV == null ? resolveAndroidHome() + "platform-tools" : ANDROID_PLATFORM_TOOLS_ENV)
+            (ANDROID_PLATFORM_TOOLS_ENV == null ? resolveAndroidSdkHome() + "platform-tools" : ANDROID_PLATFORM_TOOLS_ENV)
             : ANDROID_PLATFORM_TOOLS_PROPERTY);
     }
 
@@ -338,7 +338,7 @@ public class DroidiumPlatformConfiguration {
         }
 
         if (keystore == null) {
-            keystore = getAndroidSdkHome() + fileSeparator + "debug.keystore";
+            keystore = getAndroidHome() + "debug.keystore";
             setProperty("keystore", keystore);
         }
 
