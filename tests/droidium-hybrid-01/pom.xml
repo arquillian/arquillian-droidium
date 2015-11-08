@@ -34,7 +34,7 @@
         <version.arquillian.graphene>2.1.0.Alpha3</version.arquillian.graphene>
 
         <version.junit>4.11</version.junit>
-        <version.selenium>2.45.0</version.selenium>
+        <version.selenium>2.48.0</version.selenium>
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
 

@@ -31,7 +31,7 @@
         <version.droidium>1.0.0.Final</version.droidium>
         <version.junit>4.11</version.junit>
         <version.org.jboss.as>7.1.1.Final</version.org.jboss.as>
-        <version.selenium>2.45.0</version.selenium>
+        <version.selenium>2.48.0</version.selenium>
         <browser>phantomjs</browser>
 
         <maven.compiler.source>1.6</maven.compiler.source>

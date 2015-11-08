@@ -32,7 +32,7 @@
         <version.arquillian.graphene>2.1.0.Alpha3</version.arquillian.graphene>
         
         <version.junit>4.11</version.junit>
-        <version.selenium>2.45.0</version.selenium>
+        <version.selenium>2.48.0</version.selenium>
         <android.avd.name_1>testingEmulator_1</android.avd.name_1>
         <android.avd.name_2>testingEmulator_2</android.avd.name_2>
 
