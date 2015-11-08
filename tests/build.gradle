@@ -29,8 +29,8 @@ ext {
 
     // downloads from GitHub
     selendroidOrganization = "selendroid"
-    selendroidVersion = "0.16.0"
-    selendroidCommit = "0.16.0"
+    selendroidVersion = "0.17.0"
+    selendroidCommit = "0.17.0"
 
     // downloads from GitHub
     recorderOrganization = "arquillian"
