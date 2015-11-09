@@ -23,7 +23,7 @@ ext {
     defaultBrowser = "phantomjs"
     defaultDeviceSerialId = ""
     defaultRemoteVideoDir = "/sdcard/"
-    defaultAndroidBuildTools = "23.0.1"
+    defaultAndroidBuildTools = "23.0.2"
 
     droidiumVersion = "2.0.0-SNAPSHOT"
 
