@@ -45,7 +45,7 @@ public class DroidiumVideoRecorderCreator {
     @Inject
     private Instance<VideoConfiguration> configuration;
 
-    public void onVideoRecorderExtensionConfigured(@Observes VideoExtensionConfigured event) {
+    public void onVideoRecorderExtensionConfigured(@Observes(precedence = -100) VideoExtensionConfigured event) {
 
         if (takenResourceRegister.get() == null) {
             this.takenResourceRegister.set(new TakenResourceRegister());
