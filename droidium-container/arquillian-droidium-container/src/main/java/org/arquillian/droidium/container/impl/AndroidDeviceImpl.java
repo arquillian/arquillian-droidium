@@ -233,15 +233,10 @@ public class AndroidDeviceImpl implements AndroidDevice {
             throw new IllegalArgumentException("File " + packageFilePath.getAbsoluteFile() + " must represent a readable APK file");
         }
         try {
-            String retval = delegate.installPackage(packageFilePath.getAbsolutePath(), reinstall, extraArgs);
-            if (retval != null) {
-                throw new AndroidExecutionException("Unable to install APK from " + packageFilePath.getAbsolutePath()
-                    + ". Command failed with status code: " + retval);
-            }
+            delegate.installPackage(packageFilePath.getAbsolutePath(), reinstall, extraArgs);
         } catch (InstallException e) {
             throw new AndroidExecutionException("Unable to install APK from " + packageFilePath.getAbsolutePath(), e);
         }
-
     }
 
     @Override
