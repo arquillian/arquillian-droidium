@@ -34,8 +34,8 @@ ext {
 
     // downloads from GitHub
     recorderOrganization = "arquillian"
-    recorderVersion = "1.1.0.Alpha4"
-    recorderCommit = "1.1.0.Alpha4"
+    recorderVersion = "1.1.0.Final"
+    recorderCommit = "1.1.0.Final"
 
     coreVersion = "1.1.10.Final"
     grapheneVersion = "2.1.0.Alpha3"
