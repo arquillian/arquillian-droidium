@@ -77,7 +77,7 @@
         <version.arquillian.graphene>2.1.0.Alpha3</version.arquillian.graphene>
 
         <!-- Testing AS7 container -->
-        <version.org.jboss.as>7.1.1.Final</version.org.jboss.as>
+        <version.org.jboss.as>7.2.0.Final</version.org.jboss.as>
 
         <!-- ddmlib -->
         <version.ddmlib>24.5.0</version.ddmlib>
