@@ -71,7 +71,7 @@
         <version.arquillian.core>1.1.10.Final</version.arquillian.core>
 
         <!-- Arquillian Drone -->
-        <version.arquillian.drone>2.0.0.Alpha5</version.arquillian.drone>
+        <version.arquillian.drone>2.1.0.Beta1</version.arquillian.drone>
 
         <!-- Arquillian Graphene -->
         <version.arquillian.graphene>2.1.0.Alpha3</version.arquillian.graphene>
