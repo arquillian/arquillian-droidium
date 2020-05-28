@@ -94,7 +94,7 @@
         <!-- Other versions -->
         <version.maven.animal.sniffer>1.12</version.maven.animal.sniffer>
         <version.httpclient>4.3.4</version.httpclient>
-        <version.commons.io>1.3.2</version.commons.io>
+        <version.commons.io>2.7</version.commons.io>
         <version.junit>4.12</version.junit>
 
         <!-- Droidium is compiled against and using JDK6 -->
