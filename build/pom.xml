@@ -42,7 +42,7 @@
         <version.com.android.tools.ddms>${version.ddmlib}</version.com.android.tools.ddms>
         <version.arquillian.spacelift>${version.spacelift}</version.arquillian.spacelift>
         <version.io.selendroid>${version.selendroid}</version.io.selendroid>
-        <version.mockito.core>1.10.19</version.mockito.core>
+        <version.mockito.core>3.5.2</version.mockito.core>
 
         <!-- Other -->
         <version.maven.checkstyle.plugin>2.12.1</version.maven.checkstyle.plugin>
