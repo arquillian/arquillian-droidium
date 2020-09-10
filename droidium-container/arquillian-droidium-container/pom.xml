@@ -33,7 +33,7 @@
         <!-- known to work with Android 2.3 -->
         <version.android>2.3</version.android>
 
-        <version.commons.io>2.4</version.commons.io>
+        <version.commons.io>2.8.0</version.commons.io>
     </properties>
 
     <!-- Dependencies -->
